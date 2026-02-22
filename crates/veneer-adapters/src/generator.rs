@@ -51,9 +51,6 @@ const sizeClasses = {{
 const baseClasses = '{base_classes}';
 const disabledClasses = '{disabled_classes}';
 
-// Cache for adopted stylesheets (all page stylesheets)
-let cachedSheets = null;
-
 export class {class_name} extends HTMLElement {{
   static observedAttributes = [{attrs_array}];
 
@@ -76,30 +73,22 @@ export class {class_name} extends HTMLElement {{
   #adoptStyles() {{
     if (!this.shadowRoot) return;
 
-    // Use cached sheets if available
-    if (cachedSheets) {{
-      this.shadowRoot.adoptedStyleSheets = cachedSheets;
-      return;
+    if (!this.constructor._sheets) {{
+      this.constructor._sheets = [...document.styleSheets]
+        .filter(s => s.ownerNode?.hasAttribute('data-veneer-component'))
+        .map(s => {{
+          try {{
+            const clone = new CSSStyleSheet();
+            const rules = Array.from(s.cssRules).map(r => r.cssText).join('\\n');
+            clone.replaceSync(rules);
+            return clone;
+          }} catch (e) {{
+            return null;
+          }}
+        }})
+        .filter(Boolean);
     }}
-
-    // Find and adopt page stylesheets
-    const sheets = [];
-    for (const sheet of document.styleSheets) {{
-      try {{
-        // Clone the stylesheet for adoption
-        const clone = new CSSStyleSheet();
-        const rules = Array.from(sheet.cssRules).map(r => r.cssText).join('\\n');
-        clone.replaceSync(rules);
-        sheets.push(clone);
-      }} catch (e) {{
-        // Cross-origin stylesheets can't be accessed, skip them
-      }}
-    }}
-
-    if (sheets.length > 0) {{
-      cachedSheets = sheets; // Cache all sheets
-      this.shadowRoot.adoptedStyleSheets = sheets;
-    }}
+    this.shadowRoot.adoptedStyleSheets = this.constructor._sheets;
   }}
 
   #render() {{

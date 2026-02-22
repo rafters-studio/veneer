@@ -105,7 +105,7 @@ const BASE_TEMPLATE: &str = r##"<!DOCTYPE html>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ title }} - {{ site_title }}</title>
-  {% for style in styles %}<link rel="stylesheet" href="{{ style }}">
+  {% for style in styles %}<link rel="stylesheet" href="{{ style }}" data-veneer-component>
   {% endfor %}<link rel="stylesheet" href="{{ base_url }}assets/main.css">
 </head>
 <body>
