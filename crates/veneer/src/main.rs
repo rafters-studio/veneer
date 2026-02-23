@@ -43,6 +43,10 @@ enum Commands {
         /// Do not open browser
         #[arg(long)]
         no_open: bool,
+
+        /// Directory containing component source files (overrides docs.toml)
+        #[arg(long)]
+        components_dir: Option<PathBuf>,
     },
 
     /// Build static documentation site
@@ -54,6 +58,10 @@ enum Commands {
         /// Skip minification
         #[arg(long)]
         no_minify: bool,
+
+        /// Directory containing component source files (overrides docs.toml)
+        #[arg(long)]
+        components_dir: Option<PathBuf>,
     },
 
     /// Preview built documentation
@@ -86,12 +94,20 @@ async fn main() -> Result<()> {
         Commands::Init { yes } => {
             commands::init::run(yes).await?;
         }
-        Commands::Dev { port, no_open } => {
-            commands::dev::run(port, !no_open).await?;
+        Commands::Dev {
+            port,
+            no_open,
+            components_dir,
+        } => {
+            commands::dev::run(port, !no_open, components_dir).await?;
         }
-        Commands::Build { output, no_minify } => {
+        Commands::Build {
+            output,
+            no_minify,
+            components_dir,
+        } => {
             let minify = if no_minify { Some(false) } else { None };
-            commands::build::run(output, minify).await?;
+            commands::build::run(output, minify, components_dir).await?;
         }
         Commands::Serve { port, dir } => {
             commands::serve::run(port, dir).await?;
