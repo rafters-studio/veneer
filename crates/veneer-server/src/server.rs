@@ -39,6 +39,9 @@ pub struct DevServerConfig {
 
     /// Open browser on start
     pub open: bool,
+
+    /// Path to a theme CSS file with --veneer-* variable overrides
+    pub theme: Option<String>,
 }
 
 impl Default for DevServerConfig {
@@ -49,6 +52,7 @@ impl Default for DevServerConfig {
             port: 7777,
             host: "127.0.0.1".to_string(),
             open: true,
+            theme: None,
         }
     }
 }
@@ -120,6 +124,7 @@ impl DevServer {
             .route("/", get(index_handler))
             .route("/__hmr", get(ws_handler))
             .route("/__hmr.js", get(hmr_script_handler))
+            .route("/__theme.css", get(theme_css_handler))
             .nest_service("/docs", ServeDir::new(&self.config.docs_dir))
             .with_state(state);
 
@@ -225,6 +230,12 @@ async fn index_handler(State(state): State<Arc<RwLock<ServerState>>>) -> impl In
         "<h1>Welcome</h1><p>Create docs/index.mdx to get started.</p>".to_string()
     };
 
+    let theme_link = if state.config.theme.is_some() {
+        r#"  <link rel="stylesheet" href="/__theme.css">"#
+    } else {
+        ""
+    };
+
     Html(format!(
         r#"<!DOCTYPE html>
 <html lang="en">
@@ -237,6 +248,7 @@ async fn index_handler(State(state): State<Arc<RwLock<ServerState>>>) -> impl In
     h1 {{ font-size: 2rem; }}
     pre {{ background: #f5f5f5; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }}
   </style>
+{theme_link}
 </head>
 <body>
   {}
@@ -275,6 +287,20 @@ async fn handle_ws(mut socket: WebSocket, state: Arc<RwLock<ServerState>>) {
             break;
         }
     }
+}
+
+/// Handler for the theme CSS file.
+async fn theme_css_handler(State(state): State<Arc<RwLock<ServerState>>>) -> impl IntoResponse {
+    let state = state.read().await;
+
+    let css = state
+        .config
+        .theme
+        .as_ref()
+        .and_then(|path| std::fs::read_to_string(path).ok())
+        .unwrap_or_default();
+
+    ([("content-type", "text/css")], css)
 }
 
 /// Handler for the HMR client script.

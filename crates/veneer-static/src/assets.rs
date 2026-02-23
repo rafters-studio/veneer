@@ -32,15 +32,46 @@ impl AssetPipeline {
     }
 }
 
-// CSS using Rafters design tokens
-// Expects Rafters vars to be loaded (--background, --foreground, --primary, etc.)
-const DEFAULT_CSS: &str = r#"/* Rafters Docs Theme - Uses Rafters Design Tokens */
+// Veneer chrome CSS with self-contained design tokens.
+// All custom properties are namespaced under --veneer-* with concrete defaults.
+// Override any --veneer-* variable in your own stylesheet to customize the theme.
+const DEFAULT_CSS: &str = r#"/* Veneer Docs Theme */
 
-/* Layout tokens */
+/* Design tokens - override these to customize the theme */
 :root {
-  --sidebar-width: 280px;
-  --toc-width: 200px;
-  --content-max-width: 800px;
+  /* Layout */
+  --veneer-sidebar-width: 280px;
+  --veneer-toc-width: 200px;
+  --veneer-content-max-width: 800px;
+  --veneer-radius: 0.375rem;
+
+  /* Typography */
+  --veneer-font-sans: system-ui, -apple-system, sans-serif;
+  --veneer-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Colors - neutral white/gray/blue palette */
+  --veneer-background: #ffffff;
+  --veneer-foreground: #09090b;
+
+  --veneer-primary: #2563eb;
+  --veneer-primary-foreground: #ffffff;
+  --veneer-primary-hover: #1d4ed8;
+
+  --veneer-muted: #f4f4f5;
+  --veneer-muted-foreground: #71717a;
+
+  --veneer-accent: #f4f4f5;
+  --veneer-accent-foreground: #18181b;
+
+  --veneer-card: #ffffff;
+  --veneer-card-foreground: #09090b;
+
+  --veneer-secondary: #f4f4f5;
+  --veneer-secondary-foreground: #18181b;
+  --veneer-secondary-hover: #e4e4e7;
+
+  --veneer-border: #e4e4e7;
+  --veneer-ring: #2563eb;
 }
 
 * {
@@ -50,22 +81,22 @@ const DEFAULT_CSS: &str = r#"/* Rafters Docs Theme - Uses Rafters Design Tokens 
 }
 
 body {
-  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
-  background: var(--background);
-  color: var(--foreground);
+  font-family: var(--veneer-font-sans);
+  background: var(--veneer-background);
+  color: var(--veneer-foreground);
   line-height: 1.6;
 }
 
 .layout {
   display: grid;
-  grid-template-columns: var(--sidebar-width) 1fr;
+  grid-template-columns: var(--veneer-sidebar-width) 1fr;
   min-height: 100vh;
 }
 
 /* Sidebar */
 .sidebar {
-  background: var(--muted);
-  border-right: 1px solid var(--border);
+  background: var(--veneer-muted);
+  border-right: 1px solid var(--veneer-border);
   padding: 1.5rem;
   position: sticky;
   top: 0;
@@ -80,7 +111,7 @@ body {
 .nav-logo {
   font-weight: 700;
   font-size: 1.25rem;
-  color: var(--foreground);
+  color: var(--veneer-foreground);
   text-decoration: none;
 }
 
@@ -95,20 +126,20 @@ body {
 .nav-item a {
   display: block;
   padding: 0.5rem 0.75rem;
-  color: var(--muted-foreground);
+  color: var(--veneer-muted-foreground);
   text-decoration: none;
-  border-radius: var(--radius, 0.375rem);
+  border-radius: var(--veneer-radius);
   transition: background 0.15s, color 0.15s;
 }
 
 .nav-item a:hover {
-  background: var(--accent);
-  color: var(--accent-foreground);
+  background: var(--veneer-accent);
+  color: var(--veneer-accent-foreground);
 }
 
 .nav-item.active > a {
-  background: var(--primary);
-  color: var(--primary-foreground);
+  background: var(--veneer-primary);
+  color: var(--veneer-primary-foreground);
 }
 
 .nav-children {
@@ -120,21 +151,21 @@ body {
 /* Main content */
 .main {
   display: grid;
-  grid-template-columns: 1fr var(--toc-width);
+  grid-template-columns: 1fr var(--veneer-toc-width);
   gap: 2rem;
   padding: 2rem;
-  max-width: calc(var(--content-max-width) + var(--toc-width) + 4rem);
+  max-width: calc(var(--veneer-content-max-width) + var(--veneer-toc-width) + 4rem);
 }
 
 .doc {
-  max-width: var(--content-max-width);
+  max-width: var(--veneer-content-max-width);
 }
 
 .content h1 {
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
-  color: var(--foreground);
+  color: var(--veneer-foreground);
 }
 
 .content h2 {
@@ -142,55 +173,55 @@ body {
   font-weight: 600;
   margin: 2rem 0 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border);
-  color: var(--foreground);
+  border-bottom: 1px solid var(--veneer-border);
+  color: var(--veneer-foreground);
 }
 
 .content h3 {
   font-size: 1.25rem;
   font-weight: 600;
   margin: 1.5rem 0 0.75rem;
-  color: var(--foreground);
+  color: var(--veneer-foreground);
 }
 
 .content p {
   margin-bottom: 1rem;
-  color: var(--foreground);
+  color: var(--veneer-foreground);
 }
 
 .content a {
-  color: var(--primary);
+  color: var(--veneer-primary);
   text-decoration: underline;
   text-underline-offset: 4px;
 }
 
 .content a:hover {
-  color: var(--primary-hover);
+  color: var(--veneer-primary-hover);
 }
 
 .content strong {
   font-weight: 600;
-  color: var(--foreground);
+  color: var(--veneer-foreground);
 }
 
 /* Code blocks */
 .content pre {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius, 0.5rem);
+  background: var(--veneer-card);
+  border: 1px solid var(--veneer-border);
+  border-radius: var(--veneer-radius);
   padding: 1rem;
   overflow-x: auto;
-  font-family: var(--font-mono, ui-monospace, monospace);
+  font-family: var(--veneer-font-mono);
   font-size: 0.875rem;
   margin-bottom: 1rem;
   position: relative;
 }
 
 .content code {
-  font-family: var(--font-mono, ui-monospace, monospace);
+  font-family: var(--veneer-font-mono);
   font-size: 0.875em;
-  background: var(--muted);
-  color: var(--foreground);
+  background: var(--veneer-muted);
+  color: var(--veneer-foreground);
   padding: 0.125rem 0.375rem;
   border-radius: 0.25rem;
 }
@@ -198,14 +229,14 @@ body {
 .content pre code {
   background: none;
   padding: 0;
-  color: var(--card-foreground);
+  color: var(--veneer-card-foreground);
 }
 
 /* Preview container for live components */
 .preview-container {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius, 0.5rem);
+  background: var(--veneer-card);
+  border: 1px solid var(--veneer-border);
+  border-radius: var(--veneer-radius);
   padding: 2rem;
   margin-bottom: 0.5rem;
   display: flex;
@@ -215,7 +246,7 @@ body {
   flex-wrap: wrap;
 }
 
-/* Copy button - uses Rafters button styling */
+/* Copy button */
 .copy-btn {
   position: absolute;
   top: 0.5rem;
@@ -223,20 +254,20 @@ body {
   padding: 0.25rem 0.75rem;
   font-size: 0.75rem;
   font-weight: 500;
-  background: var(--secondary);
-  color: var(--secondary-foreground);
+  background: var(--veneer-secondary);
+  color: var(--veneer-secondary-foreground);
   border: none;
-  border-radius: var(--radius, 0.375rem);
+  border-radius: var(--veneer-radius);
   cursor: pointer;
   transition: background 0.15s;
 }
 
 .copy-btn:hover {
-  background: var(--secondary-hover);
+  background: var(--veneer-secondary-hover);
 }
 
 .copy-btn:focus-visible {
-  outline: 2px solid var(--ring);
+  outline: 2px solid var(--veneer-ring);
   outline-offset: 2px;
 }
 
@@ -252,7 +283,7 @@ body {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--muted-foreground);
+  color: var(--veneer-muted-foreground);
   margin-bottom: 0.75rem;
 }
 
@@ -266,13 +297,13 @@ body {
 
 .toc a {
   font-size: 0.875rem;
-  color: var(--muted-foreground);
+  color: var(--veneer-muted-foreground);
   text-decoration: none;
   transition: color 0.15s;
 }
 
 .toc a:hover {
-  color: var(--foreground);
+  color: var(--veneer-foreground);
 }
 
 .toc-level-2 {
@@ -298,7 +329,7 @@ body {
     left: -100%;
     z-index: 50;
     transition: left 0.3s;
-    width: var(--sidebar-width);
+    width: var(--veneer-sidebar-width);
   }
 
   .sidebar.open {
@@ -314,6 +345,61 @@ body {
   }
 }
 
+/* Controls panel for live previews */
+.veneer-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  background: var(--veneer-muted);
+  border: 1px solid var(--veneer-border);
+  border-radius: var(--veneer-radius);
+  font-family: var(--veneer-font-sans);
+  font-size: 0.8125rem;
+}
+
+.veneer-controls-field {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.veneer-controls-checkbox {
+  cursor: pointer;
+}
+
+.veneer-controls-label {
+  color: var(--veneer-muted-foreground);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.veneer-controls-select {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8125rem;
+  font-family: inherit;
+  color: var(--veneer-foreground);
+  background: var(--veneer-background);
+  border: 1px solid var(--veneer-border);
+  border-radius: var(--veneer-radius);
+  cursor: pointer;
+}
+
+.veneer-controls-select:focus-visible {
+  outline: 2px solid var(--veneer-ring);
+  outline-offset: 2px;
+}
+
+.veneer-controls input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--veneer-primary);
+  cursor: pointer;
+}
+
 /* Menu button for mobile */
 .menu-btn {
   display: none;
@@ -322,10 +408,10 @@ body {
   left: 1rem;
   z-index: 100;
   padding: 0.5rem;
-  background: var(--primary);
-  color: var(--primary-foreground);
+  background: var(--veneer-primary);
+  color: var(--veneer-primary-foreground);
   border: none;
-  border-radius: var(--radius, 0.375rem);
+  border-radius: var(--veneer-radius);
   cursor: pointer;
 }
 
@@ -336,7 +422,7 @@ body {
 }
 "#;
 
-const DEFAULT_JS: &str = r#"// Rafters Docs - Runtime JavaScript
+const DEFAULT_JS: &str = r#"// Veneer Docs - Runtime JavaScript
 (function() {
   'use strict';
 
@@ -398,8 +484,8 @@ mod tests {
     fn generates_css() {
         let css = AssetPipeline::generate_css();
         assert!(css.contains(":root"));
-        assert!(css.contains("--background"));
-        assert!(css.contains("--primary"));
+        assert!(css.contains("--veneer-background"));
+        assert!(css.contains("--veneer-primary"));
     }
 
     #[test]
@@ -422,5 +508,31 @@ mod tests {
 
         assert!(!minified.contains('\n'));
         assert!(minified.contains(".button"));
+    }
+
+    #[test]
+    fn css_has_no_unnamespaced_vars() {
+        let css = AssetPipeline::generate_css();
+        // Find all var(--...) references and ensure they use --veneer- prefix
+        for line in css.lines() {
+            if let Some(pos) = line.find("var(--") {
+                let after_var = &line[pos + 4..];
+                assert!(
+                    after_var.starts_with("--veneer-"),
+                    "Found unnamespaced CSS variable in line: {}",
+                    line.trim()
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn css_has_concrete_color_values() {
+        let css = AssetPipeline::generate_css();
+        // Verify root block has actual color values, not references to other systems
+        assert!(css.contains("--veneer-background: #ffffff"));
+        assert!(css.contains("--veneer-foreground: #09090b"));
+        assert!(css.contains("--veneer-primary: #2563eb"));
+        assert!(css.contains("--veneer-border: #e4e4e7"));
     }
 }
