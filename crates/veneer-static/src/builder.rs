@@ -431,8 +431,7 @@ impl StaticBuilder {
 
                         // Generate controls panel if the component has controllable attributes
                         if let Some(cached) = self.registry.get(component_name) {
-                            let controls =
-                                generate_controls_panel(actual_tag, &cached.structure);
+                            let controls = generate_controls_panel(actual_tag, &cached.structure);
                             if !controls.is_empty() {
                                 block_controls.insert(block.id.clone(), controls);
                             }

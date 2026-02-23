@@ -290,9 +290,7 @@ async fn handle_ws(mut socket: WebSocket, state: Arc<RwLock<ServerState>>) {
 }
 
 /// Handler for the theme CSS file.
-async fn theme_css_handler(
-    State(state): State<Arc<RwLock<ServerState>>>,
-) -> impl IntoResponse {
+async fn theme_css_handler(State(state): State<Arc<RwLock<ServerState>>>) -> impl IntoResponse {
     let state = state.read().await;
 
     let css = state

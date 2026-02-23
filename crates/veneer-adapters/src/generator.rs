@@ -217,9 +217,7 @@ pub fn generate_controls_panel(tag_name: &str, structure: &ComponentStructure) -
     if has_variants {
         html.push_str(r#"<label class="veneer-controls-field">"#);
         html.push_str(r#"<span class="veneer-controls-label">Variant</span>"#);
-        html.push_str(
-            r#"<select class="veneer-controls-select" data-veneer-attr="variant">"#,
-        );
+        html.push_str(r#"<select class="veneer-controls-select" data-veneer-attr="variant">"#);
         for (key, _) in &structure.variant_lookup {
             let selected = if *key == structure.default_variant {
                 " selected"
@@ -238,9 +236,7 @@ pub fn generate_controls_panel(tag_name: &str, structure: &ComponentStructure) -
     if has_sizes {
         html.push_str(r#"<label class="veneer-controls-field">"#);
         html.push_str(r#"<span class="veneer-controls-label">Size</span>"#);
-        html.push_str(
-            r#"<select class="veneer-controls-select" data-veneer-attr="size">"#,
-        );
+        html.push_str(r#"<select class="veneer-controls-select" data-veneer-attr="size">"#);
         for (key, _) in &structure.size_lookup {
             let selected = if *key == structure.default_size {
                 " selected"
