@@ -9,7 +9,7 @@ pub mod react;
 pub mod registry;
 pub mod traits;
 
-pub use generator::generate_web_component;
+pub use generator::{generate_controls_panel, generate_web_component};
 pub use inline::{parse_inline_jsx, to_custom_element, InlineJsx, PropValue};
 pub use react::{ComponentStructure, ReactAdapter};
 pub use registry::{CachedComponent, ComponentRegistry, RegistryError};

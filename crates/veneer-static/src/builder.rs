@@ -10,8 +10,8 @@ use rayon::prelude::*;
 use walkdir::WalkDir;
 
 use veneer_adapters::{
-    parse_inline_jsx, to_custom_element, ComponentRegistry, FrameworkAdapter, ReactAdapter,
-    TransformContext, TransformedBlock,
+    generate_controls_panel, parse_inline_jsx, to_custom_element, ComponentRegistry,
+    FrameworkAdapter, ReactAdapter, TransformContext, TransformedBlock,
 };
 use veneer_mdx::{parse_mdx, CodeBlock, Frontmatter, ParsedDoc};
 
@@ -386,6 +386,7 @@ impl StaticBuilder {
         let mut web_components: Vec<TransformedBlock> = Vec::new();
         let mut generated_components: HashMap<String, String> = HashMap::new();
         let mut block_replacements: HashMap<String, String> = HashMap::new();
+        let mut block_controls: HashMap<String, String> = HashMap::new();
 
         // Transform live code blocks to Web Components
         for block in &page.doc.code_blocks {
@@ -428,6 +429,15 @@ impl StaticBuilder {
                             .unwrap_or(&tag_name);
                         let custom_element_html = to_custom_element(&jsx, actual_tag);
 
+                        // Generate controls panel if the component has controllable attributes
+                        if let Some(cached) = self.registry.get(component_name) {
+                            let controls =
+                                generate_controls_panel(actual_tag, &cached.structure);
+                            if !controls.is_empty() {
+                                block_controls.insert(block.id.clone(), controls);
+                            }
+                        }
+
                         block_replacements.insert(block.id.clone(), custom_element_html);
                         components_count += 1;
                     } else {
@@ -464,6 +474,7 @@ impl StaticBuilder {
             &page.doc.content,
             &page.doc.code_blocks,
             &block_replacements,
+            &block_controls,
         );
 
         // Build TOC
@@ -552,6 +563,7 @@ impl StaticBuilder {
         content: &str,
         code_blocks: &[CodeBlock],
         block_replacements: &HashMap<String, String>,
+        block_controls: &HashMap<String, String>,
     ) -> String {
         use pulldown_cmark::{html, Options, Parser};
         use regex::Regex;
@@ -571,13 +583,19 @@ impl StaticBuilder {
                         format!(r"```[a-z]+\s+live[^\n]*\n{}\n?```", escaped_source.trim());
 
                     if let Ok(re) = Regex::new(&pattern) {
+                        let controls_html = block_controls
+                            .get(&block.id)
+                            .map(|c| c.as_str())
+                            .unwrap_or("");
+
                         let preview = format!(
                             r#"<div class="preview-container">{}</div>
-
+{}
 ```{}
 {}
 ```"#,
                             replacement_html,
+                            controls_html,
                             match block.language {
                                 veneer_mdx::Language::Tsx => "tsx",
                                 veneer_mdx::Language::Jsx => "jsx",
