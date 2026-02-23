@@ -1,7 +1,7 @@
 //! Static site build command.
 
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use anyhow::Result;
 use serde::Deserialize;
@@ -61,26 +61,25 @@ fn default_minify() -> bool {
     true
 }
 
-/// Load configuration from docs.toml if it exists.
+/// Load configuration from the given config file path if it exists.
 /// Returns an error if the config file exists but is malformed.
-fn load_config() -> Result<ConfigFile> {
-    let config_path = PathBuf::from("docs.toml");
+fn load_config(config_path: &Path) -> Result<ConfigFile> {
     if config_path.exists() {
-        let content = fs::read_to_string(&config_path)
-            .map_err(|e| anyhow::anyhow!("Failed to read docs.toml: {}", e))?;
+        let content = fs::read_to_string(config_path)
+            .map_err(|e| anyhow::anyhow!("Failed to read {}: {}", config_path.display(), e))?;
         let config: ConfigFile = toml::from_str(&content)
-            .map_err(|e| anyhow::anyhow!("Failed to parse docs.toml: {}", e))?;
-        tracing::info!("Loaded config from docs.toml");
+            .map_err(|e| anyhow::anyhow!("Failed to parse {}: {}", config_path.display(), e))?;
+        tracing::info!("Loaded config from {}", config_path.display());
         return Ok(config);
     }
     Ok(ConfigFile::default())
 }
 
 /// Run the build command.
-pub async fn run(output: Option<PathBuf>, minify: Option<bool>) -> Result<()> {
+pub async fn run(config_path: &Path, output: Option<PathBuf>, minify: Option<bool>) -> Result<()> {
     tracing::info!("Building static site...");
 
-    let file_config = load_config()?;
+    let file_config = load_config(config_path)?;
 
     let config = BuildConfig {
         docs_dir: PathBuf::from(&file_config.docs.dir),

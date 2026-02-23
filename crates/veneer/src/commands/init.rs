@@ -6,7 +6,7 @@ use std::path::Path;
 use anyhow::{Context, Result};
 
 /// Run the init command.
-pub async fn run(yes: bool) -> Result<()> {
+pub async fn run(config_path: &Path, yes: bool) -> Result<()> {
     tracing::info!("Initializing veneer...");
 
     let docs_dir = Path::new("docs");
@@ -22,10 +22,10 @@ pub async fn run(yes: bool) -> Result<()> {
     }
 
     // Create default config
-    let config_path = Path::new("docs.toml");
     if !config_path.exists() || yes {
-        fs::write(config_path, DEFAULT_CONFIG).context("Failed to write docs.toml")?;
-        tracing::info!("Created docs.toml");
+        fs::write(config_path, DEFAULT_CONFIG)
+            .with_context(|| format!("Failed to write {}", config_path.display()))?;
+        tracing::info!("Created {}", config_path.display());
     }
 
     // Create index page

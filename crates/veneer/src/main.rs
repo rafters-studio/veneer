@@ -84,14 +84,14 @@ async fn main() -> Result<()> {
     // Execute command
     match cli.command {
         Commands::Init { yes } => {
-            commands::init::run(yes).await?;
+            commands::init::run(&cli.config, yes).await?;
         }
         Commands::Dev { port, no_open } => {
-            commands::dev::run(port, !no_open).await?;
+            commands::dev::run(&cli.config, port, !no_open).await?;
         }
         Commands::Build { output, no_minify } => {
             let minify = if no_minify { Some(false) } else { None };
-            commands::build::run(output, minify).await?;
+            commands::build::run(&cli.config, output, minify).await?;
         }
         Commands::Serve { port, dir } => {
             commands::serve::run(port, dir).await?;
