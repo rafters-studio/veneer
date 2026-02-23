@@ -353,10 +353,10 @@ body {
   gap: 0.75rem;
   padding: 0.75rem 1rem;
   margin-bottom: 1rem;
-  background: var(--veneer-controls-bg, var(--muted, #f4f4f5));
-  border: 1px solid var(--veneer-controls-border, var(--border, #e4e4e7));
-  border-radius: var(--veneer-controls-radius, var(--radius, 0.375rem));
-  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+  background: var(--veneer-muted);
+  border: 1px solid var(--veneer-border);
+  border-radius: var(--veneer-radius);
+  font-family: var(--veneer-font-sans);
   font-size: 0.8125rem;
 }
 
@@ -371,7 +371,7 @@ body {
 }
 
 .veneer-controls-label {
-  color: var(--veneer-controls-label, var(--muted-foreground, #71717a));
+  color: var(--veneer-muted-foreground);
   font-size: 0.8125rem;
   font-weight: 500;
   white-space: nowrap;
@@ -381,22 +381,22 @@ body {
   padding: 0.25rem 0.5rem;
   font-size: 0.8125rem;
   font-family: inherit;
-  color: var(--veneer-controls-fg, var(--foreground, #18181b));
-  background: var(--veneer-controls-input-bg, var(--background, #ffffff));
-  border: 1px solid var(--veneer-controls-border, var(--border, #e4e4e7));
-  border-radius: var(--veneer-controls-radius, var(--radius, 0.375rem));
+  color: var(--veneer-foreground);
+  background: var(--veneer-background);
+  border: 1px solid var(--veneer-border);
+  border-radius: var(--veneer-radius);
   cursor: pointer;
 }
 
 .veneer-controls-select:focus-visible {
-  outline: 2px solid var(--veneer-controls-ring, var(--ring, #3b82f6));
+  outline: 2px solid var(--veneer-ring);
   outline-offset: 2px;
 }
 
 .veneer-controls input[type="checkbox"] {
   width: 1rem;
   height: 1rem;
-  accent-color: var(--veneer-controls-accent, var(--primary, #18181b));
+  accent-color: var(--veneer-primary);
   cursor: pointer;
 }
 
