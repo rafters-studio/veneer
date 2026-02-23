@@ -41,6 +41,9 @@ pub struct BuildConfig {
 
     /// Paths to CSS stylesheets to include
     pub styles: Vec<String>,
+
+    /// Path to a theme CSS file with --veneer-* variable overrides
+    pub theme: Option<String>,
 }
 
 impl Default for BuildConfig {
@@ -53,6 +56,7 @@ impl Default for BuildConfig {
             base_url: "/".to_string(),
             title: "Documentation".to_string(),
             styles: vec![],
+            theme: None,
         }
     }
 }
@@ -505,6 +509,11 @@ impl StaticBuilder {
                     format!("{}assets/{}", self.config.base_url, filename)
                 })
                 .collect(),
+            theme: self
+                .config
+                .theme
+                .as_ref()
+                .map(|_| format!("{}assets/theme.css", self.config.base_url)),
         };
 
         // Render template
@@ -615,6 +624,21 @@ impl StaticBuilder {
         let js = AssetPipeline::generate_js();
         fs::write(assets_dir.join("main.js"), js)
             .map_err(|e| BuildError::WriteError(e.to_string()))?;
+
+        // Copy theme CSS if configured
+        if let Some(ref theme_path) = self.config.theme {
+            let source_path = PathBuf::from(theme_path);
+            if source_path.exists() {
+                let content = fs::read_to_string(&source_path).map_err(|e| {
+                    BuildError::ReadError(format!("Failed to read theme CSS: {}", e))
+                })?;
+                fs::write(assets_dir.join("theme.css"), content)
+                    .map_err(|e| BuildError::WriteError(e.to_string()))?;
+                tracing::info!("Copied theme CSS from {}", theme_path);
+            } else {
+                tracing::warn!("Theme CSS not found: {}", theme_path);
+            }
+        }
 
         // Copy configured stylesheets
         for style_path in &self.config.styles {

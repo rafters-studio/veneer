@@ -30,6 +30,8 @@ struct DocsConfig {
     base_url: String,
     /// Paths to CSS stylesheets to include
     styles: Option<Vec<String>>,
+    /// Path to a theme CSS file with --veneer-* variable overrides
+    theme: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Default)]
@@ -88,6 +90,7 @@ pub async fn run(output: Option<PathBuf>, minify: Option<bool>) -> Result<()> {
         base_url: file_config.docs.base_url,
         title: file_config.docs.title,
         styles: file_config.docs.styles.unwrap_or_default(),
+        theme: file_config.docs.theme,
     };
 
     let result = StaticBuilder::new(config).build().await?;

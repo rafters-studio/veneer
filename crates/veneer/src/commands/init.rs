@@ -77,6 +77,9 @@ title = "My Documentation"
 # Base URL (for deployment)
 base_url = "/"
 
+# Theme CSS file with --veneer-* variable overrides
+# theme = "docs/theme.css"
+
 [components]
 # Directory containing your components
 dir = "src/components"
