@@ -45,6 +45,8 @@ pub struct Context {
     pub web_components: Vec<String>,
     /// Paths to CSS stylesheets to include
     pub styles: Vec<String>,
+    /// Optional URL path to theme CSS with --veneer-* overrides
+    pub theme: Option<String>,
 }
 
 /// Template engine using minijinja.
@@ -89,6 +91,7 @@ impl TemplateEngine {
             base_url => &context.base_url,
             web_components => &context.web_components,
             styles => &context.styles,
+            theme => &context.theme,
         })
     }
 }
@@ -107,6 +110,8 @@ const BASE_TEMPLATE: &str = r##"<!DOCTYPE html>
   <title>{{ title }} - {{ site_title }}</title>
   {% for style in styles %}<link rel="stylesheet" href="{{ style }}">
   {% endfor %}<link rel="stylesheet" href="{{ base_url }}assets/main.css">
+  {% if theme %}<link rel="stylesheet" href="{{ theme }}">
+  {% endif %}
 </head>
 <body>
   <div class="layout">
@@ -184,6 +189,7 @@ mod tests {
             base_url: "/".to_string(),
             web_components: vec![],
             styles: vec![],
+            theme: None,
         };
 
         let html = engine.render_page("doc.html", &context).unwrap();
@@ -223,6 +229,7 @@ mod tests {
             base_url: "/".to_string(),
             web_components: vec![],
             styles: vec![],
+            theme: None,
         };
 
         let html = engine.render_page("doc.html", &context).unwrap();
@@ -245,6 +252,7 @@ mod tests {
             base_url: "/".to_string(),
             web_components: vec!["class MyButton extends HTMLElement {}".to_string()],
             styles: vec![],
+            theme: None,
         };
 
         let html = engine.render_page("doc.html", &context).unwrap();
