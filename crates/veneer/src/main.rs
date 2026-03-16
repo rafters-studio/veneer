@@ -66,6 +66,9 @@ enum Commands {
         #[arg(short, long, default_value = "dist")]
         dir: PathBuf,
     },
+
+    /// Watch for file changes and rebuild (no HTTP server)
+    Watch(commands::watch::WatchArgs),
 }
 
 #[tokio::main]
@@ -95,6 +98,9 @@ async fn main() -> Result<()> {
         }
         Commands::Serve { port, dir } => {
             commands::serve::run(port, dir).await?;
+        }
+        Commands::Watch(args) => {
+            commands::watch::run(args).await?;
         }
     }
 
