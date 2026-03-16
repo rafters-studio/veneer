@@ -2,10 +2,18 @@
 //!
 //! Parses inline JSX snippets like `<Button variant="default">Click me</Button>`
 //! to extract component name, props, and children.
+//!
+//! Uses oxc AST parsing instead of regex for correct handling of nested
+//! components, arrow functions in props, and other complex JSX patterns.
 
-use regex::Regex;
 use std::collections::HashMap;
-use std::sync::LazyLock;
+
+use oxc_allocator::Allocator;
+use oxc_ast::ast::{
+    Expression, JSXAttributeItem, JSXAttributeName, JSXAttributeValue, JSXChild, JSXElementName,
+    JSXExpression, Statement,
+};
+use oxc_span::SourceType;
 
 /// Parsed inline JSX element.
 #[derive(Debug, Clone, PartialEq)]
@@ -50,93 +58,23 @@ impl PropValue {
 pub fn parse_inline_jsx(source: &str) -> Option<InlineJsx> {
     let source = source.trim();
 
-    // Try self-closing first: <Component prop="value" />
-    if let Some(jsx) = parse_self_closing(source) {
-        return Some(jsx);
+    let allocator = Allocator::default();
+    let source_type = SourceType::jsx();
+    let ret = oxc_parser::Parser::new(&allocator, source, source_type).parse();
+
+    // If the parser panicked, we cannot extract anything useful.
+    if ret.panicked {
+        return None;
     }
 
-    // Try with children: <Component>children</Component>
-    parse_with_children(source)
-}
-
-/// Parse a self-closing JSX element.
-fn parse_self_closing(source: &str) -> Option<InlineJsx> {
-    static RE: LazyLock<Regex> = LazyLock::new(|| {
-        Regex::new(r"^<([A-Z][a-zA-Z0-9]*)\s*([^/>]*?)\s*/>").expect("Invalid self-closing regex")
-    });
-
-    let caps = RE.captures(source)?;
-    let component = caps.get(1)?.as_str().to_string();
-    let props_str = caps.get(2).map(|m| m.as_str()).unwrap_or("");
-
-    Some(InlineJsx {
-        component,
-        props: parse_props(props_str),
-        children: None,
-        self_closing: true,
-    })
-}
-
-/// Find the matching closing tag position, handling nested same-name components.
-fn find_matching_close_tag(source: &str, component: &str, start_pos: usize) -> Option<usize> {
-    let open_pattern = format!("<{}", component);
-    let close_tag = format!("</{}>", component);
-
-    let remaining = &source[start_pos..];
-    let mut depth = 1;
-    let mut pos = 0;
-
-    while depth > 0 && pos < remaining.len() {
-        // Look for next open or close tag
-        let next_open = remaining[pos..].find(&open_pattern);
-        let next_close = remaining[pos..].find(&close_tag);
-
-        match (next_open, next_close) {
-            (Some(o), Some(c)) if o < c => {
-                // Check if it's a self-closing tag or an opening tag
-                let tag_start = pos + o;
-                let after_name = &remaining[tag_start + open_pattern.len()..];
-                if after_name.starts_with("/>")
-                    || after_name.starts_with(" />")
-                    || after_name.starts_with('\t') && after_name.trim_start().starts_with("/>")
-                {
-                    // Self-closing, skip it
-                    pos = tag_start + open_pattern.len();
-                } else if after_name.starts_with(">")
-                    || after_name.starts_with(" ")
-                    || after_name.starts_with('\n')
-                {
-                    // Opening tag, increment depth
-                    depth += 1;
-                    pos = tag_start + open_pattern.len();
-                } else {
-                    // Not a valid tag, skip
-                    pos = tag_start + 1;
+    // Look for the first expression statement containing a JSX element.
+    for stmt in &ret.program.body {
+        if let Statement::ExpressionStatement(expr_stmt) = stmt {
+            match &expr_stmt.expression {
+                Expression::JSXElement(el) => {
+                    return Some(extract_jsx_element(el, source));
                 }
-            }
-            (Some(o), Some(c)) => {
-                // Close tag comes first
-                if c < o {
-                    depth -= 1;
-                    if depth == 0 {
-                        return Some(start_pos + pos + c);
-                    }
-                    pos += c + close_tag.len();
-                } else {
-                    pos += o + 1;
-                }
-            }
-            (None, Some(c)) => {
-                // Only close tag found
-                depth -= 1;
-                if depth == 0 {
-                    return Some(start_pos + pos + c);
-                }
-                pos += c + close_tag.len();
-            }
-            (Some(_), None) | (None, None) => {
-                // No more close tags
-                return None;
+                _ => continue,
             }
         }
     }
@@ -144,71 +82,148 @@ fn find_matching_close_tag(source: &str, component: &str, start_pos: usize) -> O
     None
 }
 
-/// Parse a JSX element with children.
-fn parse_with_children(source: &str) -> Option<InlineJsx> {
-    static OPEN_RE: LazyLock<Regex> = LazyLock::new(|| {
-        Regex::new(r"^<([A-Z][a-zA-Z0-9]*)\s*([^>]*)>").expect("Invalid open tag regex")
-    });
-
-    let open_caps = OPEN_RE.captures(source)?;
-    let component = open_caps.get(1)?.as_str().to_string();
-    let props_str = open_caps.get(2).map(|m| m.as_str()).unwrap_or("");
-    let open_len = open_caps.get(0)?.len();
-
-    // Find matching close tag (handles nested same-name components)
-    let close_pos = find_matching_close_tag(source, &component, open_len)?;
-
-    let children = source[open_len..close_pos].trim();
-    let children = if children.is_empty() {
-        None
-    } else {
-        Some(children.to_string())
-    };
-
-    Some(InlineJsx {
-        component,
-        props: parse_props(props_str),
-        children,
-        self_closing: false,
-    })
+/// Extract component name from a JSXElementName.
+fn extract_element_name(name: &JSXElementName<'_>) -> String {
+    match name {
+        JSXElementName::Identifier(ident) => ident.name.to_string(),
+        JSXElementName::IdentifierReference(ident) => ident.name.to_string(),
+        JSXElementName::NamespacedName(ns) => {
+            format!("{}:{}", ns.namespace.name, ns.name.name)
+        }
+        JSXElementName::MemberExpression(member) => format_member_expression(member),
+        JSXElementName::ThisExpression(_) => "this".to_string(),
+    }
 }
 
-/// Parse props from a props string.
-fn parse_props(props_str: &str) -> HashMap<String, PropValue> {
-    let mut props = HashMap::new();
-    let props_str = props_str.trim();
+/// Format a JSX member expression into a dotted name.
+fn format_member_expression(member: &oxc_ast::ast::JSXMemberExpression<'_>) -> String {
+    let object = match &member.object {
+        oxc_ast::ast::JSXMemberExpressionObject::IdentifierReference(ident) => {
+            ident.name.to_string()
+        }
+        oxc_ast::ast::JSXMemberExpressionObject::MemberExpression(inner) => {
+            format_member_expression(inner)
+        }
+        oxc_ast::ast::JSXMemberExpressionObject::ThisExpression(_) => "this".to_string(),
+    };
+    format!("{}.{}", object, member.property.name)
+}
 
-    if props_str.is_empty() {
-        return props;
+/// Extract an InlineJsx from a parsed JSXElement.
+fn extract_jsx_element(el: &oxc_ast::ast::JSXElement<'_>, source: &str) -> InlineJsx {
+    let component = extract_element_name(&el.opening_element.name);
+    let self_closing = el.closing_element.is_none();
+    let props = extract_props(&el.opening_element.attributes, source);
+    let children = extract_children(&el.children, source);
+
+    InlineJsx {
+        component,
+        props,
+        children,
+        self_closing,
     }
+}
 
-    // Match: name="value" or name='value' or name={expr} or name (boolean)
-    static PROP_RE: LazyLock<Regex> = LazyLock::new(|| {
-        Regex::new(r#"([a-zA-Z][a-zA-Z0-9]*)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|\{([^}]*)\}))?"#)
-            .expect("Invalid prop regex")
-    });
+/// Extract props from JSX attributes.
+fn extract_props(
+    attributes: &oxc_allocator::Vec<'_, JSXAttributeItem<'_>>,
+    source: &str,
+) -> HashMap<String, PropValue> {
+    let mut props = HashMap::new();
 
-    for caps in PROP_RE.captures_iter(props_str) {
-        let name = caps.get(1).unwrap().as_str().to_string();
+    for attr_item in attributes {
+        if let JSXAttributeItem::Attribute(attr) = attr_item {
+            let name = match &attr.name {
+                JSXAttributeName::Identifier(ident) => ident.name.to_string(),
+                JSXAttributeName::NamespacedName(ns) => {
+                    format!("{}:{}", ns.namespace.name, ns.name.name)
+                }
+            };
 
-        let value = if let Some(m) = caps.get(2) {
-            // Double-quoted string
-            PropValue::String(m.as_str().to_string())
-        } else if let Some(m) = caps.get(3) {
-            // Single-quoted string
-            PropValue::String(m.as_str().to_string())
-        } else if let Some(m) = caps.get(4) {
-            // Expression
-            PropValue::Expression(m.as_str().to_string())
-        } else {
-            // Boolean (just the prop name)
-            PropValue::Boolean(true)
-        };
+            let value = match &attr.value {
+                None => PropValue::Boolean(true),
+                Some(JSXAttributeValue::StringLiteral(lit)) => {
+                    PropValue::String(lit.value.to_string())
+                }
+                Some(JSXAttributeValue::ExpressionContainer(container)) => {
+                    match &container.expression {
+                        JSXExpression::EmptyExpression(_) => PropValue::Expression(String::new()),
+                        expr => {
+                            // Get the source text of the expression (inside the braces).
+                            let span = get_jsx_expression_span(expr);
+                            let expr_text = &source[span.start as usize..span.end as usize];
+                            PropValue::Expression(expr_text.to_string())
+                        }
+                    }
+                }
+                Some(JSXAttributeValue::Element(_) | JSXAttributeValue::Fragment(_)) => {
+                    // JSX element or fragment as attribute value -- extract as expression text.
+                    let span = match &attr.value {
+                        Some(JSXAttributeValue::Element(el)) => el.span,
+                        Some(JSXAttributeValue::Fragment(frag)) => frag.span,
+                        _ => continue,
+                    };
+                    let text = &source[span.start as usize..span.end as usize];
+                    PropValue::Expression(text.to_string())
+                }
+            };
 
-        props.insert(name, value);
+            props.insert(name, value);
+        }
+        // SpreadAttribute items are skipped for now -- they don't map to key-value props.
     }
 
     props
+}
+
+/// Get the span of a JSXExpression (which inherits Expression variants).
+fn get_jsx_expression_span(expr: &JSXExpression<'_>) -> oxc_span::Span {
+    use oxc_span::GetSpan;
+    expr.span()
+}
+
+/// Extract children text content from JSX children.
+///
+/// For simple text children, returns the trimmed text.
+/// For nested elements or expressions, returns the raw source text of all children combined.
+fn extract_children(
+    children: &oxc_allocator::Vec<'_, JSXChild<'_>>,
+    source: &str,
+) -> Option<String> {
+    if children.is_empty() {
+        return None;
+    }
+
+    // If there is exactly one text child, return it trimmed (matching old behavior).
+    if children.len() == 1 {
+        if let JSXChild::Text(text) = &children[0] {
+            let trimmed = text.value.trim();
+            if trimmed.is_empty() {
+                return None;
+            }
+            return Some(trimmed.to_string());
+        }
+    }
+
+    // For mixed or complex children, extract the full source range.
+    let first_span = child_span(&children[0]);
+    let last_span = child_span(&children[children.len() - 1]);
+
+    let start = first_span.start as usize;
+    let end = last_span.end as usize;
+    let text = source[start..end].trim();
+
+    if text.is_empty() {
+        None
+    } else {
+        Some(text.to_string())
+    }
+}
+
+/// Get the span of a JSXChild.
+fn child_span(child: &JSXChild<'_>) -> oxc_span::Span {
+    use oxc_span::GetSpan;
+    child.span()
 }
 
 /// Convert parsed inline JSX to a Web Component custom element tag.
@@ -294,9 +309,6 @@ mod tests {
 
     #[test]
     fn parses_expression_props() {
-        // Note: Arrow functions with => are not supported in inline JSX parsing
-        // because the > in => breaks the simple tag regex. This is acceptable
-        // for documentation previews where event handlers are stripped anyway.
         let jsx = parse_inline_jsx(r#"<Button data={someValue}>Click</Button>"#).unwrap();
 
         assert_eq!(jsx.component, "Button");
@@ -327,6 +339,46 @@ mod tests {
         assert_eq!(
             jsx.props.get("name"),
             Some(&PropValue::String("star".to_string()))
+        );
+    }
+
+    #[test]
+    fn parses_arrow_function_in_props() {
+        let jsx =
+            parse_inline_jsx(r#"<Button onClick={() => alert('hi')}>Click</Button>"#).unwrap();
+
+        assert_eq!(jsx.component, "Button");
+        assert_eq!(jsx.children, Some("Click".to_string()));
+        match jsx.props.get("onClick") {
+            Some(PropValue::Expression(expr)) => {
+                assert!(
+                    expr.contains("=>"),
+                    "Expected arrow function in expression, got: {}",
+                    expr
+                );
+                assert!(expr.contains("alert"));
+            }
+            other => panic!("Expected Expression prop, got: {:?}", other),
+        }
+    }
+
+    #[test]
+    fn parses_nested_same_name_components() {
+        let jsx = parse_inline_jsx(r#"<Card><Card>inner</Card></Card>"#).unwrap();
+
+        assert_eq!(jsx.component, "Card");
+        assert!(!jsx.self_closing);
+        // The children should contain the nested <Card>inner</Card>
+        let children = jsx.children.as_deref().unwrap();
+        assert!(
+            children.contains("inner"),
+            "Expected nested content, got: {}",
+            children
+        );
+        assert!(
+            children.contains("Card"),
+            "Expected nested Card tag, got: {}",
+            children
         );
     }
 }
