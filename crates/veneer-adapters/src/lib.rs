@@ -8,6 +8,7 @@ pub mod generator;
 pub mod inline;
 pub mod react;
 pub mod registry;
+pub mod tokens;
 pub mod traits;
 
 pub use conventions::ComponentConventions;
@@ -15,4 +16,5 @@ pub use generator::{generate_controls_panel, generate_web_component};
 pub use inline::{parse_inline_jsx, to_custom_element, InlineJsx, PropValue};
 pub use react::{ComponentStructure, ReactAdapter};
 pub use registry::{CachedComponent, ComponentRegistry, RegistryError};
+pub use tokens::{parse_dtcg_tokens, DesignToken, DesignTokens, TokenParseError};
 pub use traits::{FrameworkAdapter, TransformContext, TransformError, TransformedBlock};
