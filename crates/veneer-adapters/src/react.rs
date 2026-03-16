@@ -46,26 +46,22 @@ pub struct ComponentStructure {
 impl ComponentStructure {
     /// Collect all unique CSS classes referenced by this component structure.
     pub fn collect_all_classes(&self) -> Vec<String> {
-        let mut set = HashSet::new();
+        let lookup_classes = self
+            .variant_lookup
+            .iter()
+            .chain(&self.size_lookup)
+            .flat_map(|(_, classes)| classes.split_whitespace());
 
-        for class in self.base_classes.split_whitespace() {
-            set.insert(class.to_string());
-        }
-        for (_, classes) in &self.variant_lookup {
-            for class in classes.split_whitespace() {
-                set.insert(class.to_string());
-            }
-        }
-        for (_, classes) in &self.size_lookup {
-            for class in classes.split_whitespace() {
-                set.insert(class.to_string());
-            }
-        }
-        for class in self.disabled_classes.split_whitespace() {
-            set.insert(class.to_string());
-        }
+        let all_classes = self
+            .base_classes
+            .split_whitespace()
+            .chain(lookup_classes)
+            .chain(self.disabled_classes.split_whitespace());
 
-        set.into_iter().collect()
+        let set: HashSet<&str> = all_classes.collect();
+        let mut result: Vec<String> = set.into_iter().map(String::from).collect();
+        result.sort();
+        result
     }
 }
 
@@ -207,18 +203,7 @@ fn visit_statement(stmt: &Statement<'_>, state: &mut ExtractionState) {
         }
         Statement::ExportNamedDeclaration(export) => {
             if let Some(ref decl) = export.declaration {
-                match decl {
-                    Declaration::VariableDeclaration(var_decl) => {
-                        visit_variable_declaration(var_decl, state);
-                    }
-                    Declaration::FunctionDeclaration(func) => {
-                        process_function_decl(func, state);
-                    }
-                    Declaration::TSInterfaceDeclaration(iface) => {
-                        process_interface_decl(iface, state);
-                    }
-                    _ => {}
-                }
+                visit_declaration(decl, state);
             }
         }
         Statement::ExportDefaultDeclaration(export) => {
@@ -226,6 +211,22 @@ fn visit_statement(stmt: &Statement<'_>, state: &mut ExtractionState) {
             if let ExportDefaultDeclarationKind::FunctionDeclaration(func) = &export.declaration {
                 process_function_decl(func, state);
             }
+        }
+        _ => {}
+    }
+}
+
+/// Process a declaration (shared by top-level statements and named exports).
+fn visit_declaration(decl: &Declaration<'_>, state: &mut ExtractionState) {
+    match decl {
+        Declaration::VariableDeclaration(var_decl) => {
+            visit_variable_declaration(var_decl, state);
+        }
+        Declaration::FunctionDeclaration(func) => {
+            process_function_decl(func, state);
+        }
+        Declaration::TSInterfaceDeclaration(iface) => {
+            process_interface_decl(iface, state);
         }
         _ => {}
     }
@@ -292,19 +293,14 @@ fn visit_variable_declaration(
             }
             _ => {
                 if is_pascal_case(name) && state.component_name.is_none() {
-                    match init {
-                        Expression::ArrowFunctionExpression(arrow) => {
-                            state.component_name = Some(name.to_string());
-                            extract_params_attributes(
-                                &arrow.params,
-                                &mut state.observed_attributes,
-                            );
-                        }
-                        Expression::FunctionExpression(func) => {
-                            state.component_name = Some(name.to_string());
-                            extract_params_attributes(&func.params, &mut state.observed_attributes);
-                        }
-                        _ => {}
+                    let params = match init {
+                        Expression::ArrowFunctionExpression(arrow) => Some(&arrow.params),
+                        Expression::FunctionExpression(func) => Some(&func.params),
+                        _ => None,
+                    };
+                    if let Some(params) = params {
+                        state.component_name = Some(name.to_string());
+                        extract_params_attributes(params, &mut state.observed_attributes);
                     }
                 }
             }
