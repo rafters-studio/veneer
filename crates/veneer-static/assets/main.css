@@ -4,7 +4,6 @@
 :root {
   /* Layout */
   --veneer-sidebar-width: 280px;
-  --veneer-toc-width: 200px;
   --veneer-content-max-width: 800px;
   --veneer-radius: 0.375rem;
 
@@ -229,9 +228,9 @@ main pre code {
 
 /* Table of contents */
 .toc {
-  position: sticky;
-  top: 2rem;
-  align-self: start;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--veneer-border);
 }
 
 .toc h2 {
