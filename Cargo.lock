@@ -2371,7 +2371,7 @@ dependencies = [
  "oxc_parser",
  "oxc_span",
  "pretty_assertions",
- "regex",
+ "serde",
  "tempfile",
  "thiserror",
  "walkdir",

@@ -12,6 +12,7 @@ use oxc_ast::ast::{
 use oxc_parser::Parser;
 use oxc_span::SourceType;
 
+use crate::conventions::ComponentConventions;
 use crate::generator::generate_web_component;
 use crate::traits::{FrameworkAdapter, TransformContext, TransformError, TransformedBlock};
 
@@ -66,8 +67,9 @@ impl ComponentStructure {
 }
 
 /// Accumulates extraction results while walking the AST.
-#[derive(Debug, Default)]
-struct ExtractionState {
+#[derive(Debug)]
+struct ExtractionState<'c> {
+    conventions: &'c ComponentConventions,
     variant_lookup: Vec<(String, String)>,
     size_lookup: Vec<(String, String)>,
     base_classes: Option<String>,
@@ -76,14 +78,35 @@ struct ExtractionState {
     observed_attributes: Vec<String>,
 }
 
+impl<'c> ExtractionState<'c> {
+    fn new(conventions: &'c ComponentConventions) -> Self {
+        Self {
+            conventions,
+            variant_lookup: Vec::new(),
+            size_lookup: Vec::new(),
+            base_classes: None,
+            disabled_classes: None,
+            component_name: None,
+            observed_attributes: Vec::new(),
+        }
+    }
+}
+
 /// React/JSX to Web Component adapter.
-#[derive(Debug, Default)]
-pub struct ReactAdapter;
+#[derive(Debug, Clone, Default)]
+pub struct ReactAdapter {
+    conventions: ComponentConventions,
+}
 
 impl ReactAdapter {
-    /// Create a new React adapter.
+    /// Create a new React adapter with default conventions.
     pub fn new() -> Self {
-        Self
+        Self::default()
+    }
+
+    /// Create a new React adapter with custom conventions.
+    pub fn with_conventions(conventions: ComponentConventions) -> Self {
+        Self { conventions }
     }
 
     /// Extract component structure from source code using oxc AST parsing.
@@ -109,7 +132,7 @@ impl ReactAdapter {
             )));
         }
 
-        let mut state = ExtractionState::default();
+        let mut state = ExtractionState::new(&self.conventions);
 
         for stmt in &ret.program.body {
             visit_statement(stmt, &mut state);
@@ -123,9 +146,9 @@ impl ReactAdapter {
         // check for common attribute names used anywhere in the source. This
         // catches components that access props without destructuring (e.g., props.variant).
         if state.observed_attributes.is_empty() {
-            for attr in ["variant", "size", "disabled", "loading"] {
-                if source.contains(attr) {
-                    state.observed_attributes.push(attr.to_string());
+            for attr in &self.conventions.fallback_attributes {
+                if source.contains(attr.as_str()) {
+                    state.observed_attributes.push(attr.clone());
                 }
             }
         }
@@ -190,7 +213,7 @@ impl FrameworkAdapter for ReactAdapter {
 // --- AST walking ---
 
 /// Process a single top-level statement.
-fn visit_statement(stmt: &Statement<'_>, state: &mut ExtractionState) {
+fn visit_statement(stmt: &Statement<'_>, state: &mut ExtractionState<'_>) {
     match stmt {
         Statement::VariableDeclaration(decl) => {
             visit_variable_declaration(decl, state);
@@ -217,7 +240,7 @@ fn visit_statement(stmt: &Statement<'_>, state: &mut ExtractionState) {
 }
 
 /// Process a declaration (shared by top-level statements and named exports).
-fn visit_declaration(decl: &Declaration<'_>, state: &mut ExtractionState) {
+fn visit_declaration(decl: &Declaration<'_>, state: &mut ExtractionState<'_>) {
     match decl {
         Declaration::VariableDeclaration(var_decl) => {
             visit_variable_declaration(var_decl, state);
@@ -233,30 +256,38 @@ fn visit_declaration(decl: &Declaration<'_>, state: &mut ExtractionState) {
 }
 
 /// Extract component name and props from a function declaration.
-fn process_function_decl(func: &oxc_ast::ast::Function<'_>, state: &mut ExtractionState) {
+fn process_function_decl(func: &oxc_ast::ast::Function<'_>, state: &mut ExtractionState<'_>) {
     if let Some(ref id) = func.id {
         let name = id.name.as_str();
         if is_pascal_case(name) && state.component_name.is_none() {
             state.component_name = Some(name.to_string());
         }
-        extract_params_attributes(&func.params, &mut state.observed_attributes);
+        extract_params_attributes(
+            &func.params,
+            &state.conventions.excluded_props,
+            &mut state.observed_attributes,
+        );
     }
 }
 
 /// Extract attributes from a TypeScript interface declaration ending in "Props".
 fn process_interface_decl(
     iface: &oxc_ast::ast::TSInterfaceDeclaration<'_>,
-    state: &mut ExtractionState,
+    state: &mut ExtractionState<'_>,
 ) {
     if iface.id.name.as_str().ends_with("Props") {
-        extract_interface_attributes(iface, &mut state.observed_attributes);
+        extract_interface_attributes(
+            iface,
+            &state.conventions.excluded_props,
+            &mut state.observed_attributes,
+        );
     }
 }
 
 /// Process a variable declaration, looking for known identifiers.
 fn visit_variable_declaration(
     decl: &oxc_ast::ast::VariableDeclaration<'_>,
-    state: &mut ExtractionState,
+    state: &mut ExtractionState<'_>,
 ) {
     for declarator in &decl.declarations {
         let name = match &declarator.id.kind {
@@ -270,39 +301,40 @@ fn visit_variable_declaration(
 
         let init = unwrap_type_expressions(init);
 
-        match name {
-            "variantClasses" => {
-                if let Some(entries) = extract_object_entries(init) {
-                    state.variant_lookup = entries;
-                }
+        if state.conventions.variant_records.iter().any(|v| v == name) {
+            if let Some(entries) = extract_object_entries(init) {
+                state.variant_lookup = entries;
             }
-            "sizeClasses" => {
-                if let Some(entries) = extract_object_entries(init) {
-                    state.size_lookup = entries;
-                }
+        } else if state.conventions.size_records.iter().any(|v| v == name) {
+            if let Some(entries) = extract_object_entries(init) {
+                state.size_lookup = entries;
             }
-            "baseClasses" => {
-                if let Some(value) = extract_string_value(init) {
-                    state.base_classes = Some(normalize_whitespace(&value));
-                }
+        } else if state.conventions.base_class_vars.iter().any(|v| v == name) {
+            if let Some(value) = extract_string_value(init) {
+                state.base_classes = Some(normalize_whitespace(&value));
             }
-            "disabledClasses" | "disabledCls" => {
-                if let Some(value) = extract_string_value(init) {
-                    state.disabled_classes = Some(value);
-                }
+        } else if state
+            .conventions
+            .disabled_class_vars
+            .iter()
+            .any(|v| v == name)
+        {
+            if let Some(value) = extract_string_value(init) {
+                state.disabled_classes = Some(value);
             }
-            _ => {
-                if is_pascal_case(name) && state.component_name.is_none() {
-                    let params = match init {
-                        Expression::ArrowFunctionExpression(arrow) => Some(&arrow.params),
-                        Expression::FunctionExpression(func) => Some(&func.params),
-                        _ => None,
-                    };
-                    if let Some(params) = params {
-                        state.component_name = Some(name.to_string());
-                        extract_params_attributes(params, &mut state.observed_attributes);
-                    }
-                }
+        } else if is_pascal_case(name) && state.component_name.is_none() {
+            let params = match init {
+                Expression::ArrowFunctionExpression(arrow) => Some(&arrow.params),
+                Expression::FunctionExpression(func) => Some(&func.params),
+                _ => None,
+            };
+            if let Some(params) = params {
+                state.component_name = Some(name.to_string());
+                extract_params_attributes(
+                    params,
+                    &state.conventions.excluded_props,
+                    &mut state.observed_attributes,
+                );
             }
         }
     }
@@ -395,6 +427,7 @@ fn extract_string_value(expr: &Expression<'_>) -> Option<String> {
 /// Extract observed attributes from a TSInterfaceDeclaration whose name ends with "Props".
 fn extract_interface_attributes(
     iface: &oxc_ast::ast::TSInterfaceDeclaration<'_>,
+    excluded_props: &[String],
     attrs: &mut Vec<String>,
 ) {
     for sig in &iface.body.body {
@@ -404,7 +437,8 @@ fn extract_interface_attributes(
                 _ => continue,
             };
 
-            if should_include_attribute(name) && !attrs.contains(&name.to_string()) {
+            if should_include_attribute(name, excluded_props) && !attrs.contains(&name.to_string())
+            {
                 attrs.push(name.to_string());
             }
         }
@@ -412,7 +446,11 @@ fn extract_interface_attributes(
 }
 
 /// Extract observed attributes from function parameters (destructured object pattern).
-fn extract_params_attributes(params: &oxc_ast::ast::FormalParameters<'_>, attrs: &mut Vec<String>) {
+fn extract_params_attributes(
+    params: &oxc_ast::ast::FormalParameters<'_>,
+    excluded_props: &[String],
+    attrs: &mut Vec<String>,
+) {
     for param in &params.items {
         if let BindingPatternKind::ObjectPattern(obj_pat) = &param.pattern.kind {
             for prop in &obj_pat.properties {
@@ -421,7 +459,9 @@ fn extract_params_attributes(params: &oxc_ast::ast::FormalParameters<'_>, attrs:
                     _ => continue,
                 };
 
-                if should_include_attribute(name) && !attrs.contains(&name.to_string()) {
+                if should_include_attribute(name, excluded_props)
+                    && !attrs.contains(&name.to_string())
+                {
                     attrs.push(name.to_string());
                 }
             }
@@ -430,9 +470,9 @@ fn extract_params_attributes(params: &oxc_ast::ast::FormalParameters<'_>, attrs:
 }
 
 /// Determine if an attribute name should be included in observed attributes.
-/// Excludes React-specific props that have no Web Component equivalent.
-fn should_include_attribute(name: &str) -> bool {
-    !name.is_empty() && name != "children" && name != "className" && name != "style"
+/// Excludes props listed in the conventions' excluded_props list.
+fn should_include_attribute(name: &str, excluded_props: &[String]) -> bool {
+    !name.is_empty() && !excluded_props.iter().any(|p| p == name)
 }
 
 // --- String helpers ---
@@ -689,5 +729,122 @@ export function Button() {}
             )
         );
         assert_eq!(structure.base_classes, "inline-flex items-center");
+    }
+
+    #[test]
+    fn custom_variant_record_name() {
+        let source = r#"
+const styles = {
+  primary: 'bg-blue-500',
+  danger: 'bg-red-500',
+};
+
+export function Alert() {}
+        "#;
+
+        let conventions = ComponentConventions {
+            variant_records: vec!["styles".to_string()],
+            ..Default::default()
+        };
+        let adapter = ReactAdapter::with_conventions(conventions);
+        let structure = adapter.extract_structure(source).unwrap();
+
+        assert_eq!(structure.variant_lookup.len(), 2);
+        assert_eq!(structure.variant_lookup[0].0, "primary");
+        assert_eq!(structure.variant_lookup[1].0, "danger");
+    }
+
+    #[test]
+    fn custom_size_record_name() {
+        let source = r#"
+const variantClasses = { default: 'bg-primary' };
+const dimensions = {
+  small: 'h-8 px-2',
+  large: 'h-12 px-4',
+};
+
+export function Button() {}
+        "#;
+
+        let conventions = ComponentConventions {
+            size_records: vec!["dimensions".to_string()],
+            ..Default::default()
+        };
+        let adapter = ReactAdapter::with_conventions(conventions);
+        let structure = adapter.extract_structure(source).unwrap();
+
+        assert_eq!(structure.size_lookup.len(), 2);
+        assert_eq!(structure.size_lookup[0].0, "small");
+        assert_eq!(structure.size_lookup[1].0, "large");
+    }
+
+    #[test]
+    fn multiple_variant_record_names() {
+        let source = r#"
+const colorStyles = {
+  red: 'text-red-500',
+  blue: 'text-blue-500',
+};
+
+export function Badge() {}
+        "#;
+
+        let conventions = ComponentConventions {
+            variant_records: vec!["variantClasses".to_string(), "colorStyles".to_string()],
+            ..Default::default()
+        };
+        let adapter = ReactAdapter::with_conventions(conventions);
+        let structure = adapter.extract_structure(source).unwrap();
+
+        assert_eq!(structure.variant_lookup.len(), 2);
+        assert_eq!(structure.variant_lookup[0].0, "red");
+        assert_eq!(structure.variant_lookup[1].0, "blue");
+    }
+
+    #[test]
+    fn custom_excluded_props() {
+        let source = r#"
+const variantClasses = { default: '' };
+
+interface WidgetProps {
+  variant?: string;
+  ref?: any;
+  key?: string;
+  label?: string;
+}
+
+export function Widget({ variant, ref, key, label }: WidgetProps) {}
+        "#;
+
+        let conventions = ComponentConventions {
+            excluded_props: vec!["ref".to_string(), "key".to_string()],
+            ..Default::default()
+        };
+        let adapter = ReactAdapter::with_conventions(conventions);
+        let structure = adapter.extract_structure(source).unwrap();
+
+        assert!(structure
+            .observed_attributes
+            .contains(&"variant".to_string()));
+        assert!(structure.observed_attributes.contains(&"label".to_string()));
+        assert!(!structure.observed_attributes.contains(&"ref".to_string()));
+        assert!(!structure.observed_attributes.contains(&"key".to_string()));
+    }
+
+    #[test]
+    fn errors_when_no_matching_conventions() {
+        let source = r#"
+const myStyles = {
+  primary: 'bg-blue-500',
+};
+
+export function Button() {}
+        "#;
+
+        // Default conventions won't match "myStyles"
+        let adapter = ReactAdapter::new();
+        let result = adapter.extract_structure(source);
+
+        assert!(matches!(result, Err(TransformError::MissingVariants)));
     }
 }
