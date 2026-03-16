@@ -26,3 +26,5 @@ veneer-static = { workspace = true }
 open = { workspace = true }
 tower-http = { workspace = true }
 axum = { workspace = true }
+notify = { workspace = true }
+nix = { workspace = true }
