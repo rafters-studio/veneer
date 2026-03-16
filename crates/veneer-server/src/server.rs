@@ -215,12 +215,7 @@ async fn index_handler(State(state): State<Arc<RwLock<ServerState>>>) -> impl In
                         .map(|f| f.title.clone())
                         .unwrap_or_else(|| "Documentation".to_string());
 
-                    format!(
-                        r#"<h1>{}</h1>
-<div class="content">{}</div>"#,
-                        title,
-                        render_markdown(&doc.content)
-                    )
+                    format!("<h1>{}</h1>\n{}", title, render_markdown(&doc.content))
                 }
                 Err(e) => format!("<p>Error parsing index.mdx: {}</p>", e),
             },

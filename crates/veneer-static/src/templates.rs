@@ -118,7 +118,7 @@ const BASE_TEMPLATE: &str = r##"<!DOCTYPE html>
     <nav class="sidebar">
       {% include "nav.html" %}
     </nav>
-    <main class="main">
+    <main>
       {% block content %}{% endblock %}
     </main>
   </div>
@@ -132,11 +132,7 @@ const BASE_TEMPLATE: &str = r##"<!DOCTYPE html>
 const DOC_TEMPLATE: &str = r##"{% extends "base.html" %}
 
 {% block content %}
-<article class="doc">
-  <div class="content">
-    {{ content | safe }}
-  </div>
-</article>
+{{ content | safe }}
 
 {% if toc %}
 <aside class="toc">
