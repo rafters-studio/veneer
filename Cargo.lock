@@ -2446,6 +2446,7 @@ dependencies = [
  "oxc_span",
  "pretty_assertions",
  "serde",
+ "serde_json",
  "tempfile",
  "thiserror",
  "walkdir",
