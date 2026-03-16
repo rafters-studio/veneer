@@ -2,6 +2,8 @@
 //!
 //! Uses oxc AST parsing instead of regex for reliable component extraction.
 
+use std::collections::HashSet;
+
 use oxc_allocator::Allocator;
 use oxc_ast::ast::{
     BinaryOperator, BindingPatternKind, Declaration, Expression, ObjectPropertyKind, PropertyKey,
@@ -41,6 +43,39 @@ pub struct ComponentStructure {
     pub observed_attributes: Vec<String>,
 }
 
+impl ComponentStructure {
+    /// Collect all unique CSS classes referenced by this component structure.
+    pub fn collect_all_classes(&self) -> Vec<String> {
+        let lookup_classes = self
+            .variant_lookup
+            .iter()
+            .chain(&self.size_lookup)
+            .flat_map(|(_, classes)| classes.split_whitespace());
+
+        let all_classes = self
+            .base_classes
+            .split_whitespace()
+            .chain(lookup_classes)
+            .chain(self.disabled_classes.split_whitespace());
+
+        let set: HashSet<&str> = all_classes.collect();
+        let mut result: Vec<String> = set.into_iter().map(String::from).collect();
+        result.sort();
+        result
+    }
+}
+
+/// Accumulates extraction results while walking the AST.
+#[derive(Debug, Default)]
+struct ExtractionState {
+    variant_lookup: Vec<(String, String)>,
+    size_lookup: Vec<(String, String)>,
+    base_classes: Option<String>,
+    disabled_classes: Option<String>,
+    component_name: Option<String>,
+    observed_attributes: Vec<String>,
+}
+
 /// React/JSX to Web Component adapter.
 #[derive(Debug, Default)]
 pub struct ReactAdapter;
@@ -74,227 +109,53 @@ impl ReactAdapter {
             )));
         }
 
-        let program = &ret.program;
+        let mut state = ExtractionState::default();
 
-        let mut variant_lookup: Vec<(String, String)> = Vec::new();
-        let mut size_lookup: Vec<(String, String)> = Vec::new();
-        let mut base_classes: Option<String> = None;
-        let mut disabled_classes: Option<String> = None;
-        let mut component_name: Option<String> = None;
-        let mut observed_attributes: Vec<String> = Vec::new();
-
-        // Walk top-level statements
-        for stmt in &program.body {
-            Self::visit_statement(
-                stmt,
-                &mut variant_lookup,
-                &mut size_lookup,
-                &mut base_classes,
-                &mut disabled_classes,
-                &mut component_name,
-                &mut observed_attributes,
-            );
+        for stmt in &ret.program.body {
+            visit_statement(stmt, &mut state);
         }
 
-        if variant_lookup.is_empty() {
+        if state.variant_lookup.is_empty() {
             return Err(TransformError::MissingVariants);
         }
 
         // Fallback: if no attributes were found from interface or destructuring,
         // check for common attribute names used anywhere in the source. This
         // catches components that access props without destructuring (e.g., props.variant).
-        if observed_attributes.is_empty() {
+        if state.observed_attributes.is_empty() {
             for attr in ["variant", "size", "disabled", "loading"] {
                 if source.contains(attr) {
-                    observed_attributes.push(attr.to_string());
+                    state.observed_attributes.push(attr.to_string());
                 }
             }
         }
 
-        let default_variant = variant_lookup
+        let default_variant = state
+            .variant_lookup
             .first()
             .map(|(k, _)| k.clone())
             .unwrap_or_else(|| "default".to_string());
 
-        let default_size = size_lookup
+        let default_size = state
+            .size_lookup
             .first()
             .map(|(k, _)| k.clone())
             .unwrap_or_else(|| "default".to_string());
 
         Ok(ComponentStructure {
-            name: component_name.unwrap_or_else(|| "Component".to_string()),
-            base_classes: base_classes.unwrap_or_default(),
-            disabled_classes: disabled_classes
+            name: state
+                .component_name
+                .unwrap_or_else(|| "Component".to_string()),
+            base_classes: state.base_classes.unwrap_or_default(),
+            disabled_classes: state
+                .disabled_classes
                 .unwrap_or_else(|| "opacity-50 pointer-events-none cursor-not-allowed".to_string()),
-            variant_lookup,
-            size_lookup,
+            variant_lookup: state.variant_lookup,
+            size_lookup: state.size_lookup,
             default_variant,
             default_size,
-            observed_attributes,
+            observed_attributes: state.observed_attributes,
         })
-    }
-
-    /// Process a single statement, extracting relevant declarations.
-    fn visit_statement(
-        stmt: &Statement<'_>,
-        variant_lookup: &mut Vec<(String, String)>,
-        size_lookup: &mut Vec<(String, String)>,
-        base_classes: &mut Option<String>,
-        disabled_classes: &mut Option<String>,
-        component_name: &mut Option<String>,
-        observed_attributes: &mut Vec<String>,
-    ) {
-        match stmt {
-            // Handle: const variantClasses = { ... }
-            // Handle: const baseClasses = '...'
-            Statement::VariableDeclaration(decl) => {
-                Self::visit_variable_declaration(
-                    decl,
-                    variant_lookup,
-                    size_lookup,
-                    base_classes,
-                    disabled_classes,
-                    component_name,
-                    observed_attributes,
-                );
-            }
-
-            // Handle: export function Button() {}
-            Statement::FunctionDeclaration(func) => {
-                if let Some(ref id) = func.id {
-                    let name = id.name.as_str();
-                    if is_pascal_case(name) && component_name.is_none() {
-                        *component_name = Some(name.to_string());
-                    }
-                    // Extract props from function parameters
-                    extract_params_attributes(&func.params, observed_attributes);
-                }
-            }
-
-            // Handle: interface ButtonProps { ... }
-            Statement::TSInterfaceDeclaration(iface) => {
-                let iface_name = iface.id.name.as_str();
-                if iface_name.ends_with("Props") {
-                    extract_interface_attributes(iface, observed_attributes);
-                }
-            }
-
-            // Handle: export const/function/default ...
-            Statement::ExportNamedDeclaration(export) => {
-                if let Some(ref decl) = export.declaration {
-                    // Wrap declaration as a statement for recursive processing
-                    match decl {
-                        Declaration::VariableDeclaration(var_decl) => {
-                            Self::visit_variable_declaration(
-                                var_decl,
-                                variant_lookup,
-                                size_lookup,
-                                base_classes,
-                                disabled_classes,
-                                component_name,
-                                observed_attributes,
-                            );
-                        }
-                        Declaration::FunctionDeclaration(func) => {
-                            if let Some(ref id) = func.id {
-                                let name = id.name.as_str();
-                                if is_pascal_case(name) && component_name.is_none() {
-                                    *component_name = Some(name.to_string());
-                                }
-                                extract_params_attributes(&func.params, observed_attributes);
-                            }
-                        }
-                        Declaration::TSInterfaceDeclaration(iface) => {
-                            let iface_name = iface.id.name.as_str();
-                            if iface_name.ends_with("Props") {
-                                extract_interface_attributes(iface, observed_attributes);
-                            }
-                        }
-                        _ => {}
-                    }
-                }
-            }
-
-            Statement::ExportDefaultDeclaration(export) => {
-                use oxc_ast::ast::ExportDefaultDeclarationKind;
-                if let ExportDefaultDeclarationKind::FunctionDeclaration(func) = &export.declaration
-                {
-                    if let Some(ref id) = func.id {
-                        let name = id.name.as_str();
-                        if is_pascal_case(name) && component_name.is_none() {
-                            *component_name = Some(name.to_string());
-                        }
-                        extract_params_attributes(&func.params, observed_attributes);
-                    }
-                }
-            }
-
-            _ => {}
-        }
-    }
-
-    /// Process a variable declaration, looking for known identifiers.
-    fn visit_variable_declaration(
-        decl: &oxc_ast::ast::VariableDeclaration<'_>,
-        variant_lookup: &mut Vec<(String, String)>,
-        size_lookup: &mut Vec<(String, String)>,
-        base_classes: &mut Option<String>,
-        disabled_classes: &mut Option<String>,
-        component_name: &mut Option<String>,
-        observed_attributes: &mut Vec<String>,
-    ) {
-        for declarator in &decl.declarations {
-            let name = match &declarator.id.kind {
-                BindingPatternKind::BindingIdentifier(id) => id.name.as_str(),
-                _ => continue,
-            };
-
-            let Some(ref init) = declarator.init else {
-                continue;
-            };
-
-            // Unwrap `as const`, `satisfies Type`, and `as Type` expressions
-            let init = unwrap_type_expressions(init);
-
-            match name {
-                "variantClasses" => {
-                    if let Some(entries) = extract_object_entries(init) {
-                        *variant_lookup = entries;
-                    }
-                }
-                "sizeClasses" => {
-                    if let Some(entries) = extract_object_entries(init) {
-                        *size_lookup = entries;
-                    }
-                }
-                "baseClasses" => {
-                    if let Some(value) = extract_string_value(init) {
-                        *base_classes = Some(normalize_whitespace(&value));
-                    }
-                }
-                "disabledClasses" | "disabledCls" => {
-                    if let Some(value) = extract_string_value(init) {
-                        *disabled_classes = Some(value);
-                    }
-                }
-                _ => {
-                    // Check for PascalCase component name from arrow function / function expression
-                    if is_pascal_case(name) && component_name.is_none() {
-                        match init {
-                            Expression::ArrowFunctionExpression(arrow) => {
-                                *component_name = Some(name.to_string());
-                                extract_params_attributes(&arrow.params, observed_attributes);
-                            }
-                            Expression::FunctionExpression(func) => {
-                                *component_name = Some(name.to_string());
-                                extract_params_attributes(&func.params, observed_attributes);
-                            }
-                            _ => {}
-                        }
-                    }
-                }
-            }
-        }
     }
 }
 
@@ -314,43 +175,7 @@ impl FrameworkAdapter for ReactAdapter {
         _ctx: &TransformContext,
     ) -> Result<TransformedBlock, TransformError> {
         let structure = self.extract_structure(source)?;
-
-        // Collect all classes used
-        let mut classes_used: Vec<String> = Vec::new();
-
-        // Add base classes
-        for class in structure.base_classes.split_whitespace() {
-            if !classes_used.contains(&class.to_string()) {
-                classes_used.push(class.to_string());
-            }
-        }
-
-        // Add variant classes
-        for (_, classes) in &structure.variant_lookup {
-            for class in classes.split_whitespace() {
-                if !classes_used.contains(&class.to_string()) {
-                    classes_used.push(class.to_string());
-                }
-            }
-        }
-
-        // Add size classes
-        for (_, classes) in &structure.size_lookup {
-            for class in classes.split_whitespace() {
-                if !classes_used.contains(&class.to_string()) {
-                    classes_used.push(class.to_string());
-                }
-            }
-        }
-
-        // Add disabled classes
-        for class in structure.disabled_classes.split_whitespace() {
-            if !classes_used.contains(&class.to_string()) {
-                classes_used.push(class.to_string());
-            }
-        }
-
-        // Generate the Web Component
+        let classes_used = structure.collect_all_classes();
         let web_component = generate_web_component(tag_name, &structure);
 
         Ok(TransformedBlock {
@@ -361,6 +186,129 @@ impl FrameworkAdapter for ReactAdapter {
         })
     }
 }
+
+// --- AST walking ---
+
+/// Process a single top-level statement.
+fn visit_statement(stmt: &Statement<'_>, state: &mut ExtractionState) {
+    match stmt {
+        Statement::VariableDeclaration(decl) => {
+            visit_variable_declaration(decl, state);
+        }
+        Statement::FunctionDeclaration(func) => {
+            process_function_decl(func, state);
+        }
+        Statement::TSInterfaceDeclaration(iface) => {
+            process_interface_decl(iface, state);
+        }
+        Statement::ExportNamedDeclaration(export) => {
+            if let Some(ref decl) = export.declaration {
+                visit_declaration(decl, state);
+            }
+        }
+        Statement::ExportDefaultDeclaration(export) => {
+            use oxc_ast::ast::ExportDefaultDeclarationKind;
+            if let ExportDefaultDeclarationKind::FunctionDeclaration(func) = &export.declaration {
+                process_function_decl(func, state);
+            }
+        }
+        _ => {}
+    }
+}
+
+/// Process a declaration (shared by top-level statements and named exports).
+fn visit_declaration(decl: &Declaration<'_>, state: &mut ExtractionState) {
+    match decl {
+        Declaration::VariableDeclaration(var_decl) => {
+            visit_variable_declaration(var_decl, state);
+        }
+        Declaration::FunctionDeclaration(func) => {
+            process_function_decl(func, state);
+        }
+        Declaration::TSInterfaceDeclaration(iface) => {
+            process_interface_decl(iface, state);
+        }
+        _ => {}
+    }
+}
+
+/// Extract component name and props from a function declaration.
+fn process_function_decl(func: &oxc_ast::ast::Function<'_>, state: &mut ExtractionState) {
+    if let Some(ref id) = func.id {
+        let name = id.name.as_str();
+        if is_pascal_case(name) && state.component_name.is_none() {
+            state.component_name = Some(name.to_string());
+        }
+        extract_params_attributes(&func.params, &mut state.observed_attributes);
+    }
+}
+
+/// Extract attributes from a TypeScript interface declaration ending in "Props".
+fn process_interface_decl(
+    iface: &oxc_ast::ast::TSInterfaceDeclaration<'_>,
+    state: &mut ExtractionState,
+) {
+    if iface.id.name.as_str().ends_with("Props") {
+        extract_interface_attributes(iface, &mut state.observed_attributes);
+    }
+}
+
+/// Process a variable declaration, looking for known identifiers.
+fn visit_variable_declaration(
+    decl: &oxc_ast::ast::VariableDeclaration<'_>,
+    state: &mut ExtractionState,
+) {
+    for declarator in &decl.declarations {
+        let name = match &declarator.id.kind {
+            BindingPatternKind::BindingIdentifier(id) => id.name.as_str(),
+            _ => continue,
+        };
+
+        let Some(ref init) = declarator.init else {
+            continue;
+        };
+
+        let init = unwrap_type_expressions(init);
+
+        match name {
+            "variantClasses" => {
+                if let Some(entries) = extract_object_entries(init) {
+                    state.variant_lookup = entries;
+                }
+            }
+            "sizeClasses" => {
+                if let Some(entries) = extract_object_entries(init) {
+                    state.size_lookup = entries;
+                }
+            }
+            "baseClasses" => {
+                if let Some(value) = extract_string_value(init) {
+                    state.base_classes = Some(normalize_whitespace(&value));
+                }
+            }
+            "disabledClasses" | "disabledCls" => {
+                if let Some(value) = extract_string_value(init) {
+                    state.disabled_classes = Some(value);
+                }
+            }
+            _ => {
+                if is_pascal_case(name) && state.component_name.is_none() {
+                    let params = match init {
+                        Expression::ArrowFunctionExpression(arrow) => Some(&arrow.params),
+                        Expression::FunctionExpression(func) => Some(&func.params),
+                        _ => None,
+                    };
+                    if let Some(params) = params {
+                        state.component_name = Some(name.to_string());
+                        extract_params_attributes(params, &mut state.observed_attributes);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// --- Expression helpers ---
 
 /// Unwrap TSAsExpression, TSSatisfiesExpression, and TSTypeAssertion to get the inner expression.
 fn unwrap_type_expressions<'a>(expr: &'a Expression<'a>) -> &'a Expression<'a> {
@@ -377,9 +325,8 @@ fn unwrap_type_expressions<'a>(expr: &'a Expression<'a>) -> &'a Expression<'a> {
 
 /// Extract key-value pairs from an ObjectExpression.
 fn extract_object_entries(expr: &Expression<'_>) -> Option<Vec<(String, String)>> {
-    let obj = match expr {
-        Expression::ObjectExpression(obj) => obj,
-        _ => return None,
+    let Expression::ObjectExpression(obj) = expr else {
+        return None;
     };
 
     let mut entries = Vec::new();
@@ -412,7 +359,6 @@ fn extract_string_value(expr: &Expression<'_>) -> Option<String> {
         Expression::StringLiteral(s) => Some(s.value.as_str().to_string()),
 
         Expression::TemplateLiteral(tpl) => {
-            // Only handle template literals with no interpolated expressions
             if tpl.expressions.is_empty() && !tpl.quasis.is_empty() {
                 let value = tpl
                     .quasis
@@ -436,7 +382,6 @@ fn extract_string_value(expr: &Expression<'_>) -> Option<String> {
             }
         }
 
-        // Unwrap type expressions in case they were not already unwrapped
         Expression::TSAsExpression(as_expr) => extract_string_value(&as_expr.expression),
         Expression::TSSatisfiesExpression(sat) => extract_string_value(&sat.expression),
         Expression::ParenthesizedExpression(paren) => extract_string_value(&paren.expression),
@@ -445,15 +390,7 @@ fn extract_string_value(expr: &Expression<'_>) -> Option<String> {
     }
 }
 
-/// Check if a string is PascalCase (starts with uppercase letter).
-fn is_pascal_case(s: &str) -> bool {
-    s.starts_with(|c: char| c.is_ascii_uppercase())
-}
-
-/// Normalize whitespace in a string (collapse multiple spaces, trim).
-fn normalize_whitespace(s: &str) -> String {
-    s.split_whitespace().collect::<Vec<_>>().join(" ")
-}
+// --- Attribute helpers ---
 
 /// Extract observed attributes from a TSInterfaceDeclaration whose name ends with "Props".
 fn extract_interface_attributes(
@@ -496,6 +433,18 @@ fn extract_params_attributes(params: &oxc_ast::ast::FormalParameters<'_>, attrs:
 /// Excludes React-specific props that have no Web Component equivalent.
 fn should_include_attribute(name: &str) -> bool {
     !name.is_empty() && name != "children" && name != "className" && name != "style"
+}
+
+// --- String helpers ---
+
+/// Check if a string is PascalCase (starts with uppercase letter).
+fn is_pascal_case(s: &str) -> bool {
+    s.starts_with(|c: char| c.is_ascii_uppercase())
+}
+
+/// Normalize whitespace in a string (collapse multiple spaces, trim).
+fn normalize_whitespace(s: &str) -> String {
+    s.split_whitespace().collect::<Vec<_>>().join(" ")
 }
 
 #[cfg(test)]

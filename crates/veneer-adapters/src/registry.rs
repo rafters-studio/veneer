@@ -3,7 +3,7 @@
 //! Scans a components directory, parses source files, and provides
 //! lookup by component name for generating Web Components.
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -139,35 +139,7 @@ impl ComponentRegistry {
             .get(component_name)
             .ok_or_else(|| RegistryError::ComponentNotFound(component_name.to_string()))?;
 
-        // Collect all classes used (using HashSet for O(1) deduplication)
-        let mut classes_set: HashSet<String> = HashSet::new();
-
-        // Add base classes
-        for class in cached.structure.base_classes.split_whitespace() {
-            classes_set.insert(class.to_string());
-        }
-
-        // Add variant classes
-        for (_, classes) in &cached.structure.variant_lookup {
-            for class in classes.split_whitespace() {
-                classes_set.insert(class.to_string());
-            }
-        }
-
-        // Add size classes
-        for (_, classes) in &cached.structure.size_lookup {
-            for class in classes.split_whitespace() {
-                classes_set.insert(class.to_string());
-            }
-        }
-
-        // Add disabled classes
-        for class in cached.structure.disabled_classes.split_whitespace() {
-            classes_set.insert(class.to_string());
-        }
-
-        // Convert to Vec for the output
-        let classes_used: Vec<String> = classes_set.into_iter().collect();
+        let classes_used = cached.structure.collect_all_classes();
 
         let web_component = generate_web_component(tag_name, &cached.structure);
 

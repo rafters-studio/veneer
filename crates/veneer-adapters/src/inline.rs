@@ -13,7 +13,7 @@ use oxc_ast::ast::{
     Expression, JSXAttributeItem, JSXAttributeName, JSXAttributeValue, JSXChild, JSXElementName,
     JSXExpression, Statement,
 };
-use oxc_span::SourceType;
+use oxc_span::{GetSpan as _, SourceType};
 
 /// Parsed inline JSX element.
 #[derive(Debug, Clone, PartialEq)]
@@ -149,8 +149,7 @@ fn extract_props(
                     match &container.expression {
                         JSXExpression::EmptyExpression(_) => PropValue::Expression(String::new()),
                         expr => {
-                            // Get the source text of the expression (inside the braces).
-                            let span = get_jsx_expression_span(expr);
+                            let span = expr.span();
                             let expr_text = &source[span.start as usize..span.end as usize];
                             PropValue::Expression(expr_text.to_string())
                         }
@@ -174,12 +173,6 @@ fn extract_props(
     }
 
     props
-}
-
-/// Get the span of a JSXExpression (which inherits Expression variants).
-fn get_jsx_expression_span(expr: &JSXExpression<'_>) -> oxc_span::Span {
-    use oxc_span::GetSpan;
-    expr.span()
 }
 
 /// Extract children text content from JSX children.
@@ -206,8 +199,8 @@ fn extract_children(
     }
 
     // For mixed or complex children, extract the full source range.
-    let first_span = child_span(&children[0]);
-    let last_span = child_span(&children[children.len() - 1]);
+    let first_span = children[0].span();
+    let last_span = children[children.len() - 1].span();
 
     let start = first_span.start as usize;
     let end = last_span.end as usize;
@@ -218,12 +211,6 @@ fn extract_children(
     } else {
         Some(text.to_string())
     }
-}
-
-/// Get the span of a JSXChild.
-fn child_span(child: &JSXChild<'_>) -> oxc_span::Span {
-    use oxc_span::GetSpan;
-    child.span()
 }
 
 /// Convert parsed inline JSX to a Web Component custom element tag.
