@@ -27,10 +27,15 @@ pub struct WatchArgs {
     /// Components directory (overrides config)
     #[arg(long)]
     pub components_dir: Option<PathBuf>,
+}
 
-    /// Path to config file
-    #[arg(long, default_value = "docs.toml")]
-    pub config: PathBuf,
+/// RAII guard that removes the PID file when dropped.
+struct PidGuard;
+
+impl Drop for PidGuard {
+    fn drop(&mut self) {
+        remove_pid_file();
+    }
 }
 
 /// Configuration file structure (docs.toml).
@@ -121,12 +126,12 @@ fn make_build_config(
 }
 
 /// Run the watch command.
-pub async fn run(args: WatchArgs) -> Result<()> {
+pub async fn run(args: WatchArgs, config_path: PathBuf) -> Result<()> {
     if args.off {
         return stop_watcher();
     }
 
-    start_watcher(args).await
+    start_watcher(args, config_path).await
 }
 
 /// Stop a running watcher by reading its PID file and sending SIGTERM.
@@ -228,12 +233,13 @@ fn describe_change(path: &std::path::Path) -> &'static str {
 }
 
 /// Start watching for file changes and rebuild on each change.
-async fn start_watcher(args: WatchArgs) -> Result<()> {
-    let file_config = load_config(&args.config)?;
+async fn start_watcher(args: WatchArgs, config_path: PathBuf) -> Result<()> {
+    let file_config = load_config(&config_path)?;
     let build_config = make_build_config(&file_config, &args.output, &args.components_dir);
 
-    // Write PID file
+    // Write PID file and set up RAII guard for cleanup
     write_pid_file()?;
+    let _pid_guard = PidGuard;
 
     // Initial build
     tracing::info!("Running initial build...");
@@ -249,8 +255,8 @@ async fn start_watcher(args: WatchArgs) -> Result<()> {
         watch_paths.push(rafters_output);
     }
     // Also watch the config file itself
-    if args.config.exists() {
-        watch_paths.push(args.config.clone());
+    if config_path.exists() {
+        watch_paths.push(config_path);
     }
 
     tracing::info!(
@@ -264,11 +270,13 @@ async fn start_watcher(args: WatchArgs) -> Result<()> {
 
     // Set up the file watcher with a sync channel
     let (tx, rx) = mpsc::channel();
-    let mut watcher = notify::recommended_watcher(move |res: Result<notify::Event, _>| {
-        if let Ok(event) = res {
-            let _ = tx.send(event);
-        }
-    })
+    let mut watcher = notify::recommended_watcher(
+        move |res: std::result::Result<notify::Event, notify::Error>| {
+            if let Ok(event) = res {
+                let _ = tx.send(event);
+            }
+        },
+    )
     .map_err(|e| anyhow::anyhow!("Failed to create file watcher: {}", e))?;
 
     for path in &watch_paths {
@@ -279,19 +287,37 @@ async fn start_watcher(args: WatchArgs) -> Result<()> {
         }
     }
 
-    // Set up Ctrl+C handler
+    // Set up shutdown handlers (Ctrl+C and SIGTERM)
     let (shutdown_tx, mut shutdown_rx) = tokio::sync::oneshot::channel::<()>();
-    let shutdown_tx = std::sync::Mutex::new(Some(shutdown_tx));
+    let shutdown_tx = std::sync::Arc::new(std::sync::Mutex::new(Some(shutdown_tx)));
 
+    // Ctrl+C handler
+    let tx_ctrlc = shutdown_tx.clone();
     tokio::spawn(async move {
         if tokio::signal::ctrl_c().await.is_ok() {
-            if let Ok(mut guard) = shutdown_tx.lock() {
+            if let Ok(mut guard) = tx_ctrlc.lock() {
                 if let Some(tx) = guard.take() {
                     let _ = tx.send(());
                 }
             }
         }
     });
+
+    // SIGTERM handler (Unix only)
+    #[cfg(unix)]
+    {
+        let tx_term = shutdown_tx.clone();
+        tokio::spawn(async move {
+            let mut sig = tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())
+                .expect("failed to register SIGTERM handler");
+            sig.recv().await;
+            if let Ok(mut guard) = tx_term.lock() {
+                if let Some(tx) = guard.take() {
+                    let _ = tx.send(());
+                }
+            }
+        });
+    }
 
     // Main watch loop
     let debounce_duration = Duration::from_millis(100);
@@ -337,8 +363,7 @@ async fn start_watcher(args: WatchArgs) -> Result<()> {
         }
     }
 
-    // Clean up
-    remove_pid_file();
+    // PidGuard handles PID file cleanup on drop
     tracing::info!("Watcher stopped");
 
     // Keep watcher alive until here

@@ -100,7 +100,7 @@ async fn main() -> Result<()> {
             commands::serve::run(port, dir).await?;
         }
         Commands::Watch(args) => {
-            commands::watch::run(args).await?;
+            commands::watch::run(args, cli.config).await?;
         }
     }
 
