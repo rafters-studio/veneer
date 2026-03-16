@@ -63,6 +63,17 @@ impl ReactAdapter {
             ));
         }
 
+        if !ret.errors.is_empty() {
+            return Err(TransformError::ParseError(format!(
+                "syntax errors in component source: {}",
+                ret.errors
+                    .iter()
+                    .map(|e| e.to_string())
+                    .collect::<Vec<_>>()
+                    .join("; ")
+            )));
+        }
+
         let program = &ret.program;
 
         let mut variant_lookup: Vec<(String, String)> = Vec::new();
@@ -87,6 +98,17 @@ impl ReactAdapter {
 
         if variant_lookup.is_empty() {
             return Err(TransformError::MissingVariants);
+        }
+
+        // Fallback: if no attributes were found from interface or destructuring,
+        // check for common attribute names used anywhere in the source. This
+        // catches components that access props without destructuring (e.g., props.variant).
+        if observed_attributes.is_empty() {
+            for attr in ["variant", "size", "disabled", "loading"] {
+                if source.contains(attr) {
+                    observed_attributes.push(attr.to_string());
+                }
+            }
         }
 
         let default_variant = variant_lookup
@@ -133,6 +155,7 @@ impl ReactAdapter {
                     base_classes,
                     disabled_classes,
                     component_name,
+                    observed_attributes,
                 );
             }
 
@@ -169,6 +192,7 @@ impl ReactAdapter {
                                 base_classes,
                                 disabled_classes,
                                 component_name,
+                                observed_attributes,
                             );
                         }
                         Declaration::FunctionDeclaration(func) => {
@@ -217,6 +241,7 @@ impl ReactAdapter {
         base_classes: &mut Option<String>,
         disabled_classes: &mut Option<String>,
         component_name: &mut Option<String>,
+        observed_attributes: &mut Vec<String>,
     ) {
         for declarator in &decl.declarations {
             let name = match &declarator.id.kind {
@@ -256,9 +281,13 @@ impl ReactAdapter {
                     // Check for PascalCase component name from arrow function / function expression
                     if is_pascal_case(name) && component_name.is_none() {
                         match init {
-                            Expression::ArrowFunctionExpression(_)
-                            | Expression::FunctionExpression(_) => {
+                            Expression::ArrowFunctionExpression(arrow) => {
                                 *component_name = Some(name.to_string());
+                                extract_params_attributes(&arrow.params, observed_attributes);
+                            }
+                            Expression::FunctionExpression(func) => {
+                                *component_name = Some(name.to_string());
+                                extract_params_attributes(&func.params, observed_attributes);
                             }
                             _ => {}
                         }
@@ -580,6 +609,53 @@ export function Button() {}
 
         assert_eq!(result.tag_name, "my-button");
         assert!(result.web_component.contains("my-button"));
+    }
+
+    #[test]
+    fn extracts_attributes_from_arrow_function_component() {
+        let source = r#"
+const variantClasses = { default: '' };
+
+interface ButtonProps {
+  variant?: string;
+  size?: string;
+}
+
+const Button = ({ variant, size }: ButtonProps) => {
+  return <button />;
+};
+        "#;
+
+        let adapter = ReactAdapter::new();
+        let result = adapter
+            .transform(source, "button-preview", &TransformContext::default())
+            .unwrap();
+
+        assert!(result.attributes.contains(&"variant".to_string()));
+        assert!(result.attributes.contains(&"size".to_string()));
+    }
+
+    #[test]
+    fn common_attributes_fallback_when_no_interface_or_destructuring() {
+        let source = r#"
+const variantClasses = { default: 'bg-primary' };
+
+export function Button(props: any) {
+  const cls = props.variant === 'primary' ? 'bg-blue' : 'bg-gray';
+  const isDisabled = props.disabled;
+  return <button className={cls} disabled={isDisabled} />;
+}
+        "#;
+
+        let adapter = ReactAdapter::new();
+        let structure = adapter.extract_structure(source).unwrap();
+
+        assert!(structure
+            .observed_attributes
+            .contains(&"variant".to_string()));
+        assert!(structure
+            .observed_attributes
+            .contains(&"disabled".to_string()));
     }
 
     #[test]
