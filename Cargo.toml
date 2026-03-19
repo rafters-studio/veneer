@@ -4,6 +4,7 @@ members = [
     "crates/veneer",
     "crates/veneer-mdx",
     "crates/veneer-adapters",
+    "crates/veneer-registry",
     "crates/veneer-server",
     "crates/veneer-static",
 ]
@@ -66,6 +67,7 @@ open = "5"
 # Crate dependencies
 veneer-mdx = { path = "crates/veneer-mdx" }
 veneer-adapters = { path = "crates/veneer-adapters" }
+veneer-registry = { path = "crates/veneer-registry" }
 veneer-server = { path = "crates/veneer-server" }
 veneer-static = { path = "crates/veneer-static" }
 
