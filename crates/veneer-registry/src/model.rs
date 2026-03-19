@@ -392,7 +392,9 @@ mod tests {
             }
         }"#;
         let token: Token = serde_json::from_str(json).unwrap();
-        let patterns = token.usage_patterns.expect("usagePatterns should be present");
+        let patterns = token
+            .usage_patterns
+            .expect("usagePatterns should be present");
         assert_eq!(patterns.do_patterns.len(), 2);
         assert_eq!(patterns.never_patterns.len(), 1);
         assert_eq!(patterns.do_patterns[0], "Use for error states");
@@ -526,7 +528,9 @@ mod tests {
         }"#;
         let token: Token = serde_json::from_str(json).unwrap();
         let uo = token.user_override.unwrap();
-        assert!(matches!(uo.previous_value, TokenValue::String(ref s) if s == "oklch(0.5 0.15 240)"));
+        assert!(
+            matches!(uo.previous_value, TokenValue::String(ref s) if s == "oklch(0.5 0.15 240)")
+        );
         assert_eq!(uo.reason, "Better contrast ratio");
         assert_eq!(uo.context, Some("a11y audit".to_string()));
     }

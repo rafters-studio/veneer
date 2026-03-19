@@ -40,20 +40,14 @@ impl LocalRegistryReader {
             .map_err(|e| RegistryError::parse(path, e))
     }
 
-    fn load_registry_item(
-        &self,
-        kind: &str,
-        name: &str,
-    ) -> Result<RegistryItem, RegistryError> {
+    fn load_registry_item(&self, kind: &str, name: &str) -> Result<RegistryItem, RegistryError> {
         let path = self
             .rafters_dir
             .join("registry")
             .join(kind)
             .join(format!("{name}.json"));
         self.read_json(&path).map_err(|e| match &e {
-            RegistryError::Io { source, .. }
-                if source.kind() == std::io::ErrorKind::NotFound =>
-            {
+            RegistryError::Io { source, .. } if source.kind() == std::io::ErrorKind::NotFound => {
                 RegistryError::ItemNotFound(format!("{kind}/{name}"))
             }
             _ => e,
@@ -69,13 +63,14 @@ impl RegistryReader for LocalRegistryReader {
         }
 
         let mut namespaces = Vec::new();
-        let entries = std::fs::read_dir(&tokens_dir)
-            .map_err(|e| RegistryError::io(&tokens_dir, e))?;
+        let entries =
+            std::fs::read_dir(&tokens_dir).map_err(|e| RegistryError::io(&tokens_dir, e))?;
 
         for entry in entries {
             let entry = entry.map_err(|e| RegistryError::io(&tokens_dir, e))?;
             let path = entry.path();
-            if path.file_name()
+            if path
+                .file_name()
                 .and_then(|n| n.to_str())
                 .is_some_and(|n| n.ends_with(".rafters.json"))
             {
@@ -93,9 +88,7 @@ impl RegistryReader for LocalRegistryReader {
             .join("tokens")
             .join(format!("{name}.rafters.json"));
         self.read_json(&path).map_err(|e| match &e {
-            RegistryError::Io { source, .. }
-                if source.kind() == std::io::ErrorKind::NotFound =>
-            {
+            RegistryError::Io { source, .. } if source.kind() == std::io::ErrorKind::NotFound => {
                 RegistryError::NamespaceNotFound(name.to_string())
             }
             _ => e,
@@ -201,11 +194,7 @@ mod tests {
                     "tokens": []
                 }}"#
             );
-            std::fs::write(
-                rafters.join(format!("tokens/{ns_name}.rafters.json")),
-                json,
-            )
-            .unwrap();
+            std::fs::write(rafters.join(format!("tokens/{ns_name}.rafters.json")), json).unwrap();
         }
 
         let reader = LocalRegistryReader::detect(tmp.path()).unwrap();
