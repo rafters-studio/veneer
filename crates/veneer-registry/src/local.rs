@@ -54,7 +54,7 @@ impl LocalRegistryReader {
             RegistryError::Io { source, .. }
                 if source.kind() == std::io::ErrorKind::NotFound =>
             {
-                RegistryError::ComponentNotFound(format!("{kind}/{name}"))
+                RegistryError::ItemNotFound(format!("{kind}/{name}"))
             }
             _ => e,
         })
@@ -262,7 +262,7 @@ mod tests {
         let (tmp, _) = create_rafters_dir();
         let reader = LocalRegistryReader::detect(tmp.path()).unwrap();
         let result = reader.load_component("nonexistent");
-        assert!(matches!(result, Err(RegistryError::ComponentNotFound(_))));
+        assert!(matches!(result, Err(RegistryError::ItemNotFound(_))));
     }
 
     #[test]

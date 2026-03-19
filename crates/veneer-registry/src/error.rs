@@ -21,8 +21,8 @@ pub enum RegistryError {
     #[error("namespace file not found: {0}")]
     NamespaceNotFound(String),
 
-    #[error("component not found: {0}")]
-    ComponentNotFound(String),
+    #[error("registry item not found: {0}")]
+    ItemNotFound(String),
 }
 
 impl RegistryError {
