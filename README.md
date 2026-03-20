@@ -20,7 +20,7 @@ Rust-powered component documentation generator with live Web Component previews.
 
 ```bash
 # Install via script
-curl -fsSL https://raw.githubusercontent.com/ezmode-games/veneer/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/rafters-studio/veneer/main/install.sh | bash
 
 # Or build from source
 cargo install --path crates/veneer
