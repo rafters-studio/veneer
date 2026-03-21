@@ -2464,6 +2464,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "veneer-registry"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tempfile",
+ "thiserror",
+]
+
+[[package]]
 name = "veneer-server"
 version = "0.1.0"
 dependencies = [
