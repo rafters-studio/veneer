@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-# install.sh: Installer for Veneer (https://github.com/ezmode-games/veneer)
+# install.sh: Installer for Veneer (https://github.com/rafters-studio/veneer)
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/ezmode-games/veneer/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/rafters-studio/veneer/main/install.sh | bash
 #   curl -fsSL ... | bash -s v0.2.0
 #   VENEER_VERSION=v0.2.0 bash install.sh
 
 set -euo pipefail
 
-REPO="ezmode-games/veneer"
+REPO="rafters-studio/veneer"
 INSTALL_DIR="${HOME}/.local/bin"
 BINARY_NAME="veneer"
 
