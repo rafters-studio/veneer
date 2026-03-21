@@ -6,6 +6,7 @@ members = [
     "crates/veneer-adapters",
     "crates/veneer-server",
     "crates/veneer-static",
+    "crates/veneer-service-design",
 ]
 
 [workspace.package]
@@ -68,6 +69,7 @@ veneer-mdx = { path = "crates/veneer-mdx" }
 veneer-adapters = { path = "crates/veneer-adapters" }
 veneer-server = { path = "crates/veneer-server" }
 veneer-static = { path = "crates/veneer-static" }
+veneer-service-design = { path = "crates/veneer-service-design" }
 
 [profile.release]
 strip = true

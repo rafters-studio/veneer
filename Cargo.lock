@@ -2484,6 +2484,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "veneer-service-design"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "thiserror",
+]
+
+[[package]]
 name = "veneer-static"
 version = "0.1.0"
 dependencies = [
