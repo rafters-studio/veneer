@@ -1,5 +1,6 @@
 pub mod error;
 pub mod model;
+pub mod parser;
 
 pub use error::ServiceDesignError;
 pub use model::{
@@ -8,3 +9,4 @@ pub use model::{
     MomentOfTruth, PainPoint, PainPointMatrix, PainTheme, Persona, PersonaOverview, Probe,
     ScoringDimension, ScoringRubric, ServiceDesignArtifact, ValueExchange,
 };
+pub use parser::{ArtifactParser, ArtifactParserRegistry, Frontmatter};
