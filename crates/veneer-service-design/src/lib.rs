@@ -1,6 +1,7 @@
 pub mod error;
 pub mod model;
 pub mod parser;
+pub mod validation;
 
 pub use error::ServiceDesignError;
 pub use model::{
@@ -10,3 +11,7 @@ pub use model::{
     ScoringDimension, ScoringRubric, ServiceDesignArtifact, ValueExchange,
 };
 pub use parser::{ArtifactParser, ArtifactParserRegistry, Frontmatter};
+pub use validation::{
+    ArtifactValidator, ArtifactValidatorPipeline, Severity, ValidationContext, ValidationIssue,
+    ValidationResult,
+};
