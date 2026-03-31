@@ -56,30 +56,79 @@ impl PropValue {
 ///
 /// Returns the first top-level JSX element found.
 pub fn parse_inline_jsx(source: &str) -> Option<InlineJsx> {
-    let source = source.trim();
+    parse_inline_jsx_all(source).into_iter().next()
+}
 
+/// Parse inline JSX source code, returning ALL top-level JSX elements.
+///
+/// Handles multi-element code blocks with comments between elements,
+/// which is the common pattern in rafters component documentation.
+/// Each JSX element in the source becomes a separate `InlineJsx` entry.
+///
+/// Strategy: first try parsing as-is. If the parser panics (which happens
+/// with adjacent JSX elements like `<A/><B/>`), wrap in a fragment and
+/// extract children individually.
+pub fn parse_inline_jsx_all(source: &str) -> Vec<InlineJsx> {
+    let trimmed = source.trim();
+
+    // First attempt: parse directly (works for single elements)
+    let results = try_parse_jsx_elements(trimmed);
+    if !results.is_empty() {
+        return results;
+    }
+
+    // Second attempt: strip comments and wrap in a fragment.
+    // Adjacent JSX elements cause oxc_parser to panic because they're
+    // not valid JS without semicolons. Wrapping in <>..</> makes them
+    // valid JSX children.
+    let stripped = strip_js_line_comments(trimmed);
+    let wrapped = format!("<>\n{}\n</>", stripped);
+
+    try_parse_jsx_elements(&wrapped)
+}
+
+/// Strip single-line JS comments (// ...) from source.
+/// Preserves structure so spans remain usable for simple extraction.
+fn strip_js_line_comments(source: &str) -> String {
+    source
+        .lines()
+        .filter(|line| !line.trim_start().starts_with("//"))
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+
+/// Attempt to parse JSX source and extract all top-level elements.
+fn try_parse_jsx_elements(source: &str) -> Vec<InlineJsx> {
     let allocator = Allocator::default();
     let source_type = SourceType::jsx();
     let ret = oxc_parser::Parser::new(&allocator, source, source_type).parse();
 
-    // If the parser panicked, we cannot extract anything useful.
     if ret.panicked {
-        return None;
+        return Vec::new();
     }
 
-    // Look for the first expression statement containing a JSX element.
+    let mut results = Vec::new();
+
     for stmt in &ret.program.body {
         if let Statement::ExpressionStatement(expr_stmt) = stmt {
             match &expr_stmt.expression {
                 Expression::JSXElement(el) => {
-                    return Some(extract_jsx_element(el, source));
+                    results.push(extract_jsx_element(el, source));
+                }
+                Expression::JSXFragment(frag) => {
+                    // Fragment: extract each child element separately
+                    for child in &frag.children {
+                        if let JSXChild::Element(el) = child {
+                            results.push(extract_jsx_element(el, source));
+                        }
+                    }
                 }
                 _ => continue,
             }
         }
     }
 
-    None
+    results
 }
 
 /// Extract component name from a JSXElementName.
@@ -347,6 +396,68 @@ mod tests {
             }
             other => panic!("Expected Expression prop, got: {:?}", other),
         }
+    }
+
+    #[test]
+    fn parses_multi_element_with_comments() {
+        // This is the pattern from rafters component docs (e.g., button.md)
+        let source = r#"// Primary action
+<Button variant="default">Save Changes</Button>
+
+// Destructive action
+<Button variant="destructive">Delete Account</Button>
+
+// Loading state
+<Button loading>Processing...</Button>"#;
+
+        let results = parse_inline_jsx_all(source);
+        assert_eq!(
+            results.len(),
+            3,
+            "Expected 3 JSX elements, got {}",
+            results.len()
+        );
+        assert_eq!(results[0].component, "Button");
+        assert_eq!(
+            results[0].props.get("variant"),
+            Some(&PropValue::String("default".to_string()))
+        );
+        assert_eq!(
+            results[1].props.get("variant"),
+            Some(&PropValue::String("destructive".to_string()))
+        );
+        assert!(results[2].props.get("loading").is_some());
+    }
+
+    #[test]
+    fn parses_multi_element_no_comments() {
+        let source = r#"<Button variant="primary">Primary</Button>
+<Button variant="secondary">Secondary</Button>"#;
+
+        let results = parse_inline_jsx_all(source);
+        assert_eq!(
+            results.len(),
+            2,
+            "Expected 2 JSX elements, got {}",
+            results.len()
+        );
+    }
+
+    #[test]
+    fn parses_member_expression_component() {
+        // ContextMenu.Trigger pattern from rafters docs
+        let source = r#"<ContextMenu>
+  <ContextMenu.Trigger>
+    <div>Right-click me</div>
+  </ContextMenu.Trigger>
+  <ContextMenu.Content>
+    <ContextMenu.Item>Edit</ContextMenu.Item>
+  </ContextMenu.Content>
+</ContextMenu>"#;
+
+        let results = parse_inline_jsx_all(source);
+        assert_eq!(results.len(), 1);
+        assert_eq!(results[0].component, "ContextMenu");
     }
 
     #[test]
