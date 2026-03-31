@@ -107,7 +107,22 @@ impl ComponentRegistry {
                         s.name = component_name.clone();
                         (s, component_name)
                     }
-                    Err(_) => continue,
+                    Err(_) => {
+                        // Fallback: collect all exported string constants as base classes.
+                        // This handles structural components (accordion, dialog, etc.)
+                        // that export individual class constants without variant records.
+                        match extract_all_exported_classes(&source) {
+                            Some(base_classes) if !base_classes.is_empty() => {
+                                let structure = crate::react::ComponentStructure {
+                                    name: component_name.clone(),
+                                    base_classes,
+                                    ..Default::default()
+                                };
+                                (structure, component_name)
+                            }
+                            _ => continue,
+                        }
+                    }
                 }
             } else {
                 // Standard component file
@@ -181,6 +196,107 @@ impl ComponentRegistry {
             classes_used,
             attributes: cached.structure.observed_attributes.clone(),
         })
+    }
+}
+
+/// Extract all exported string constant values from a .classes.ts file.
+///
+/// Handles patterns like:
+///   export const accordionItemClasses = 'border-b';
+///   export const accordionTriggerClasses = 'flex flex-1 items-center' + ' justify-between';
+///
+/// Returns the concatenation of all string values, or None if nothing was found.
+fn extract_all_exported_classes(source: &str) -> Option<String> {
+    use oxc_allocator::Allocator;
+    use oxc_ast::ast::{BindingPatternKind, Declaration, Statement};
+    use oxc_parser::Parser;
+    use oxc_span::SourceType;
+
+    let allocator = Allocator::default();
+    let source_type = SourceType::ts();
+    let ret = Parser::new(&allocator, source, source_type).parse();
+
+    if ret.panicked || !ret.errors.is_empty() {
+        return None;
+    }
+
+    let mut all_classes: Vec<String> = Vec::new();
+
+    for stmt in &ret.program.body {
+        // Only look at export declarations
+        let Statement::ExportNamedDeclaration(export) = stmt else {
+            continue;
+        };
+        let Some(ref decl) = export.declaration else {
+            continue;
+        };
+        let Declaration::VariableDeclaration(var_decl) = decl else {
+            continue;
+        };
+
+        for declarator in &var_decl.declarations {
+            // Must have an identifier name ending in "Classes"
+            let name = match &declarator.id.kind {
+                BindingPatternKind::BindingIdentifier(id) => id.name.as_str(),
+                _ => continue,
+            };
+
+            if !name.ends_with("Classes") && !name.ends_with("Cls") {
+                continue;
+            }
+
+            let Some(ref init) = declarator.init else {
+                continue;
+            };
+
+            // Try to extract a string value (handles concatenation and template literals)
+            if let Some(value) = extract_string_from_expr(init) {
+                if !value.is_empty() {
+                    all_classes.push(value);
+                }
+            }
+        }
+    }
+
+    if all_classes.is_empty() {
+        None
+    } else {
+        Some(all_classes.join(" "))
+    }
+}
+
+/// Extract a string value from an expression, handling common patterns.
+fn extract_string_from_expr(expr: &oxc_ast::ast::Expression<'_>) -> Option<String> {
+    use oxc_ast::ast::{BinaryOperator, Expression};
+
+    match expr {
+        Expression::StringLiteral(s) => Some(s.value.as_str().to_string()),
+        Expression::TemplateLiteral(tpl) => {
+            if tpl.expressions.is_empty() && !tpl.quasis.is_empty() {
+                let value = tpl
+                    .quasis
+                    .iter()
+                    .map(|q| q.value.raw.as_str())
+                    .collect::<Vec<_>>()
+                    .join("");
+                Some(value)
+            } else {
+                None
+            }
+        }
+        Expression::BinaryExpression(bin) => {
+            if bin.operator == BinaryOperator::Addition {
+                let left = extract_string_from_expr(&bin.left)?;
+                let right = extract_string_from_expr(&bin.right)?;
+                Some(format!("{left}{right}"))
+            } else {
+                None
+            }
+        }
+        Expression::TSAsExpression(as_expr) => extract_string_from_expr(&as_expr.expression),
+        Expression::TSSatisfiesExpression(sat) => extract_string_from_expr(&sat.expression),
+        Expression::ParenthesizedExpression(paren) => extract_string_from_expr(&paren.expression),
+        _ => None,
     }
 }
 
@@ -349,7 +465,7 @@ export const badgeBaseClasses = 'inline-flex items-center rounded-full font-semi
         let comp_dir = temp.path().join("components");
         fs::create_dir_all(&comp_dir).unwrap();
 
-        // Multi-word kebab-case class file
+        // Multi-word kebab-case class file with exported class constants
         fs::write(
             comp_dir.join("context-menu.classes.ts"),
             r#"
@@ -362,8 +478,13 @@ export const contextMenuContentClasses = 'bg-popover text-popover-foreground';
         let mut registry = ComponentRegistry::new();
         let count = registry.scan(&comp_dir).unwrap();
 
-        // This file has no variantClasses, so it should NOT register
-        assert_eq!(count, 0);
+        // Structural components register via fallback extraction of exported class constants
+        assert_eq!(count, 1);
+        assert!(registry.contains("ContextMenu"));
+
+        let cached = registry.get("ContextMenu").unwrap();
+        assert!(cached.structure.base_classes.contains("flex"));
+        assert!(cached.structure.base_classes.contains("bg-popover"));
     }
 
     #[test]
