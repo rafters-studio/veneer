@@ -138,7 +138,10 @@ impl ReactAdapter {
             visit_statement(stmt, &mut state);
         }
 
-        if state.variant_lookup.is_empty() {
+        if state.variant_lookup.is_empty()
+            && state.base_classes.is_none()
+            && state.size_lookup.is_empty()
+        {
             return Err(TransformError::MissingVariants);
         }
 
@@ -378,10 +381,43 @@ fn extract_object_entries(expr: &Expression<'_>) -> Option<Vec<(String, String)>
 
         if let Some(value) = extract_string_value(value_expr) {
             entries.push((key, value));
+        } else if let Some(value) = extract_nested_object_classes(value_expr) {
+            entries.push((key, value));
         }
     }
 
     Some(entries)
+}
+
+/// Extract and concatenate all string values from a nested object expression.
+///
+/// Handles patterns like `{ border: 'border-primary', checked: 'bg-primary', ring: 'ring-primary' }`
+/// by joining all values with spaces.
+fn extract_nested_object_classes(expr: &Expression<'_>) -> Option<String> {
+    let Expression::ObjectExpression(obj) = expr else {
+        return None;
+    };
+
+    let mut parts: Vec<String> = Vec::new();
+
+    for prop in &obj.properties {
+        let ObjectPropertyKind::ObjectProperty(prop) = prop else {
+            continue;
+        };
+
+        let value_expr = unwrap_type_expressions(&prop.value);
+        if let Some(value) = extract_string_value(value_expr) {
+            if !value.is_empty() {
+                parts.push(value);
+            }
+        }
+    }
+
+    if parts.is_empty() {
+        None
+    } else {
+        Some(parts.join(" "))
+    }
 }
 
 /// Extract a string value from an expression.

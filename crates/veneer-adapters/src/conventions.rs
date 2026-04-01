@@ -54,3 +54,29 @@ impl Default for ComponentConventions {
         }
     }
 }
+
+impl ComponentConventions {
+    /// Create conventions for a `.classes.ts` file with a component prefix.
+    ///
+    /// For example, given prefix "badge", this creates conventions that match:
+    /// - `badgeVariantClasses` for variants
+    /// - `badgeSizeClasses` for sizes
+    /// - `badgeBaseClasses` for base classes
+    /// - `badgeDisabledClasses` for disabled classes
+    ///
+    /// Also includes the default unprefixed names as fallbacks.
+    pub fn for_classes_file(prefix: &str) -> Self {
+        let prefixed_variant = format!("{}VariantClasses", prefix);
+        let prefixed_size = format!("{}SizeClasses", prefix);
+        let prefixed_base = format!("{}BaseClasses", prefix);
+        let prefixed_disabled = format!("{}DisabledClasses", prefix);
+
+        Self {
+            variant_records: vec![prefixed_variant, "variantClasses".to_string()],
+            size_records: vec![prefixed_size, "sizeClasses".to_string()],
+            base_class_vars: vec![prefixed_base, "baseClasses".to_string()],
+            disabled_class_vars: vec![prefixed_disabled, "disabledClasses".to_string()],
+            ..Default::default()
+        }
+    }
+}

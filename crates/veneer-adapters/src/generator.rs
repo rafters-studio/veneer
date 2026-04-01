@@ -162,6 +162,72 @@ export default {class_name};
     )
 }
 
+/// Generate a passthrough Web Component that renders a slot with adopted styles.
+///
+/// Used for compound/structural components (Card, Accordion, Dialog, etc.) that
+/// don't have variant/size switching but still need style adoption for previews.
+/// The component simply renders its light DOM children inside a shadow root with
+/// adopted page-level styles.
+pub fn generate_passthrough_web_component(tag_name: &str) -> String {
+    let class_name = to_pascal_case(tag_name);
+
+    format!(
+        r#"/**
+ * {class_name} - Passthrough Web Component Preview
+ * Auto-generated for static component preview
+ * Tag: <{tag_name}>
+ */
+
+export class {class_name} extends HTMLElement {{
+  constructor() {{
+    super();
+    this.attachShadow({{ mode: 'open' }});
+  }}
+
+  connectedCallback() {{
+    this.#adoptStyles();
+    this.#render();
+  }}
+
+  #adoptStyles() {{
+    if (!this.shadowRoot) return;
+
+    if (!this.constructor._sheets) {{
+      this.constructor._sheets = [...document.styleSheets]
+        .filter(s => s.ownerNode?.hasAttribute('data-veneer-component'))
+        .map(s => {{
+          try {{
+            const clone = new CSSStyleSheet();
+            const rules = Array.from(s.cssRules).map(r => r.cssText).join('\\n');
+            clone.replaceSync(rules);
+            return clone;
+          }} catch (e) {{
+            return null;
+          }}
+        }})
+        .filter(Boolean);
+    }}
+    this.shadowRoot.adoptedStyleSheets = this.constructor._sheets;
+  }}
+
+  #render() {{
+    if (!this.shadowRoot) return;
+    const slot = document.createElement('slot');
+    this.shadowRoot.appendChild(slot);
+  }}
+}}
+
+if (typeof customElements !== 'undefined') {{
+  customElements.define('{tag_name}', {class_name});
+}}
+
+export default {class_name};
+"#,
+        class_name = class_name,
+        tag_name = tag_name,
+    )
+}
+
 /// Convert kebab-case to PascalCase.
 fn to_pascal_case(s: &str) -> String {
     s.split('-')

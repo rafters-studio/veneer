@@ -10,8 +10,9 @@ use rayon::prelude::*;
 use walkdir::WalkDir;
 
 use veneer_adapters::{
-    generate_controls_panel, parse_inline_jsx, to_custom_element, ComponentRegistry,
-    FrameworkAdapter, ReactAdapter, TransformContext, TransformedBlock,
+    generate_controls_panel, generate_passthrough_web_component, parse_inline_jsx_all,
+    to_custom_element, ComponentRegistry, FrameworkAdapter, ReactAdapter, TransformContext,
+    TransformedBlock,
 };
 use veneer_mdx::{parse_mdx, CodeBlock, Frontmatter, ParsedDoc};
 
@@ -391,61 +392,91 @@ impl StaticBuilder {
         // Transform live code blocks to Web Components
         for block in &page.doc.code_blocks {
             if block.is_live() {
-                // Try inline JSX parsing first (for documentation code blocks)
-                if let Some(jsx) = parse_inline_jsx(&block.source) {
-                    let component_name = &jsx.component;
+                // Try inline JSX parsing (handles single and multi-element blocks)
+                let jsx_elements = parse_inline_jsx_all(&block.source);
 
-                    // Look up component in registry
-                    if self.registry.contains(component_name) {
-                        // Generate unique tag name for this component type
-                        let tag_name = format!("{}-preview", component_name.to_lowercase());
+                if !jsx_elements.is_empty() {
+                    let mut block_html_parts: Vec<String> = Vec::new();
+                    let mut block_has_controls = false;
 
-                        // Only generate Web Component JS once per component type
-                        if !generated_components.contains_key(component_name) {
-                            match self
-                                .registry
-                                .generate_web_component(component_name, &tag_name)
-                            {
-                                Ok(transformed) => {
-                                    generated_components
-                                        .insert(component_name.clone(), tag_name.clone());
-                                    web_components.push(transformed);
-                                }
-                                Err(e) => {
-                                    tracing::warn!(
-                                        "Failed to generate Web Component for {}: {}",
-                                        component_name,
-                                        e
-                                    );
-                                    continue;
+                    for jsx in &jsx_elements {
+                        let component_name = &jsx.component;
+
+                        // Look up component in registry
+                        if self.registry.contains(component_name) {
+                            // Generate unique tag name for this component type
+                            let tag_name = format!("{}-preview", component_name.to_lowercase());
+
+                            // Only generate Web Component JS once per component type
+                            if !generated_components.contains_key(component_name) {
+                                match self
+                                    .registry
+                                    .generate_web_component(component_name, &tag_name)
+                                {
+                                    Ok(transformed) => {
+                                        generated_components
+                                            .insert(component_name.clone(), tag_name.clone());
+                                        web_components.push(transformed);
+                                    }
+                                    Err(e) => {
+                                        tracing::warn!(
+                                            "Failed to generate Web Component for {}: {}",
+                                            component_name,
+                                            e
+                                        );
+                                        continue;
+                                    }
                                 }
                             }
-                        }
 
-                        // Convert inline JSX to custom element HTML
-                        let actual_tag = generated_components
-                            .get(component_name)
-                            .map(|s| s.as_str())
-                            .unwrap_or(&tag_name);
-                        let custom_element_html = to_custom_element(&jsx, actual_tag);
+                            // Convert inline JSX to custom element HTML
+                            let actual_tag = generated_components
+                                .get(component_name)
+                                .map(|s| s.as_str())
+                                .unwrap_or(&tag_name);
+                            block_html_parts.push(to_custom_element(jsx, actual_tag));
 
-                        // Generate controls panel if the component has controllable attributes
-                        if let Some(cached) = self.registry.get(component_name) {
-                            let controls = generate_controls_panel(actual_tag, &cached.structure);
-                            if !controls.is_empty() {
-                                block_controls.insert(block.id.clone(), controls);
+                            // Generate controls panel once per block (using first component)
+                            if !block_has_controls {
+                                if let Some(cached) = self.registry.get(component_name) {
+                                    let controls =
+                                        generate_controls_panel(actual_tag, &cached.structure);
+                                    if !controls.is_empty() {
+                                        block_controls.insert(block.id.clone(), controls);
+                                        block_has_controls = true;
+                                    }
+                                }
                             }
-                        }
 
-                        block_replacements.insert(block.id.clone(), custom_element_html);
-                        components_count += 1;
-                    } else {
-                        tracing::warn!(
-                            "Component '{}' not found in registry (block {} in {})",
-                            component_name,
-                            block.id,
-                            page.source_path.display()
-                        );
+                            components_count += 1;
+                        } else {
+                            // Component not in registry -- use passthrough Web Component
+                            // for structural/compound components without variant switching.
+                            let tag_name = format!("{}-preview", component_name.to_lowercase());
+
+                            if !generated_components.contains_key(component_name) {
+                                let wc_js = generate_passthrough_web_component(&tag_name);
+                                generated_components
+                                    .insert(component_name.clone(), tag_name.clone());
+                                web_components.push(TransformedBlock {
+                                    web_component: wc_js,
+                                    tag_name: tag_name.clone(),
+                                    classes_used: vec![],
+                                    attributes: vec![],
+                                });
+                            }
+
+                            let actual_tag = generated_components
+                                .get(component_name)
+                                .map(|s| s.as_str())
+                                .unwrap_or(&tag_name);
+                            block_html_parts.push(to_custom_element(jsx, actual_tag));
+                            components_count += 1;
+                        }
+                    }
+
+                    if !block_html_parts.is_empty() {
+                        block_replacements.insert(block.id.clone(), block_html_parts.join("\n"));
                     }
                 } else {
                     // Fall back to full component transform (for component source files)
