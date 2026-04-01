@@ -426,7 +426,7 @@ mod tests {
             results[1].props.get("variant"),
             Some(&PropValue::String("destructive".to_string()))
         );
-        assert!(results[2].props.get("loading").is_some());
+        assert!(results[2].props.contains_key("loading"));
     }
 
     #[test]
