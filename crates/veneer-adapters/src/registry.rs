@@ -199,7 +199,11 @@ fn try_extract_export(name: &str, expr: &Expression<'_>) -> Option<DiscoveredExp
             }
         }
 
-        let entries = if has_nested { nested_entries } else { flat_entries };
+        let entries = if has_nested {
+            nested_entries
+        } else {
+            flat_entries
+        };
         if !entries.is_empty() {
             return Some(DiscoveredExport {
                 name: name.to_string(),
@@ -570,8 +574,6 @@ impl ComponentRegistry {
         })
     }
 }
-
-
 
 /// Convert kebab-case to PascalCase (e.g., "context-menu" -> "ContextMenu").
 fn kebab_to_pascal(s: &str) -> String {

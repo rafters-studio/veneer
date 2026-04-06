@@ -13,12 +13,12 @@ use oxc_parser::Parser;
 use oxc_span::SourceType;
 
 use crate::conventions::ComponentConventions;
+use crate::generator::generate_web_component;
+use crate::traits::{FrameworkAdapter, TransformContext, TransformError, TransformedBlock};
 use crate::ts_helpers::{
     extract_nested_object_classes, extract_string_value, normalize_whitespace,
     unwrap_type_expressions,
 };
-use crate::generator::generate_web_component;
-use crate::traits::{FrameworkAdapter, TransformContext, TransformError, TransformedBlock};
 
 /// Extracted component structure from source code.
 #[derive(Debug, Clone, Default)]
@@ -378,7 +378,6 @@ fn extract_object_entries(expr: &Expression<'_>) -> Option<Vec<(String, String)>
     Some(entries)
 }
 
-
 // --- Attribute helpers ---
 
 /// Extract observed attributes from a TSInterfaceDeclaration whose name ends with "Props".
@@ -438,7 +437,6 @@ fn should_include_attribute(name: &str, excluded_props: &[String]) -> bool {
 fn is_pascal_case(s: &str) -> bool {
     s.starts_with(|c: char| c.is_ascii_uppercase())
 }
-
 
 #[cfg(test)]
 mod tests {
