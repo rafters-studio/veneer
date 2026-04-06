@@ -45,7 +45,11 @@ fn visible_flags(flags: &[ParsedFlag]) -> Vec<&ParsedFlag> {
 /// Generate an MDX reference page for a single command.
 ///
 /// If `parent_name` is provided, the title becomes "parent_name command_name".
-pub fn generate_command_mdx(command: &ParsedCommand, parent_name: Option<&str>) -> String {
+pub fn generate_command_mdx(
+    command: &ParsedCommand,
+    parent_name: Option<&str>,
+    layout: Option<&str>,
+) -> String {
     let mut out = String::new();
 
     let title = match parent_name {
@@ -55,6 +59,9 @@ pub fn generate_command_mdx(command: &ParsedCommand, parent_name: Option<&str>) 
 
     // Frontmatter
     writeln!(out, "---").unwrap();
+    if let Some(layout_path) = layout {
+        writeln!(out, "layout: {}", layout_path).unwrap();
+    }
     writeln!(out, "title: \"{}\"", title).unwrap();
     writeln!(
         out,
@@ -86,15 +93,23 @@ pub fn generate_command_mdx(command: &ParsedCommand, parent_name: Option<&str>) 
         writeln!(out, "| --- | --- | --- | --- | --- |").unwrap();
 
         for flag in &flags {
-            let long = flag.long.as_deref().unwrap_or("");
-            let short = flag.short.as_deref().unwrap_or("");
+            let long = flag
+                .long
+                .as_deref()
+                .map(|l| format!("`{}`", l))
+                .unwrap_or_else(|| "-".to_string());
+            let short = flag
+                .short
+                .as_deref()
+                .map(|s| format!("`{}`", s))
+                .unwrap_or_else(|| "-".to_string());
             let required = if flag.required { "Yes" } else { "No" };
-            let default = flag.default.as_deref().unwrap_or("");
+            let default = flag.default.as_deref().unwrap_or("-");
             let desc = &flag.description;
 
             writeln!(
                 out,
-                "| `{}` | `{}` | {} | {} | {} |",
+                "| {} | {} | {} | {} | {} |",
                 long, short, required, default, desc
             )
             .unwrap();
@@ -119,13 +134,14 @@ pub fn generate_command_mdx(command: &ParsedCommand, parent_name: Option<&str>) 
 pub fn generate_reference_pages(
     root: &ParsedCommand,
     output_dir: &Path,
+    layout: Option<&str>,
 ) -> Result<Vec<GeneratedPage>, MdxGenError> {
     let reference_dir = output_dir.join("reference");
     let mut pages = Vec::new();
 
     // Generate page for root command
     let root_path = reference_dir.join(format!("{}.mdx", root.name));
-    let root_mdx = generate_command_mdx(root, None);
+    let root_mdx = generate_command_mdx(root, None, layout);
     write_mdx_file(&root_path, &root_mdx)?;
     pages.push(GeneratedPage {
         path: root_path,
@@ -137,7 +153,7 @@ pub fn generate_reference_pages(
     for sub in &root.subcommands {
         let sub_dir = reference_dir.join(&root.name);
         let sub_path = sub_dir.join(format!("{}.mdx", sub.name));
-        let sub_mdx = generate_command_mdx(sub, Some(&root.name));
+        let sub_mdx = generate_command_mdx(sub, Some(&root.name), layout);
         write_mdx_file(&sub_path, &sub_mdx)?;
         pages.push(GeneratedPage {
             path: sub_path,
@@ -150,7 +166,7 @@ pub fn generate_reference_pages(
             let nested_dir = sub_dir.join(&sub.name);
             let nested_path = nested_dir.join(format!("{}.mdx", nested.name));
             let parent_title = format!("{} {}", root.name, sub.name);
-            let nested_mdx = generate_command_mdx(nested, Some(&parent_title));
+            let nested_mdx = generate_command_mdx(nested, Some(&parent_title), layout);
             write_mdx_file(&nested_path, &nested_mdx)?;
             pages.push(GeneratedPage {
                 path: nested_path,
@@ -221,7 +237,7 @@ mod tests {
     #[test]
     fn generates_valid_frontmatter() {
         let cmd = make_command();
-        let mdx = generate_command_mdx(&cmd, None);
+        let mdx = generate_command_mdx(&cmd, None, None);
 
         assert!(mdx.starts_with("---\n"));
         assert!(mdx.contains("title: \"reflect\""));
@@ -234,18 +250,18 @@ mod tests {
     #[test]
     fn generates_flag_table_with_correct_columns() {
         let cmd = make_command();
-        let mdx = generate_command_mdx(&cmd, None);
+        let mdx = generate_command_mdx(&cmd, None, None);
 
         assert!(mdx.contains("## Flags"));
         assert!(mdx.contains("| Flag | Short | Required | Default | Description |"));
-        assert!(mdx.contains("| `--repo` | `` | Yes |  | Repository name |"));
-        assert!(mdx.contains("| `--verbose` | `-v` | No |  | Show informational messages |"));
+        assert!(mdx.contains("| `--repo` | - | Yes | - | Repository name |"));
+        assert!(mdx.contains("| `--verbose` | `-v` | No | - | Show informational messages |"));
     }
 
     #[test]
     fn includes_editorial_slots() {
         let cmd = make_command();
-        let mdx = generate_command_mdx(&cmd, None);
+        let mdx = generate_command_mdx(&cmd, None, None);
 
         assert!(mdx.contains("{/* veneer:overview */}"));
         assert!(mdx.contains("{/* veneer:when-to-use */}"));
@@ -271,14 +287,14 @@ mod tests {
             aliases: Vec::new(),
         };
 
-        let mdx = generate_command_mdx(&cmd, Some("kanban"));
+        let mdx = generate_command_mdx(&cmd, Some("kanban"), None);
         assert!(mdx.contains("title: \"kanban create\""));
     }
 
     #[test]
     fn skips_help_flag_from_table() {
         let cmd = make_command();
-        let mdx = generate_command_mdx(&cmd, None);
+        let mdx = generate_command_mdx(&cmd, None, None);
 
         // Should not contain --help in the table rows
         assert!(!mdx.contains("| `--help`"));
@@ -304,7 +320,7 @@ mod tests {
             aliases: Vec::new(),
         };
 
-        let mdx = generate_command_mdx(&cmd, None);
+        let mdx = generate_command_mdx(&cmd, None, None);
         assert!(!mdx.contains("## Flags"));
     }
 
@@ -334,7 +350,7 @@ mod tests {
         };
 
         let tmp = tempfile::tempdir().unwrap();
-        let pages = generate_reference_pages(&root, tmp.path()).unwrap();
+        let pages = generate_reference_pages(&root, tmp.path(), None).unwrap();
 
         assert_eq!(pages.len(), 3);
 

@@ -22,6 +22,10 @@ pub struct ExtractArgs {
     /// Path to the project binary for --help extraction
     #[arg(short, long)]
     binary: Option<PathBuf>,
+
+    /// Layout path to inject into MDX frontmatter (e.g., "../../layouts/Docs.astro")
+    #[arg(short, long)]
+    layout: Option<String>,
 }
 
 pub async fn run(args: ExtractArgs) -> Result<()> {
@@ -61,7 +65,7 @@ pub async fn run(args: ExtractArgs) -> Result<()> {
 
         // Phase 2: Generate reference MDX pages
         let ref_dir = args.output.clone();
-        let pages = generate_reference_pages(&root_cmd, &ref_dir)?;
+        let pages = generate_reference_pages(&root_cmd, &ref_dir, args.layout.as_deref())?;
         tracing::info!("Generated {} reference pages", pages.len());
         reference_pages = pages;
 
@@ -88,7 +92,12 @@ pub async fn run(args: ExtractArgs) -> Result<()> {
     }
 
     // Phase 4: Generate skeleton editorial pages
-    let skeletons = generate_default_skeletons(&project_name, &command_groups, &args.output)?;
+    let skeletons = generate_default_skeletons(
+        &project_name,
+        &command_groups,
+        &args.output,
+        args.layout.as_deref(),
+    )?;
     tracing::info!("Generated {} skeleton pages", skeletons.len());
 
     let total = reference_pages.len() + skeletons.len();
