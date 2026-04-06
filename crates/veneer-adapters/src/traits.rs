@@ -34,7 +34,9 @@ pub enum TransformError {
     #[error("Transform error: {0}")]
     TransformError(String),
 
-    #[error("Missing variant classes: component must define variantClasses Record")]
+    #[error(
+        "No class data found: component has no variant records, size records, or base classes"
+    )]
     MissingVariants,
 
     #[error("Invalid component structure: {0}")]

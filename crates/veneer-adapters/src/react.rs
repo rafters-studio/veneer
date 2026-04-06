@@ -6,13 +6,17 @@ use std::collections::HashSet;
 
 use oxc_allocator::Allocator;
 use oxc_ast::ast::{
-    BinaryOperator, BindingPatternKind, Declaration, Expression, ObjectPropertyKind, PropertyKey,
-    Statement, TSSignature,
+    BindingPatternKind, Declaration, Expression, ObjectPropertyKind, PropertyKey, Statement,
+    TSSignature,
 };
 use oxc_parser::Parser;
 use oxc_span::SourceType;
 
 use crate::conventions::ComponentConventions;
+use crate::ts_helpers::{
+    extract_nested_object_classes, extract_string_value, normalize_whitespace,
+    unwrap_type_expressions,
+};
 use crate::generator::generate_web_component;
 use crate::traits::{FrameworkAdapter, TransformContext, TransformError, TransformedBlock};
 
@@ -343,21 +347,6 @@ fn visit_variable_declaration(
     }
 }
 
-// --- Expression helpers ---
-
-/// Unwrap TSAsExpression, TSSatisfiesExpression, and TSTypeAssertion to get the inner expression.
-fn unwrap_type_expressions<'a>(expr: &'a Expression<'a>) -> &'a Expression<'a> {
-    match expr {
-        Expression::TSAsExpression(as_expr) => unwrap_type_expressions(&as_expr.expression),
-        Expression::TSSatisfiesExpression(sat_expr) => {
-            unwrap_type_expressions(&sat_expr.expression)
-        }
-        Expression::TSTypeAssertion(ta_expr) => unwrap_type_expressions(&ta_expr.expression),
-        Expression::ParenthesizedExpression(paren) => unwrap_type_expressions(&paren.expression),
-        other => other,
-    }
-}
-
 /// Extract key-value pairs from an ObjectExpression.
 fn extract_object_entries(expr: &Expression<'_>) -> Option<Vec<(String, String)>> {
     let Expression::ObjectExpression(obj) = expr else {
@@ -389,74 +378,6 @@ fn extract_object_entries(expr: &Expression<'_>) -> Option<Vec<(String, String)>
     Some(entries)
 }
 
-/// Extract and concatenate all string values from a nested object expression.
-///
-/// Handles patterns like `{ border: 'border-primary', checked: 'bg-primary', ring: 'ring-primary' }`
-/// by joining all values with spaces.
-fn extract_nested_object_classes(expr: &Expression<'_>) -> Option<String> {
-    let Expression::ObjectExpression(obj) = expr else {
-        return None;
-    };
-
-    let mut parts: Vec<String> = Vec::new();
-
-    for prop in &obj.properties {
-        let ObjectPropertyKind::ObjectProperty(prop) = prop else {
-            continue;
-        };
-
-        let value_expr = unwrap_type_expressions(&prop.value);
-        if let Some(value) = extract_string_value(value_expr) {
-            if !value.is_empty() {
-                parts.push(value);
-            }
-        }
-    }
-
-    if parts.is_empty() {
-        None
-    } else {
-        Some(parts.join(" "))
-    }
-}
-
-/// Extract a string value from an expression.
-/// Handles StringLiteral, BinaryExpression (concatenation), and TemplateLiteral (no interpolation).
-fn extract_string_value(expr: &Expression<'_>) -> Option<String> {
-    match expr {
-        Expression::StringLiteral(s) => Some(s.value.as_str().to_string()),
-
-        Expression::TemplateLiteral(tpl) => {
-            if tpl.expressions.is_empty() && !tpl.quasis.is_empty() {
-                let value = tpl
-                    .quasis
-                    .iter()
-                    .map(|q| q.value.raw.as_str())
-                    .collect::<Vec<_>>()
-                    .join("");
-                Some(value)
-            } else {
-                None
-            }
-        }
-
-        Expression::BinaryExpression(bin) => {
-            if bin.operator == BinaryOperator::Addition {
-                let left = extract_string_value(&bin.left)?;
-                let right = extract_string_value(&bin.right)?;
-                Some(format!("{left}{right}"))
-            } else {
-                None
-            }
-        }
-
-        Expression::TSAsExpression(as_expr) => extract_string_value(&as_expr.expression),
-        Expression::TSSatisfiesExpression(sat) => extract_string_value(&sat.expression),
-        Expression::ParenthesizedExpression(paren) => extract_string_value(&paren.expression),
-
-        _ => None,
-    }
-}
 
 // --- Attribute helpers ---
 
@@ -518,10 +439,6 @@ fn is_pascal_case(s: &str) -> bool {
     s.starts_with(|c: char| c.is_ascii_uppercase())
 }
 
-/// Normalize whitespace in a string (collapse multiple spaces, trim).
-fn normalize_whitespace(s: &str) -> String {
-    s.split_whitespace().collect::<Vec<_>>().join(" ")
-}
 
 #[cfg(test)]
 mod tests {

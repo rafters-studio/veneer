@@ -10,6 +10,7 @@ pub mod react;
 pub mod registry;
 pub mod tokens;
 pub mod traits;
+pub(crate) mod ts_helpers;
 
 pub use conventions::ComponentConventions;
 pub use generator::{
