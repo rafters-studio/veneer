@@ -69,6 +69,9 @@ enum Commands {
 
     /// Watch for file changes and rebuild (no HTTP server)
     Watch(commands::watch::WatchArgs),
+
+    /// Extract documentation from a target project
+    Extract(commands::extract::ExtractArgs),
 }
 
 #[tokio::main]
@@ -101,6 +104,9 @@ async fn main() -> Result<()> {
         }
         Commands::Watch(args) => {
             commands::watch::run(args, cli.config).await?;
+        }
+        Commands::Extract(args) => {
+            commands::extract::run(args).await?;
         }
     }
 

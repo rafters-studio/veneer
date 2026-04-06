@@ -2431,6 +2431,7 @@ dependencies = [
  "tracing",
  "tracing-subscriber",
  "veneer-adapters",
+ "veneer-docs",
  "veneer-mdx",
  "veneer-server",
  "veneer-static",
@@ -2450,6 +2451,18 @@ dependencies = [
  "tempfile",
  "thiserror",
  "walkdir",
+]
+
+[[package]]
+name = "veneer-docs"
+version = "0.1.0"
+dependencies = [
+ "regex",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "thiserror",
+ "tracing",
 ]
 
 [[package]]
