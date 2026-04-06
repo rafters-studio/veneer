@@ -59,7 +59,11 @@ pub fn parse_cli_help(binary_path: &Path) -> Result<ParsedCommand, CliParseError
         .ok_or_else(|| CliParseError::BinaryNotFound(binary_path.display().to_string()))?;
 
     let help_text = run_help(binary, &[])?;
-    let mut root = parse_help_text(binary, &help_text);
+    let name = binary_path
+        .file_name()
+        .and_then(|n| n.to_str())
+        .unwrap_or(binary);
+    let mut root = parse_help_text(name, &help_text);
 
     // Recursively parse subcommands
     let subcommand_names: Vec<String> = root.subcommands.iter().map(|s| s.name.clone()).collect();

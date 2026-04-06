@@ -23,6 +23,7 @@ veneer-mdx = { workspace = true }
 veneer-adapters = { workspace = true }
 veneer-server = { workspace = true }
 veneer-static = { workspace = true }
+veneer-docs = { workspace = true }
 open = { workspace = true }
 tower-http = { workspace = true }
 axum = { workspace = true }
