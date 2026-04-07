@@ -83,7 +83,7 @@ order: 1
                 "\
 ---
 {layout_line}title: {title}
-description: How {topic} works in {project_name}.
+description: Learn about {topic} in {project_name}.
 order: 10
 ---
 
@@ -223,7 +223,7 @@ mod tests {
             None,
         );
         assert!(mdx.contains("title: Reflections"));
-        assert!(mdx.contains("How reflections works in legion"));
+        assert!(mdx.contains("Learn about reflections in legion"));
         assert!(mdx.contains("{/* veneer:how-it-works */}"));
     }
 

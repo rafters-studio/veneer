@@ -93,15 +93,23 @@ pub fn generate_command_mdx(
         writeln!(out, "| --- | --- | --- | --- | --- |").unwrap();
 
         for flag in &flags {
-            let long = flag.long.as_deref().unwrap_or("");
-            let short = flag.short.as_deref().unwrap_or("");
+            let long = flag
+                .long
+                .as_deref()
+                .map(|l| format!("`{}`", l))
+                .unwrap_or_else(|| "-".to_string());
+            let short = flag
+                .short
+                .as_deref()
+                .map(|s| format!("`{}`", s))
+                .unwrap_or_else(|| "-".to_string());
             let required = if flag.required { "Yes" } else { "No" };
-            let default = flag.default.as_deref().unwrap_or("");
+            let default = flag.default.as_deref().unwrap_or("-");
             let desc = &flag.description;
 
             writeln!(
                 out,
-                "| `{}` | `{}` | {} | {} | {} |",
+                "| {} | {} | {} | {} | {} |",
                 long, short, required, default, desc
             )
             .unwrap();
@@ -246,8 +254,8 @@ mod tests {
 
         assert!(mdx.contains("## Flags"));
         assert!(mdx.contains("| Flag | Short | Required | Default | Description |"));
-        assert!(mdx.contains("| `--repo` | `` | Yes |  | Repository name |"));
-        assert!(mdx.contains("| `--verbose` | `-v` | No |  | Show informational messages |"));
+        assert!(mdx.contains("| `--repo` | - | Yes | - | Repository name |"));
+        assert!(mdx.contains("| `--verbose` | `-v` | No | - | Show informational messages |"));
     }
 
     #[test]
