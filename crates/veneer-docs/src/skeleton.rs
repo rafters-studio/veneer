@@ -21,12 +21,20 @@ pub enum SkeletonError {
 }
 
 /// Generate a skeleton MDX page.
-pub fn generate_skeleton(template: &PageTemplate, project_name: &str) -> String {
+pub fn generate_skeleton(
+    template: &PageTemplate,
+    project_name: &str,
+    layout: Option<&str>,
+) -> String {
+    let layout_line = layout
+        .map(|l| format!("layout: {}\n", l))
+        .unwrap_or_default();
+
     match template {
         PageTemplate::GettingStarted => format!(
             "\
 ---
-title: Getting Started
+{layout_line}title: Getting Started
 description: Install and start using {project_name}.
 order: 0
 ---
@@ -49,7 +57,7 @@ order: 0
         PageTemplate::Architecture => format!(
             "\
 ---
-title: Architecture
+{layout_line}title: Architecture
 description: How {project_name} is structured and how the pieces fit together.
 order: 1
 ---
@@ -74,8 +82,8 @@ order: 1
             format!(
                 "\
 ---
-title: {title}
-description: How {topic} works in {project_name}.
+{layout_line}title: {title}
+description: Learn about {topic} in {project_name}.
 order: 10
 ---
 
@@ -106,6 +114,7 @@ pub fn generate_default_skeletons(
     project_name: &str,
     command_groups: &[String],
     output_dir: &Path,
+    layout: Option<&str>,
 ) -> Result<Vec<GeneratedPage>, SkeletonError> {
     let mut pages = Vec::new();
 
@@ -113,7 +122,7 @@ pub fn generate_default_skeletons(
     let gs_path = output_dir.join("getting-started.mdx");
     if write_if_new(
         &gs_path,
-        &generate_skeleton(&PageTemplate::GettingStarted, project_name),
+        &generate_skeleton(&PageTemplate::GettingStarted, project_name, layout),
     )? {
         pages.push(GeneratedPage {
             path: gs_path,
@@ -126,7 +135,7 @@ pub fn generate_default_skeletons(
     let arch_path = output_dir.join("architecture.mdx");
     if write_if_new(
         &arch_path,
-        &generate_skeleton(&PageTemplate::Architecture, project_name),
+        &generate_skeleton(&PageTemplate::Architecture, project_name, layout),
     )? {
         pages.push(GeneratedPage {
             path: arch_path,
@@ -142,7 +151,10 @@ pub fn generate_default_skeletons(
         let template = PageTemplate::Concept {
             topic: group.clone(),
         };
-        if write_if_new(&concept_path, &generate_skeleton(&template, project_name))? {
+        if write_if_new(
+            &concept_path,
+            &generate_skeleton(&template, project_name, layout),
+        )? {
             pages.push(GeneratedPage {
                 path: concept_path,
                 title: capitalize(group),
@@ -185,7 +197,7 @@ mod tests {
 
     #[test]
     fn generates_getting_started_with_project_name() {
-        let mdx = generate_skeleton(&PageTemplate::GettingStarted, "legion");
+        let mdx = generate_skeleton(&PageTemplate::GettingStarted, "legion", None);
         assert!(mdx.contains("Install and start using legion"));
         assert!(mdx.contains("{/* veneer:install */}"));
         assert!(mdx.contains("{/* veneer:prerequisites */}"));
@@ -195,7 +207,7 @@ mod tests {
 
     #[test]
     fn generates_architecture_with_project_name() {
-        let mdx = generate_skeleton(&PageTemplate::Architecture, "legion");
+        let mdx = generate_skeleton(&PageTemplate::Architecture, "legion", None);
         assert!(mdx.contains("title: Architecture"));
         assert!(mdx.contains("How legion is structured"));
         assert!(mdx.contains("{/* veneer:project-structure */}"));
@@ -208,9 +220,10 @@ mod tests {
                 topic: "reflections".into(),
             },
             "legion",
+            None,
         );
         assert!(mdx.contains("title: Reflections"));
-        assert!(mdx.contains("How reflections works in legion"));
+        assert!(mdx.contains("Learn about reflections in legion"));
         assert!(mdx.contains("{/* veneer:how-it-works */}"));
     }
 
@@ -223,7 +236,7 @@ mod tests {
         fs::write(&path, "existing content").unwrap();
 
         // Try to generate -- should skip
-        let pages = generate_default_skeletons("test", &[], dir.path()).unwrap();
+        let pages = generate_default_skeletons("test", &[], dir.path(), None).unwrap();
 
         // getting-started was skipped, architecture was created
         assert_eq!(pages.len(), 1);
@@ -238,7 +251,7 @@ mod tests {
     fn generates_concept_pages_from_groups() {
         let dir = tempdir().unwrap();
         let groups = vec!["memory".to_string(), "communication".to_string()];
-        let pages = generate_default_skeletons("legion", &groups, dir.path()).unwrap();
+        let pages = generate_default_skeletons("legion", &groups, dir.path(), None).unwrap();
 
         // getting-started + architecture + 2 concepts = 4
         assert_eq!(pages.len(), 4);
@@ -248,7 +261,7 @@ mod tests {
 
     #[test]
     fn frontmatter_is_valid_yaml() {
-        let mdx = generate_skeleton(&PageTemplate::GettingStarted, "legion");
+        let mdx = generate_skeleton(&PageTemplate::GettingStarted, "legion", None);
         assert!(mdx.starts_with("---\n"));
         let end = mdx.find("\n---\n").unwrap();
         let yaml = &mdx[4..end];
