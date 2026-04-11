@@ -18,7 +18,7 @@ use oxc_parser::Parser;
 use oxc_span::SourceType;
 use regex::Regex;
 
-use crate::ts_helpers::{extract_nested_object_classes, extract_string_value, unwrap_type_expressions};
+use crate::ts_helpers::{extract_string_value, unwrap_type_expressions};
 
 // ---------------------------------------------------------------------------
 // Public API
@@ -32,8 +32,11 @@ use crate::ts_helpers::{extract_nested_object_classes, extract_string_value, unw
 /// blocks that define custom properties (`var(--...)`) referenced by the
 /// matched utilities.
 ///
+/// Warns (via `eprintln!`) for any class names with no matching `@utility`
+/// block — these may be Tailwind built-ins or `@theme` tokens.
+///
 /// Returns an empty string if no classes match.  Never panics on malformed
-/// CSS — any block that cannot be parsed is silently skipped.
+/// CSS — unclosed blocks are silently skipped.
 pub fn scope_css(classes: &[String], full_css: &str) -> String {
     if classes.is_empty() || full_css.is_empty() {
         return String::new();
@@ -55,11 +58,17 @@ pub fn scope_css(classes: &[String], full_css: &str) -> String {
         .filter(|u| base_names.contains(&u.name))
         .collect();
 
-    if matched.is_empty() {
-        // Warn about classes with no matching @utility (they may be from @theme).
-        for name in &base_names {
-            eprintln!("veneer/scope_css: no @utility block found for class '{name}' (may be a @theme token)");
+    // Warn about classes that have no matching @utility block.
+    let matched_names: HashSet<&str> = matched.iter().map(|u| u.name.as_str()).collect();
+    for name in &base_names {
+        if !matched_names.contains(name.as_str()) {
+            eprintln!(
+                "veneer/scope_css: no @utility block found for '{name}' (may be a @theme token)"
+            );
         }
+    }
+
+    if matched.is_empty() {
         return String::new();
     }
 
@@ -69,23 +78,15 @@ pub fn scope_css(classes: &[String], full_css: &str) -> String {
         .flat_map(|u| collect_var_references(&u.body))
         .collect();
 
-    // Warn about unmatched classes.
-    let matched_names: HashSet<&str> = matched.iter().map(|u| u.name.as_str()).collect();
-    for name in &base_names {
-        if !matched_names.contains(name.as_str()) {
-            eprintln!("veneer/scope_css: no @utility block found for class '{name}' (may be a @theme token)");
-        }
-    }
-
-    // Collect @theme blocks that define any of the referenced variables.
-    let theme_blocks = extract_relevant_theme_blocks(full_css, &referenced_vars);
+    // Collect @theme declarations that define any of the referenced variables.
+    let theme_decls = extract_relevant_theme_decls(full_css, &referenced_vars);
 
     // Assemble the output.
     let mut out = String::new();
 
-    if !theme_blocks.is_empty() {
+    if !theme_decls.is_empty() {
         out.push_str("@theme {\n");
-        for declaration in &theme_blocks {
+        for declaration in &theme_decls {
             out.push_str("  ");
             out.push_str(declaration);
             out.push('\n');
@@ -94,7 +95,11 @@ pub fn scope_css(classes: &[String], full_css: &str) -> String {
     }
 
     for block in &matched {
-        out.push_str(&format!("@utility {} {{\n{}}}\n\n", block.name, block.body));
+        out.push_str("@utility ");
+        out.push_str(&block.name);
+        out.push_str(" {\n");
+        out.push_str(&block.body);
+        out.push_str("}\n\n");
     }
 
     out.trim_end().to_string()
@@ -139,76 +144,65 @@ struct UtilityBlock {
 // CSS parsing helpers
 // ---------------------------------------------------------------------------
 
-/// Strip variant/modifier prefixes from a class token.
+/// Strip all variant/modifier prefixes from a class token, returning the
+/// base utility name.
 ///
 /// Examples:
-/// - `hover:bg-primary` → `bg-primary`
-/// - `@sm:text-lg`      → `text-lg`
-/// - `focus-visible:ring-2` → `ring-2`
-/// - `dark:text-white`  → `text-white`
+/// - `hover:bg-primary`        → `bg-primary`
+/// - `@sm:text-lg`             → `text-lg`
+/// - `focus-visible:ring-2`    → `ring-2`
+/// - `dark:text-white`         → `text-white`
+/// - `@sm:hover:flex`          → `flex`
 fn strip_modifiers(class: &str) -> String {
-    // Handle container-query variants that start with '@'
-    // e.g. "@sm:text-lg" becomes "sm:text-lg"
-    let class = class.strip_prefix('@').unwrap_or(class);
-
-    // Strip everything up to and including the last ':'
     match class.rfind(':') {
         Some(idx) => class[idx + 1..].to_string(),
         None => class.to_string(),
     }
 }
 
+/// Find the position of the closing brace that matches the opening brace
+/// at `bytes[start - 1]` (i.e. `start` is the first byte after the `{`).
+///
+/// Returns `Some(absolute_index_of_closing_brace)` or `None` if the block
+/// is unclosed.
+fn find_matching_brace(bytes: &[u8], start: usize) -> Option<usize> {
+    let mut depth: usize = 1;
+    for (i, &b) in bytes[start..].iter().enumerate() {
+        match b {
+            b'{' => depth += 1,
+            b'}' => {
+                depth -= 1;
+                if depth == 0 {
+                    return Some(start + i);
+                }
+            }
+            _ => {}
+        }
+    }
+    None
+}
+
 /// Extract all `@utility name { ... }` blocks from a CSS string.
 ///
-/// Uses a simple brace-depth tracker so nested braces (e.g. media queries
-/// inside a utility) are handled correctly.  Malformed blocks are skipped.
+/// Uses brace-depth tracking so nested braces are handled correctly.
+/// Unclosed blocks are silently skipped.
 fn extract_utility_blocks(css: &str) -> Vec<UtilityBlock> {
-    // Match "@utility <name>" followed by optional whitespace and an opening brace.
     let header_re = match Regex::new(r"@utility\s+([\w-]+)\s*\{") {
         Ok(r) => r,
         Err(_) => return Vec::new(),
     };
 
-    let mut blocks = Vec::new();
     let bytes = css.as_bytes();
-    let len = bytes.len();
+    let mut blocks = Vec::new();
 
     for cap in header_re.captures_iter(css) {
         let name = cap[1].to_string();
+        let body_start = cap.get(0).map(|m| m.end()).unwrap_or(0);
 
-        // Find the position of the opening brace for this capture.
-        let match_end = cap.get(0).map(|m| m.end()).unwrap_or(0);
-        if match_end == 0 || match_end > len {
-            continue;
+        if let Some(body_end) = find_matching_brace(bytes, body_start) {
+            let body = css[body_start..body_end].to_string();
+            blocks.push(UtilityBlock { name, body });
         }
-
-        // Walk forward tracking brace depth; collect the body.
-        let mut depth: usize = 1;
-        let body_start = match_end;
-        let body_bytes = &bytes[body_start..];
-        let mut body_end = 0;
-
-        for (i, &b) in body_bytes.iter().enumerate() {
-            match b {
-                b'{' => depth += 1,
-                b'}' => {
-                    depth -= 1;
-                    if depth == 0 {
-                        body_end = body_start + i;
-                        break;
-                    }
-                }
-                _ => {}
-            }
-        }
-
-        if body_end == 0 {
-            // Unclosed block — skip.
-            continue;
-        }
-
-        let body = css[body_start..body_end].to_string();
-        blocks.push(UtilityBlock { name, body });
     }
 
     blocks
@@ -226,64 +220,37 @@ fn collect_var_references(css_body: &str) -> Vec<String> {
         .collect()
 }
 
-/// Extract `@theme` custom property declarations that match any of the
+/// Extract `@theme` custom property declarations that define any of the
 /// requested variable names.
 ///
 /// Returns individual declaration strings like `--color-primary: oklch(...)`.
-fn extract_relevant_theme_blocks(css: &str, vars: &HashSet<String>) -> Vec<String> {
+fn extract_relevant_theme_decls(css: &str, vars: &HashSet<String>) -> Vec<String> {
     if vars.is_empty() {
         return Vec::new();
     }
 
-    // Match "@theme" followed by optional whitespace and an opening brace.
     let theme_re = match Regex::new(r"@theme\s*\{") {
         Ok(r) => r,
         Err(_) => return Vec::new(),
     };
 
-    // Regex to match a single CSS custom property declaration.
     let decl_re = match Regex::new(r"(--[\w-]+)\s*:[^;]+;") {
         Ok(r) => r,
         Err(_) => return Vec::new(),
     };
 
-    let mut result = Vec::new();
     let bytes = css.as_bytes();
-    let len = bytes.len();
+    let mut result = Vec::new();
 
     for cap in theme_re.captures_iter(css) {
         let block_start = cap.get(0).map(|m| m.end()).unwrap_or(0);
-        if block_start >= len {
-            continue;
-        }
 
-        // Find the end of this @theme block.
-        let mut depth: usize = 1;
-        let mut block_end = 0;
-
-        for (i, &b) in bytes[block_start..].iter().enumerate() {
-            match b {
-                b'{' => depth += 1,
-                b'}' => {
-                    depth -= 1;
-                    if depth == 0 {
-                        block_end = block_start + i;
-                        break;
-                    }
+        if let Some(block_end) = find_matching_brace(bytes, block_start) {
+            let block_body = &css[block_start..block_end];
+            for decl_cap in decl_re.captures_iter(block_body) {
+                if vars.contains(&decl_cap[1]) {
+                    result.push(decl_cap[0].trim().to_string());
                 }
-                _ => {}
-            }
-        }
-
-        if block_end == 0 {
-            continue;
-        }
-
-        let block_body = &css[block_start..block_end];
-        for decl_cap in decl_re.captures_iter(block_body) {
-            let var_name = &decl_cap[1];
-            if vars.contains(var_name) {
-                result.push(decl_cap[0].trim().to_string());
             }
         }
     }
@@ -297,7 +264,6 @@ fn extract_relevant_theme_blocks(css: &str, vars: &HashSet<String>) -> Vec<Strin
 // TypeScript AST walking helpers
 // ---------------------------------------------------------------------------
 
-/// Recursively collect Tailwind class tokens from a single AST statement.
 fn collect_classes_from_statement(
     stmt: &Statement<'_>,
     seen: &mut HashSet<String>,
@@ -305,8 +271,12 @@ fn collect_classes_from_statement(
 ) {
     match stmt {
         Statement::ExportNamedDeclaration(export) => {
-            if let Some(ref decl) = export.declaration {
-                collect_classes_from_declaration(decl, seen, out);
+            if let Some(oxc_ast::ast::Declaration::VariableDeclaration(var_decl)) = &export.declaration {
+                for declarator in &var_decl.declarations {
+                    if let Some(ref init) = declarator.init {
+                        collect_classes_from_expr(unwrap_type_expressions(init), seen, out);
+                    }
+                }
             }
         }
         Statement::VariableDeclaration(var_decl) => {
@@ -320,33 +290,15 @@ fn collect_classes_from_statement(
     }
 }
 
-fn collect_classes_from_declaration(
-    decl: &oxc_ast::ast::Declaration<'_>,
-    seen: &mut HashSet<String>,
-    out: &mut Vec<String>,
-) {
-    if let oxc_ast::ast::Declaration::VariableDeclaration(var_decl) = decl {
-        for declarator in &var_decl.declarations {
-            if let Some(ref init) = declarator.init {
-                collect_classes_from_expr(unwrap_type_expressions(init), seen, out);
-            }
-        }
-    }
-}
-
 fn collect_classes_from_expr(expr: &Expression<'_>, seen: &mut HashSet<String>, out: &mut Vec<String>) {
-    // Try a flat string value first.
+    // Flat string literal — split and add tokens.
     if let Some(value) = extract_string_value(expr) {
         add_classes(&value, seen, out);
         return;
     }
 
-    // Try an object expression — collect all values.
+    // Object expression — recurse into each property value.
     if let Expression::ObjectExpression(obj) = expr {
-        if let Some(all) = extract_nested_object_classes(expr) {
-            add_classes(&all, seen, out);
-        }
-        // Also recurse into nested object values.
         for prop in &obj.properties {
             if let oxc_ast::ast::ObjectPropertyKind::ObjectProperty(p) = prop {
                 collect_classes_from_expr(unwrap_type_expressions(&p.value), seen, out);
@@ -480,8 +432,14 @@ mod tests {
 
     #[test]
     fn scope_css_handles_compound_modifier() {
-        // "focus-visible:ring-2" — ring-2 is not in SAMPLE_CSS, result is empty.
         let classes = vec!["focus-visible:flex".to_string()];
+        let result = scope_css(&classes, SAMPLE_CSS);
+        assert!(result.contains("@utility flex"));
+    }
+
+    #[test]
+    fn scope_css_strips_chained_modifiers() {
+        let classes = vec!["@sm:hover:flex".to_string()];
         let result = scope_css(&classes, SAMPLE_CSS);
         assert!(result.contains("@utility flex"));
     }
@@ -490,7 +448,7 @@ mod tests {
     fn scope_css_does_not_panic_on_malformed_css() {
         let malformed = "@utility broken { color: red; /* unclosed";
         let result = scope_css(&["broken".to_string()], malformed);
-        // Unclosed block is skipped — result is empty (no match).
+        // Unclosed block is skipped — result is empty (no match found).
         assert_eq!(result, "");
     }
 
@@ -524,8 +482,8 @@ export const typographyClasses = {
     #[test]
     fn extract_classes_deduplicates() {
         let classes = extract_classes_from_ts(SAMPLE_TS);
-        let scroll = classes.iter().filter(|c| c.as_str() == "scroll-m-20").count();
-        assert_eq!(scroll, 1, "scroll-m-20 appears twice in source but should be deduped");
+        let count = classes.iter().filter(|c| c.as_str() == "scroll-m-20").count();
+        assert_eq!(count, 1, "scroll-m-20 appears twice in source but must be deduped");
     }
 
     #[test]
