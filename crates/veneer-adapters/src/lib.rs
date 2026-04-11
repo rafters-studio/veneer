@@ -8,6 +8,7 @@ pub mod generator;
 pub mod inline;
 pub mod react;
 pub mod registry;
+pub mod scope;
 pub mod tokens;
 pub mod traits;
 pub(crate) mod ts_helpers;
@@ -19,5 +20,6 @@ pub use generator::{
 pub use inline::{parse_inline_jsx, parse_inline_jsx_all, to_custom_element, InlineJsx, PropValue};
 pub use react::{ComponentStructure, ReactAdapter};
 pub use registry::{CachedComponent, ComponentRegistry, RegistryError};
+pub use scope::{extract_classes_from_ts, scope_css};
 pub use tokens::{parse_dtcg_tokens, DesignToken, DesignTokens, TokenParseError};
 pub use traits::{FrameworkAdapter, TransformContext, TransformError, TransformedBlock};
