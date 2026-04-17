@@ -271,7 +271,9 @@ fn collect_classes_from_statement(
 ) {
     match stmt {
         Statement::ExportNamedDeclaration(export) => {
-            if let Some(oxc_ast::ast::Declaration::VariableDeclaration(var_decl)) = &export.declaration {
+            if let Some(oxc_ast::ast::Declaration::VariableDeclaration(var_decl)) =
+                &export.declaration
+            {
                 for declarator in &var_decl.declarations {
                     if let Some(ref init) = declarator.init {
                         collect_classes_from_expr(unwrap_type_expressions(init), seen, out);
@@ -290,7 +292,11 @@ fn collect_classes_from_statement(
     }
 }
 
-fn collect_classes_from_expr(expr: &Expression<'_>, seen: &mut HashSet<String>, out: &mut Vec<String>) {
+fn collect_classes_from_expr(
+    expr: &Expression<'_>,
+    seen: &mut HashSet<String>,
+    out: &mut Vec<String>,
+) {
     // Flat string literal — split and add tokens.
     if let Some(value) = extract_string_value(expr) {
         add_classes(&value, seen, out);
@@ -482,8 +488,14 @@ export const typographyClasses = {
     #[test]
     fn extract_classes_deduplicates() {
         let classes = extract_classes_from_ts(SAMPLE_TS);
-        let count = classes.iter().filter(|c| c.as_str() == "scroll-m-20").count();
-        assert_eq!(count, 1, "scroll-m-20 appears twice in source but must be deduped");
+        let count = classes
+            .iter()
+            .filter(|c| c.as_str() == "scroll-m-20")
+            .count();
+        assert_eq!(
+            count, 1,
+            "scroll-m-20 appears twice in source but must be deduped"
+        );
     }
 
     #[test]
