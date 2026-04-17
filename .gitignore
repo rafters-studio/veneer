@@ -16,3 +16,6 @@
 .DS_Store
 Thumbs.db
 .playwright-mcp/
+
+# Claude Code worktrees -- prevent agent gitlinks from leaking into commits
+.claude/worktrees/

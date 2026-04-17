@@ -2446,6 +2446,7 @@ dependencies = [
  "oxc_parser",
  "oxc_span",
  "pretty_assertions",
+ "regex",
  "serde",
  "serde_json",
  "tempfile",
