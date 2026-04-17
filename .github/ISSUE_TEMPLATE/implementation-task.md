@@ -79,12 +79,8 @@ fn test_error_case() {
 ### Crate Dependency Flow
 ```
 veneer (CLI binary)
-  +-- veneer-server (dev server + HMR)
-  |     +-- veneer-mdx (MDX parsing)
-  |     +-- veneer-adapters (JSX -> Web Components)
-  +-- veneer-static (static site builder)
-        +-- veneer-mdx
-        +-- veneer-adapters
+  +-- veneer-adapters (JSX -> Web Components, scope_css)
+  +-- veneer-docs (CLI --help parser, sidebar, MDX skeletons)
 ```
 
 ### Usage Examples

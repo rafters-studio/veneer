@@ -1,376 +1,98 @@
 # Architecture
 
-This document describes the technical architecture of veneer.
+## What veneer is
 
-## Design Philosophy
+A documentation engine that emits MDX for consumption by an Astro site. One command today (`extract`) and a component-transformation library (`veneer-adapters`) that turns framework-specific JSX into framework-less Web Components.
 
-veneer is built on a key insight: **documentation previews don't need to react, they just need to look and feel right**. Component previews in documentation don't need hooks, state management, or reactive updates. They need:
-
-1. Correct visual rendering
-2. CSS hover/focus/active states
-3. Proper accessibility attributes
-
-By transforming JSX into static Web Components, we eliminate the need for React/Solid runtimes in the documentation site while preserving visual fidelity.
-
-## Crate Overview
+## Workspace
 
 ```
-veneer/
-├── Cargo.toml                 Workspace manifest
-├── crates/
-│   ├── veneer-mdx/           MDX parsing
-│   ├── veneer-adapters/      JSX transformation
-│   ├── veneer-static/        Static site generation
-│   ├── veneer-server/        Development server
-│   └── veneer/          CLI binary
+crates/
+├── veneer            CLI binary — entry, arg parsing, command dispatch
+├── veneer-adapters   JSX → Web Component (React adapter), scope_css
+└── veneer-docs       CLI --help parser, sidebar generation, MDX skeletons
 ```
 
-### Dependency Graph
+### Dependency graph
 
 ```
 veneer (CLI)
-    ├── veneer-server
-    │   ├── veneer-mdx
-    │   └── veneer-adapters
-    └── veneer-static
-        ├── veneer-mdx
-        └── veneer-adapters
+  ├── veneer-adapters
+  └── veneer-docs
 ```
 
-## Crate Details
+No cross-dependencies between the two library crates.
 
-### veneer-mdx
+## veneer-adapters
 
-**Purpose:** Parse MDX files and extract structured content.
+Transforms framework-specific component source into vanilla Web Components so previews work in any site with zero runtime.
 
-**Key Types:**
+Responsibilities:
 
-```rust
-pub struct ParsedDoc {
-    pub frontmatter: Option<Frontmatter>,
-    pub content_html: String,
-    pub code_blocks: Vec<CodeBlock>,
-    pub headings: Vec<Heading>,
-}
+- **React adapter** (`react.rs`) — parses `.tsx` / `.classes.ts` via oxc, extracts variants/sizes/base classes, emits an ES6 class extending `HTMLElement` with Shadow DOM
+- **scope_css** (`scope.rs`) — scopes Tailwind-generated CSS to a specific component's used classes, so a preview on a docs page cannot leak styles into the page shell
+- **Registry discovery** (`registry.rs`) — walks a component source tree to find declared components
+- **TS helpers** (`ts_helpers.rs`) — shared oxc utilities used by react.rs and registry.rs
 
-pub struct Frontmatter {
-    pub title: String,
-    pub description: Option<String>,
-    pub order: Option<i32>,
-    pub nav: bool,
-}
+## veneer-docs
 
-pub struct CodeBlock {
-    pub language: String,
-    pub code: String,
-    pub mode: BlockMode,
-    pub filename: Option<String>,
-}
+Parses a clap binary's `--help` tree and generates MDX.
 
-pub enum BlockMode {
-    Static,   // Code display only
-    Preview,  // Web Component preview
-    Live,     // Future: interactive
-}
-```
+Responsibilities:
 
-**Processing Pipeline:**
+- **`cli_parser.rs`** — reads `--help` stdout, recursively walks subcommands, builds a typed `Command` tree with flags, usage, and required-flag detection
+- **`reference.rs`** — renders the command tree into per-command MDX pages under `reference/`
+- **`skeleton.rs`** — generates editorial MDX pages (getting-started, architecture, one per command group) with veneer-editorial slots
+- **`sidebar.rs`** — produces a JSONL file the consuming Astro site imports to build nav
 
-1. **Frontmatter extraction** - Parse YAML between `---` delimiters
-2. **Markdown parsing** - Convert to HTML via pulldown-cmark
-3. **Code block extraction** - Capture language, mode, and content
-4. **Heading extraction** - Build table of contents with slugified IDs
+## veneer (CLI)
 
-**Implementation Notes:**
+Thin clap wrapper. Dispatches to `commands::extract::run`.
 
-- Uses `pulldown-cmark` for CommonMark parsing
-- YAML parsing via `serde_yaml`
-- Code block modes specified as `tsx preview` or `tsx static`
-
-### veneer-adapters
-
-**Purpose:** Transform JSX source code into Web Component definitions.
-
-**Key Types:**
-
-```rust
-pub trait FrameworkAdapter {
-    fn parse(&self, source: &str, tag_name: &str) -> Result<ComponentInfo, AdapterError>;
-}
-
-pub struct ComponentInfo {
-    pub tag_name: String,
-    pub base_classes: String,
-    pub variant_classes: HashMap<String, HashMap<String, String>>,
-    pub observed_attributes: Vec<String>,
-}
-
-pub struct TransformContext {
-    pub tag_name: String,
-    pub source_code: String,
-}
-
-pub struct TransformedBlock {
-    pub web_component: String,
-    pub preview_html: String,
-}
-```
-
-**React Adapter Pipeline:**
-
-1. **Parse JSX** - Use oxc-parser to build AST
-2. **Extract variants** - Find `variantClasses` Record objects
-3. **Extract sizes** - Find `sizeClasses` Record objects
-4. **Find base classes** - Extract class constants or classy() calls
-5. **Generate Web Component** - Emit ES6 class extending HTMLElement
-
-**Generated Web Component Structure:**
-
-The generator creates Web Components that:
-- Extend `HTMLElement` with Shadow DOM
-- Observe variant/size/disabled attributes
-- Adopt global Tailwind styles via `adoptedStyleSheets`
-- Render with slot-based content projection
-
-Key methods:
-- `connectedCallback()` - Called when element is added to DOM
-- `adoptStyles()` - Copies Tailwind CSS into Shadow DOM
-- `render()` - Updates shadow root content based on attributes
-- `getClasses()` - Computes CSS classes from variant/size
-
-### veneer-static
-
-**Purpose:** Generate static HTML documentation site.
-
-**Key Types:**
-
-```rust
-pub struct SiteBuilder {
-    config: BuildConfig,
-    template_engine: TemplateEngine,
-    asset_pipeline: AssetPipeline,
-}
-
-pub struct BuildConfig {
-    pub input_dir: PathBuf,
-    pub output_dir: PathBuf,
-    pub title: String,
-    pub base_url: String,
-    pub component_dirs: Vec<PathBuf>,
-}
-
-pub struct Page {
-    pub relative_path: PathBuf,
-    pub output_path: PathBuf,
-    pub content: String,
-    pub frontmatter: Option<Frontmatter>,
-    pub web_components: Vec<String>,
-}
-```
-
-**Build Pipeline:**
-
-1. **Discovery** - Walk input directory for `.mdx` files
-2. **Parse** - Process each file through veneer-mdx
-3. **Transform** - Convert preview blocks via veneer-adapters
-4. **Template** - Render pages through minijinja templates
-5. **Assets** - Generate and minify CSS/JS bundles
-6. **Search** - Build search index JSON
-7. **Write** - Output to destination directory
-
-**Parallel Processing:**
-
-```rust
-pages.par_iter()
-    .map(|page| self.render_page(page))
-    .collect::<Result<Vec<_>, _>>()?;
-```
-
-Uses Rayon for parallel page rendering on multi-core systems.
-
-**Template System:**
-
-- Base layout with navigation sidebar
-- Doc template with table of contents
-- Web Component script injection
-- Minijinja for template rendering
-
-### veneer-server
-
-**Purpose:** Development server with hot module replacement.
-
-**Key Types:**
-
-```rust
-pub struct DevServer {
-    config: ServerConfig,
-    watcher: FileWatcher,
-    hub: WsHub,
-}
-
-pub struct ServerConfig {
-    pub port: u16,
-    pub input_dir: PathBuf,
-    pub component_dirs: Vec<PathBuf>,
-    pub open_browser: bool,
-}
-
-pub enum WsMessage {
-    Reload,
-    Update { path: String, content: String },
-    Error { message: String },
-}
-```
-
-**HMR Architecture:**
+## Data flow
 
 ```
-┌─────────────┐     inotify      ┌─────────────┐
-│  File       │ ───────────────> │   Watcher   │
-│  System     │                  │   Thread    │
-└─────────────┘                  └──────┬──────┘
-                                        │
-                                        v
-┌─────────────┐   WebSocket      ┌─────────────┐
-│  Browser    │ <────────────────│   WS Hub    │
-│  Client     │                  │             │
-└─────────────┘                  └─────────────┘
-```
-
-**Debouncing:**
-
-File events are debounced at 100ms to prevent rapid rebuilds during saves:
-
-```rust
-if now.duration_since(last_event_time) < Duration::from_millis(100) {
-    continue;
-}
-```
-
-**Routes:**
-
-| Path | Handler |
-|------|---------|
-| `GET /` | Redirect to first doc page |
-| `GET /*.html` | Render MDX as HTML |
-| `GET /assets/*` | Serve static assets |
-| `WS /ws` | HMR WebSocket connection |
-
-### veneer
-
-**Purpose:** CLI orchestration layer.
-
-**Commands:**
-
-| Command | Description |
-|---------|-------------|
-| `init` | Create docs.toml and docs/ directory |
-| `dev` | Start development server |
-| `build` | Generate static site |
-| `serve` | Preview built site |
-
-**Configuration Loading:**
-
-```rust
-#[derive(Deserialize)]
-pub struct Config {
-    pub docs: DocsConfig,
-    pub server: ServerConfig,
-}
-```
-
-Loaded from `docs.toml` in project root or specified via `--config`.
-
-## Data Flow
-
-### Build Flow
-
-```
-MDX File
+CLI binary (any clap app)
     │
-    v
-┌─────────────────┐
-│  veneer-mdx    │  Parse frontmatter, extract code blocks
-└────────┬────────┘
-         │
-         v
-┌─────────────────┐
-│veneer-adapters │  Transform preview blocks to Web Components
-└────────┬────────┘
-         │
-         v
-┌─────────────────┐
-│ veneer-static  │  Render templates, generate assets
-└────────┬────────┘
-         │
-         v
-    HTML + JS + CSS
+    └─ --help stdout
+           │
+           ▼
+   ┌───────────────┐
+   │ veneer-docs   │  parse, skeleton, sidebar
+   └───────┬───────┘
+           │
+           ▼
+   .mdx files + sidebar.jsonl
+           │
+           ▼
+   Astro site consumes via layout + import
 ```
 
-### Dev Server Flow
+## Web Component pipeline (library, not yet wired into a command)
 
 ```
-File Change
+React source (.tsx + .classes.ts)
     │
-    v
+    ▼
 ┌─────────────────┐
-│  FileWatcher    │  Detect .mdx or component changes
-└────────┬────────┘
-         │
-         v
-┌─────────────────┐
-│  Re-render      │  Process changed file
-└────────┬────────┘
-         │
-         v
-┌─────────────────┐
-│  WS Broadcast   │  Send reload message to clients
-└────────┬────────┘
-         │
-         v
-    Browser Reload
+│ veneer-adapters │  parse, extract variants, emit WC class
+└───────┬─────────┘
+        │
+        ▼
+ES6 class extending HTMLElement
+with Shadow DOM + scoped styles
 ```
 
-## Shadow DOM Style Adoption
+The scope_css function takes the full Tailwind output CSS and the set of classes used by a given component, and returns a minimal stylesheet containing only rules that match those classes (plus their `@keyframes`, custom properties, and `@supports` / `@media` parents). This keeps Shadow DOM style sheets small and prevents cross-component bleed.
 
-The key challenge with Web Components is getting Tailwind CSS styles into Shadow DOM. We solve this with the `adoptedStyleSheets` API:
+## What lives outside this repo
 
-1. Find the global Tailwind stylesheet in the document
-2. Create a new `CSSStyleSheet` for the shadow root
-3. Copy all CSS rules from the global sheet
-4. Adopt the sheet into the shadow DOM
+- **Target sites** — Astro sites (rafters.studio, runlegion.dev, huttspawn.com, gitpress.app) consume the MDX veneer emits. Veneer has no opinion on the site's layout components beyond the `--layout` frontmatter pointer.
+- **Service design artifacts** — moved to a private premium repo.
+- **Registry / component intelligence enrichment** — planned, not yet built. See issues #24–#27.
 
-This approach:
-- Reuses the existing Tailwind CSS (no duplication)
-- Works with CSS custom properties (design tokens)
-- Supports all Tailwind utilities including hover/focus states
+## Design invariants
 
-## Security Considerations
-
-The generated Web Components use controlled rendering:
-- Attribute values are validated before use
-- Class names are looked up from predefined maps
-- User content goes through `<slot>` elements (native browser handling)
-- No arbitrary HTML injection from attributes
-
-## Performance Considerations
-
-### Build Performance
-
-- **Parallel rendering** - Rayon parallelizes page rendering
-- **Incremental builds** - Future: only rebuild changed files
-- **CSS minification** - lightningcss for fast, small output
-
-### Runtime Performance
-
-- **No framework runtime** - Web Components are native
-- **Lazy style adoption** - Styles adopted on `connectedCallback`
-- **Minimal JS** - Only Web Component definitions + HMR client
-
-## Future Enhancements
-
-1. **Incremental builds** - Track file hashes, skip unchanged
-2. **Live mode** - Interactive previews with state
-3. **Multi-framework** - Vue, Svelte adapter support
-4. **Prop tables** - Auto-generate from TypeScript types
-5. **Versioning** - Multi-version documentation sites
+- **Framework-less previews.** Any site should be able to render a veneer preview without running React, Vue, or Solid at runtime. Web Components are the contract.
+- **No inference when data exists.** If intelligence (cognitive load, DO/NEVER, token usage) lives as structured data, read it. Don't guess from source.
+- **MDX as the interchange format.** Astro is the rendering target. Emit MDX with layout pointers; let the site own layout, nav, and typography.
