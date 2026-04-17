@@ -2,45 +2,11 @@
 
 Guide for contributors to veneer.
 
-## Table of Contents
-
-- [Development Setup](#development-setup)
-- [Project Structure](#project-structure)
-- [Building](#building)
-- [Testing](#testing)
-- [Adding Features](#adding-features)
-- [Code Style](#code-style)
-- [Debugging](#debugging)
-- [Release Process](#release-process)
-
-## Development Setup
-
-### Prerequisites
+## Prerequisites
 
 - Rust 1.75 or later
 - Cargo (comes with Rust)
 - Git
-
-### Clone and Build
-
-```bash
-cd packages/docs-rs
-cargo build
-```
-
-### IDE Setup
-
-**VS Code:**
-- Install `rust-analyzer` extension
-- Install `Even Better TOML` for Cargo.toml
-
-**Recommended settings:**
-```json
-{
-  "rust-analyzer.cargo.features": "all",
-  "rust-analyzer.checkOnSave.command": "clippy"
-}
-```
 
 ## Project Structure
 
@@ -52,536 +18,126 @@ veneer/
 ├── .cargo/
 │   └── config.toml         # Cargo configuration
 ├── crates/
-│   ├── veneer-mdx/        # MDX parsing
-│   │   ├── Cargo.toml
-│   │   └── src/
-│   │       ├── lib.rs      # Public API
-│   │       ├── parser.rs   # Main parser
-│   │       ├── frontmatter.rs
-│   │       └── codeblock.rs
-│   ├── veneer-adapters/   # JSX transformation
+│   ├── veneer-adapters/   # JSX → Web Component, scope_css
 │   │   ├── Cargo.toml
 │   │   └── src/
 │   │       ├── lib.rs
-│   │       ├── react.rs    # React adapter
-│   │       └── generator.rs
-│   ├── veneer-static/     # Static site generator
+│   │       ├── react.rs     # React adapter
+│   │       ├── registry.rs  # Component discovery
+│   │       ├── scope.rs     # CSS scoping
+│   │       └── ts_helpers.rs
+│   ├── veneer-docs/       # CLI help parser, MDX skeletons, sidebar
 │   │   ├── Cargo.toml
 │   │   └── src/
 │   │       ├── lib.rs
-│   │       ├── builder.rs
-│   │       ├── templates.rs
-│   │       └── assets.rs
-│   ├── veneer-server/     # Dev server
-│   │   ├── Cargo.toml
-│   │   └── src/
-│   │       ├── lib.rs
-│   │       ├── server.rs
-│   │       ├── watcher.rs
-│   │       └── websocket.rs
-│   └── veneer/       # CLI
+│   │       ├── cli_parser.rs
+│   │       ├── reference.rs
+│   │       ├── skeleton.rs
+│   │       └── sidebar.rs
+│   └── veneer/             # CLI
 │       ├── Cargo.toml
 │       └── src/
 │           ├── main.rs
-│           ├── config.rs
 │           └── commands/
-│               ├── init.rs
-│               ├── dev.rs
-│               ├── build.rs
-│               └── serve.rs
+│               └── extract.rs
 └── docs/
     ├── ARCHITECTURE.md
-    ├── USER_GUIDE.md
     └── DEVELOPER.md
 ```
 
 ## Building
 
-### Debug Build
-
 ```bash
-cargo build
-```
-
-Binary at `target/debug/veneer`
-
-### Release Build
-
-```bash
-cargo build --release
-```
-
-Binary at `target/release/veneer`
-
-### Build Specific Crate
-
-```bash
-cargo build -p veneer-mdx
-cargo build -p veneer-adapters
-```
-
-### Check Without Building
-
-```bash
-cargo check
+cargo build                      # debug
+cargo build --release            # release → target/release/veneer
+cargo build -p veneer-adapters   # one crate
+cargo check                      # no binary
 ```
 
 ## Testing
 
-### Run All Tests
-
 ```bash
-cargo test
-```
-
-### Run Tests for Specific Crate
-
-```bash
-cargo test -p veneer-mdx
-cargo test -p veneer-adapters
-cargo test -p veneer-server
-cargo test -p veneer-static
-```
-
-### Run Specific Test
-
-```bash
-cargo test -p veneer-mdx parses_complete_mdx
-```
-
-### Run Tests with Output
-
-```bash
-cargo test -- --nocapture
-```
-
-### Test Coverage
-
-```bash
-cargo install cargo-tarpaulin
-cargo tarpaulin --out Html
-```
-
-### Writing Tests
-
-Each crate has tests in the same file as the code:
-
-```rust
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_name() {
-        // Arrange
-        let input = "test input";
-
-        // Act
-        let result = function_under_test(input);
-
-        // Assert
-        assert_eq!(result, expected);
-    }
-}
-```
-
-For async tests:
-
-```rust
-#[tokio::test]
-async fn async_test() {
-    let result = async_function().await;
-    assert!(result.is_ok());
-}
+cargo test                                            # all
+cargo test -p veneer-adapters                         # one crate
+cargo test -p veneer-adapters scope_extracts_rules    # one test
+cargo test -- --nocapture                             # with stdout
 ```
 
 ## Adding Features
 
-### Adding a New Adapter
+### New framework adapter
 
-1. Create new file in `veneer-adapters/src/`:
+1. Create `crates/veneer-adapters/src/<framework>.rs`
+2. Implement the extraction functions (see `react.rs` as the reference)
+3. Re-export from `lib.rs`
+4. Add tests at the bottom of the file under `#[cfg(test)] mod tests`
 
-```rust
-// solid.rs
-use crate::{AdapterError, ComponentInfo, FrameworkAdapter};
+### New CLI command
 
-pub struct SolidAdapter;
-
-impl FrameworkAdapter for SolidAdapter {
-    fn parse(&self, source: &str, tag_name: &str) -> Result<ComponentInfo, AdapterError> {
-        // Implementation
-    }
-}
-```
-
-2. Export from `lib.rs`:
-
-```rust
-mod solid;
-pub use solid::SolidAdapter;
-```
-
-3. Add tests:
-
-```rust
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn parses_solid_component() {
-        let adapter = SolidAdapter;
-        let source = r#"..."#;
-        let result = adapter.parse(source, "my-component");
-        assert!(result.is_ok());
-    }
-}
-```
-
-### Adding a CLI Command
-
-1. Create command module in `veneer/src/commands/`:
-
-```rust
-// validate.rs
-use anyhow::Result;
-use crate::config::Config;
-
-pub async fn run(config: &Config) -> Result<()> {
-    println!("Validating documentation...");
-    // Implementation
-    Ok(())
-}
-```
-
-2. Add to CLI in `main.rs`:
-
-```rust
-#[derive(Subcommand)]
-enum Commands {
-    // ... existing commands
-    /// Validate documentation files
-    Validate,
-}
-
-// In run():
-Commands::Validate => commands::validate::run(&config).await,
-```
-
-3. Export from `commands/mod.rs`:
-
-```rust
-pub mod validate;
-```
-
-### Adding Template Helpers
-
-In `veneer-static/src/templates.rs`:
-
-```rust
-impl TemplateEngine {
-    pub fn new() -> Self {
-        let mut env = Environment::new();
-
-        // Add custom filter
-        env.add_filter("uppercase", |s: String| s.to_uppercase());
-
-        // Add custom function
-        env.add_function("now", || {
-            chrono::Utc::now().to_rfc3339()
-        });
-
-        // ... rest of setup
-    }
-}
-```
+1. Create `crates/veneer/src/commands/<name>.rs` with a `run` function and an `Args` struct derived from `clap::Args`
+2. Add the variant to the `Commands` enum in `main.rs` and dispatch in the `match`
+3. Export from `commands/mod.rs`
 
 ## Code Style
 
-### Formatting
+Formatting and linting:
 
 ```bash
 cargo fmt
+cargo clippy --all-targets -- -D warnings
 ```
 
-### Linting
+Guidelines:
 
-```bash
-cargo clippy
-```
-
-### Guidelines
-
-1. **Error Handling**
-   - Use `thiserror` for library errors
-   - Use `anyhow` for application errors
-   - Provide context with `.context("message")`
-
-2. **Documentation**
-   - Document all public items
-   - Use `///` for doc comments
-   - Include examples where helpful
-
-3. **Naming**
-   - Types: `PascalCase`
-   - Functions/methods: `snake_case`
-   - Constants: `SCREAMING_SNAKE_CASE`
-   - Modules: `snake_case`
-
-4. **Imports**
-   - Group: std, external crates, internal crates, local modules
-   - Use explicit imports over globs
-
-5. **Testing**
-   - Test public API surface
-   - Use descriptive test names
-   - One assertion per test when practical
+- **Error handling** — `thiserror` for library errors, `anyhow` for the CLI, `.context("…")` when the call site adds meaning.
+- **Docs** — `///` on public items.
+- **Naming** — types `PascalCase`, functions `snake_case`, constants `SCREAMING_SNAKE_CASE`.
+- **Imports** — std, external, internal, local — grouped and explicit. No globs.
+- **No emoji** in code, comments, or docs (project policy).
+- **No `unsafe`** (project policy).
 
 ## Debugging
 
-### Enable Debug Logging
-
 ```bash
-RUST_LOG=debug cargo run -- dev
+RUST_LOG=debug cargo run -- extract --project ./some-cli --binary ./some-cli/target/debug/some-cli
+RUST_LOG=veneer_adapters=debug,veneer_docs=info cargo run -- extract ...
 ```
 
-Levels: `error`, `warn`, `info`, `debug`, `trace`
+Levels: `error`, `warn`, `info`, `debug`, `trace`.
 
-### Per-Crate Logging
-
-```bash
-RUST_LOG=veneer_server=debug,veneer_mdx=info cargo run -- dev
-```
-
-### Debug Build with Symbols
-
-```bash
-RUSTFLAGS="-C debuginfo=2" cargo build
-```
-
-### Using debugger
-
-**VS Code:**
-1. Install `CodeLLDB` extension
-2. Add launch configuration:
+VS Code launch config (CodeLLDB):
 
 ```json
 {
   "type": "lldb",
   "request": "launch",
-  "name": "Debug veneer",
+  "name": "Debug veneer extract",
   "program": "${workspaceFolder}/target/debug/veneer",
-  "args": ["dev"],
+  "args": ["extract", "--project", "./some-cli", "--binary", "./some-cli/target/debug/some-cli"],
   "cwd": "${workspaceFolder}"
 }
 ```
 
-### Common Issues
-
-**Linker Errors:**
-```bash
-# Remove any custom linker settings
-rm .cargo/config.toml
-cargo clean
-cargo build
-```
-
-**Dependency Conflicts:**
-```bash
-cargo update
-cargo clean
-cargo build
-```
-
-**Test Flakiness:**
-- Increase timeouts for async tests
-- Use `tokio::time::sleep` instead of `std::thread::sleep`
-- Check for race conditions in file watcher tests
-
 ## Release Process
 
-### Version Bump
-
-Update version in all `Cargo.toml` files:
-
-```toml
-[package]
-version = "0.2.0"
-```
-
-### Changelog
-
-Update `CHANGELOG.md`:
-
-```markdown
-## [0.2.0] - 2024-01-15
-
-### Added
-- New feature description
-
-### Changed
-- Changed behavior description
-
-### Fixed
-- Bug fix description
-```
-
-### Create Release
+Tag-driven. GitHub Actions (`.github/workflows/release.yml`) builds binaries for x86_64-linux, x86_64-macos, aarch64-macos, and x86_64-windows on any `v*` tag push, uploads artifacts, and generates release notes.
 
 ```bash
-# Ensure tests pass
-cargo test
-
-# Build release
-cargo build --release
-
-# Tag release
+# 1. Bump versions in root Cargo.toml [workspace.package] if needed
+# 2. Commit & push
+# 3. Tag
 git tag v0.2.0
 git push origin v0.2.0
 ```
 
-### Publish to crates.io (future)
+## CI
 
-```bash
-cargo publish -p veneer-mdx
-cargo publish -p veneer-adapters
-cargo publish -p veneer-static
-cargo publish -p veneer-server
-cargo publish -p veneer
-```
+`.github/workflows/ci.yml` runs on push to main and every PR:
 
-## Crate Responsibilities
+- `cargo check`
+- `cargo fmt --all -- --check`
+- `cargo clippy --all-targets -- -D warnings`
+- `shellcheck install.sh`
+- `cargo test` on ubuntu, macos, windows
 
-### veneer-mdx
-
-**Owns:**
-- MDX file parsing
-- Frontmatter extraction
-- Code block identification
-- Heading extraction for TOC
-
-**Does Not Own:**
-- HTML rendering (uses pulldown-cmark)
-- YAML parsing (uses serde_yaml)
-
-### veneer-adapters
-
-**Owns:**
-- JSX to Web Component transformation
-- Variant/size class extraction
-- Web Component code generation
-
-**Does Not Own:**
-- JSX parsing (uses oxc-parser)
-- Runtime behavior of Web Components
-
-### veneer-static
-
-**Owns:**
-- Site build orchestration
-- Template rendering
-- Asset pipeline
-- Search index generation
-
-**Does Not Own:**
-- MDX parsing (uses veneer-mdx)
-- JSX transformation (uses veneer-adapters)
-- Template engine (uses minijinja)
-
-### veneer-server
-
-**Owns:**
-- HTTP server
-- WebSocket HMR
-- File watching
-- Live page rendering
-
-**Does Not Own:**
-- HTTP framework (uses axum)
-- File watching implementation (uses notify)
-
-### veneer
-
-**Owns:**
-- CLI interface
-- Configuration loading
-- Command orchestration
-
-**Does Not Own:**
-- Build logic (uses veneer-static)
-- Dev server logic (uses veneer-server)
-
-## Performance Profiling
-
-### Build Time Analysis
-
-```bash
-cargo build --timings
-# Opens target/cargo-timings/cargo-timing.html
-```
-
-### Runtime Profiling
-
-```bash
-cargo install flamegraph
-cargo flamegraph --bin veneer -- build
-```
-
-### Benchmark Specific Operations
-
-```rust
-#[cfg(test)]
-mod benches {
-    use test::Bencher;
-
-    #[bench]
-    fn bench_parse_mdx(b: &mut Bencher) {
-        let input = include_str!("../fixtures/large.mdx");
-        b.iter(|| parse_mdx(input));
-    }
-}
-```
-
-Run with:
-```bash
-cargo bench
-```
-
-## Troubleshooting Development
-
-### Cargo Cache Issues
-
-```bash
-cargo clean
-rm -rf ~/.cargo/registry/cache
-cargo build
-```
-
-### Lock File Conflicts
-
-```bash
-cargo update
-git add Cargo.lock
-```
-
-### IDE Not Finding Types
-
-```bash
-# Rebuild proc macros
-cargo clean -p oxc_ast_macros
-cargo build
-```
-
-### Tests Timeout
-
-Increase test timeout:
-
-```rust
-#[tokio::test(flavor = "multi_thread")]
-async fn slow_test() {
-    tokio::time::timeout(
-        Duration::from_secs(30),
-        async_operation()
-    ).await.unwrap();
-}
-```
+All five jobs must pass before merge.
