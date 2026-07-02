@@ -23,6 +23,9 @@ pub struct Cli {
 enum Commands {
     /// Extract documentation from a target project
     Extract(commands::extract::ExtractArgs),
+
+    /// Add veneer to a project by creating only veneer-owned files
+    Init(commands::init::InitArgs),
 }
 
 #[tokio::main]
@@ -40,6 +43,9 @@ async fn main() -> Result<()> {
     match cli.command {
         Commands::Extract(args) => {
             commands::extract::run(args).await?;
+        }
+        Commands::Init(args) => {
+            commands::init::run(args).await?;
         }
     }
 

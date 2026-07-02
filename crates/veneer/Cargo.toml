@@ -19,3 +19,6 @@ tracing-subscriber = { workspace = true }
 
 veneer-adapters = { workspace = true }
 veneer-docs = { workspace = true }
+
+[dev-dependencies]
+tempfile = "3"
