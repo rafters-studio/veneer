@@ -188,8 +188,7 @@ fn render_source_item(
     item: &DiscoveredItem,
     source: &IntelligenceSource,
 ) -> Result<RenderedComponent, String> {
-    let source_text = fs::read_to_string(&item.source_path)
-        .map_err(|error| format!("failed to read {}: {error}", item.source_path.display()))?;
+    let source_text = read_source_file(&item.source_path)?;
 
     let Some((_, structure)) = extract_component_candidate(&item.source_path, &source_text) else {
         return Err(format!(
@@ -263,8 +262,7 @@ struct RenderableManifestFile {
 /// passthrough preview (the manifest declares blocks, not classes) plus
 /// the intelligence the manifest declares.
 fn render_manifest_composite(item: &DiscoveredItem) -> Result<RenderedComponent, String> {
-    let text = fs::read_to_string(&item.source_path)
-        .map_err(|error| format!("failed to read {}: {error}", item.source_path.display()))?;
+    let text = read_source_file(&item.source_path)?;
     let parsed: RenderableManifestFile = serde_json::from_str(&text).map_err(|error| {
         format!(
             "malformed composite manifest {}: {error}",
@@ -463,11 +461,15 @@ fn read_family_jsdoc(path: &Path, own_source: &str) -> Result<JsDocIntelligence,
     collect_jsdoc_intelligence(own_source, &mut merged);
 
     for sibling in family_files(path) {
-        let text = fs::read_to_string(&sibling)
-            .map_err(|error| format!("failed to read {}: {error}", sibling.display()))?;
+        let text = read_source_file(&sibling)?;
         collect_jsdoc_intelligence(&text, &mut merged);
     }
     Ok(merged)
+}
+
+/// Read a source file, naming the file in the failure reason.
+fn read_source_file(path: &Path) -> Result<String, String> {
+    fs::read_to_string(path).map_err(|error| format!("failed to read {}: {error}", path.display()))
 }
 
 /// The same-stem sibling files of a component source file, excluding the
