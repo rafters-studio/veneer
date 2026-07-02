@@ -6,6 +6,7 @@
 pub mod conventions;
 pub mod generator;
 pub mod inline;
+pub mod rafters_source;
 pub mod react;
 pub mod registry;
 pub mod scope;
@@ -18,6 +19,11 @@ pub use generator::{
     generate_controls_panel, generate_passthrough_web_component, generate_web_component,
 };
 pub use inline::{parse_inline_jsx, parse_inline_jsx_all, to_custom_element, InlineJsx, PropValue};
+pub use rafters_source::{
+    read_rafters_namespace, AccessibilityMatrices, ContrastMatrix, ContrastPair,
+    IntelligenceSource, NamespaceError, NamespaceFile, NamespaceToken, OklchComponents,
+    RaftersNamespace, StructuredValue, TokenValue, UsagePatterns, UserOverride,
+};
 pub use react::{ComponentStructure, ReactAdapter};
 pub use registry::{CachedComponent, ComponentRegistry, RegistryError};
 pub use scope::{extract_classes_from_ts, scope_css};

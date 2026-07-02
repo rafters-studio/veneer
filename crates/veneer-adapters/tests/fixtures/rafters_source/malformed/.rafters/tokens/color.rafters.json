@@ -1,0 +1,5 @@
+{
+  "$schema": "https://rafters.studio/schemas/namespace-tokens.json",
+  "namespace": "color",
+  "tokens": [
+    { "name": "neutral-50", "value": "oklch(0.985 0 0)",

@@ -1,0 +1,88 @@
+{
+  "$schema": "https://rafters.studio/schemas/namespace-tokens.json",
+  "namespace": "semantic",
+  "version": "1.0.0",
+  "generatedAt": "2026-04-08T22:29:57.065Z",
+  "tokens": [
+    {
+      "name": "background",
+      "value": { "family": "neutral", "position": "50" },
+      "category": "color",
+      "namespace": "semantic",
+      "semanticMeaning": "Primary page background color",
+      "usageContext": ["page-bg", "app-background"],
+      "usagePatterns": {
+        "do": ["Use for main page background"],
+        "never": ["Use for interactive elements"]
+      },
+      "dependsOn": ["neutral-50", "neutral-950"],
+      "containerQueryAware": true,
+      "description": "Primary page background color. Light: neutral-50, Dark: neutral-950.",
+      "generatedAt": "2026-03-29T22:50:41.877Z",
+      "requiresConfirmation": false
+    },
+    {
+      "name": "primary",
+      "value": {
+        "name": "balanced-intense-copper",
+        "token": "primary",
+        "tokenId": "color-0.550-0.280-27",
+        "scale": [
+          { "l": 0.95, "c": 0.084, "h": 27, "alpha": 1 },
+          { "l": 0.896, "c": 0.28, "h": 27, "alpha": 1 },
+          { "l": 0.839, "c": 0.28, "h": 27, "alpha": 1 },
+          { "l": 0.78, "c": 0.28, "h": 27, "alpha": 1 },
+          { "l": 0.716, "c": 0.28, "h": 27, "alpha": 1 },
+          { "l": 0.645, "c": 0.28, "h": 27, "alpha": 1 },
+          { "l": 0.55, "c": 0.28, "h": 27, "alpha": 1 },
+          { "l": 0.45, "c": 0.28, "h": 27, "alpha": 1 },
+          { "l": 0.35, "c": 0.28, "h": 27, "alpha": 1 },
+          { "l": 0.25, "c": 0.28, "h": 27, "alpha": 1 },
+          { "l": 0.15, "c": 0.28, "h": 27, "alpha": 1 }
+        ],
+        "accessibility": {
+          "wcagAA": {
+            "normal": [[0, 7], [0, 8], [0, 9], [0, 10], [1, 8]],
+            "large": [[0, 5], [0, 6], [0, 7], [1, 6]]
+          },
+          "wcagAAA": {
+            "normal": [[0, 9], [0, 10]],
+            "large": [[0, 7], [0, 8]]
+          },
+          "onWhite": {
+            "aa": [7, 8, 9, 10],
+            "aaa": [9, 10],
+            "contrastRatio": 4.83,
+            "wcagAA": true,
+            "wcagAAA": false
+          },
+          "apca": { "minFontSize": 16, "onBlack": 42.1, "onWhite": 68.4 }
+        },
+        "analysis": {
+          "temperature": "warm",
+          "isLight": false,
+          "name": "balanced-intense-copper"
+        }
+      },
+      "category": "color",
+      "namespace": "semantic",
+      "semanticMeaning": "Primary brand color for main actions and emphasis",
+      "usageContext": ["buttons", "links", "brand"],
+      "trustLevel": "high",
+      "consequence": "reversible",
+      "usagePatterns": {
+        "do": ["Use for primary actions"],
+        "never": ["Use for destructive actions"]
+      },
+      "userOverride": {
+        "previousValue": "{\"name\":\"dim-honest-plum\"}",
+        "reason": "Onboarded from --primary: Sean wants true red as primary to test onboard cascade"
+      },
+      "dependsOn": [],
+      "containerQueryAware": true,
+      "description": "Primary brand color",
+      "generatedAt": "2026-04-08T22:29:57.065Z",
+      "requiresConfirmation": true
+    }
+  ]
+}

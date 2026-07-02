@@ -1,0 +1,15 @@
+{
+  "$schema": "https://rafters.studio/schemas/namespace-tokens.json",
+  "namespace": "color",
+  "version": "1.0.0",
+  "tokens": [
+    {
+      "name": "neutral-50",
+      "value": 42,
+      "category": "color",
+      "namespace": "color",
+      "containerQueryAware": true,
+      "description": "Token whose value has an unsupported JSON type"
+    }
+  ]
+}

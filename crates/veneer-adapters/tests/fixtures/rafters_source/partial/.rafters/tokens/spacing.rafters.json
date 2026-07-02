@@ -1,0 +1,17 @@
+{
+  "$schema": "https://rafters.studio/schemas/namespace-tokens.json",
+  "namespace": "spacing",
+  "version": "1.0.0",
+  "generatedAt": "2026-03-29T22:50:41.878Z",
+  "tokens": [
+    {
+      "name": "spacing-0",
+      "value": "0",
+      "category": "spacing",
+      "namespace": "spacing",
+      "generationRule": "calc({spacing-base} * 0)",
+      "containerQueryAware": true,
+      "description": "Zero spacing"
+    }
+  ]
+}

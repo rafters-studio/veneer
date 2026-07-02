@@ -1,0 +1,46 @@
+{
+  "$schema": "https://rafters.studio/schemas/namespace-tokens.json",
+  "namespace": "color",
+  "version": "1.0.0",
+  "generatedAt": "2026-03-29T22:50:41.876Z",
+  "tokens": [
+    {
+      "name": "neutral-50",
+      "value": "oklch(0.985 0 0)",
+      "category": "color",
+      "namespace": "color",
+      "semanticMeaning": "neutral shade at 50 level - light background range",
+      "usageContext": ["backgrounds", "cards", "surfaces", "light-mode-bg"],
+      "progressionSystem": "custom",
+      "scalePosition": 0,
+      "containerQueryAware": true,
+      "description": "neutral color at 50 position (OKLCH L=0.985)",
+      "generatedAt": "2026-03-29T22:50:41.876Z"
+    },
+    {
+      "name": "neutral",
+      "value": {
+        "name": "neutral",
+        "token": "neutral",
+        "use": "Foundation neutral palette for backgrounds, borders, text, and UI chrome.",
+        "scale": [
+          { "l": 0.985, "c": 0, "h": 0, "alpha": 1 },
+          { "l": 0.967, "c": 0, "h": 0, "alpha": 1 },
+          { "l": 0.92, "c": 0, "h": 0, "alpha": 1 },
+          { "l": 0.869, "c": 0, "h": 0, "alpha": 1 },
+          { "l": 0.707, "c": 0, "h": 0, "alpha": 1 },
+          { "l": 0.552, "c": 0, "h": 0, "alpha": 1 },
+          { "l": 0.442, "c": 0, "h": 0, "alpha": 1 },
+          { "l": 0.371, "c": 0, "h": 0, "alpha": 1 },
+          { "l": 0.269, "c": 0, "h": 0, "alpha": 1 },
+          { "l": 0.205, "c": 0, "h": 0, "alpha": 1 },
+          { "l": 0.145, "c": 0, "h": 0, "alpha": 1 }
+        ]
+      },
+      "category": "color",
+      "namespace": "color",
+      "containerQueryAware": true,
+      "description": "Neutral color family with full OKLCH scale"
+    }
+  ]
+}
