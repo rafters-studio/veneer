@@ -7,6 +7,15 @@ use std::collections::HashMap;
 pub struct TransformContext {
     /// Import mappings: "@components/*" -> "./src/components/*"
     pub import_map: HashMap<String, String>,
+
+    /// Full text of the project stylesheet (for rafters projects,
+    /// `.rafters/output/rafters.css` -- see `read_rafters_stylesheet`).
+    /// The transform scopes the component's CSS out of it for the shadow
+    /// root (FR-VEN-018). Empty means the project declares no compiled
+    /// stylesheet: a component that declares classes then fails to
+    /// transform with an error naming it, never rendering silently
+    /// unstyled.
+    pub stylesheet: String,
 }
 
 /// Result of transforming a component to a Web Component.

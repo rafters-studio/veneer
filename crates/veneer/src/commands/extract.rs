@@ -6,8 +6,9 @@ use std::path::{Path, PathBuf};
 use anyhow::{Context, Result};
 use clap::Args;
 use veneer_adapters::{
-    assess_coverage, not_yet_documented_placeholder, read_rafters_namespace, ComponentRegistry,
-    CoverageReport, CoverageState, PlaceholderArtifact, NOT_YET_DOCUMENTED_STATUS,
+    assess_coverage, not_yet_documented_placeholder, read_rafters_namespace,
+    read_rafters_stylesheet, ComponentRegistry, CoverageReport, CoverageState, PlaceholderArtifact,
+    NOT_YET_DOCUMENTED_STATUS,
 };
 use veneer_docs::{
     generate_default_skeletons, generate_reference_pages, generate_sidebar, mark_required_flags,
@@ -146,7 +147,18 @@ fn run_coverage_phase(
         .with_context(|| format!("failed to read the rafters source in {}", project.display()))?;
     let items = ComponentRegistry::discover(project, &source)
         .with_context(|| format!("failed to discover components in {}", project.display()))?;
-    let assessed = assess_coverage(items, &source);
+    // A project without a compiled stylesheet assesses against empty CSS:
+    // every preview that needs styles is refused (FR-VEN-018) and lands in
+    // not-yet-documented with that refusal as its reason.
+    let full_css = read_rafters_stylesheet(project)
+        .with_context(|| {
+            format!(
+                "failed to read the compiled stylesheet in {}",
+                project.display()
+            )
+        })?
+        .unwrap_or_default();
+    let assessed = assess_coverage(items, &source, &full_css);
 
     let artifacts: Vec<PlaceholderArtifact> = assessed
         .iter()

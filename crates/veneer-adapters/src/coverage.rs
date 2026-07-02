@@ -90,21 +90,31 @@ pub struct AssessedItem {
 /// `false` for every composite manifest even though the manifest path
 /// renders it, so short-circuiting on the flag would mis-bucket
 /// composites with a false reason.
+///
+/// `full_css` is the project stylesheet text (see
+/// `read_rafters_stylesheet`); a preview whose CSS cannot be scoped from
+/// it fails the render (FR-VEN-018) and therefore counts as not yet
+/// documented, with the refusal as its honest reason.
 pub fn assess_coverage(
     items: Vec<DiscoveredItem>,
     source: &IntelligenceSource,
+    full_css: &str,
 ) -> Vec<AssessedItem> {
     items
         .into_iter()
         .map(|item| AssessedItem {
-            state: assess_item(&item, source),
+            state: assess_item(&item, source, full_css),
             item,
         })
         .collect()
 }
 
-fn assess_item(item: &DiscoveredItem, source: &IntelligenceSource) -> CoverageState {
-    match render_component(item, source) {
+fn assess_item(
+    item: &DiscoveredItem,
+    source: &IntelligenceSource,
+    full_css: &str,
+) -> CoverageState {
+    match render_component(item, source, full_css) {
         Ok(_) => CoverageState::Documented,
         Err(error) => CoverageState::NotYetDocumented {
             reason: error.to_string(),
@@ -125,10 +135,11 @@ impl ComponentRegistry {
     pub fn coverage(
         project_root: &Path,
         source: &IntelligenceSource,
+        full_css: &str,
     ) -> Result<CoverageReport, RegistryError> {
         let items = Self::discover(project_root, source)?;
         Ok(CoverageReport::from_assessed(&assess_coverage(
-            items, source,
+            items, source, full_css,
         )))
     }
 }
@@ -204,18 +215,24 @@ fn kind_label(kind: DiscoveredKind) -> &'static str {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::rafters_source::read_rafters_namespace;
+    use crate::rafters_source::{read_rafters_namespace, read_rafters_stylesheet};
     use std::path::PathBuf;
 
     fn fixture_root() -> PathBuf {
         Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/coverage/partial")
     }
 
+    fn fixture_stylesheet() -> String {
+        read_rafters_stylesheet(&fixture_root())
+            .expect("fixture stylesheet must read")
+            .expect("fixture project declares a compiled stylesheet")
+    }
+
     fn assessed_fixture() -> Vec<AssessedItem> {
         let root = fixture_root();
         let source = read_rafters_namespace(&root).expect("fixture namespace must read");
         let items = ComponentRegistry::discover(&root, &source).expect("fixture must discover");
-        assess_coverage(items, &source)
+        assess_coverage(items, &source, &fixture_stylesheet())
     }
 
     // AC: coverage numbers are exact against a fixture with known partial
@@ -257,7 +274,8 @@ mod tests {
     fn coverage_is_queryable_from_the_registry() {
         let root = fixture_root();
         let source = read_rafters_namespace(&root).expect("fixture namespace must read");
-        let report = ComponentRegistry::coverage(&root, &source).expect("coverage must compute");
+        let report = ComponentRegistry::coverage(&root, &source, &fixture_stylesheet())
+            .expect("coverage must compute");
         assert_eq!(report.total, 4);
         assert_eq!(
             report.total,
@@ -298,7 +316,7 @@ mod tests {
             source_path: PathBuf::from("/nonexistent/vanished.tsx"),
             generated: true,
         };
-        let assessed = assess_coverage(vec![item], &IntelligenceSource::NoSource);
+        let assessed = assess_coverage(vec![item], &IntelligenceSource::NoSource, "");
         assert_eq!(assessed.len(), 1);
         match &assessed[0].state {
             CoverageState::NotYetDocumented { reason } => {
