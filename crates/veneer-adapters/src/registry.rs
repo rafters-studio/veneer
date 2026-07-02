@@ -641,15 +641,30 @@ fn read_composite_manifest_name(path: &Path) -> Result<String, RegistryError> {
     Ok(parsed.manifest.id)
 }
 
+/// Canonical fold for discovered-item identity. The same physical item is
+/// named in different casing conventions by the three declaration
+/// mechanisms: kebab-case by composite manifest ids and the `installed`
+/// lists (`hero-banner`), PascalCase by source extraction (`HeroBanner`).
+/// Folding lowercases and drops the word separators those conventions
+/// disagree on, so both spellings key the same dedup slot.
+fn identity_fold(name: &str) -> String {
+    name.chars()
+        .filter(|c| *c != '-' && *c != '_')
+        .flat_map(char::to_lowercase)
+        .collect()
+}
+
 /// Insert an item into the discovered set, merging duplicates of the same
-/// (name, kind) -- for example `button.tsx` alongside `button.classes.ts`.
-/// A generatable sighting wins over a non-generatable one; otherwise the
-/// first sighting (deterministic, the walk is sorted) is kept.
+/// (folded name, kind) -- for example `button.tsx` alongside
+/// `button.classes.ts`, or a `hero-banner` manifest alongside a
+/// `HeroBanner` source file (see [`identity_fold`]). A generatable sighting
+/// wins over a non-generatable one; otherwise the first sighting
+/// (deterministic, the walk is sorted) is kept.
 fn record_discovered(
     set: &mut BTreeMap<(String, DiscoveredKind), DiscoveredItem>,
     item: DiscoveredItem,
 ) {
-    match set.entry((item.name.to_lowercase(), item.kind)) {
+    match set.entry((identity_fold(&item.name), item.kind)) {
         std::collections::btree_map::Entry::Vacant(slot) => {
             slot.insert(item);
         }
@@ -1459,6 +1474,31 @@ export const fooDisabledClasses = 'opacity-50';
     }
 
     #[test]
+    fn casing_divergent_declarations_of_one_composite_merge_into_one_item() {
+        // The same physical composite declared through all three mechanisms
+        // with the two casing conventions they use: manifest.id "hero-banner"
+        // (kebab), installed.composites "hero-banner" (kebab), and a source
+        // file under compositesPath extracting as "HeroBanner" (Pascal).
+        let items = discover_fixture("casing_collision");
+
+        let heroes: Vec<&DiscoveredItem> = items
+            .iter()
+            .filter(|item| identity_fold(&item.name) == "herobanner")
+            .collect();
+        assert_eq!(
+            heroes.len(),
+            1,
+            "one merged item, not one per declaration mechanism: {items:#?}"
+        );
+        assert_eq!(heroes[0].kind, DiscoveredKind::Composite);
+        assert!(
+            heroes[0].generated,
+            "the extractable source sighting must win the merge"
+        );
+        assert_eq!(items.len(), 1, "nothing else in the fixture: {items:#?}");
+    }
+
+    #[test]
     fn ordering_is_deterministic_stable_sort_by_name() {
         let first = discover_fixture("with_namespace");
         let second = discover_fixture("with_namespace");
@@ -1517,6 +1557,34 @@ export const fooDisabledClasses = 'opacity-50';
                 assert!(path.ends_with("components/locked.tsx"));
             }
             other => panic!("expected UnreadableSource, got {other:?}"),
+        }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn untraversable_directory_is_a_walk_failed_error_naming_the_path() {
+        use std::os::unix::fs::PermissionsExt;
+
+        let temp = tempdir().unwrap();
+        let sealed = temp.path().join("sealed");
+        fs::create_dir_all(&sealed).unwrap();
+        fs::write(sealed.join("hidden.tsx"), "export function Hidden() {}").unwrap();
+        fs::set_permissions(&sealed, fs::Permissions::from_mode(0o000)).unwrap();
+
+        let error = ComponentRegistry::discover(temp.path(), &IntelligenceSource::NoSource)
+            .expect_err("an untraversable directory must be a named error, not a silent drop");
+
+        // Restore permissions so the tempdir can clean up on every platform.
+        fs::set_permissions(&sealed, fs::Permissions::from_mode(0o755)).unwrap();
+
+        match error {
+            RegistryError::WalkFailed { path, .. } => {
+                assert!(
+                    path.ends_with("sealed"),
+                    "error must name the path: {path:?}"
+                );
+            }
+            other => panic!("expected WalkFailed, got {other:?}"),
         }
     }
 }

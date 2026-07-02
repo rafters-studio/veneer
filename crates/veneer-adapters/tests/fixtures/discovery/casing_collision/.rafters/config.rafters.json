@@ -1,0 +1,20 @@
+{
+  "framework": "unknown",
+  "componentTarget": "react",
+  "componentsPath": "components",
+  "primitivesPath": "lib/primitives",
+  "compositesPath": "composites",
+  "cssPath": null,
+  "shadcn": false,
+  "exports": {
+    "tailwind": true,
+    "typescript": true,
+    "dtcg": false,
+    "compiled": false
+  },
+  "installed": {
+    "components": [],
+    "primitives": [],
+    "composites": ["hero-banner"]
+  }
+}
