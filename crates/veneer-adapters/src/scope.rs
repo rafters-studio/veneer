@@ -241,10 +241,9 @@ fn match_rules(classes: &[String], full_css: &str) -> ScopedRules {
     let utilities: Vec<UtilityBlock> = extract_utility_blocks(full_css)
         .into_iter()
         .filter(|u| {
-            if exact.contains(u.name.as_str()) {
-                return true;
-            }
-            let mut hit = false;
+            // Check prefixes even on an exact hit so a pattern that also
+            // covers this utility is still recorded as matched.
+            let mut hit = exact.contains(u.name.as_str());
             for prefix in &prefixes {
                 if u.name.starts_with(prefix) {
                     matched_prefixes.insert(prefix);
@@ -758,6 +757,23 @@ export const qualityClasses = {
         assert!(result.contains("@utility text-quality-500"));
         assert!(result.contains("@utility text-quality-600"));
         assert!(!result.contains("border-border"));
+    }
+
+    #[test]
+    fn wildcard_pattern_overlapping_an_exact_match_is_not_reported_unmatched() {
+        // "text-quality-500" matches exactly; "text-quality-*" covers the
+        // same utility. The pattern matched and must not surface as
+        // unmatched noise.
+        let classes = vec!["text-quality-500".to_string(), "text-quality-*".to_string()];
+        let css = "@utility text-quality-500 {\n  color: red;\n}\n";
+        let shadow = shadow_css_for_component("QualityBadge", &classes, css)
+            .expect("both the exact class and the pattern match");
+        assert!(shadow.css.contains(".text-quality-500 {"));
+        assert!(
+            shadow.unmatched.is_empty(),
+            "unmatched: {:?}",
+            shadow.unmatched
+        );
     }
 
     // --- shadow_css_for_component ---
