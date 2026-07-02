@@ -41,6 +41,12 @@ pub enum TransformError {
 
     #[error("Invalid component structure: {0}")]
     InvalidStructure(String),
+
+    /// A component or composite failed to render. Names the item so it
+    /// feeds coverage/staleness surfaces instead of silently vanishing
+    /// from the output (FR-VEN-003).
+    #[error("failed to render {component}: {reason}")]
+    RenderFailed { component: String, reason: String },
 }
 
 /// Trait for framework-specific adapters.

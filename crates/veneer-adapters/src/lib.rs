@@ -6,6 +6,7 @@
 pub mod conventions;
 pub mod generator;
 pub mod inline;
+pub mod intelligence;
 pub mod rafters_source;
 pub mod react;
 pub mod registry;
@@ -17,8 +18,13 @@ pub(crate) mod ts_helpers;
 pub use conventions::ComponentConventions;
 pub use generator::{
     generate_controls_panel, generate_passthrough_web_component, generate_web_component,
+    web_component_block,
 };
 pub use inline::{parse_inline_jsx, parse_inline_jsx_all, to_custom_element, InlineJsx, PropValue};
+pub use intelligence::{
+    render_component, CognitiveLoad, CompiledIntelligence, Constraint, ConstraintKind,
+    DependencyOrigin, DependencyRef, PropDoc, RenderedComponent, TokenRef, VariantDoc,
+};
 pub use rafters_source::{
     read_rafters_namespace, AccessibilityMatrices, ContrastMatrix, ContrastPair,
     IntelligenceSource, NamespaceError, NamespaceFile, NamespaceToken, OklchComponents,
