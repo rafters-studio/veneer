@@ -17,8 +17,8 @@ pub(crate) mod ts_helpers;
 
 pub use conventions::ComponentConventions;
 pub use generator::{
-    generate_controls_panel, generate_passthrough_web_component, generate_web_component,
-    web_component_block,
+    generate_constraints_region, generate_controls_panel, generate_passthrough_web_component,
+    generate_preview_surface, generate_web_component, web_component_block,
 };
 pub use inline::{parse_inline_jsx, parse_inline_jsx_all, to_custom_element, InlineJsx, PropValue};
 pub use intelligence::{
