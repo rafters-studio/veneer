@@ -28,12 +28,7 @@ use oxc_parser::Parser;
 use oxc_span::SourceType;
 use regex::Regex;
 
-use crate::ts_helpers::unwrap_type_expressions;
-
-/// Marker for the dynamic part of a class name composed at render time
-/// (for example the `${tint}` hole in `` `text-quality-${tint}` ``).
-/// Internal to extraction; never appears in returned class tokens.
-const DYNAMIC_HOLE: char = '\u{FFFC}';
+use crate::ts_helpers::{class_template_value, unwrap_type_expressions, DYNAMIC_HOLE};
 
 // ---------------------------------------------------------------------------
 // Public API
@@ -68,28 +63,7 @@ pub fn scope_css(classes: &[String], full_css: &str) -> String {
         return String::new();
     }
 
-    // Assemble the output.
-    let mut out = String::new();
-
-    if !scoped.theme_decls.is_empty() {
-        out.push_str("@theme {\n");
-        for declaration in &scoped.theme_decls {
-            out.push_str("  ");
-            out.push_str(declaration);
-            out.push('\n');
-        }
-        out.push_str("}\n\n");
-    }
-
-    for block in &scoped.utilities {
-        out.push_str("@utility ");
-        out.push_str(&block.name);
-        out.push_str(" {\n");
-        out.push_str(&block.body);
-        out.push_str("}\n\n");
-    }
-
-    out.trim_end().to_string()
+    assemble_css(&scoped, "@theme", |name| format!("@utility {name}"))
 }
 
 /// Failure to extract scoped CSS for a component. Always names the component
@@ -162,10 +136,26 @@ pub fn shadow_css_for_component(
         });
     }
 
+    Ok(ShadowCss {
+        css: assemble_css(&scoped, ":host", |name| format!(".{name}")),
+        unmatched: scoped.unmatched,
+    })
+}
+
+/// Assemble scoped rules into CSS text: one block of theme declarations
+/// (when any) followed by one block per matched utility. The two output
+/// formats differ only in their selectors: Tailwind source form
+/// (`@theme` / `@utility name`) and browser shadow form (`:host` / `.name`).
+fn assemble_css(
+    scoped: &ScopedRules,
+    theme_selector: &str,
+    utility_selector: impl Fn(&str) -> String,
+) -> String {
     let mut out = String::new();
 
     if !scoped.theme_decls.is_empty() {
-        out.push_str(":host {\n");
+        out.push_str(theme_selector);
+        out.push_str(" {\n");
         for declaration in &scoped.theme_decls {
             out.push_str("  ");
             out.push_str(declaration);
@@ -175,17 +165,13 @@ pub fn shadow_css_for_component(
     }
 
     for block in &scoped.utilities {
-        out.push('.');
-        out.push_str(&block.name);
+        out.push_str(&utility_selector(&block.name));
         out.push_str(" {\n");
         out.push_str(&block.body);
         out.push_str("}\n\n");
     }
 
-    Ok(ShadowCss {
-        css: out.trim_end().to_string(),
-        unmatched: scoped.unmatched,
-    })
+    out.trim_end().to_string()
 }
 
 /// Extract class names from a `.classes.ts` file.
@@ -251,26 +237,23 @@ fn match_rules(classes: &[String], full_css: &str) -> ScopedRules {
     let exact: HashSet<&str> = exact.into_iter().map(String::as_str).collect();
     let prefixes: Vec<&str> = patterns.iter().map(|p| p.trim_end_matches('*')).collect();
 
-    let (utilities, matched_prefixes) = {
-        let mut matched_prefixes: HashSet<&str> = HashSet::new();
-        let utilities: Vec<UtilityBlock> = extract_utility_blocks(full_css)
-            .into_iter()
-            .filter(|u| {
-                if exact.contains(u.name.as_str()) {
-                    return true;
+    let mut matched_prefixes: HashSet<&str> = HashSet::new();
+    let utilities: Vec<UtilityBlock> = extract_utility_blocks(full_css)
+        .into_iter()
+        .filter(|u| {
+            if exact.contains(u.name.as_str()) {
+                return true;
+            }
+            let mut hit = false;
+            for prefix in &prefixes {
+                if u.name.starts_with(prefix) {
+                    matched_prefixes.insert(prefix);
+                    hit = true;
                 }
-                let mut hit = false;
-                for prefix in &prefixes {
-                    if u.name.starts_with(prefix) {
-                        matched_prefixes.insert(prefix);
-                        hit = true;
-                    }
-                }
-                hit
-            })
-            .collect();
-        (utilities, matched_prefixes)
-    };
+            }
+            hit
+        })
+        .collect();
 
     let matched_names: HashSet<&str> = utilities.iter().map(|u| u.name.as_str()).collect();
     let mut unmatched: Vec<String> = base_names
@@ -510,49 +493,6 @@ fn collect_classes_from_expr(
             }
         }
         _ => {}
-    }
-}
-
-/// Resolve an expression to a class string where every dynamic part is a
-/// [`DYNAMIC_HOLE`] marker. Handles string literals, template literals
-/// (expressions become holes unless themselves string-shaped), `+`
-/// concatenation, and TS type wrappers. Returns `None` for expressions that
-/// are not string-shaped at all.
-fn class_template_value(expr: &Expression<'_>) -> Option<String> {
-    match expr {
-        Expression::StringLiteral(s) => Some(s.value.as_str().to_string()),
-        Expression::TemplateLiteral(tpl) => {
-            let mut value = String::new();
-            for (i, quasi) in tpl.quasis.iter().enumerate() {
-                value.push_str(quasi.value.raw.as_str());
-                if i < tpl.expressions.len() {
-                    match class_template_value(&tpl.expressions[i]) {
-                        Some(inner) => value.push_str(&inner),
-                        None => value.push(DYNAMIC_HOLE),
-                    }
-                }
-            }
-            Some(value)
-        }
-        Expression::BinaryExpression(bin) => {
-            if bin.operator == oxc_ast::ast::BinaryOperator::Addition {
-                let left = class_template_value(&bin.left);
-                let right = class_template_value(&bin.right);
-                // A concatenation is string-shaped as long as one side is.
-                if left.is_none() && right.is_none() {
-                    return None;
-                }
-                let mut value = left.unwrap_or_else(|| DYNAMIC_HOLE.to_string());
-                value.push_str(&right.unwrap_or_else(|| DYNAMIC_HOLE.to_string()));
-                Some(value)
-            } else {
-                None
-            }
-        }
-        Expression::TSAsExpression(as_expr) => class_template_value(&as_expr.expression),
-        Expression::TSSatisfiesExpression(sat) => class_template_value(&sat.expression),
-        Expression::ParenthesizedExpression(paren) => class_template_value(&paren.expression),
-        _ => None,
     }
 }
 

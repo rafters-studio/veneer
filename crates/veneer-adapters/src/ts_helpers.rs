@@ -2,6 +2,11 @@
 
 use oxc_ast::ast::{BinaryOperator, Expression, ObjectPropertyKind};
 
+/// Marker for the dynamic part of a string composed at render time (for
+/// example the `${tint}` hole in `` `text-quality-${tint}` ``). Internal to
+/// extraction; never appears in returned class tokens.
+pub(crate) const DYNAMIC_HOLE: char = '\u{FFFC}';
+
 /// Unwrap TSAsExpression, TSSatisfiesExpression, TSTypeAssertion, and
 /// ParenthesizedExpression to reach the underlying value expression.
 pub(crate) fn unwrap_type_expressions<'a>(expr: &'a Expression<'a>) -> &'a Expression<'a> {
@@ -16,36 +21,52 @@ pub(crate) fn unwrap_type_expressions<'a>(expr: &'a Expression<'a>) -> &'a Expre
     }
 }
 
-/// Extract a string value from an expression, handling string literals,
-/// template literals, binary concatenation, and TS type wrappers.
+/// Extract a fully static string value from an expression, handling string
+/// literals, template literals, binary concatenation, and TS type wrappers.
+/// Returns `None` when any part of the string is dynamic.
 pub(crate) fn extract_string_value(expr: &Expression<'_>) -> Option<String> {
+    class_template_value(expr).filter(|value| !value.contains(DYNAMIC_HOLE))
+}
+
+/// Resolve a string-shaped expression to its value where every dynamic part
+/// is a [`DYNAMIC_HOLE`] marker. Handles string literals, template literals
+/// (expressions become holes unless themselves string-shaped), `+`
+/// concatenation (string-shaped as long as one side is), and TS type
+/// wrappers. Returns `None` for expressions that are not string-shaped at
+/// all.
+pub(crate) fn class_template_value(expr: &Expression<'_>) -> Option<String> {
     match expr {
         Expression::StringLiteral(s) => Some(s.value.as_str().to_string()),
         Expression::TemplateLiteral(tpl) => {
-            if tpl.expressions.is_empty() && !tpl.quasis.is_empty() {
-                let value = tpl
-                    .quasis
-                    .iter()
-                    .map(|q| q.value.raw.as_str())
-                    .collect::<Vec<_>>()
-                    .join("");
+            let mut value = String::new();
+            for (i, quasi) in tpl.quasis.iter().enumerate() {
+                value.push_str(quasi.value.raw.as_str());
+                if i < tpl.expressions.len() {
+                    match class_template_value(&tpl.expressions[i]) {
+                        Some(inner) => value.push_str(&inner),
+                        None => value.push(DYNAMIC_HOLE),
+                    }
+                }
+            }
+            Some(value)
+        }
+        Expression::BinaryExpression(bin) => {
+            if bin.operator == BinaryOperator::Addition {
+                let left = class_template_value(&bin.left);
+                let right = class_template_value(&bin.right);
+                if left.is_none() && right.is_none() {
+                    return None;
+                }
+                let mut value = left.unwrap_or_else(|| DYNAMIC_HOLE.to_string());
+                value.push_str(&right.unwrap_or_else(|| DYNAMIC_HOLE.to_string()));
                 Some(value)
             } else {
                 None
             }
         }
-        Expression::BinaryExpression(bin) => {
-            if bin.operator == BinaryOperator::Addition {
-                let left = extract_string_value(&bin.left)?;
-                let right = extract_string_value(&bin.right)?;
-                Some(format!("{left}{right}"))
-            } else {
-                None
-            }
-        }
-        Expression::TSAsExpression(as_expr) => extract_string_value(&as_expr.expression),
-        Expression::TSSatisfiesExpression(sat) => extract_string_value(&sat.expression),
-        Expression::ParenthesizedExpression(paren) => extract_string_value(&paren.expression),
+        Expression::TSAsExpression(as_expr) => class_template_value(&as_expr.expression),
+        Expression::TSSatisfiesExpression(sat) => class_template_value(&sat.expression),
+        Expression::ParenthesizedExpression(paren) => class_template_value(&paren.expression),
         _ => None,
     }
 }
