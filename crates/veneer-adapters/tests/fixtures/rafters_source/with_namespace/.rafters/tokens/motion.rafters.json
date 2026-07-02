@@ -1,0 +1,30 @@
+{
+  "$schema": "https://rafters.studio/schemas/namespace-tokens.json",
+  "namespace": "motion",
+  "version": "1.0.0",
+  "generatedAt": "2026-03-29T22:50:41.878Z",
+  "tokens": [
+    {
+      "name": "motion-duration-instant",
+      "value": "0ms",
+      "category": "motion",
+      "namespace": "motion",
+      "semanticMeaning": "Instant - no animation",
+      "usageContext": ["disabled-motion", "prefers-reduced-motion"],
+      "usagePatterns": {
+        "do": ["Use for prefers-reduced-motion", "Use for disabled animations"],
+        "never": ["Ignore prefers-reduced-motion", "Use slow animations for frequent actions"]
+      },
+      "dependsOn": [],
+      "progressionSystem": "minor-third",
+      "scalePosition": 0,
+      "mathRelationship": "0",
+      "containerQueryAware": false,
+      "reducedMotionAware": true,
+      "motionIntent": "transition",
+      "motionDuration": 0,
+      "description": "Duration instant: 0ms. Instant - no animation",
+      "generatedAt": "2026-03-29T22:50:41.878Z"
+    }
+  ]
+}

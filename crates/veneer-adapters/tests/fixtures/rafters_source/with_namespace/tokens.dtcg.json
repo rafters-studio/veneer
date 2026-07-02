@@ -1,0 +1,11 @@
+{
+  "color": {
+    "neutral": {
+      "50": {
+        "$value": "#fafafa",
+        "$type": "color",
+        "$description": "Lossy DTCG export: hex approximation, OKLCH scale and intelligence dropped"
+      }
+    }
+  }
+}
