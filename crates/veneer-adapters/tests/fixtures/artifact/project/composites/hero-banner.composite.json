@@ -1,0 +1,31 @@
+{
+  "manifest": {
+    "id": "hero-banner",
+    "name": "Hero Banner",
+    "category": "layout",
+    "description": "Full-width hero section with heading, subheading, and call-to-action",
+    "keywords": ["hero", "banner", "landing", "cta"],
+    "cognitiveLoad": 3,
+    "solves": "Creating a focal point for page entry and primary action",
+    "appliesWhen": ["landing pages", "marketing pages"],
+    "usagePatterns": {
+      "do": [
+        "Single clear CTA above the fold",
+        "Headline under 10 words"
+      ],
+      "never": [
+        "Multiple competing CTAs"
+      ]
+    }
+  },
+  "input": [],
+  "output": [],
+  "blocks": [
+    {
+      "id": "hero-heading",
+      "type": "heading",
+      "content": "Welcome",
+      "meta": { "level": 1 }
+    }
+  ]
+}
