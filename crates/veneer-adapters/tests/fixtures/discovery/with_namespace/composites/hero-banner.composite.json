@@ -1,0 +1,18 @@
+{
+  "manifest": {
+    "id": "hero-banner",
+    "name": "Hero Banner",
+    "category": "layout",
+    "description": "Full-width hero section with heading and call-to-action"
+  },
+  "input": [],
+  "output": [],
+  "blocks": [
+    {
+      "id": "hero-heading",
+      "type": "heading",
+      "content": "Welcome",
+      "meta": { "level": 1 }
+    }
+  ]
+}
