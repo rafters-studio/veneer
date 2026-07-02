@@ -13,10 +13,10 @@ use oxc_parser::Parser;
 use oxc_span::SourceType;
 
 use crate::conventions::ComponentConventions;
-use crate::generator::generate_web_component;
+use crate::generator::scoped_web_component_block;
 use crate::traits::{FrameworkAdapter, TransformContext, TransformError, TransformedBlock};
 use crate::ts_helpers::{
-    extract_nested_object_classes, extract_string_value, normalize_whitespace,
+    extract_class_value, extract_nested_object_classes, normalize_whitespace,
     unwrap_type_expressions,
 };
 
@@ -46,10 +46,19 @@ pub struct ComponentStructure {
 
     /// Observed attributes from props
     pub observed_attributes: Vec<String>,
+
+    /// `prefix-*` patterns for classes the component composes dynamically
+    /// at render (for example `text-quality-${tint}`). Tailwind tree-shakes
+    /// those names from compiled output (bullpen 019f1f4d), so scoping
+    /// matches them by prefix instead of by literal (FR-VEN-018). Sorted
+    /// and deduplicated.
+    pub dynamic_class_patterns: Vec<String>,
 }
 
 impl ComponentStructure {
-    /// Collect all unique CSS classes referenced by this component structure.
+    /// Collect all unique CSS classes referenced by this component
+    /// structure, including the `prefix-*` patterns for
+    /// dynamically-composed classes.
     pub fn collect_all_classes(&self) -> Vec<String> {
         let lookup_classes = self
             .variant_lookup
@@ -61,7 +70,8 @@ impl ComponentStructure {
             .base_classes
             .split_whitespace()
             .chain(lookup_classes)
-            .chain(self.disabled_classes.split_whitespace());
+            .chain(self.disabled_classes.split_whitespace())
+            .chain(self.dynamic_class_patterns.iter().map(String::as_str));
 
         let set: HashSet<&str> = all_classes.collect();
         let mut result: Vec<String> = set.into_iter().map(String::from).collect();
@@ -80,6 +90,7 @@ struct ExtractionState<'c> {
     disabled_classes: Option<String>,
     component_name: Option<String>,
     observed_attributes: Vec<String>,
+    dynamic_class_patterns: Vec<String>,
 }
 
 impl<'c> ExtractionState<'c> {
@@ -92,6 +103,7 @@ impl<'c> ExtractionState<'c> {
             disabled_classes: None,
             component_name: None,
             observed_attributes: Vec::new(),
+            dynamic_class_patterns: Vec::new(),
         }
     }
 }
@@ -172,6 +184,10 @@ impl ReactAdapter {
             .map(|(k, _)| k.clone())
             .unwrap_or_else(|| "default".to_string());
 
+        let mut dynamic_class_patterns = state.dynamic_class_patterns;
+        dynamic_class_patterns.sort();
+        dynamic_class_patterns.dedup();
+
         Ok(ComponentStructure {
             name: state
                 .component_name
@@ -185,6 +201,7 @@ impl ReactAdapter {
             default_variant,
             default_size,
             observed_attributes: state.observed_attributes,
+            dynamic_class_patterns,
         })
     }
 }
@@ -202,20 +219,14 @@ impl FrameworkAdapter for ReactAdapter {
         &self,
         source: &str,
         tag_name: &str,
-        _ctx: &TransformContext,
+        ctx: &TransformContext,
     ) -> Result<TransformedBlock, TransformError> {
         let structure = self.extract_structure(source)?;
-        let classes_used = structure.collect_all_classes();
-        // The transform trait carries no stylesheet; callers holding the
-        // project CSS scope it via `scoped_web_component_block`.
-        let web_component = generate_web_component(tag_name, &structure, "");
-
-        Ok(TransformedBlock {
-            web_component,
-            tag_name: tag_name.to_string(),
-            classes_used,
-            attributes: structure.observed_attributes,
-        })
+        // Scope the component's CSS out of the project stylesheet the
+        // context carries. Extraction failure is an error naming the
+        // component -- a preview never renders silently unstyled
+        // (FR-VEN-018).
+        scoped_web_component_block(tag_name, &structure, &ctx.stylesheet)
     }
 }
 
@@ -311,16 +322,17 @@ fn visit_variable_declaration(
         let init = unwrap_type_expressions(init);
 
         if state.conventions.variant_records.iter().any(|v| v == name) {
-            if let Some(entries) = extract_object_entries(init) {
+            if let Some(entries) = extract_object_entries(init, &mut state.dynamic_class_patterns) {
                 state.variant_lookup = entries;
             }
         } else if state.conventions.size_records.iter().any(|v| v == name) {
-            if let Some(entries) = extract_object_entries(init) {
+            if let Some(entries) = extract_object_entries(init, &mut state.dynamic_class_patterns) {
                 state.size_lookup = entries;
             }
         } else if state.conventions.base_class_vars.iter().any(|v| v == name) {
-            if let Some(value) = extract_string_value(init) {
-                state.base_classes = Some(normalize_whitespace(&value));
+            if let Some(value) = extract_class_value(init) {
+                state.base_classes = Some(normalize_whitespace(&value.static_classes));
+                state.dynamic_class_patterns.extend(value.patterns);
             }
         } else if state
             .conventions
@@ -328,8 +340,9 @@ fn visit_variable_declaration(
             .iter()
             .any(|v| v == name)
         {
-            if let Some(value) = extract_string_value(init) {
-                state.disabled_classes = Some(value);
+            if let Some(value) = extract_class_value(init) {
+                state.disabled_classes = Some(value.static_classes);
+                state.dynamic_class_patterns.extend(value.patterns);
             }
         } else if is_pascal_case(name) && state.component_name.is_none() {
             let params = match init {
@@ -349,8 +362,13 @@ fn visit_variable_declaration(
     }
 }
 
-/// Extract key-value pairs from an ObjectExpression.
-fn extract_object_entries(expr: &Expression<'_>) -> Option<Vec<(String, String)>> {
+/// Extract key-value pairs from an ObjectExpression. Dynamically-composed
+/// class tokens inside the values are appended to `patterns` as `prefix-*`
+/// entries; the entry itself keeps only its static classes.
+fn extract_object_entries(
+    expr: &Expression<'_>,
+    patterns: &mut Vec<String>,
+) -> Option<Vec<(String, String)>> {
     let Expression::ObjectExpression(obj) = expr else {
         return None;
     };
@@ -370,9 +388,10 @@ fn extract_object_entries(expr: &Expression<'_>) -> Option<Vec<(String, String)>
 
         let value_expr = unwrap_type_expressions(&prop.value);
 
-        if let Some(value) = extract_string_value(value_expr) {
-            entries.push((key, value));
-        } else if let Some(value) = extract_nested_object_classes(value_expr) {
+        if let Some(value) = extract_class_value(value_expr) {
+            entries.push((key, value.static_classes));
+            patterns.extend(value.patterns);
+        } else if let Some(value) = extract_nested_object_classes(value_expr, patterns) {
             entries.push((key, value));
         }
     }
@@ -444,6 +463,33 @@ fn is_pascal_case(s: &str) -> bool {
 mod tests {
     use super::*;
 
+    /// A minimal project stylesheet covering the classes the test
+    /// components declare, in the rafters exporter output shape.
+    const TEST_CSS: &str = r#"
+@theme {
+  --color-primary: oklch(0.645 0.12 180);
+}
+
+@utility bg-primary {
+  background-color: var(--color-primary);
+}
+
+@utility bg-blue-500 {
+  background-color: oklch(0.62 0.19 260);
+}
+
+@utility opacity-50 {
+  opacity: 0.5;
+}
+"#;
+
+    fn test_ctx() -> TransformContext {
+        TransformContext {
+            stylesheet: TEST_CSS.to_string(),
+            ..TransformContext::default()
+        }
+    }
+
     #[test]
     fn extracts_variant_classes() {
         let source = r#"
@@ -459,12 +505,84 @@ export function Button() {
 
         let adapter = ReactAdapter::new();
         let result = adapter
-            .transform(source, "button-preview", &TransformContext::default())
+            .transform(source, "button-preview", &test_ctx())
             .unwrap();
 
         assert!(result.web_component.contains("variantClasses"));
         assert!(result.web_component.contains("bg-primary"));
         assert!(result.classes_used.contains(&"bg-primary".to_string()));
+        // The scoped rule from the context stylesheet rides in the module.
+        assert!(result.web_component.contains(".bg-primary {"));
+    }
+
+    // FR-VEN-018: with no stylesheet in the context, a classed component
+    // refuses to transform -- never a preview silently missing its styles.
+    #[test]
+    fn transform_errors_without_a_stylesheet() {
+        let source = r#"
+const variantClasses = { default: 'bg-primary' };
+
+export function Button() {}
+        "#;
+
+        let adapter = ReactAdapter::new();
+        let error = adapter
+            .transform(source, "button-preview", &TransformContext::default())
+            .expect_err("an empty stylesheet cannot style a classed component");
+        assert!(matches!(
+            error,
+            TransformError::RenderFailed { ref component, .. } if component == "Button"
+        ));
+    }
+
+    // FR-VEN-018 (bullpen 019f1f4d): a dynamically-composed class in a
+    // convention-named variable surfaces as a prefix pattern on the
+    // structure, keeping its static siblings.
+    #[test]
+    fn extracts_dynamic_class_patterns_from_base_classes() {
+        let source = r#"
+const variantClasses = { default: 'bg-primary' };
+const baseClasses = `text-quality-${tint} font-bold`;
+
+export function QualityBadge() {}
+        "#;
+
+        let adapter = ReactAdapter::new();
+        let structure = adapter.extract_structure(source).unwrap();
+
+        assert_eq!(structure.base_classes, "font-bold");
+        assert_eq!(
+            structure.dynamic_class_patterns,
+            vec!["text-quality-*".to_string()]
+        );
+        assert!(structure
+            .collect_all_classes()
+            .contains(&"text-quality-*".to_string()));
+    }
+
+    // Dynamic composition inside a variant record value: the entry keeps
+    // its static classes and the pattern reaches the structure.
+    #[test]
+    fn extracts_dynamic_class_patterns_from_variant_records() {
+        let source = r#"
+const variantClasses = {
+  default: `bg-quality-${tint} rounded`,
+};
+
+export function QualityBadge() {}
+        "#;
+
+        let adapter = ReactAdapter::new();
+        let structure = adapter.extract_structure(source).unwrap();
+
+        assert_eq!(
+            structure.variant_lookup,
+            vec![("default".to_string(), "rounded".to_string())]
+        );
+        assert_eq!(
+            structure.dynamic_class_patterns,
+            vec!["bg-quality-*".to_string()]
+        );
     }
 
     #[test]
@@ -528,7 +646,7 @@ export function Button({ variant, size, disabled, loading }: ButtonProps) {}
 
         let adapter = ReactAdapter::new();
         let result = adapter
-            .transform(source, "button-preview", &TransformContext::default())
+            .transform(source, "button-preview", &test_ctx())
             .unwrap();
 
         assert!(result.attributes.contains(&"variant".to_string()));
@@ -545,9 +663,7 @@ export function Button() {}
         "#;
 
         let adapter = ReactAdapter::new();
-        let result = adapter
-            .transform(source, "my-button", &TransformContext::default())
-            .unwrap();
+        let result = adapter.transform(source, "my-button", &test_ctx()).unwrap();
 
         assert_eq!(result.tag_name, "my-button");
         assert!(result.web_component.contains("my-button"));
@@ -570,7 +686,7 @@ const Button = ({ variant, size }: ButtonProps) => {
 
         let adapter = ReactAdapter::new();
         let result = adapter
-            .transform(source, "button-preview", &TransformContext::default())
+            .transform(source, "button-preview", &test_ctx())
             .unwrap();
 
         assert!(result.attributes.contains(&"variant".to_string()));

@@ -26,9 +26,9 @@ pub use intelligence::{
     DependencyOrigin, DependencyRef, PropDoc, RenderedComponent, TokenRef, VariantDoc,
 };
 pub use rafters_source::{
-    read_rafters_namespace, AccessibilityMatrices, ContrastMatrix, ContrastPair,
-    IntelligenceSource, NamespaceError, NamespaceFile, NamespaceToken, OklchComponents,
-    RaftersNamespace, StructuredValue, TokenValue, UsagePatterns, UserOverride,
+    read_rafters_namespace, read_rafters_stylesheet, AccessibilityMatrices, ContrastMatrix,
+    ContrastPair, IntelligenceSource, NamespaceError, NamespaceFile, NamespaceToken,
+    OklchComponents, RaftersNamespace, StructuredValue, TokenValue, UsagePatterns, UserOverride,
 };
 pub use react::{ComponentStructure, ReactAdapter};
 pub use registry::{

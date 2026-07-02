@@ -16,11 +16,11 @@ use crate::traits::{TransformError, TransformedBlock};
 /// generated Web Component plus the classes and attributes the structure
 /// declares. The single assembly point for structure-based previews.
 ///
-/// `scoped_css` is the browser-ready CSS for the component's shadow root
-/// (see [`shadow_css_for_component`]); pass the empty string only when no
-/// project stylesheet exists. Callers holding the full stylesheet should
-/// use [`scoped_web_component_block`], which enforces the
-/// no-silently-missing-styles contract.
+/// `scoped_css` is the browser-ready CSS for the component's shadow root,
+/// already extracted by [`shadow_css_for_component`]. Production callers
+/// hold a full stylesheet, not extracted CSS, and go through
+/// [`scoped_web_component_block`], which performs that extraction and
+/// enforces the no-silently-missing-styles contract (FR-VEN-018).
 pub fn web_component_block(
     tag_name: &str,
     structure: &ComponentStructure,
@@ -465,6 +465,7 @@ mod tests {
             default_variant: "primary".to_string(),
             default_size: "md".to_string(),
             observed_attributes: vec!["variant".to_string(), "size".to_string()],
+            dynamic_class_patterns: vec![],
         };
 
         let output = generate_web_component("my-button", &structure, ".bg-primary {\n}");
@@ -621,6 +622,7 @@ mod tests {
                 "disabled".to_string(),
                 "loading".to_string(),
             ],
+            dynamic_class_patterns: vec![],
         }
     }
 
@@ -681,6 +683,7 @@ mod tests {
             default_variant: String::new(),
             default_size: String::new(),
             observed_attributes: vec![],
+            dynamic_class_patterns: vec![],
         };
 
         let output = generate_controls_panel("plain-preview", &structure);
@@ -700,6 +703,7 @@ mod tests {
             default_variant: String::new(),
             default_size: String::new(),
             observed_attributes: vec!["variant".to_string(), "size".to_string()],
+            dynamic_class_patterns: vec![],
         };
 
         let output = generate_controls_panel("minimal-preview", &structure);
@@ -757,6 +761,7 @@ mod tests {
             default_variant: String::new(),
             default_size: String::new(),
             observed_attributes: vec!["disabled".to_string(), "checked".to_string()],
+            dynamic_class_patterns: vec![],
         };
 
         let output = generate_controls_panel("toggle-preview", &structure);
@@ -781,6 +786,7 @@ mod tests {
             default_variant: "default".to_string(),
             default_size: String::new(),
             observed_attributes: vec!["variant".to_string()],
+            dynamic_class_patterns: vec![],
         };
 
         let output = generate_controls_panel("badge-preview", &structure);

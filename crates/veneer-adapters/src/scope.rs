@@ -28,7 +28,7 @@ use oxc_parser::Parser;
 use oxc_span::SourceType;
 use regex::Regex;
 
-use crate::ts_helpers::{class_template_value, unwrap_type_expressions, DYNAMIC_HOLE};
+use crate::ts_helpers::{class_template_value, scopable_class_token, unwrap_type_expressions};
 
 // ---------------------------------------------------------------------------
 // Public API
@@ -433,7 +433,12 @@ fn collect_classes_from_statement(
     }
 }
 
-fn collect_classes_from_expr(
+/// Collect every class token an expression can resolve to at render:
+/// string-shaped values (with dynamically-composed tokens as `prefix-*`
+/// patterns), object/array members, conditional arms, and class-builder
+/// arrow bodies. Shared with registry export discovery so the real
+/// extraction pipeline surfaces the same tokens the tests prove.
+pub(crate) fn collect_classes_from_expr(
     expr: &Expression<'_>,
     seen: &mut HashSet<String>,
     out: &mut Vec<String>,
@@ -496,16 +501,14 @@ fn collect_classes_from_expr(
 }
 
 /// Split a class string and add individual tokens to the output,
-/// deduplicating. A token containing a [`DYNAMIC_HOLE`] is a
-/// dynamically-composed class: it becomes a `prefix-*` pattern from the
-/// static text before the hole (a token with no static prefix cannot be
-/// scoped and is skipped).
+/// deduplicating. A token containing a dynamic hole is a
+/// dynamically-composed class: [`scopable_class_token`] turns it into a
+/// `prefix-*` pattern from the static text before the hole (a token with
+/// no static prefix cannot be scoped and is skipped).
 fn add_classes(class_string: &str, seen: &mut HashSet<String>, out: &mut Vec<String>) {
-    for token in class_string.split_whitespace() {
-        let token = match token.find(DYNAMIC_HOLE) {
-            Some(0) => continue,
-            Some(idx) => format!("{}*", &token[..idx]),
-            None => token.to_string(),
+    for raw in class_string.split_whitespace() {
+        let Some(token) = scopable_class_token(raw) else {
+            continue;
         };
         if seen.insert(token.clone()) {
             out.push(token);

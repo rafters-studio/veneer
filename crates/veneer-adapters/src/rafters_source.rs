@@ -266,6 +266,28 @@ pub fn read_rafters_namespace(project_root: &Path) -> Result<IntelligenceSource,
     }))
 }
 
+/// Read the compiled project stylesheet the rafters exporter writes to
+/// `.rafters/output/rafters.css` (verified against a real `.rafters/`
+/// directory). Previews scope their shadow-root CSS out of it
+/// (FR-VEN-018).
+///
+/// `Ok(None)` when the project declares no compiled stylesheet -- absence
+/// is explicit, never guessed. An existing file that cannot be read is an
+/// error naming the path, so a preview never renders silently missing its
+/// styles because the stylesheet vanished mid-read.
+pub fn read_rafters_stylesheet(project_root: &Path) -> Result<Option<String>, NamespaceError> {
+    let path = project_root
+        .join(".rafters")
+        .join("output")
+        .join("rafters.css");
+    if !path.is_file() {
+        return Ok(None);
+    }
+    std::fs::read_to_string(&path)
+        .map(Some)
+        .map_err(|source| NamespaceError::Io { path, source })
+}
+
 /// Raw serde shape of a `<namespace>.rafters.json` file.
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]

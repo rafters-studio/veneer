@@ -16,13 +16,15 @@ use std::path::PathBuf;
 
 use veneer_adapters::{
     extract_classes_from_ts, scoped_web_component_block, shadow_css_for_component,
-    ComponentConventions, ReactAdapter,
+    ComponentConventions, ComponentRegistry, ReactAdapter,
 };
 
+fn fixture_dir() -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/shadow")
+}
+
 fn fixture(name: &str) -> String {
-    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("tests/fixtures/shadow")
-        .join(name);
+    let path = fixture_dir().join(name);
     match fs::read_to_string(&path) {
         Ok(text) => text,
         Err(error) => panic!("cannot read fixture {}: {error}", path.display()),
@@ -125,6 +127,46 @@ fn dynamically_composed_quality_classes_reach_the_scoped_css() {
     assert!(shadow.css.contains(".text-quality-600 {"));
     assert!(shadow
         .css
+        .contains("--color-quality-600: oklch(0.55 0.14 140);"));
+}
+
+#[test]
+fn dynamic_quality_classes_reach_the_generated_module_through_the_registry_pipeline() {
+    // The wired pipeline end to end: registry scan (export discovery over
+    // the .classes.ts source) -> component structure -> scoped CSS ->
+    // generated Web Component. The dynamically-resolved tint classes must
+    // appear in the emitted module itself, not only in the extraction
+    // helpers' output.
+    let css = fixture("rafters.css");
+
+    let mut registry = ComponentRegistry::new();
+    let count = match registry.scan(&fixture_dir()) {
+        Ok(count) => count,
+        Err(error) => panic!("shadow fixtures must scan: {error}"),
+    };
+    assert!(count >= 2, "badge and quality-indicator must register");
+
+    let block = match registry.generate_web_component(
+        "QualityIndicator",
+        "quality-indicator-preview",
+        &css,
+    ) {
+        Ok(block) => block,
+        Err(error) => panic!("quality indicator preview must render: {error}"),
+    };
+
+    assert_isolation_contract(&block.web_component);
+    assert!(
+        block.classes_used.contains(&"text-quality-*".to_string()),
+        "the dynamic composition must surface as a pattern: {:?}",
+        block.classes_used
+    );
+    // Every tint the component can resolve to at render rides in the
+    // module's embedded scoped CSS.
+    assert!(block.web_component.contains(".text-quality-500 {"));
+    assert!(block.web_component.contains(".text-quality-600 {"));
+    assert!(block
+        .web_component
         .contains("--color-quality-600: oklch(0.55 0.14 140);"));
 }
 

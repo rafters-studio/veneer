@@ -28,6 +28,50 @@ pub(crate) fn extract_string_value(expr: &Expression<'_>) -> Option<String> {
     class_template_value(expr).filter(|value| !value.contains(DYNAMIC_HOLE))
 }
 
+/// A class-shaped expression value split into its two scoping halves.
+#[derive(Debug, Default)]
+pub(crate) struct ClassValue {
+    /// Space-joined tokens that are fully static in source.
+    pub(crate) static_classes: String,
+    /// `prefix-*` patterns for tokens composed dynamically at render
+    /// (the Tailwind tree-shake caveat, FR-VEN-018).
+    pub(crate) patterns: Vec<String>,
+}
+
+/// Convert one class token that may contain a [`DYNAMIC_HOLE`] into its
+/// scopable form: a hole-free token passes through, a token with static
+/// text before the hole becomes a `prefix-*` pattern, and a token with no
+/// static prefix cannot be scoped (`None`).
+pub(crate) fn scopable_class_token(token: &str) -> Option<String> {
+    match token.find(DYNAMIC_HOLE) {
+        Some(0) => None,
+        Some(idx) => Some(format!("{}*", &token[..idx])),
+        None => Some(token.to_string()),
+    }
+}
+
+/// Resolve a string-shaped expression to class tokens, keeping the parts a
+/// component composes dynamically at render: static tokens land in
+/// [`ClassValue::static_classes`], dynamically-composed tokens become
+/// `prefix-*` patterns in [`ClassValue::patterns`]. `None` when the
+/// expression is not string-shaped at all.
+pub(crate) fn extract_class_value(expr: &Expression<'_>) -> Option<ClassValue> {
+    let value = class_template_value(expr)?;
+    let mut result = ClassValue::default();
+    let mut static_tokens: Vec<&str> = Vec::new();
+    for token in value.split_whitespace() {
+        if token.contains(DYNAMIC_HOLE) {
+            if let Some(pattern) = scopable_class_token(token) {
+                result.patterns.push(pattern);
+            }
+        } else {
+            static_tokens.push(token);
+        }
+    }
+    result.static_classes = static_tokens.join(" ");
+    Some(result)
+}
+
 /// Resolve a string-shaped expression to its value where every dynamic part
 /// is a [`DYNAMIC_HOLE`] marker. Handles string literals, template literals
 /// (expressions become holes unless themselves string-shaped), `+`
@@ -71,13 +115,20 @@ pub(crate) fn class_template_value(expr: &Expression<'_>) -> Option<String> {
     }
 }
 
-/// Extract and concatenate all string values from a nested object expression.
-pub(crate) fn extract_nested_object_classes(expr: &Expression<'_>) -> Option<String> {
+/// Extract and concatenate all string values from a nested object
+/// expression. Dynamically-composed tokens inside the nested values are
+/// appended to `patterns` as `prefix-*` entries. `None` when nothing at
+/// all (neither static classes nor patterns) could be extracted.
+pub(crate) fn extract_nested_object_classes(
+    expr: &Expression<'_>,
+    patterns: &mut Vec<String>,
+) -> Option<String> {
     let Expression::ObjectExpression(obj) = expr else {
         return None;
     };
 
     let mut parts: Vec<String> = Vec::new();
+    let patterns_before = patterns.len();
 
     for prop in &obj.properties {
         let ObjectPropertyKind::ObjectProperty(prop) = prop else {
@@ -85,14 +136,15 @@ pub(crate) fn extract_nested_object_classes(expr: &Expression<'_>) -> Option<Str
         };
 
         let value_expr = unwrap_type_expressions(&prop.value);
-        if let Some(value) = extract_string_value(value_expr) {
-            if !value.is_empty() {
-                parts.push(value);
+        if let Some(value) = extract_class_value(value_expr) {
+            if !value.static_classes.is_empty() {
+                parts.push(value.static_classes);
             }
+            patterns.extend(value.patterns);
         }
     }
 
-    if parts.is_empty() {
+    if parts.is_empty() && patterns.len() == patterns_before {
         None
     } else {
         Some(parts.join(" "))

@@ -8,7 +8,7 @@
 //! each export by its shape and name suffix, and builds the component
 //! record from what actually exists.
 
-use std::collections::{BTreeMap, HashMap};
+use std::collections::{BTreeMap, HashMap, HashSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -21,12 +21,13 @@ use oxc_span::SourceType;
 use serde::Deserialize;
 use walkdir::WalkDir;
 
-use crate::generator::web_component_block;
+use crate::generator::scoped_web_component_block;
 use crate::rafters_source::IntelligenceSource;
 use crate::react::{ComponentStructure, ReactAdapter};
+use crate::scope::collect_classes_from_expr;
 use crate::traits::{TransformError, TransformedBlock};
 use crate::ts_helpers::{
-    extract_nested_object_classes, extract_string_value, normalize_whitespace,
+    extract_class_value, extract_nested_object_classes, extract_string_value, normalize_whitespace,
     unwrap_type_expressions,
 };
 
@@ -144,6 +145,9 @@ enum SourceFileKind {
 struct DiscoveredExport {
     name: String,
     shape: ExportShape,
+    /// `prefix-*` patterns for class tokens the export composes
+    /// dynamically at render (FR-VEN-018 tree-shake caveat).
+    patterns: Vec<String>,
 }
 
 /// The value shape of a discovered export.
@@ -247,6 +251,8 @@ fn discover_exports(source: &str, file_hint: &str) -> Vec<DiscoveredExport> {
 
 /// Try to extract a DiscoveredExport from an expression.
 fn try_extract_export(name: &str, expr: &Expression<'_>) -> Option<DiscoveredExport> {
+    let mut patterns: Vec<String> = Vec::new();
+
     // Try as object expression first (Records and plain objects)
     if let Expression::ObjectExpression(obj) = expr {
         let mut flat_entries: Vec<(String, String)> = Vec::new();
@@ -275,13 +281,15 @@ fn try_extract_export(name: &str, expr: &Expression<'_>) -> Option<DiscoveredExp
 
             let value_expr = unwrap_type_expressions(&prop.value);
 
-            // Try string value first
-            if let Some(value) = extract_string_value(value_expr) {
-                flat_entries.push((key.clone(), value.clone()));
-                nested_entries.push((key, value));
+            // Try string-shaped value first; dynamically-composed tokens
+            // land in `patterns` while the entry keeps its static classes.
+            if let Some(value) = extract_class_value(value_expr) {
+                flat_entries.push((key.clone(), value.static_classes.clone()));
+                nested_entries.push((key, value.static_classes));
+                patterns.extend(value.patterns);
             }
             // Try nested object (flatten all string values)
-            else if let Some(value) = extract_nested_object_classes(value_expr) {
+            else if let Some(value) = extract_nested_object_classes(value_expr, &mut patterns) {
                 nested_entries.push((key, value));
                 has_nested = true;
             }
@@ -296,6 +304,7 @@ fn try_extract_export(name: &str, expr: &Expression<'_>) -> Option<DiscoveredExp
             return Some(DiscoveredExport {
                 name: name.to_string(),
                 shape: ExportShape::Record { entries },
+                patterns,
             });
         }
 
@@ -304,15 +313,20 @@ fn try_extract_export(name: &str, expr: &Expression<'_>) -> Option<DiscoveredExp
         return None;
     }
 
-    // Try as string literal / template literal / concatenation
-    if let Some(value) = extract_string_value(expr) {
-        if !value.is_empty() {
-            return Some(DiscoveredExport {
-                name: name.to_string(),
-                shape: ExportShape::Scalar { value },
-            });
+    // Try as string literal / template literal / concatenation. A token
+    // composed dynamically at render becomes a `prefix-*` pattern
+    // (FR-VEN-018): the resolved names never appear as source literals.
+    if let Some(value) = extract_class_value(expr) {
+        if value.static_classes.is_empty() && value.patterns.is_empty() {
+            return None;
         }
-        return None;
+        return Some(DiscoveredExport {
+            name: name.to_string(),
+            shape: ExportShape::Scalar {
+                value: value.static_classes,
+            },
+            patterns: value.patterns,
+        });
     }
 
     // Try as array expression (join elements)
@@ -324,8 +338,30 @@ fn try_extract_export(name: &str, expr: &Expression<'_>) -> Option<DiscoveredExp
                 shape: ExportShape::Scalar {
                     value: parts.join(" "),
                 },
+                patterns,
             });
         }
+    }
+
+    // Try as a class-builder arrow (for example
+    // `(tint) => \`text-quality-${tint}\``): everything the builder can
+    // return is a class the component resolves to at render.
+    if let Expression::ArrowFunctionExpression(_) = expr {
+        let mut seen: HashSet<String> = HashSet::new();
+        let mut tokens: Vec<String> = Vec::new();
+        collect_classes_from_expr(expr, &mut seen, &mut tokens);
+        let (dynamic, statics): (Vec<String>, Vec<String>) =
+            tokens.into_iter().partition(|token| token.ends_with('*'));
+        if statics.is_empty() && dynamic.is_empty() {
+            return None;
+        }
+        return Some(DiscoveredExport {
+            name: name.to_string(),
+            shape: ExportShape::Scalar {
+                value: statics.join(" "),
+            },
+            patterns: dynamic,
+        });
     }
 
     // Try as method call -- e.g., [...].join(' ')
@@ -351,6 +387,7 @@ fn try_extract_export(name: &str, expr: &Expression<'_>) -> Option<DiscoveredExp
                             shape: ExportShape::Scalar {
                                 value: parts.join(&sep),
                             },
+                            patterns,
                         });
                     }
                 }
@@ -397,9 +434,11 @@ fn build_structure_from_exports(
     let mut base_classes_parts: Vec<String> = Vec::new();
     let mut disabled_classes: Option<String> = None;
     let mut extra_classes: Vec<String> = Vec::new();
+    let mut dynamic_class_patterns: Vec<String> = Vec::new();
 
     for export in exports {
         let role = ExportRole::classify(&export.name);
+        dynamic_class_patterns.extend(export.patterns);
 
         match (role, export.shape) {
             (ExportRole::Variant, ExportShape::Record { entries }) => {
@@ -479,13 +518,20 @@ fn build_structure_from_exports(
     all_base_parts.extend(extra_classes);
     let base_classes = all_base_parts.join(" ");
 
-    // We found something -- build the structure
-    let has_content =
-        !variant_lookup.is_empty() || !size_lookup.is_empty() || !base_classes.is_empty();
+    // We found something -- build the structure. Dynamic patterns count:
+    // a component whose only classes are composed at render still has
+    // CSS to scope (FR-VEN-018).
+    let has_content = !variant_lookup.is_empty()
+        || !size_lookup.is_empty()
+        || !base_classes.is_empty()
+        || !dynamic_class_patterns.is_empty();
 
     if !has_content {
         return None;
     }
+
+    dynamic_class_patterns.sort();
+    dynamic_class_patterns.dedup();
 
     let default_variant = variant_lookup
         .first()
@@ -516,6 +562,7 @@ fn build_structure_from_exports(
         default_variant,
         default_size,
         observed_attributes,
+        dynamic_class_patterns,
     })
 }
 
@@ -782,19 +829,26 @@ impl ComponentRegistry {
         self.components.values().map(|c| c.name.as_str()).collect()
     }
 
-    /// Generate a Web Component for a registered component.
+    /// Generate a Web Component for a registered component, scoping its
+    /// CSS out of `full_css` (the project stylesheet text) for the shadow
+    /// root. Extraction failure is an error naming the component -- a
+    /// preview never renders silently unstyled (FR-VEN-018).
     pub fn generate_web_component(
         &self,
         component_name: &str,
         tag_name: &str,
+        full_css: &str,
     ) -> Result<TransformedBlock, RegistryError> {
         let cached = self
             .get(component_name)
             .ok_or_else(|| RegistryError::ComponentNotFound(component_name.to_string()))?;
 
-        // The registry holds no stylesheet; callers holding the project CSS
-        // scope it via `scoped_web_component_block`.
-        Ok(web_component_block(tag_name, &cached.structure, ""))
+        scoped_web_component_block(tag_name, &cached.structure, full_css).map_err(|error| {
+            RegistryError::PreviewCss {
+                component: cached.name.clone(),
+                message: error.to_string(),
+            }
+        })
     }
 
     /// Enumerate every component and composite the project source declares
@@ -969,6 +1023,12 @@ pub enum RegistryError {
     /// The discovery walk could not traverse part of the project tree.
     #[error("failed to walk {path} during discovery: {message}")]
     WalkFailed { path: PathBuf, message: String },
+
+    /// A component's preview CSS could not be scoped from the project
+    /// stylesheet; the preview is refused rather than emitted silently
+    /// missing its styles (FR-VEN-018).
+    #[error("cannot generate preview for {component}: {message}")]
+    PreviewCss { component: String, message: String },
 }
 
 #[cfg(test)]
@@ -1006,6 +1066,12 @@ export function Button() {
         assert!(registry.contains("Button"));
     }
 
+    const REGISTRY_TEST_CSS: &str = r#"
+@utility bg-blue-500 {
+  background-color: oklch(0.62 0.19 260);
+}
+"#;
+
     #[test]
     fn generates_web_component_from_registry() {
         let temp = tempdir().unwrap();
@@ -1028,11 +1094,104 @@ export function Button() {}
         registry.scan(&comp_dir).unwrap();
 
         let result = registry
-            .generate_web_component("Button", "button-preview")
+            .generate_web_component("Button", "button-preview", REGISTRY_TEST_CSS)
             .unwrap();
 
         assert_eq!(result.tag_name, "button-preview");
         assert!(result.web_component.contains("bg-blue-500"));
+        // The scoped rule for the class rides inside the module.
+        assert!(result.web_component.contains(".bg-blue-500 {"));
+    }
+
+    // FR-VEN-018: extraction failure refuses the preview with an error
+    // naming the component -- never a preview silently missing its styles.
+    #[test]
+    fn generate_web_component_errors_when_no_css_matches() {
+        let temp = tempdir().unwrap();
+        let comp_dir = temp.path().join("components");
+        fs::create_dir_all(&comp_dir).unwrap();
+
+        fs::write(
+            comp_dir.join("button.tsx"),
+            r#"
+const variantClasses = {
+  primary: 'bg-blue-500',
+};
+
+export function Button() {}
+            "#,
+        )
+        .unwrap();
+
+        let mut registry = ComponentRegistry::new();
+        registry.scan(&comp_dir).unwrap();
+
+        let error = registry
+            .generate_web_component("Button", "button-preview", "")
+            .expect_err("an empty stylesheet cannot style a classed component");
+        match &error {
+            RegistryError::PreviewCss { component, .. } => {
+                assert_eq!(component, "Button");
+            }
+            other => panic!("expected PreviewCss, got {other:?}"),
+        }
+        assert!(error.to_string().contains("Button"));
+    }
+
+    // FR-VEN-018 (bullpen 019f1f4d): a class-builder arrow in a
+    // .classes.ts file surfaces its dynamically-composed classes as
+    // prefix patterns, and the generated module carries every utility
+    // the pattern matches -- the real registry pipeline end to end.
+    #[test]
+    fn dynamic_class_builder_reaches_the_generated_module_css() {
+        let temp = tempdir().unwrap();
+        let comp_dir = temp.path().join("components");
+        fs::create_dir_all(&comp_dir).unwrap();
+
+        fs::write(
+            comp_dir.join("quality-indicator.classes.ts"),
+            r#"
+export const qualityTintClass = (tint: string): string => `text-quality-${tint}`;
+export const qualityBaseClasses = 'inline-flex items-center gap-1';
+            "#,
+        )
+        .unwrap();
+
+        let css = r#"
+@theme {
+  --color-quality-500: oklch(0.7 0.14 140);
+  --color-quality-600: oklch(0.55 0.14 140);
+}
+
+@utility inline-flex {
+  display: inline-flex;
+}
+
+@utility text-quality-500 {
+  color: var(--color-quality-500);
+}
+
+@utility text-quality-600 {
+  color: var(--color-quality-600);
+}
+"#;
+
+        let mut registry = ComponentRegistry::new();
+        registry.scan(&comp_dir).unwrap();
+
+        let cached = registry.get("QualityIndicator").unwrap();
+        assert_eq!(
+            cached.structure.dynamic_class_patterns,
+            vec!["text-quality-*".to_string()],
+            "extraction must surface the dynamic composition as a pattern"
+        );
+
+        let block = registry
+            .generate_web_component("QualityIndicator", "quality-indicator-preview", css)
+            .unwrap();
+        assert!(block.classes_used.contains(&"text-quality-*".to_string()));
+        assert!(block.web_component.contains(".text-quality-500 {"));
+        assert!(block.web_component.contains(".text-quality-600 {"));
     }
 
     #[test]
