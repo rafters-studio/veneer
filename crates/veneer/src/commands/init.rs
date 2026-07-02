@@ -59,7 +59,7 @@ impl ViteConfigFlavor {
 }
 
 /// What `init` did to the project.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq)]
 enum InitOutcome {
     /// `.veneer/config.toml` was created.
     Created,
@@ -85,9 +85,10 @@ fn init_project(root: &Path) -> Result<InitOutcome> {
         return Ok(InitOutcome::AlreadyInitialized);
     }
 
-    let veneer_dir = root.join(".veneer");
-    std::fs::create_dir_all(&veneer_dir)
-        .with_context(|| format!("Failed to create {}", veneer_dir.display()))?;
+    if let Some(veneer_dir) = config_path.parent() {
+        std::fs::create_dir_all(veneer_dir)
+            .with_context(|| format!("Failed to create {}", veneer_dir.display()))?;
+    }
     std::fs::write(&config_path, CONFIG_CONTENTS)
         .with_context(|| format!("Failed to write {}", config_path.display()))?;
 
