@@ -84,12 +84,15 @@ pub struct AssessedItem {
 /// preview. Everything else is [`CoverageState::NotYetDocumented`] with
 /// the failure state as the reason -- a failed generation is never
 /// counted as documented.
-pub fn assess_coverage(items: &[DiscoveredItem], source: &IntelligenceSource) -> Vec<AssessedItem> {
+pub fn assess_coverage(
+    items: Vec<DiscoveredItem>,
+    source: &IntelligenceSource,
+) -> Vec<AssessedItem> {
     items
-        .iter()
+        .into_iter()
         .map(|item| AssessedItem {
-            item: item.clone(),
-            state: assess_item(item, source),
+            state: assess_item(&item, source),
+            item,
         })
         .collect()
 }
@@ -127,7 +130,7 @@ impl ComponentRegistry {
     ) -> Result<CoverageReport, RegistryError> {
         let items = Self::discover(project_root, source)?;
         Ok(CoverageReport::from_assessed(&assess_coverage(
-            &items, source,
+            items, source,
         )))
     }
 }
@@ -208,7 +211,7 @@ mod tests {
         let root = fixture_root();
         let source = read_rafters_namespace(&root).expect("fixture namespace must read");
         let items = ComponentRegistry::discover(&root, &source).expect("fixture must discover");
-        assess_coverage(&items, &source)
+        assess_coverage(items, &source)
     }
 
     // AC: coverage numbers are exact against a fixture with known partial
@@ -270,7 +273,7 @@ mod tests {
             source_path: PathBuf::from("/nonexistent/vanished.tsx"),
             generated: true,
         };
-        let assessed = assess_coverage(&[item], &IntelligenceSource::NoSource);
+        let assessed = assess_coverage(vec![item], &IntelligenceSource::NoSource);
         assert_eq!(assessed.len(), 1);
         match &assessed[0].state {
             CoverageState::NotYetDocumented { reason } => {
