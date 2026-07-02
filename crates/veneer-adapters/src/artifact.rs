@@ -267,16 +267,13 @@ pub fn write_artifact(
 ) -> Result<PathBuf, ArtifactError> {
     let json = artifact.to_json()?;
     let path = output_dir.join(format!("{}.intelligence.json", artifact.component));
-    fs::create_dir_all(output_dir).map_err(|error| ArtifactError::Write {
+    let write_error = |error: std::io::Error| ArtifactError::Write {
         component: artifact.component.clone(),
         path: path.clone(),
         reason: error.to_string(),
-    })?;
-    fs::write(&path, json).map_err(|error| ArtifactError::Write {
-        component: artifact.component.clone(),
-        path: path.clone(),
-        reason: error.to_string(),
-    })?;
+    };
+    fs::create_dir_all(output_dir).map_err(&write_error)?;
+    fs::write(&path, json).map_err(&write_error)?;
     Ok(path)
 }
 
