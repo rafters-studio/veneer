@@ -402,9 +402,9 @@ pub fn generate_constraints_region(
 
     let mut items = String::new();
     for constraint in constraints {
-        let field = match constraint.kind {
-            ConstraintKind::Do => "do",
-            ConstraintKind::Never => "never",
+        let (field, label) = match constraint.kind {
+            ConstraintKind::Do => ("do", "DO"),
+            ConstraintKind::Never => ("never", "NEVER"),
         };
         if constraint.text.trim().is_empty() {
             return Err(TransformError::RenderFailed {
@@ -412,10 +412,6 @@ pub fn generate_constraints_region(
                 reason: format!("unparseable {field} constraint: empty rule text"),
             });
         }
-        let label = match constraint.kind {
-            ConstraintKind::Do => "DO",
-            ConstraintKind::Never => "NEVER",
-        };
         items.push_str(&format!(
             "<li class=\"veneer-constraint veneer-constraint-{field}\">\
 <span class=\"veneer-constraint-kind\">{label}</span> \
