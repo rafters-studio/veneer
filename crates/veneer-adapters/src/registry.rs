@@ -100,7 +100,7 @@ pub struct DiscoveredItem {
 /// and composites. Grounded against the real file: it also declares
 /// `primitivesPath` / `installed.primitives`, which FR-VEN-017's
 /// [`DiscoveredKind`] cannot represent, so primitives are not read here.
-#[derive(Debug, Default, Deserialize)]
+#[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct RaftersConfig {
     composites_path: Option<String>,
