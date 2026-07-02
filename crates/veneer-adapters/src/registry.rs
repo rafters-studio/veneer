@@ -68,7 +68,8 @@ pub struct CachedComponent {
 /// Everything else the component source walk yields is a component: the
 /// walk itself only visits component source files, and `componentsPath` /
 /// `installed.components` declare components explicitly.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, serde::Serialize)]
+#[serde(rename_all = "lowercase")]
 pub enum DiscoveredKind {
     Component,
     Composite,

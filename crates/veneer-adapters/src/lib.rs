@@ -3,6 +3,7 @@
 //! This crate provides the core transformation logic that converts React/Solid JSX
 //! components into static Web Components for documentation previews.
 
+pub mod artifact;
 pub mod conventions;
 pub mod generator;
 pub mod inline;
@@ -15,6 +16,10 @@ pub mod tokens;
 pub mod traits;
 pub(crate) mod ts_helpers;
 
+pub use artifact::{
+    build_artifact, write_artifact, ArtifactError, FieldValue, IntelligenceArtifact,
+    OverrideReason, ARTIFACT_SCHEMA_VERSION,
+};
 pub use conventions::ComponentConventions;
 pub use generator::{
     generate_controls_panel, generate_passthrough_web_component, generate_web_component,

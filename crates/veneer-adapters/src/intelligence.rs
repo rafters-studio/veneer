@@ -46,7 +46,7 @@ use crate::ts_helpers::normalize_whitespace;
 
 /// One property a `*Props` TypeScript interface declares. Every field is
 /// read from the declaration itself: nothing is inferred from usage.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize)]
 pub struct PropDoc {
     /// Declared property name.
     pub name: String,
@@ -58,7 +58,7 @@ pub struct PropDoc {
 }
 
 /// One variant the component source declares, with the classes it maps to.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize)]
 pub struct VariantDoc {
     /// Variant key as declared in the variant record.
     pub name: String,
@@ -69,7 +69,7 @@ pub struct VariantDoc {
 /// Cognitive load as declared in source: the `@cognitive-load N/10 - desc`
 /// JSDoc tag on components, or the bare `cognitiveLoad` number a composite
 /// manifest declares (which carries no description).
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize)]
 pub struct CognitiveLoad {
     /// Declared score on the 0-10 scale.
     pub score: u8,
@@ -78,7 +78,8 @@ pub struct CognitiveLoad {
 }
 
 /// Whether a constraint is a DO or a NEVER.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize)]
+#[serde(rename_all = "lowercase")]
 pub enum ConstraintKind {
     Do,
     Never,
@@ -87,14 +88,14 @@ pub enum ConstraintKind {
 /// One do/never usage constraint, from `@usage-patterns` `DO:`/`NEVER:`
 /// lines, legacy `@do`/`@never` tags, or a composite manifest's
 /// `usagePatterns` block.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize)]
 pub struct Constraint {
     pub kind: ConstraintKind,
     pub text: String,
 }
 
 /// A namespace token the component's classes reference by exact name.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize)]
 pub struct TokenRef {
     /// Token name as declared in the namespace source.
     pub token: String,
@@ -105,7 +106,8 @@ pub struct TokenRef {
 }
 
 /// Where a dependency declaration comes from.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum DependencyOrigin {
     /// An `import ... from '<package>'` statement in the source file.
     Import,
@@ -114,7 +116,7 @@ pub enum DependencyOrigin {
 }
 
 /// One dependency the component source declares.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize)]
 pub struct DependencyRef {
     /// Package name as declared.
     pub name: String,
@@ -468,13 +470,13 @@ fn read_family_jsdoc(path: &Path, own_source: &str) -> Result<JsDocIntelligence,
 }
 
 /// Read a source file, naming the file in the failure reason.
-fn read_source_file(path: &Path) -> Result<String, String> {
+pub(crate) fn read_source_file(path: &Path) -> Result<String, String> {
     fs::read_to_string(path).map_err(|error| format!("failed to read {}: {error}", path.display()))
 }
 
 /// The same-stem sibling files of a component source file, excluding the
 /// file itself. Only files that exist are returned.
-fn family_files(path: &Path) -> Vec<PathBuf> {
+pub(crate) fn family_files(path: &Path) -> Vec<PathBuf> {
     let Some(filename) = path.file_name().and_then(|name| name.to_str()) else {
         return Vec::new();
     };
@@ -537,7 +539,7 @@ fn collect_jsdoc_intelligence(source: &str, intelligence: &mut JsDocIntelligence
 
 /// Extract the text of every `/** ... */` block, with comment decoration
 /// (leading `*`) stripped per line.
-fn jsdoc_blocks(source: &str) -> Vec<String> {
+pub(crate) fn jsdoc_blocks(source: &str) -> Vec<String> {
     let mut blocks = Vec::new();
     let mut rest = source;
     while let Some(start) = rest.find("/**") {
@@ -562,12 +564,12 @@ fn jsdoc_blocks(source: &str) -> Vec<String> {
 }
 
 /// One `@tag value` from a JSDoc block; `value` spans until the next tag.
-struct JsDocTag {
-    name: String,
-    value: String,
+pub(crate) struct JsDocTag {
+    pub(crate) name: String,
+    pub(crate) value: String,
 }
 
-fn jsdoc_tags(block: &str) -> Vec<JsDocTag> {
+pub(crate) fn jsdoc_tags(block: &str) -> Vec<JsDocTag> {
     let mut tags: Vec<JsDocTag> = Vec::new();
     for line in block.lines() {
         if let Some(tag_line) = line.trim_start().strip_prefix('@') {
