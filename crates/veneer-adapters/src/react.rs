@@ -206,7 +206,9 @@ impl FrameworkAdapter for ReactAdapter {
     ) -> Result<TransformedBlock, TransformError> {
         let structure = self.extract_structure(source)?;
         let classes_used = structure.collect_all_classes();
-        let web_component = generate_web_component(tag_name, &structure);
+        // The transform trait carries no stylesheet; callers holding the
+        // project CSS scope it via `scoped_web_component_block`.
+        let web_component = generate_web_component(tag_name, &structure, "");
 
         Ok(TransformedBlock {
             web_component,

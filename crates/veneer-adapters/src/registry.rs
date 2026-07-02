@@ -792,7 +792,9 @@ impl ComponentRegistry {
             .get(component_name)
             .ok_or_else(|| RegistryError::ComponentNotFound(component_name.to_string()))?;
 
-        Ok(web_component_block(tag_name, &cached.structure))
+        // The registry holds no stylesheet; callers holding the project CSS
+        // scope it via `scoped_web_component_block`.
+        Ok(web_component_block(tag_name, &cached.structure, ""))
     }
 
     /// Enumerate every component and composite the project source declares

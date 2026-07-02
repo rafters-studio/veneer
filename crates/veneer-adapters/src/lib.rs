@@ -18,7 +18,7 @@ pub(crate) mod ts_helpers;
 pub use conventions::ComponentConventions;
 pub use generator::{
     generate_controls_panel, generate_passthrough_web_component, generate_web_component,
-    web_component_block,
+    scoped_web_component_block, web_component_block,
 };
 pub use inline::{parse_inline_jsx, parse_inline_jsx_all, to_custom_element, InlineJsx, PropValue};
 pub use intelligence::{
@@ -34,6 +34,8 @@ pub use react::{ComponentStructure, ReactAdapter};
 pub use registry::{
     CachedComponent, ComponentRegistry, DiscoveredItem, DiscoveredKind, RegistryError,
 };
-pub use scope::{extract_classes_from_ts, scope_css};
+pub use scope::{
+    extract_classes_from_ts, scope_css, shadow_css_for_component, ScopeError, ShadowCss,
+};
 pub use tokens::{parse_dtcg_tokens, DesignToken, DesignTokens, TokenParseError};
 pub use traits::{FrameworkAdapter, TransformContext, TransformError, TransformedBlock};

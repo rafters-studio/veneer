@@ -203,7 +203,10 @@ fn render_source_item(
         )
     })?;
 
-    let preview = web_component_block(&preview_tag_name(&item.name), &structure);
+    // The render pipeline (FR-VEN-003) declares no stylesheet input; the
+    // scoped CSS is embedded by the caller that holds the compiled
+    // stylesheet via `scoped_web_component_block` (FR-VEN-018).
+    let preview = web_component_block(&preview_tag_name(&item.name), &structure, "");
 
     let module_facts = parse_module_facts(&item.source_path, &source_text)?;
     let jsdoc = read_family_jsdoc(&item.source_path, &source_text)?;
@@ -272,7 +275,8 @@ fn render_manifest_composite(item: &DiscoveredItem) -> Result<RenderedComponent,
 
     let tag_name = preview_tag_name(&item.name);
     let preview = TransformedBlock {
-        web_component: generate_passthrough_web_component(&tag_name),
+        // A manifest declares no classes, so there is no CSS to scope.
+        web_component: generate_passthrough_web_component(&tag_name, ""),
         tag_name,
         classes_used: Vec::new(),
         attributes: Vec::new(),
