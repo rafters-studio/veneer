@@ -1,4 +1,5 @@
-//! Shared helpers for parsing TypeScript AST expressions via oxc.
+//! Shared helpers for parsing TypeScript AST expressions via oxc, plus
+//! small name-shape utilities used across the extraction pipeline.
 
 use oxc_ast::ast::{BinaryOperator, Expression, ObjectPropertyKind};
 
@@ -6,6 +7,28 @@ use oxc_ast::ast::{BinaryOperator, Expression, ObjectPropertyKind};
 /// example the `${tint}` hole in `` `text-quality-${tint}` ``). Internal to
 /// extraction; never appears in returned class tokens.
 pub(crate) const DYNAMIC_HOLE: char = '\u{FFFC}';
+
+/// Kebab-case an item name: `SplitPanel` -> `split-panel`,
+/// `hero-banner` -> `hero-banner`. Underscores and spaces become dashes;
+/// consecutive separators collapse.
+pub(crate) fn kebab_case(name: &str) -> String {
+    let mut kebab = String::with_capacity(name.len());
+    for character in name.chars() {
+        if character.is_uppercase() {
+            if !kebab.is_empty() && !kebab.ends_with('-') {
+                kebab.push('-');
+            }
+            kebab.extend(character.to_lowercase());
+        } else if character == '_' || character == ' ' {
+            if !kebab.is_empty() && !kebab.ends_with('-') {
+                kebab.push('-');
+            }
+        } else {
+            kebab.push(character);
+        }
+    }
+    kebab
+}
 
 /// Unwrap TSAsExpression, TSSatisfiesExpression, TSTypeAssertion, and
 /// ParenthesizedExpression to reach the underlying value expression.

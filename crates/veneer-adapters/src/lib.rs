@@ -4,6 +4,7 @@
 //! components into static Web Components for documentation previews.
 
 pub mod conventions;
+pub mod coverage;
 pub mod generator;
 pub mod inline;
 pub mod intelligence;
@@ -16,9 +17,14 @@ pub mod traits;
 pub(crate) mod ts_helpers;
 
 pub use conventions::ComponentConventions;
+pub use coverage::{
+    assess_coverage, not_yet_documented_placeholder, AssessedItem, CoverageReport, CoverageState,
+    PlaceholderArtifact, NOT_YET_DOCUMENTED_STATUS,
+};
 pub use generator::{
-    generate_controls_panel, generate_passthrough_web_component, generate_web_component,
-    scoped_web_component_block, web_component_block,
+    generate_constraints_region, generate_controls_panel, generate_passthrough_web_component,
+    generate_preview_surface, generate_web_component, scoped_web_component_block,
+    web_component_block,
 };
 pub use inline::{parse_inline_jsx, parse_inline_jsx_all, to_custom_element, InlineJsx, PropValue};
 pub use intelligence::{

@@ -1,0 +1,23 @@
+{
+  "manifest": {
+    "id": "hero-banner",
+    "name": "Hero Banner",
+    "category": "layout",
+    "description": "Full-width hero section with heading and call-to-action",
+    "cognitiveLoad": 3,
+    "usagePatterns": {
+      "do": ["Single clear CTA above the fold"],
+      "never": ["Multiple competing CTAs"]
+    }
+  },
+  "input": [],
+  "output": [],
+  "blocks": [
+    {
+      "id": "hero-heading",
+      "type": "heading",
+      "content": "Welcome",
+      "meta": { "level": 1 }
+    }
+  ]
+}
