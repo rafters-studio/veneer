@@ -1,6 +1,19 @@
 //! Web Component code generator.
 
 use crate::react::ComponentStructure;
+use crate::traits::TransformedBlock;
+
+/// Assemble the full transform result for a component structure: the
+/// generated Web Component plus the classes and attributes the structure
+/// declares. The single assembly point for structure-based previews.
+pub fn web_component_block(tag_name: &str, structure: &ComponentStructure) -> TransformedBlock {
+    TransformedBlock {
+        web_component: generate_web_component(tag_name, structure),
+        tag_name: tag_name.to_string(),
+        classes_used: structure.collect_all_classes(),
+        attributes: structure.observed_attributes.clone(),
+    }
+}
 
 /// Generate a Web Component class from the extracted component structure.
 /// Uses adoptedStyleSheets to inherit page-level Tailwind CSS.

@@ -21,10 +21,10 @@ use oxc_span::SourceType;
 use serde::Deserialize;
 use walkdir::WalkDir;
 
-use crate::generator::generate_web_component;
+use crate::generator::web_component_block;
 use crate::rafters_source::IntelligenceSource;
 use crate::react::{ComponentStructure, ReactAdapter};
-use crate::traits::TransformedBlock;
+use crate::traits::{TransformError, TransformedBlock};
 use crate::ts_helpers::{
     extract_nested_object_classes, extract_string_value, normalize_whitespace,
     unwrap_type_expressions,
@@ -545,23 +545,25 @@ fn candidate_file_kind(filename: &str, path: &Path) -> Option<SourceFileKind> {
 /// Extract a component name and, when extraction succeeds, its structure.
 ///
 /// The name comes from the source when the source declares one, falling
-/// back to the file stem. `None` for the structure means the file is
-/// present in source but nothing is generatable from it -- callers decide
-/// whether that is a skip ([`ComponentRegistry::scan`]) or an explicit
-/// not-yet-generated item ([`ComponentRegistry::discover`]).
+/// back to the file stem. An `Err` structure means the file is present in
+/// source but nothing is generatable from it, with the reason -- callers
+/// decide whether that is a skip ([`ComponentRegistry::scan`]), an
+/// explicit not-yet-generated item ([`ComponentRegistry::discover`]), or
+/// a named render failure (`render_component`).
 fn extract_from_source(
     adapter: &ReactAdapter,
     file_kind: SourceFileKind,
     filename: &str,
     path: &Path,
     source: &str,
-) -> (String, Option<ComponentStructure>) {
+) -> (String, Result<ComponentStructure, TransformError>) {
     match file_kind {
         SourceFileKind::ClassesTs => {
             let stem = filename.strip_suffix(".classes.ts").unwrap_or("unknown");
             let component_name = kebab_to_pascal(stem);
             let exports = discover_exports(source, filename);
-            let structure = build_structure_from_exports(&component_name, exports);
+            let structure = build_structure_from_exports(&component_name, exports)
+                .ok_or(TransformError::MissingVariants);
             (component_name, structure)
         }
         SourceFileKind::ComponentModule => match adapter.extract_structure(source) {
@@ -574,17 +576,37 @@ fn extract_from_source(
                 } else {
                     structure.name.clone()
                 };
-                (name, Some(structure))
+                (name, Ok(structure))
             }
-            Err(_) => {
+            Err(error) => {
                 let stem = path
                     .file_stem()
                     .and_then(|s| s.to_str())
                     .unwrap_or("unknown");
-                (kebab_to_pascal(stem), None)
+                (kebab_to_pascal(stem), Err(error))
             }
         },
     }
+}
+
+/// Classify and extract one source file as a component candidate, for
+/// callers outside the walk (`render_component`). `None` when the file is
+/// not a component source candidate at all (wrong extension, test/story
+/// file); otherwise the declared name plus the structure or the named
+/// reason it is not generatable.
+pub(crate) fn extract_component_candidate(
+    path: &Path,
+    source: &str,
+) -> Option<(String, Result<ComponentStructure, TransformError>)> {
+    let filename = path.file_name().and_then(|name| name.to_str())?;
+    let file_kind = candidate_file_kind(filename, path)?;
+    Some(extract_from_source(
+        &ReactAdapter::new(),
+        file_kind,
+        filename,
+        path,
+        source,
+    ))
 }
 
 /// Directory filter for the discovery walk: descend everywhere except
@@ -722,7 +744,7 @@ impl ComponentRegistry {
 
             let (name, structure) =
                 extract_from_source(&default_adapter, file_kind, filename, path, &source);
-            let Some(structure) = structure else {
+            let Ok(structure) = structure else {
                 continue;
             };
 
@@ -770,16 +792,7 @@ impl ComponentRegistry {
             .get(component_name)
             .ok_or_else(|| RegistryError::ComponentNotFound(component_name.to_string()))?;
 
-        let classes_used = cached.structure.collect_all_classes();
-
-        let web_component = generate_web_component(tag_name, &cached.structure);
-
-        Ok(TransformedBlock {
-            web_component,
-            tag_name: tag_name.to_string(),
-            classes_used,
-            attributes: cached.structure.observed_attributes.clone(),
-        })
+        Ok(web_component_block(tag_name, &cached.structure))
     }
 
     /// Enumerate every component and composite the project source declares
@@ -874,7 +887,7 @@ impl ComponentRegistry {
                     name,
                     kind,
                     source_path: path.to_path_buf(),
-                    generated: structure.is_some(),
+                    generated: structure.is_ok(),
                 },
             );
         }

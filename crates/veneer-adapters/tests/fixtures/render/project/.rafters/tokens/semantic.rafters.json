@@ -1,0 +1,37 @@
+{
+  "$schema": "https://rafters.studio/schemas/namespace-tokens.json",
+  "namespace": "semantic",
+  "version": "1.0.0",
+  "generatedAt": "2026-06-01T00:00:00.000Z",
+  "tokens": [
+    {
+      "name": "primary",
+      "value": "oklch(0.637 0.237 25.331)",
+      "category": "color",
+      "namespace": "semantic",
+      "semanticMeaning": "Primary brand color for main actions",
+      "usageContext": ["primary-actions", "cta"]
+    },
+    {
+      "name": "primary-foreground",
+      "value": "oklch(0.985 0 0)",
+      "category": "color",
+      "namespace": "semantic",
+      "usageContext": ["text-on-primary"]
+    },
+    {
+      "name": "primary-ring",
+      "value": "oklch(0.637 0.237 25.331)",
+      "category": "color",
+      "namespace": "semantic",
+      "usageContext": ["focus-rings"]
+    },
+    {
+      "name": "secondary",
+      "value": "oklch(0.97 0 0)",
+      "category": "color",
+      "namespace": "semantic",
+      "usageContext": ["secondary-actions"]
+    }
+  ]
+}
