@@ -42,7 +42,7 @@ use crate::generator::{generate_passthrough_web_component, web_component_block};
 use crate::rafters_source::{IntelligenceSource, UsagePatterns};
 use crate::registry::{extract_component_candidate, DiscoveredItem};
 use crate::traits::{TransformError, TransformedBlock};
-use crate::ts_helpers::normalize_whitespace;
+use crate::ts_helpers::{kebab_case, normalize_whitespace};
 
 /// One property a `*Props` TypeScript interface declares. Every field is
 /// read from the declaration itself: nothing is inferred from usage.
@@ -331,22 +331,7 @@ fn push_unique_dependency(
 /// plus a `-preview` suffix (which also guarantees the dash a custom
 /// element name requires).
 fn preview_tag_name(name: &str) -> String {
-    let mut kebab = String::with_capacity(name.len());
-    for character in name.chars() {
-        if character.is_uppercase() {
-            if !kebab.is_empty() && !kebab.ends_with('-') {
-                kebab.push('-');
-            }
-            kebab.extend(character.to_lowercase());
-        } else if character == '_' || character == ' ' {
-            if !kebab.is_empty() && !kebab.ends_with('-') {
-                kebab.push('-');
-            }
-        } else {
-            kebab.push(character);
-        }
-    }
-    format!("{kebab}-preview")
+    format!("{}-preview", kebab_case(name))
 }
 
 // ---- module facts: props and imports, from the oxc AST ----
