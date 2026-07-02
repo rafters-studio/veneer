@@ -73,7 +73,7 @@ pub enum IntelligenceSource {
 /// fields the DTCG export drops: override reasons (`userOverride.reason`),
 /// the full OKLCH scale (`value.scale`), and accessibility matrices
 /// (`value.accessibility`).
-#[derive(Debug, Clone, PartialEq, Default)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct RaftersNamespace {
     /// Parsed namespace files keyed by namespace name (for example "color",
     /// "semantic", "motion"). A namespace whose file is absent has no entry:
@@ -124,7 +124,12 @@ pub struct NamespaceToken {
 }
 
 /// Do/never usage guidance attached to a token.
+///
+/// This shape is closed in the source schema, so unknown fields are a named
+/// parse error rather than silent data loss (open, namespace-specific fields
+/// live in [`NamespaceToken::extra`] instead).
 #[derive(Debug, Clone, PartialEq, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct UsagePatterns {
     #[serde(rename = "do", default)]
     pub do_patterns: Vec<String>,
@@ -135,7 +140,7 @@ pub struct UsagePatterns {
 /// A user override of a generated token value. `reason` is the override
 /// reason FR-VEN-002 requires preserved.
 #[derive(Debug, Clone, PartialEq, Deserialize)]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct UserOverride {
     pub reason: Option<String>,
     pub previous_value: Option<Value>,
@@ -169,6 +174,7 @@ pub struct StructuredValue {
 
 /// One step of an OKLCH scale.
 #[derive(Debug, Clone, Copy, PartialEq, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct OklchComponents {
     pub l: f64,
     pub c: f64,
@@ -179,7 +185,7 @@ pub struct OklchComponents {
 /// The accessibility block of a structured color value. WCAG matrices are
 /// typed; the remaining keys (`onWhite`, `onBlack`, `apca`) are preserved
 /// verbatim in `extra`.
-#[derive(Debug, Clone, PartialEq, Default)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct AccessibilityMatrices {
     pub wcag_aa: Option<ContrastMatrix>,
     pub wcag_aaa: Option<ContrastMatrix>,
@@ -187,7 +193,8 @@ pub struct AccessibilityMatrices {
 }
 
 /// Scale-index pairs that pass a WCAG level, split by text size.
-#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct ContrastMatrix {
     #[serde(default)]
     pub normal: Vec<ContrastPair>,
@@ -197,22 +204,19 @@ pub struct ContrastMatrix {
 
 /// A foreground/background pair of scale indices, serialized in the source
 /// as a two-element array `[foreground, background]`.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[serde(from = "[usize; 2]")]
 pub struct ContrastPair {
     pub foreground: usize,
     pub background: usize,
 }
 
-impl<'de> Deserialize<'de> for ContrastPair {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let [foreground, background] = <[usize; 2]>::deserialize(deserializer)?;
-        Ok(ContrastPair {
+impl From<[usize; 2]> for ContrastPair {
+    fn from([foreground, background]: [usize; 2]) -> Self {
+        ContrastPair {
             foreground,
             background,
-        })
+        }
     }
 }
 
