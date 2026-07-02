@@ -40,7 +40,7 @@ use serde::Deserialize;
 
 use crate::generator::{generate_passthrough_web_component, web_component_block};
 use crate::rafters_source::{IntelligenceSource, UsagePatterns};
-use crate::registry::{extract_component_candidate, DiscoveredItem};
+use crate::registry::{extract_component_candidate, is_composite_manifest, DiscoveredItem};
 use crate::traits::{TransformError, TransformedBlock};
 use crate::ts_helpers::normalize_whitespace;
 
@@ -167,18 +167,7 @@ fn render_item(
     item: &DiscoveredItem,
     source: &IntelligenceSource,
 ) -> Result<RenderedComponent, String> {
-    let filename = item
-        .source_path
-        .file_name()
-        .and_then(|name| name.to_str())
-        .ok_or_else(|| {
-            format!(
-                "source path {} has no usable file name",
-                item.source_path.display()
-            )
-        })?;
-
-    if filename.ends_with(".composite.json") {
+    if is_composite_manifest(&item.source_path) {
         return render_manifest_composite(item);
     }
     render_source_item(item, source)

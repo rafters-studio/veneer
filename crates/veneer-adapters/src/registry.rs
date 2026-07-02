@@ -648,6 +648,16 @@ fn read_rafters_config(
     Ok(Some((path, config)))
 }
 
+/// True when the path names a `*.composite.json` manifest -- the one file
+/// format that declares a composite by itself (see [`DiscoveredKind`]).
+/// The single suffix predicate every consumer of the manifest format
+/// shares: discovery, rendering, and artifact emission.
+pub(crate) fn is_composite_manifest(path: &Path) -> bool {
+    path.file_name()
+        .and_then(|name| name.to_str())
+        .is_some_and(|name| name.ends_with(".composite.json"))
+}
+
 /// Read the declared identifier from a `*.composite.json` manifest.
 /// A manifest that does not declare `manifest.id` is a named error, never
 /// a silently dropped composite.
@@ -854,7 +864,7 @@ impl ComponentRegistry {
             let filename = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
 
             // A composite manifest declares a composite by its format.
-            if filename.ends_with(".composite.json") {
+            if is_composite_manifest(path) {
                 let name = read_composite_manifest_name(path)?;
                 record_discovered(
                     &mut discovered,

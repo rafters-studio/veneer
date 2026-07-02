@@ -43,7 +43,7 @@ use crate::intelligence::{
     Constraint, DependencyRef, PropDoc, TokenRef, VariantDoc,
 };
 use crate::rafters_source::IntelligenceSource;
-use crate::registry::{DiscoveredItem, DiscoveredKind};
+use crate::registry::{is_composite_manifest, DiscoveredItem, DiscoveredKind};
 use crate::ts_helpers::normalize_whitespace;
 
 /// Version of the artifact JSON schema. Bump on any shape change so agents
@@ -297,12 +297,7 @@ struct McpProseTags {
 fn read_prose_tags(item: &DiscoveredItem) -> Result<McpProseTags, ArtifactError> {
     let mut tags = McpProseTags::default();
 
-    let is_manifest = item
-        .source_path
-        .file_name()
-        .and_then(|name| name.to_str())
-        .is_some_and(|name| name.ends_with(".composite.json"));
-    if is_manifest {
+    if is_composite_manifest(&item.source_path) {
         return Ok(tags);
     }
 
