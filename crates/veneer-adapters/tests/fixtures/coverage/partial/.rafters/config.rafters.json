@@ -1,0 +1,8 @@
+{
+  "version": "1.0.0",
+  "componentsPath": "components",
+  "installed": {
+    "components": ["ghost-widget"],
+    "composites": []
+  }
+}
