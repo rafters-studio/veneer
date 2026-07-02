@@ -4,11 +4,14 @@
 //! The denominator is the discovered set (FR-VEN-017): an item veneer
 //! never discovered cannot be reported missing, and an item veneer did
 //! discover can never silently vanish from the numbers. An item counts as
-//! documented only when discovery marked it generatable
-//! ([`DiscoveredItem::generated`]) AND the render pipeline
-//! ([`render_component`]) actually produced its preview -- a render
-//! failure counts as not-yet-documented, with its failure state, never as
-//! documented. No partial success is rounded up to "covered".
+//! documented exactly when the render pipeline ([`render_component`])
+//! actually produced its preview -- a render failure counts as
+//! not-yet-documented, with its failure state, never as documented. No
+//! partial success is rounded up to "covered". Discovery's
+//! [`DiscoveredItem::generated`] flag is deliberately not a gate here:
+//! composite manifests are discovered with `generated: false` yet render
+//! through the manifest path, so gating on the flag would mis-bucket
+//! every composite and report a false reason.
 //!
 //! Every uncovered item gets an explicit "not yet documented" placeholder
 //! artifact ([`not_yet_documented_placeholder`]): a real MDX page naming
@@ -63,7 +66,7 @@ impl CoverageReport {
 /// The coverage state of one discovered item.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum CoverageState {
-    /// Discovery marked the item generatable and its preview rendered.
+    /// The render pipeline produced the item's preview.
     Documented,
     /// Not documented yet, with the honest reason: what discovery or the
     /// render pipeline reported for this item.
@@ -79,11 +82,14 @@ pub struct AssessedItem {
 
 /// Assess the coverage of every discovered item, in the discovered order.
 ///
-/// An item is [`CoverageState::Documented`] only when both gates pass:
-/// discovery marked it generatable and [`render_component`] produced its
-/// preview. Everything else is [`CoverageState::NotYetDocumented`] with
-/// the failure state as the reason -- a failed generation is never
-/// counted as documented.
+/// An item is [`CoverageState::Documented`] exactly when
+/// [`render_component`] produced its preview. Everything else is
+/// [`CoverageState::NotYetDocumented`] with the failure state as the
+/// reason -- a failed generation is never counted as documented. The
+/// render attempt is unconditional: [`DiscoveredItem::generated`] is
+/// `false` for every composite manifest even though the manifest path
+/// renders it, so short-circuiting on the flag would mis-bucket
+/// composites with a false reason.
 pub fn assess_coverage(
     items: Vec<DiscoveredItem>,
     source: &IntelligenceSource,
@@ -98,14 +104,6 @@ pub fn assess_coverage(
 }
 
 fn assess_item(item: &DiscoveredItem, source: &IntelligenceSource) -> CoverageState {
-    if !item.generated {
-        return CoverageState::NotYetDocumented {
-            reason: format!(
-                "discovered at {} but nothing is generatable from it yet",
-                item.source_path.display()
-            ),
-        };
-    }
     match render_component(item, source) {
         Ok(_) => CoverageState::Documented,
         Err(error) => CoverageState::NotYetDocumented {
@@ -134,6 +132,12 @@ impl ComponentRegistry {
         )))
     }
 }
+
+/// The frontmatter line that marks a page as a coverage placeholder.
+/// Emitters key on this to recognize the placeholder pages they own (for
+/// example to remove a stale one once its item becomes documented)
+/// without ever touching real documentation pages.
+pub const NOT_YET_DOCUMENTED_STATUS: &str = "status: not-yet-documented";
 
 /// A placeholder artifact ready to be written alongside generator output:
 /// the file name it should be emitted under and its full content.
@@ -167,7 +171,7 @@ pub fn not_yet_documented_placeholder(
 ---
 {layout_line}title: {name}
 description: {name} is not yet documented.
-status: not-yet-documented
+{NOT_YET_DOCUMENTED_STATUS}
 ---
 
 # {name}
@@ -215,15 +219,36 @@ mod tests {
     }
 
     // AC: coverage numbers are exact against a fixture with known partial
-    // coverage. The fixture discovers exactly three items: Button
-    // (renderable), Broken (unparseable source), ghost-widget (installed
-    // in the rafters config with no source file).
+    // coverage. The fixture discovers exactly four items: Button
+    // (renderable source), hero-banner (renderable composite manifest),
+    // Broken (unparseable source), ghost-widget (installed in the rafters
+    // config with no source file).
     #[test]
     fn coverage_numbers_are_exact_against_partial_fixture() {
         let report = CoverageReport::from_assessed(&assessed_fixture());
-        assert_eq!(report.total, 3, "denominator is the full discovered set");
-        assert_eq!(report.documented, ["Button"]);
+        assert_eq!(report.total, 4, "denominator is the full discovered set");
+        assert_eq!(report.documented, ["Button", "hero-banner"]);
         assert_eq!(report.not_yet_documented, ["Broken", "ghost-widget"]);
+    }
+
+    // Regression: discovery marks every composite manifest `generated:
+    // false`, yet the manifest path renders it. Coverage must attempt the
+    // render instead of short-circuiting on the flag -- otherwise no
+    // composite could ever count as documented and the placeholder would
+    // carry a false reason.
+    #[test]
+    fn composite_manifest_counts_as_documented_despite_generated_false() {
+        let assessed = assessed_fixture();
+        let composite = assessed
+            .iter()
+            .find(|entry| entry.item.name == "hero-banner")
+            .expect("the composite manifest must be assessed");
+        assert_eq!(composite.item.kind, DiscoveredKind::Composite);
+        assert!(
+            !composite.item.generated,
+            "discovery marks manifests non-generated; coverage must not trust that"
+        );
+        assert_eq!(composite.state, CoverageState::Documented);
     }
 
     // AC: coverage status is queryable, with the discovered set as the
@@ -233,7 +258,7 @@ mod tests {
         let root = fixture_root();
         let source = read_rafters_namespace(&root).expect("fixture namespace must read");
         let report = ComponentRegistry::coverage(&root, &source).expect("coverage must compute");
-        assert_eq!(report.total, 3);
+        assert_eq!(report.total, 4);
         assert_eq!(
             report.total,
             report.documented.len() + report.not_yet_documented.len(),

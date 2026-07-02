@@ -19,7 +19,7 @@ pub(crate) mod ts_helpers;
 pub use conventions::ComponentConventions;
 pub use coverage::{
     assess_coverage, not_yet_documented_placeholder, AssessedItem, CoverageReport, CoverageState,
-    PlaceholderArtifact,
+    PlaceholderArtifact, NOT_YET_DOCUMENTED_STATUS,
 };
 pub use generator::{
     generate_controls_panel, generate_passthrough_web_component, generate_web_component,

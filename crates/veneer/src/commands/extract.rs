@@ -7,7 +7,7 @@ use anyhow::{Context, Result};
 use clap::Args;
 use veneer_adapters::{
     assess_coverage, not_yet_documented_placeholder, read_rafters_namespace, ComponentRegistry,
-    CoverageReport, CoverageState,
+    CoverageReport, CoverageState, PlaceholderArtifact, NOT_YET_DOCUMENTED_STATUS,
 };
 use veneer_docs::{
     generate_default_skeletons, generate_reference_pages, generate_sidebar, mark_required_flags,
@@ -134,6 +134,9 @@ struct CoverageOutcome {
 /// Assess coverage against the discovered set and emit an explicit "not
 /// yet documented" placeholder page under `<output>/components/` for
 /// every uncovered item -- a real artifact, never a blank or a 404.
+/// Placeholders from a previous run whose item is no longer a gap are
+/// removed first, so the pages on disk cannot drift from the reported
+/// numbers.
 fn run_coverage_phase(
     project: &Path,
     output: &Path,
@@ -145,13 +148,21 @@ fn run_coverage_phase(
         .with_context(|| format!("failed to discover components in {}", project.display()))?;
     let assessed = assess_coverage(items, &source);
 
+    let artifacts: Vec<PlaceholderArtifact> = assessed
+        .iter()
+        .filter_map(|entry| match &entry.state {
+            CoverageState::NotYetDocumented { reason } => {
+                Some(not_yet_documented_placeholder(&entry.item, reason, layout))
+            }
+            CoverageState::Documented => None,
+        })
+        .collect();
+
     let components_dir = output.join("components");
+    remove_stale_placeholders(&components_dir, &artifacts)?;
+
     let mut placeholder_paths: Vec<PathBuf> = Vec::new();
-    for entry in &assessed {
-        let CoverageState::NotYetDocumented { reason } = &entry.state else {
-            continue;
-        };
-        let artifact = not_yet_documented_placeholder(&entry.item, reason, layout);
+    for artifact in &artifacts {
         let path = components_dir.join(&artifact.file_name);
         if let Some(parent) = path.parent() {
             fs::create_dir_all(parent)
@@ -166,6 +177,44 @@ fn run_coverage_phase(
         report: CoverageReport::from_assessed(&assessed),
         placeholder_paths,
     })
+}
+
+/// Remove placeholder pages a previous run left behind for items that are
+/// no longer in the not-yet-documented set (fixed, or gone from the
+/// discovered set), so a stale "not yet documented" claim never survives
+/// a re-run. Only pages this phase owns are candidates: `.mdx` files
+/// whose frontmatter carries the placeholder status marker. Real
+/// documentation pages are never touched.
+fn remove_stale_placeholders(components_dir: &Path, current: &[PlaceholderArtifact]) -> Result<()> {
+    if !components_dir.is_dir() {
+        return Ok(());
+    }
+    let entries = fs::read_dir(components_dir)
+        .with_context(|| format!("failed to read {}", components_dir.display()))?;
+    for entry in entries {
+        let entry =
+            entry.with_context(|| format!("failed to read {}", components_dir.display()))?;
+        let path = entry.path();
+        let Some(file_name) = path.file_name().and_then(|name| name.to_str()) else {
+            continue;
+        };
+        if !file_name.ends_with(".mdx")
+            || current
+                .iter()
+                .any(|artifact| artifact.file_name == file_name)
+        {
+            continue;
+        }
+        let Ok(content) = fs::read_to_string(&path) else {
+            continue;
+        };
+        if !content.contains(NOT_YET_DOCUMENTED_STATUS) {
+            continue;
+        }
+        fs::remove_file(&path)
+            .with_context(|| format!("failed to remove stale placeholder {}", path.display()))?;
+    }
+    Ok(())
 }
 
 /// The queryable CLI coverage summary: exact counts against the
@@ -188,8 +237,8 @@ mod tests {
 
     /// The committed fixture with known partial coverage (shared with the
     /// veneer-adapters coverage tests, so the two layers cannot drift):
-    /// Button renders, Broken does not parse, and ghost-widget is
-    /// installed with no source file.
+    /// Button renders, the hero-banner composite manifest renders, Broken
+    /// does not parse, and ghost-widget is installed with no source file.
     fn partial_coverage_project() -> PathBuf {
         Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../veneer-adapters/tests/fixtures/coverage/partial")
@@ -205,8 +254,8 @@ mod tests {
         let outcome =
             run_coverage_phase(&project, output.path(), None).expect("coverage phase must run");
         let report = &outcome.report;
-        assert_eq!(report.total, 3);
-        assert_eq!(report.documented, ["Button"]);
+        assert_eq!(report.total, 4);
+        assert_eq!(report.documented, ["Button", "hero-banner"]);
         assert_eq!(report.not_yet_documented, ["Broken", "ghost-widget"]);
     }
 
@@ -237,6 +286,59 @@ mod tests {
         assert!(
             !components_dir.join("button.mdx").exists(),
             "a documented component gets no placeholder"
+        );
+        assert!(
+            !components_dir.join("hero-banner.mdx").exists(),
+            "a documented composite gets no placeholder"
+        );
+    }
+
+    // A placeholder left by a previous run for an item that is no longer
+    // a gap must be removed on re-run, while real documentation pages in
+    // the same directory are never touched.
+    #[test]
+    fn coverage_phase_removes_stale_placeholders_but_not_real_pages() {
+        let project = partial_coverage_project();
+        let output = tempfile::tempdir().expect("output dir");
+        let components_dir = output.path().join("components");
+        fs::create_dir_all(&components_dir).expect("components dir");
+
+        // A stale placeholder from a prior run: its item ("Vanished") is
+        // not in the current discovered set, so its claim is now false.
+        let stale = not_yet_documented_placeholder(
+            &veneer_adapters::DiscoveredItem {
+                name: "Vanished".to_string(),
+                kind: veneer_adapters::DiscoveredKind::Component,
+                source_path: PathBuf::from("components/vanished.tsx"),
+                generated: false,
+            },
+            "it used to be broken",
+            None,
+        );
+        let stale_path = components_dir.join(&stale.file_name);
+        fs::write(&stale_path, &stale.content).expect("stale placeholder");
+
+        // A real documentation page (no placeholder marker) must survive.
+        let real_page = components_dir.join("button.mdx");
+        fs::write(&real_page, "---\ntitle: Button\n---\n\n# Button\n").expect("real page");
+
+        let outcome =
+            run_coverage_phase(&project, output.path(), None).expect("coverage phase must run");
+
+        assert!(
+            !stale_path.exists(),
+            "a stale placeholder must not survive a re-run"
+        );
+        assert!(
+            real_page.exists(),
+            "a real documentation page is never removed"
+        );
+        assert_eq!(
+            outcome.placeholder_paths,
+            [
+                components_dir.join("broken.mdx"),
+                components_dir.join("ghost-widget.mdx"),
+            ]
         );
     }
 }
