@@ -25,7 +25,9 @@ pub use rafters_source::{
     RaftersNamespace, StructuredValue, TokenValue, UsagePatterns, UserOverride,
 };
 pub use react::{ComponentStructure, ReactAdapter};
-pub use registry::{CachedComponent, ComponentRegistry, RegistryError};
+pub use registry::{
+    CachedComponent, ComponentRegistry, DiscoveredItem, DiscoveredKind, RegistryError,
+};
 pub use scope::{extract_classes_from_ts, scope_css};
 pub use tokens::{parse_dtcg_tokens, DesignToken, DesignTokens, TokenParseError};
 pub use traits::{FrameworkAdapter, TransformContext, TransformError, TransformedBlock};

@@ -8,7 +8,7 @@
 //! each export by its shape and name suffix, and builds the component
 //! record from what actually exists.
 
-use std::collections::HashMap;
+use std::collections::{BTreeMap, HashMap};
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -18,9 +18,11 @@ use oxc_ast::ast::{
 };
 use oxc_parser::Parser;
 use oxc_span::SourceType;
+use serde::Deserialize;
 use walkdir::WalkDir;
 
 use crate::generator::generate_web_component;
+use crate::rafters_source::IntelligenceSource;
 use crate::react::{ComponentStructure, ReactAdapter};
 use crate::traits::TransformedBlock;
 use crate::ts_helpers::{
@@ -49,6 +51,92 @@ pub struct CachedComponent {
 
     /// Full source code
     pub source: String,
+}
+
+/// Whether a discovered item is a component or a composite (FR-VEN-017).
+///
+/// Kind comes from what the source declares -- never from naming patterns.
+/// The rafters source tree declares compositeness in exactly three places
+/// (verified against the real repo):
+///
+/// - a `*.composite.json` manifest file (for example
+///   `packages/ui/src/composites/hero-banner.composite.json`)
+/// - residence under the `compositesPath` directory declared in
+///   `.rafters/config.rafters.json`
+/// - a name listed in `installed.composites` of that same config
+///
+/// Everything else the component source walk yields is a component: the
+/// walk itself only visits component source files, and `componentsPath` /
+/// `installed.components` declare components explicitly.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum DiscoveredKind {
+    Component,
+    Composite,
+}
+
+/// One component or composite found in a project by [`ComponentRegistry::discover`].
+#[derive(Debug, Clone, PartialEq)]
+pub struct DiscoveredItem {
+    /// Declared name: the extracted component name, the composite manifest
+    /// `manifest.id`, or the name listed in the rafters config.
+    pub name: String,
+    /// Component or composite, from what the source declares.
+    pub kind: DiscoveredKind,
+    /// Where the item is declared: the source file, the composite manifest,
+    /// or `.rafters/config.rafters.json` for installed-only declarations.
+    pub source_path: PathBuf,
+    /// present in source but not yet generated (feeds FR-VEN-009)
+    ///
+    /// True when the extract pass produced a component structure -- the
+    /// input generation renders from. False when the item exists in source
+    /// but nothing is generatable from it yet (unparseable file, manifest
+    /// without a generation pipeline, installed name with no source file),
+    /// so it is reportable as "not yet documented" instead of silently
+    /// absent.
+    pub generated: bool,
+}
+
+/// The subset of `.rafters/config.rafters.json` that declares components
+/// and composites. Grounded against the real file: it also declares
+/// `primitivesPath` / `installed.primitives`, which FR-VEN-017's
+/// [`DiscoveredKind`] cannot represent, so primitives are not read here.
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct RaftersConfig {
+    composites_path: Option<String>,
+    #[serde(default)]
+    installed: InstalledDeclarations,
+}
+
+/// The `installed` block of the rafters config: names the project has
+/// installed, declared per kind.
+#[derive(Debug, Default, Deserialize)]
+struct InstalledDeclarations {
+    #[serde(default)]
+    components: Vec<String>,
+    #[serde(default)]
+    composites: Vec<String>,
+}
+
+/// A `*.composite.json` manifest, read only for the declared identifier.
+#[derive(Debug, Deserialize)]
+struct CompositeManifestFile {
+    manifest: CompositeManifest,
+}
+
+/// The `manifest` block of a composite manifest file.
+#[derive(Debug, Deserialize)]
+struct CompositeManifest {
+    id: String,
+}
+
+/// How a candidate component source file is extracted.
+#[derive(Debug, Clone, Copy)]
+enum SourceFileKind {
+    /// `.classes.ts` -- export-discovery extraction.
+    ClassesTs,
+    /// `.tsx` / `.jsx` -- conventions-based extraction.
+    ComponentModule,
 }
 
 /// A single discovered export from a .classes.ts file.
@@ -431,6 +519,164 @@ fn build_structure_from_exports(
     })
 }
 
+/// Classify a filename as a component source candidate, applying the shared
+/// skip rules (tests, specs, stories, index files).
+fn candidate_file_kind(filename: &str, path: &Path) -> Option<SourceFileKind> {
+    if filename.contains(".test.")
+        || filename.contains(".spec.")
+        || filename.contains(".stories.")
+        || filename == "index.tsx"
+        || filename == "index.jsx"
+        || filename == "index.ts"
+    {
+        return None;
+    }
+
+    if filename.ends_with(".classes.ts") {
+        return Some(SourceFileKind::ClassesTs);
+    }
+
+    match path.extension().and_then(|e| e.to_str()) {
+        Some("tsx") | Some("jsx") => Some(SourceFileKind::ComponentModule),
+        _ => None,
+    }
+}
+
+/// Extract a component name and, when extraction succeeds, its structure.
+///
+/// The name comes from the source when the source declares one, falling
+/// back to the file stem. `None` for the structure means the file is
+/// present in source but nothing is generatable from it -- callers decide
+/// whether that is a skip ([`ComponentRegistry::scan`]) or an explicit
+/// not-yet-generated item ([`ComponentRegistry::discover`]).
+fn extract_from_source(
+    adapter: &ReactAdapter,
+    file_kind: SourceFileKind,
+    filename: &str,
+    path: &Path,
+    source: &str,
+) -> (String, Option<ComponentStructure>) {
+    match file_kind {
+        SourceFileKind::ClassesTs => {
+            let stem = filename.strip_suffix(".classes.ts").unwrap_or("unknown");
+            let component_name = kebab_to_pascal(stem);
+            let exports = discover_exports(source, filename);
+            let structure = build_structure_from_exports(&component_name, exports);
+            (component_name, structure)
+        }
+        SourceFileKind::ComponentModule => match adapter.extract_structure(source) {
+            Ok(structure) => {
+                let name = if structure.name.is_empty() || structure.name == "Component" {
+                    path.file_stem()
+                        .and_then(|s| s.to_str())
+                        .unwrap_or("unknown")
+                        .to_string()
+                } else {
+                    structure.name.clone()
+                };
+                (name, Some(structure))
+            }
+            Err(_) => {
+                let stem = path
+                    .file_stem()
+                    .and_then(|s| s.to_str())
+                    .unwrap_or("unknown");
+                (kebab_to_pascal(stem), None)
+            }
+        },
+    }
+}
+
+/// Directory filter for the discovery walk: descend everywhere except
+/// dependency, build-output, and hidden directories (`.rafters/` is read
+/// separately via its config, not walked for component source).
+fn is_walkable_entry(entry: &walkdir::DirEntry) -> bool {
+    if entry.depth() == 0 || !entry.file_type().is_dir() {
+        return true;
+    }
+    let name = entry.file_name().to_str().unwrap_or("");
+    !(name.starts_with('.')
+        || name == "node_modules"
+        || name == "target"
+        || name == "dist"
+        || name == "build")
+}
+
+/// Read the component/composite declarations from
+/// `.rafters/config.rafters.json`, if the file exists. Returns the config
+/// path alongside the parsed config so installed-only items can point at
+/// the file that declares them.
+fn read_rafters_config(
+    project_root: &Path,
+) -> Result<Option<(PathBuf, RaftersConfig)>, RegistryError> {
+    let path = project_root.join(".rafters").join("config.rafters.json");
+    if !path.is_file() {
+        return Ok(None);
+    }
+    let text = fs::read_to_string(&path).map_err(|source| RegistryError::UnreadableSource {
+        path: path.clone(),
+        source,
+    })?;
+    let config: RaftersConfig =
+        serde_json::from_str(&text).map_err(|error| RegistryError::MalformedDeclaration {
+            path: path.clone(),
+            message: error.to_string(),
+        })?;
+    Ok(Some((path, config)))
+}
+
+/// Read the declared identifier from a `*.composite.json` manifest.
+/// A manifest that does not declare `manifest.id` is a named error, never
+/// a silently dropped composite.
+fn read_composite_manifest_name(path: &Path) -> Result<String, RegistryError> {
+    let text = fs::read_to_string(path).map_err(|source| RegistryError::UnreadableSource {
+        path: path.to_path_buf(),
+        source,
+    })?;
+    let parsed: CompositeManifestFile =
+        serde_json::from_str(&text).map_err(|error| RegistryError::MalformedDeclaration {
+            path: path.to_path_buf(),
+            message: error.to_string(),
+        })?;
+    Ok(parsed.manifest.id)
+}
+
+/// Canonical fold for discovered-item identity. The same physical item is
+/// named in different casing conventions by the three declaration
+/// mechanisms: kebab-case by composite manifest ids and the `installed`
+/// lists (`hero-banner`), PascalCase by source extraction (`HeroBanner`).
+/// Folding lowercases and drops the word separators those conventions
+/// disagree on, so both spellings key the same dedup slot.
+fn identity_fold(name: &str) -> String {
+    name.chars()
+        .filter(|c| *c != '-' && *c != '_')
+        .flat_map(char::to_lowercase)
+        .collect()
+}
+
+/// Insert an item into the discovered set, merging duplicates of the same
+/// (folded name, kind) -- for example `button.tsx` alongside
+/// `button.classes.ts`, or a `hero-banner` manifest alongside a
+/// `HeroBanner` source file (see [`identity_fold`]). A generatable sighting
+/// wins over a non-generatable one; otherwise the first sighting
+/// (deterministic, the walk is sorted) is kept.
+fn record_discovered(
+    set: &mut BTreeMap<(String, DiscoveredKind), DiscoveredItem>,
+    item: DiscoveredItem,
+) {
+    match set.entry((identity_fold(&item.name), item.kind)) {
+        std::collections::btree_map::Entry::Vacant(slot) => {
+            slot.insert(item);
+        }
+        std::collections::btree_map::Entry::Occupied(mut slot) => {
+            let existing = slot.get_mut();
+            if !existing.generated && item.generated {
+                *existing = item;
+            }
+        }
+    }
+}
+
 impl ComponentRegistry {
     /// Create a new empty registry.
     pub fn new() -> Self {
@@ -464,24 +710,9 @@ impl ComponentRegistry {
             let path = entry.path();
             let filename = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
 
-            // Skip test files, stories, and index files
-            if filename.contains(".test.")
-                || filename.contains(".spec.")
-                || filename.contains(".stories.")
-                || filename == "index.tsx"
-                || filename == "index.jsx"
-                || filename == "index.ts"
-            {
+            let Some(file_kind) = candidate_file_kind(filename, path) else {
                 continue;
-            }
-
-            // Determine file type and extraction strategy
-            let is_classes_file = filename.ends_with(".classes.ts");
-            let ext = path.extension().and_then(|e| e.to_str()).unwrap_or("");
-
-            if !is_classes_file && ext != "tsx" && ext != "jsx" {
-                continue;
-            }
+            };
 
             // Read source
             let source = match fs::read_to_string(path) {
@@ -489,33 +720,10 @@ impl ComponentRegistry {
                 Err(_) => continue,
             };
 
-            // Extract structure based on file type
-            let (structure, name) = if is_classes_file {
-                // Discovery-based extraction for .classes.ts files
-                let stem = filename.strip_suffix(".classes.ts").unwrap_or("unknown");
-                let component_name = kebab_to_pascal(stem);
-
-                let exports = discover_exports(&source, filename);
-                match build_structure_from_exports(&component_name, exports) {
-                    Some(s) => (s, component_name),
-                    None => continue,
-                }
-            } else {
-                // Standard component file (.tsx/.jsx) -- use conventions-based extraction
-                match default_adapter.extract_structure(&source) {
-                    Ok(s) => {
-                        let name = if s.name.is_empty() || s.name == "Component" {
-                            path.file_stem()
-                                .and_then(|s| s.to_str())
-                                .unwrap_or("unknown")
-                                .to_string()
-                        } else {
-                            s.name.clone()
-                        };
-                        (s, name)
-                    }
-                    Err(_) => continue,
-                }
+            let (name, structure) =
+                extract_from_source(&default_adapter, file_kind, filename, path, &source);
+            let Some(structure) = structure else {
+                continue;
             };
 
             let cached = CachedComponent {
@@ -573,6 +781,130 @@ impl ComponentRegistry {
             attributes: cached.structure.observed_attributes.clone(),
         })
     }
+
+    /// Enumerate every component and composite the project source declares
+    /// (FR-VEN-017): the union of the component source walk (the existing
+    /// oxc extract pass) and the `.rafters/` namespace declarations
+    /// (`compositesPath` and `installed` in `config.rafters.json`).
+    ///
+    /// - Kind comes from declarations only (see [`DiscoveredKind`]), never
+    ///   from naming patterns.
+    /// - An item whose source exists but yields nothing generatable appears
+    ///   with `generated: false` instead of being silently dropped.
+    /// - An unreadable source file is a named error
+    ///   ([`RegistryError::UnreadableSource`]); a declaration file that
+    ///   does not parse is [`RegistryError::MalformedDeclaration`].
+    /// - Ordering is deterministic: a stable sort by name.
+    ///
+    /// With [`IntelligenceSource::NoSource`] there is no `.rafters/`
+    /// directory, so only the component source walk contributes.
+    pub fn discover(
+        project_root: &Path,
+        source: &IntelligenceSource,
+    ) -> Result<Vec<DiscoveredItem>, RegistryError> {
+        if !project_root.is_dir() {
+            return Err(RegistryError::DirectoryNotFound(
+                project_root.display().to_string(),
+            ));
+        }
+
+        let config = match source {
+            IntelligenceSource::Namespace(_) => read_rafters_config(project_root)?,
+            IntelligenceSource::NoSource => None,
+        };
+        let composites_root: Option<PathBuf> = config
+            .as_ref()
+            .and_then(|(_, config)| config.composites_path.as_deref())
+            .map(|declared| project_root.join(declared));
+
+        let adapter = ReactAdapter::new();
+        let mut discovered: BTreeMap<(String, DiscoveredKind), DiscoveredItem> = BTreeMap::new();
+
+        for entry in WalkDir::new(project_root)
+            .follow_links(true)
+            .sort_by_file_name()
+            .into_iter()
+            .filter_entry(is_walkable_entry)
+        {
+            let entry = entry.map_err(|error| RegistryError::WalkFailed {
+                path: error
+                    .path()
+                    .map(Path::to_path_buf)
+                    .unwrap_or_else(|| project_root.to_path_buf()),
+                message: error.to_string(),
+            })?;
+            if !entry.file_type().is_file() {
+                continue;
+            }
+            let path = entry.path();
+            let filename = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
+
+            // A composite manifest declares a composite by its format.
+            if filename.ends_with(".composite.json") {
+                let name = read_composite_manifest_name(path)?;
+                record_discovered(
+                    &mut discovered,
+                    DiscoveredItem {
+                        name,
+                        kind: DiscoveredKind::Composite,
+                        source_path: path.to_path_buf(),
+                        generated: false,
+                    },
+                );
+                continue;
+            }
+
+            let Some(file_kind) = candidate_file_kind(filename, path) else {
+                continue;
+            };
+            let source_text =
+                fs::read_to_string(path).map_err(|source| RegistryError::UnreadableSource {
+                    path: path.to_path_buf(),
+                    source,
+                })?;
+            let (name, structure) =
+                extract_from_source(&adapter, file_kind, filename, path, &source_text);
+            let kind = match &composites_root {
+                Some(root) if path.starts_with(root) => DiscoveredKind::Composite,
+                _ => DiscoveredKind::Component,
+            };
+            record_discovered(
+                &mut discovered,
+                DiscoveredItem {
+                    name,
+                    kind,
+                    source_path: path.to_path_buf(),
+                    generated: structure.is_some(),
+                },
+            );
+        }
+
+        // Union with the names the rafters config declares as installed.
+        // An installed name without a matching source file is still part of
+        // the set (generated: false), pointing at the config that declares it.
+        if let Some((config_path, config)) = &config {
+            for (names, kind) in [
+                (&config.installed.components, DiscoveredKind::Component),
+                (&config.installed.composites, DiscoveredKind::Composite),
+            ] {
+                for name in names {
+                    record_discovered(
+                        &mut discovered,
+                        DiscoveredItem {
+                            name: name.clone(),
+                            kind,
+                            source_path: config_path.clone(),
+                            generated: false,
+                        },
+                    );
+                }
+            }
+        }
+
+        let mut items: Vec<DiscoveredItem> = discovered.into_values().collect();
+        items.sort_by(|a, b| a.name.cmp(&b.name));
+        Ok(items)
+    }
 }
 
 /// Convert kebab-case to PascalCase (e.g., "context-menu" -> "ContextMenu").
@@ -604,6 +936,24 @@ pub enum RegistryError {
 
     #[error("Failed to parse component: {0}")]
     ParseError(String),
+
+    /// A source file exists but could not be read; discovery names it
+    /// instead of silently dropping the item (FR-VEN-017).
+    #[error("failed to read source file {path}: {source}")]
+    UnreadableSource {
+        path: PathBuf,
+        #[source]
+        source: std::io::Error,
+    },
+
+    /// A declaration file (composite manifest or rafters config) exists
+    /// but does not parse; the items it declares would otherwise be lost.
+    #[error("malformed declaration file {path}: {message}")]
+    MalformedDeclaration { path: PathBuf, message: String },
+
+    /// The discovery walk could not traverse part of the project tree.
+    #[error("failed to walk {path} during discovery: {message}")]
+    WalkFailed { path: PathBuf, message: String },
 }
 
 #[cfg(test)]
@@ -1008,5 +1358,233 @@ export const fooDisabledClasses = 'opacity-50';
 
         let exports = discover_exports(source, "test.classes.ts");
         assert_eq!(exports.len(), 3);
+    }
+
+    // ---- FR-VEN-017: component and composite discovery ----
+
+    use crate::rafters_source::read_rafters_namespace;
+
+    fn discovery_fixture(name: &str) -> PathBuf {
+        Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("tests/fixtures/discovery")
+            .join(name)
+    }
+
+    fn discover_fixture(name: &str) -> Vec<DiscoveredItem> {
+        let root = discovery_fixture(name);
+        let source = read_rafters_namespace(&root).expect("fixture namespace must read");
+        ComponentRegistry::discover(&root, &source).expect("discovery must succeed")
+    }
+
+    fn find_by_path_suffix<'a>(items: &'a [DiscoveredItem], suffix: &str) -> &'a DiscoveredItem {
+        items
+            .iter()
+            .find(|item| item.source_path.to_string_lossy().ends_with(suffix))
+            .unwrap_or_else(|| panic!("item with source path ending {suffix} must be discovered"))
+    }
+
+    fn find_by_name<'a>(items: &'a [DiscoveredItem], name: &str) -> &'a DiscoveredItem {
+        items
+            .iter()
+            .find(|item| item.name.eq_ignore_ascii_case(name))
+            .unwrap_or_else(|| panic!("item named {name} must be discovered"))
+    }
+
+    #[test]
+    fn discovers_union_of_source_walk_and_namespace_declarations() {
+        let items = discover_fixture("with_namespace");
+
+        // Source walk: Button (tsx + classes merged), Broken, CardComposite,
+        // SplitPanel, hero-banner manifest. Namespace installed lists:
+        // StatusPill, login-form.
+        assert_eq!(items.len(), 7, "full union, nothing dropped: {items:#?}");
+        for name in [
+            "broken",
+            "button",
+            "hero-banner",
+            "login-form",
+            "statuspill",
+        ] {
+            assert!(
+                items
+                    .iter()
+                    .any(|item| item.name.eq_ignore_ascii_case(name)),
+                "{name} must be in the discovered set"
+            );
+        }
+        find_by_path_suffix(&items, "card-composite.tsx");
+        find_by_path_suffix(&items, "split-panel.tsx");
+    }
+
+    #[test]
+    fn composite_kind_comes_from_declaration_not_name() {
+        let items = discover_fixture("with_namespace");
+
+        // Name contains "composite" but nothing declares it one: Component.
+        let card = find_by_path_suffix(&items, "card-composite.tsx");
+        assert_eq!(card.kind, DiscoveredKind::Component);
+
+        // Declared composite by residence under the config compositesPath.
+        let split = find_by_path_suffix(&items, "split-panel.tsx");
+        assert_eq!(split.kind, DiscoveredKind::Composite);
+        assert!(split.generated, "extractable composite source is generated");
+
+        // Declared composite by manifest format.
+        let hero = find_by_name(&items, "hero-banner");
+        assert_eq!(hero.kind, DiscoveredKind::Composite);
+        assert!(!hero.generated, "manifests have no generation pipeline yet");
+
+        // Declared composite by the installed.composites list.
+        let login = find_by_name(&items, "login-form");
+        assert_eq!(login.kind, DiscoveredKind::Composite);
+
+        // Declared component by the installed.components list.
+        let pill = find_by_name(&items, "StatusPill");
+        assert_eq!(pill.kind, DiscoveredKind::Component);
+    }
+
+    #[test]
+    fn present_but_not_generated_is_reported_not_dropped() {
+        let items = discover_fixture("with_namespace");
+
+        // Unparseable source file: present with generated: false.
+        let broken = find_by_name(&items, "Broken");
+        assert_eq!(broken.kind, DiscoveredKind::Component);
+        assert!(!broken.generated);
+        assert!(broken.source_path.ends_with("components/broken.tsx"));
+
+        // Installed name with no source file: present, pointing at the
+        // config that declares it.
+        let pill = find_by_name(&items, "StatusPill");
+        assert!(!pill.generated);
+        assert!(pill.source_path.ends_with(".rafters/config.rafters.json"));
+    }
+
+    #[test]
+    fn duplicate_source_sightings_merge_into_one_item() {
+        let items = discover_fixture("with_namespace");
+
+        // button.tsx and button.classes.ts both declare Button.
+        let buttons: Vec<&DiscoveredItem> = items
+            .iter()
+            .filter(|item| item.name.eq_ignore_ascii_case("button"))
+            .collect();
+        assert_eq!(buttons.len(), 1, "one merged item, not one per file");
+        assert!(buttons[0].generated);
+    }
+
+    #[test]
+    fn casing_divergent_declarations_of_one_composite_merge_into_one_item() {
+        // The same physical composite declared through all three mechanisms
+        // with the two casing conventions they use: manifest.id "hero-banner"
+        // (kebab), installed.composites "hero-banner" (kebab), and a source
+        // file under compositesPath extracting as "HeroBanner" (Pascal).
+        let items = discover_fixture("casing_collision");
+
+        let heroes: Vec<&DiscoveredItem> = items
+            .iter()
+            .filter(|item| identity_fold(&item.name) == "herobanner")
+            .collect();
+        assert_eq!(
+            heroes.len(),
+            1,
+            "one merged item, not one per declaration mechanism: {items:#?}"
+        );
+        assert_eq!(heroes[0].kind, DiscoveredKind::Composite);
+        assert!(
+            heroes[0].generated,
+            "the extractable source sighting must win the merge"
+        );
+        assert_eq!(items.len(), 1, "nothing else in the fixture: {items:#?}");
+    }
+
+    #[test]
+    fn ordering_is_deterministic_stable_sort_by_name() {
+        let first = discover_fixture("with_namespace");
+        let second = discover_fixture("with_namespace");
+        assert_eq!(first, second, "repeated discovery must be identical");
+        assert!(
+            first.windows(2).all(|pair| pair[0].name <= pair[1].name),
+            "items must be sorted by name: {:?}",
+            first.iter().map(|item| &item.name).collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
+    fn no_source_discovery_uses_only_the_component_walk() {
+        let root = discovery_fixture("no_source");
+        let items = ComponentRegistry::discover(&root, &IntelligenceSource::NoSource)
+            .expect("discovery without .rafters/ must succeed");
+        assert_eq!(items.len(), 1);
+        assert!(items[0].name.eq_ignore_ascii_case("button"));
+        assert_eq!(items[0].kind, DiscoveredKind::Component);
+        assert!(items[0].generated);
+    }
+
+    #[test]
+    fn malformed_composite_manifest_is_a_named_error() {
+        let root = discovery_fixture("malformed_composite");
+        let error = ComponentRegistry::discover(&root, &IntelligenceSource::NoSource)
+            .expect_err("a manifest without manifest.id must be a named error");
+        match error {
+            RegistryError::MalformedDeclaration { path, .. } => {
+                assert!(path.ends_with("composites/bad.composite.json"));
+            }
+            other => panic!("expected MalformedDeclaration, got {other:?}"),
+        }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn unreadable_source_file_is_a_named_error() {
+        use std::os::unix::fs::PermissionsExt;
+
+        let temp = tempdir().unwrap();
+        let comp_dir = temp.path().join("components");
+        fs::create_dir_all(&comp_dir).unwrap();
+        let locked = comp_dir.join("locked.tsx");
+        fs::write(&locked, "export function Locked() { return <div />; }").unwrap();
+        fs::set_permissions(&locked, fs::Permissions::from_mode(0o000)).unwrap();
+
+        let error = ComponentRegistry::discover(temp.path(), &IntelligenceSource::NoSource)
+            .expect_err("an unreadable file must be a named error, not a silent drop");
+
+        // Restore permissions so the tempdir can clean up on every platform.
+        fs::set_permissions(&locked, fs::Permissions::from_mode(0o644)).unwrap();
+
+        match error {
+            RegistryError::UnreadableSource { path, .. } => {
+                assert!(path.ends_with("components/locked.tsx"));
+            }
+            other => panic!("expected UnreadableSource, got {other:?}"),
+        }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn untraversable_directory_is_a_walk_failed_error_naming_the_path() {
+        use std::os::unix::fs::PermissionsExt;
+
+        let temp = tempdir().unwrap();
+        let sealed = temp.path().join("sealed");
+        fs::create_dir_all(&sealed).unwrap();
+        fs::write(sealed.join("hidden.tsx"), "export function Hidden() {}").unwrap();
+        fs::set_permissions(&sealed, fs::Permissions::from_mode(0o000)).unwrap();
+
+        let error = ComponentRegistry::discover(temp.path(), &IntelligenceSource::NoSource)
+            .expect_err("an untraversable directory must be a named error, not a silent drop");
+
+        // Restore permissions so the tempdir can clean up on every platform.
+        fs::set_permissions(&sealed, fs::Permissions::from_mode(0o755)).unwrap();
+
+        match error {
+            RegistryError::WalkFailed { path, .. } => {
+                assert!(
+                    path.ends_with("sealed"),
+                    "error must name the path: {path:?}"
+                );
+            }
+            other => panic!("expected WalkFailed, got {other:?}"),
+        }
     }
 }
