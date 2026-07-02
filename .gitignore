@@ -19,3 +19,6 @@ Thumbs.db
 
 # Claude Code worktrees -- prevent agent gitlinks from leaking into commits
 .claude/worktrees/
+
+# Claude Code machine-local settings
+.claude/settings.local.json
