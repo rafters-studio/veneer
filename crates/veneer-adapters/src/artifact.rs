@@ -374,11 +374,17 @@ fn override_reasons(tokens: &[TokenRef], source: &IntelligenceSource) -> Vec<Ove
 mod tests {
     use super::*;
     use crate::intelligence::render_component;
-    use crate::rafters_source::read_rafters_namespace;
+    use crate::rafters_source::{read_rafters_namespace, read_rafters_stylesheet};
     use crate::registry::ComponentRegistry;
 
     fn fixture_root() -> PathBuf {
         Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/artifact/project")
+    }
+
+    fn fixture_stylesheet() -> String {
+        read_rafters_stylesheet(&fixture_root())
+            .expect("fixture stylesheet must read")
+            .expect("fixture project declares a compiled stylesheet")
     }
 
     fn discovered_items() -> (Vec<DiscoveredItem>, IntelligenceSource) {
@@ -396,7 +402,7 @@ mod tests {
             .find(|item| item.name.eq_ignore_ascii_case(name))
             .unwrap_or_else(|| panic!("fixture must discover {name}"))
             .clone();
-        let rendered = render_component(&item, &source)
+        let rendered = render_component(&item, &source, &fixture_stylesheet())
             .unwrap_or_else(|error| panic!("{name} must render: {error}"));
         build_artifact(&item, &rendered.intelligence, &source)
             .unwrap_or_else(|error| panic!("{name} artifact must build: {error}"))
@@ -674,8 +680,9 @@ mod tests {
             .find(|item| item.name.eq_ignore_ascii_case("Button"))
             .expect("Button discovered")
             .clone();
-        let rendered = render_component(&item, &IntelligenceSource::NoSource)
-            .expect("Button renders without a namespace source");
+        let rendered =
+            render_component(&item, &IntelligenceSource::NoSource, &fixture_stylesheet())
+                .expect("Button renders without a namespace source");
         let artifact = build_artifact(&item, &rendered.intelligence, &IntelligenceSource::NoSource)
             .expect("artifact builds without a namespace source");
         assert_eq!(artifact.tokens, FieldValue::AbsentFromSource);
@@ -700,9 +707,12 @@ mod tests {
         let emit_all = || -> Vec<(String, String)> {
             let source = read_rafters_namespace(&root).expect("real namespace must read");
             let items = ComponentRegistry::discover(&root, &source).expect("real discovery");
+            let full_css = read_rafters_stylesheet(&root)
+                .expect("real stylesheet must read")
+                .unwrap_or_default();
             let mut artifacts: Vec<(String, String)> = Vec::new();
             for item in &items {
-                let Ok(rendered) = render_component(item, &source) else {
+                let Ok(rendered) = render_component(item, &source, &full_css) else {
                     continue;
                 };
                 let artifact = build_artifact(item, &rendered.intelligence, &source)

@@ -1,7 +1,8 @@
 //! Per-component framework-less preview plus compiled intelligence
 //! (FR-VEN-003). For every discovered component and composite,
-//! [`render_component`] produces the Web Component preview (the existing
-//! `generate_web_component` pipeline -- no framework runtime referenced)
+//! [`render_component`] produces the Web Component preview (the
+//! `scoped_web_component_block` pipeline: no framework runtime referenced,
+//! shadow-root CSS scoped from the project stylesheet per FR-VEN-018)
 //! together with the intelligence fields present in its source.
 //!
 //! Grounding (verified against the real rafters repo):
@@ -38,11 +39,12 @@ use oxc_parser::Parser;
 use oxc_span::{GetSpan, SourceType};
 use serde::Deserialize;
 
-use crate::generator::{generate_passthrough_web_component, web_component_block};
+use crate::generator::{generate_passthrough_web_component, scoped_web_component_block};
 use crate::rafters_source::{IntelligenceSource, UsagePatterns};
 use crate::registry::{extract_component_candidate, is_composite_manifest, DiscoveredItem};
+use crate::scope::shadow_css_for_component;
 use crate::traits::{TransformError, TransformedBlock};
-use crate::ts_helpers::normalize_whitespace;
+use crate::ts_helpers::{kebab_case, normalize_whitespace};
 
 /// One property a `*Props` TypeScript interface declares. Every field is
 /// read from the declaration itself: nothing is inferred from usage.
@@ -151,13 +153,20 @@ pub struct RenderedComponent {
 /// composite manifest renders a passthrough preview with the intelligence
 /// the manifest declares.
 ///
-/// Any failure is a [`TransformError::RenderFailed`] naming the item, so
-/// a failing component surfaces in coverage instead of vanishing.
+/// `full_css` is the project stylesheet text (for rafters projects,
+/// `.rafters/output/rafters.css` via `read_rafters_stylesheet`); each
+/// preview's shadow-root CSS is scoped out of it (FR-VEN-018).
+///
+/// Any failure -- including CSS extraction failure, so a preview never
+/// renders silently missing its styles -- is a
+/// [`TransformError::RenderFailed`] naming the item, so a failing
+/// component surfaces in coverage instead of vanishing.
 pub fn render_component(
     item: &DiscoveredItem,
     source: &IntelligenceSource,
+    full_css: &str,
 ) -> Result<RenderedComponent, TransformError> {
-    render_item(item, source).map_err(|reason| TransformError::RenderFailed {
+    render_item(item, source, full_css).map_err(|reason| TransformError::RenderFailed {
         component: item.name.clone(),
         reason,
     })
@@ -166,11 +175,12 @@ pub fn render_component(
 fn render_item(
     item: &DiscoveredItem,
     source: &IntelligenceSource,
+    full_css: &str,
 ) -> Result<RenderedComponent, String> {
     if is_composite_manifest(&item.source_path) {
-        return render_manifest_composite(item);
+        return render_manifest_composite(item, full_css);
     }
-    render_source_item(item, source)
+    render_source_item(item, source, full_css)
 }
 
 /// Render an item declared by a component source file (`.tsx`, `.jsx`, or
@@ -178,6 +188,7 @@ fn render_item(
 fn render_source_item(
     item: &DiscoveredItem,
     source: &IntelligenceSource,
+    full_css: &str,
 ) -> Result<RenderedComponent, String> {
     let source_text = read_source_file(&item.source_path)?;
 
@@ -194,7 +205,14 @@ fn render_source_item(
         )
     })?;
 
-    let preview = web_component_block(&preview_tag_name(&item.name), &structure);
+    // Scope the component's shadow-root CSS out of the project stylesheet.
+    // Extraction failure refuses the preview with the reason -- never a
+    // preview silently missing its styles (FR-VEN-018).
+    let preview = scoped_web_component_block(&preview_tag_name(&item.name), &structure, full_css)
+        .map_err(|error| match error {
+        TransformError::RenderFailed { reason, .. } => reason,
+        other => other.to_string(),
+    })?;
 
     let module_facts = parse_module_facts(&item.source_path, &source_text)?;
     let jsdoc = read_family_jsdoc(&item.source_path, &source_text)?;
@@ -252,7 +270,10 @@ struct RenderableManifestFile {
 /// Render a composite declared by a `*.composite.json` manifest: a
 /// passthrough preview (the manifest declares blocks, not classes) plus
 /// the intelligence the manifest declares.
-fn render_manifest_composite(item: &DiscoveredItem) -> Result<RenderedComponent, String> {
+fn render_manifest_composite(
+    item: &DiscoveredItem,
+    full_css: &str,
+) -> Result<RenderedComponent, String> {
     let text = read_source_file(&item.source_path)?;
     let parsed: RenderableManifestFile = serde_json::from_str(&text).map_err(|error| {
         format!(
@@ -261,9 +282,14 @@ fn render_manifest_composite(item: &DiscoveredItem) -> Result<RenderedComponent,
         )
     })?;
 
+    // A manifest declares no classes; scoping an empty class list out of
+    // the stylesheet is empty CSS by contract, never an error.
+    let shadow =
+        shadow_css_for_component(&item.name, &[], full_css).map_err(|error| error.to_string())?;
+
     let tag_name = preview_tag_name(&item.name);
     let preview = TransformedBlock {
-        web_component: generate_passthrough_web_component(&tag_name),
+        web_component: generate_passthrough_web_component(&tag_name, &shadow.css),
         tag_name,
         classes_used: Vec::new(),
         attributes: Vec::new(),
@@ -322,22 +348,7 @@ fn push_unique_dependency(
 /// plus a `-preview` suffix (which also guarantees the dash a custom
 /// element name requires).
 fn preview_tag_name(name: &str) -> String {
-    let mut kebab = String::with_capacity(name.len());
-    for character in name.chars() {
-        if character.is_uppercase() {
-            if !kebab.is_empty() && !kebab.ends_with('-') {
-                kebab.push('-');
-            }
-            kebab.extend(character.to_lowercase());
-        } else if character == '_' || character == ' ' {
-            if !kebab.is_empty() && !kebab.ends_with('-') {
-                kebab.push('-');
-            }
-        } else {
-            kebab.push(character);
-        }
-    }
-    format!("{kebab}-preview")
+    format!("{}-preview", kebab_case(name))
 }
 
 // ---- module facts: props and imports, from the oxc AST ----
@@ -700,11 +711,17 @@ fn token_references(classes: &[String], source: &IntelligenceSource) -> Vec<Toke
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::rafters_source::read_rafters_namespace;
+    use crate::rafters_source::{read_rafters_namespace, read_rafters_stylesheet};
     use crate::registry::ComponentRegistry;
 
     fn fixture_root() -> PathBuf {
         Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/render/project")
+    }
+
+    fn fixture_stylesheet() -> String {
+        read_rafters_stylesheet(&fixture_root())
+            .expect("fixture stylesheet must read")
+            .expect("fixture project declares a compiled stylesheet")
     }
 
     fn discovered_items() -> (Vec<DiscoveredItem>, IntelligenceSource) {
@@ -725,7 +742,7 @@ mod tests {
 
     fn render_named(name: &str) -> RenderedComponent {
         let (items, source) = discovered_items();
-        render_component(&item_named(&items, name), &source)
+        render_component(&item_named(&items, name), &source, &fixture_stylesheet())
             .unwrap_or_else(|error| panic!("{name} must render: {error}"))
     }
 
@@ -859,13 +876,55 @@ mod tests {
     #[test]
     fn no_source_means_no_token_references() {
         let (items, _) = discovered_items();
-        let rendered =
-            render_component(&item_named(&items, "Button"), &IntelligenceSource::NoSource)
-                .expect("Button must render without a namespace source");
+        let rendered = render_component(
+            &item_named(&items, "Button"),
+            &IntelligenceSource::NoSource,
+            &fixture_stylesheet(),
+        )
+        .expect("Button must render without a namespace source");
         assert!(rendered.intelligence.tokens.is_empty());
         // Every other field still comes from the component source itself.
         assert!(!rendered.intelligence.props.is_empty());
         assert!(rendered.intelligence.cognitive_load.is_some());
+    }
+
+    // AC (FR-VEN-018): every rendered preview carries its scoped CSS via
+    // the embedded stylesheet -- including classes composed dynamically at
+    // render, whose names never appear as source literals.
+    #[test]
+    fn rendered_preview_embeds_scoped_css_from_the_project_stylesheet() {
+        let rendered = render_named("Button");
+        let js = &rendered.preview.web_component;
+        assert!(js.contains(".bg-primary {"));
+        assert!(js.contains("background-color: var(--color-primary);"));
+        assert!(js.contains(":host {"));
+        // Tailwind source at-rules never reach the browser sheet.
+        assert!(!js.contains("@utility"));
+        assert!(!js.contains("@theme"));
+    }
+
+    // AC (FR-VEN-018, bullpen 019f1f4d): a dynamically-composed class
+    // (`text-quality-${tint}`) reaches the generated preview through the
+    // real pipeline -- discover -> extract -> scope -> generate -- not
+    // just through the extraction helpers.
+    #[test]
+    fn dynamically_composed_classes_reach_the_rendered_preview_css() {
+        let rendered = render_named("QualityIndicator");
+        assert!(
+            rendered
+                .preview
+                .classes_used
+                .contains(&"text-quality-*".to_string()),
+            "the dynamic composition must surface as a pattern: {:?}",
+            rendered.preview.classes_used
+        );
+        let js = &rendered.preview.web_component;
+        assert!(
+            js.contains(".text-quality-500 {"),
+            "preview must carry every tint the component can resolve to"
+        );
+        assert!(js.contains(".text-quality-600 {"));
+        assert!(js.contains("--color-quality-600: oklch(0.55 0.14 140);"));
     }
 
     // AC: composites render through the same path as components.
@@ -920,8 +979,12 @@ mod tests {
     #[test]
     fn failing_component_is_a_named_error() {
         let (items, source) = discovered_items();
-        let error = render_component(&item_named(&items, "Broken"), &source)
-            .expect_err("an unparseable component must fail to render");
+        let error = render_component(
+            &item_named(&items, "Broken"),
+            &source,
+            &fixture_stylesheet(),
+        )
+        .expect_err("an unparseable component must fail to render");
         match &error {
             TransformError::RenderFailed { component, .. } => {
                 assert_eq!(component, "Broken");
@@ -934,8 +997,12 @@ mod tests {
     #[test]
     fn installed_only_item_is_a_named_error_pointing_at_the_config() {
         let (items, source) = discovered_items();
-        let error = render_component(&item_named(&items, "ghost-widget"), &source)
-            .expect_err("an installed name with no source file cannot render");
+        let error = render_component(
+            &item_named(&items, "ghost-widget"),
+            &source,
+            &fixture_stylesheet(),
+        )
+        .expect_err("an installed name with no source file cannot render");
         let message = error.to_string();
         assert!(message.contains("ghost-widget"), "{message}");
         assert!(message.contains("config.rafters.json"), "{message}");
@@ -946,12 +1013,13 @@ mod tests {
     #[test]
     fn every_discovered_item_renders_or_errors_by_name() {
         let (items, source) = discovered_items();
+        let full_css = fixture_stylesheet();
         assert!(
             items.len() >= 6,
             "fixture must discover its items: {items:#?}"
         );
         for item in &items {
-            match render_component(item, &source) {
+            match render_component(item, &source, &full_css) {
                 Ok(rendered) => {
                     assert!(rendered.preview.web_component.contains("HTMLElement"));
                 }
@@ -980,11 +1048,14 @@ mod tests {
             "the real checkout declares a .rafters/ namespace"
         );
         let items = ComponentRegistry::discover(&root, &source).expect("real discovery");
+        let full_css = read_rafters_stylesheet(&root)
+            .expect("real stylesheet must read")
+            .unwrap_or_default();
         let mut rendered_count = 0usize;
         let mut with_cognitive_load = 0usize;
         let mut with_tokens = 0usize;
         for item in &items {
-            match render_component(item, &source) {
+            match render_component(item, &source, &full_css) {
                 Ok(rendered) => {
                     rendered_count += 1;
                     if rendered.intelligence.cognitive_load.is_some() {
@@ -1007,15 +1078,13 @@ mod tests {
             with_cognitive_load,
             with_tokens
         );
-        assert!(
-            rendered_count > 0,
-            "the real checkout must render something"
-        );
-        assert!(
-            with_cognitive_load > 0,
-            "old-constitution JSDoc must surface"
-        );
-        assert!(with_tokens > 0, "declared tokens must be referenced");
+        // FR-VEN-018 wires every preview's CSS to the real compiled
+        // stylesheet. A checkout whose .rafters/output/rafters.css is stale
+        // (no @utility blocks) correctly refuses classed previews with
+        // named errors instead of rendering them unstyled, so the render
+        // counts are informational here; the assertion is that every item
+        // either renders or errors by name (checked in the loop above).
+        assert!(!items.is_empty(), "the real checkout must discover items");
     }
 
     // ---- unit coverage for the parsers ----

@@ -5,6 +5,7 @@
 
 pub mod artifact;
 pub mod conventions;
+pub mod coverage;
 pub mod generator;
 pub mod inline;
 pub mod intelligence;
@@ -21,8 +22,13 @@ pub use artifact::{
     OverrideReason, ARTIFACT_SCHEMA_VERSION,
 };
 pub use conventions::ComponentConventions;
+pub use coverage::{
+    assess_coverage, not_yet_documented_placeholder, AssessedItem, CoverageReport, CoverageState,
+    PlaceholderArtifact, NOT_YET_DOCUMENTED_STATUS,
+};
 pub use generator::{
-    generate_controls_panel, generate_passthrough_web_component, generate_web_component,
+    generate_constraints_region, generate_controls_panel, generate_passthrough_web_component,
+    generate_preview_surface, generate_web_component, scoped_web_component_block,
     web_component_block,
 };
 pub use inline::{parse_inline_jsx, parse_inline_jsx_all, to_custom_element, InlineJsx, PropValue};
@@ -31,14 +37,16 @@ pub use intelligence::{
     DependencyOrigin, DependencyRef, PropDoc, RenderedComponent, TokenRef, VariantDoc,
 };
 pub use rafters_source::{
-    read_rafters_namespace, AccessibilityMatrices, ContrastMatrix, ContrastPair,
-    IntelligenceSource, NamespaceError, NamespaceFile, NamespaceToken, OklchComponents,
-    RaftersNamespace, StructuredValue, TokenValue, UsagePatterns, UserOverride,
+    read_rafters_namespace, read_rafters_stylesheet, AccessibilityMatrices, ContrastMatrix,
+    ContrastPair, IntelligenceSource, NamespaceError, NamespaceFile, NamespaceToken,
+    OklchComponents, RaftersNamespace, StructuredValue, TokenValue, UsagePatterns, UserOverride,
 };
 pub use react::{ComponentStructure, ReactAdapter};
 pub use registry::{
     CachedComponent, ComponentRegistry, DiscoveredItem, DiscoveredKind, RegistryError,
 };
-pub use scope::{extract_classes_from_ts, scope_css};
+pub use scope::{
+    extract_classes_from_ts, scope_css, shadow_css_for_component, ScopeError, ShadowCss,
+};
 pub use tokens::{parse_dtcg_tokens, DesignToken, DesignTokens, TokenParseError};
 pub use traits::{FrameworkAdapter, TransformContext, TransformError, TransformedBlock};
