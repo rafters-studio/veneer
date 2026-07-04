@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>veneer composite prototype: search-box</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 2rem; max-width: 720px; }
+  h1 { font-size: 1.1rem; }
+  section { margin-block: 1.5rem; }
+  .hostile * { font-size: 90px !important; background: red !important; }
+  #knobs label { display: flex; gap: .5rem; align-items: center; margin-block: .35rem; font-size: .9rem; }
+  #events { font-family: monospace; font-size: .8rem; background: #f4f4f4; padding: .75rem; min-height: 3rem; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<h1>search-box.composite.json, compiled</h1>
+
+<section>
+  <h2>Preview (inside hostile page CSS)</h2>
+  <div class="hostile">
+    <veneer-search-box id="subject"></veneer-search-box>
+  </div>
+</section>
+
+<section>
+  <h2>Knobs (editor contract, derived from KNOBS export)</h2>
+  <div id="knobs"></div>
+</section>
+
+<section>
+  <h2>Boundary events</h2>
+  <div id="events"></div>
+</section>
+
+<script type="module">
+  // SHEET ADAPTATION (a veneer compile responsibility, modeled here):
+  // 1. The standalone sheet's utilities reference the semantic variable layer
+  //    (--primary, --foreground, ...) which rafters.css defines on :root for
+  //    document-level consumption. A shadow-root preview never loads a
+  //    document sheet, so the :root variable block is re-scoped to :host.
+  // 2. adoptedStyleSheets stop selector matching but not property
+  //    inheritance: a hostile page's font-size/color inherit straight into
+  //    the shadow tree. :host{all:initial} severs inherited properties
+  //    (custom properties are exempt from `all` per spec), then the token
+  //    font baseline is re-established from the variables.
+  const standalone = await (await fetch('../.rafters/output/rafters.standalone.css')).text();
+  const source = await (await fetch('../.rafters/output/rafters.css')).text();
+
+  function extractRootBlock(css) {
+    const start = css.indexOf(':root');
+    if (start === -1) return '';
+    const open = css.indexOf('{', start);
+    let depth = 1;
+    let i = open + 1;
+    while (i < css.length && depth > 0) {
+      if (css[i] === '{') depth++;
+      if (css[i] === '}') depth--;
+      i++;
+    }
+    return css.slice(open + 1, i - 1);
+  }
+
+  const guard = ':host{all:initial;display:block;font-family:var(--font-sans);font-size:16px;line-height:1.5;color:var(--foreground)}';
+  const hostVars = `:host{${extractRootBlock(source)}}`;
+  const sheet = new CSSStyleSheet();
+  await sheet.replace(guard + hostVars + standalone);
+
+  const mod = await import('./search-box.target.mjs');
+  mod.define(sheet);
+
+  const subject = document.getElementById('subject');
+  const events = document.getElementById('events');
+  const log = (line) => { events.textContent = `${line}\n` + events.textContent; };
+
+  for (const rule of mod.MANIFEST_META.output) {
+    subject.addEventListener(rule, (e) => {
+      log(`${rule} -> ${JSON.stringify(e.detail)}`);
+      subject.searchPending = true;
+      setTimeout(() => { subject.searchPending = false; log('host: search resolved, search-pending=false'); }, 1200);
+    });
+  }
+  subject.addEventListener('veneer:prop-change', (e) => log(`veneer:prop-change -> ${JSON.stringify(e.detail)}`));
+
+  const knobs = document.getElementById('knobs');
+  for (const knob of mod.KNOBS) {
+    const label = document.createElement('label');
+    label.append(`${knob.name} (${knob.type})`);
+    let control;
+    if (knob.type === 'boolean') {
+      control = document.createElement('input');
+      control.type = 'checkbox';
+      control.checked = knob.default;
+      control.addEventListener('change', () => applyKnob(knob, control.checked));
+    } else if (knob.type === 'enum') {
+      control = document.createElement('select');
+      for (const opt of knob.options) control.append(new Option(opt, opt));
+      control.value = knob.default;
+      control.addEventListener('change', () => applyKnob(knob, control.value));
+    } else {
+      control = document.createElement('input');
+      control.type = 'text';
+      control.value = knob.default;
+      control.addEventListener('input', () => applyKnob(knob, control.value));
+    }
+    label.prepend(control);
+    knobs.append(label);
+  }
+
+  function applyKnob(knob, value) {
+    if (knob.kind === 'boundary-input') {
+      subject[knob.name] = value;
+    } else {
+      const child = subject.shadowRoot.querySelector(`[block-id="${knob.target.block}"]`);
+      if (child) child[knob.target.prop] = value;
+    }
+    log(`knob: ${knob.name} = ${JSON.stringify(value)}`);
+  }
+</script>
+</body>
+</html>

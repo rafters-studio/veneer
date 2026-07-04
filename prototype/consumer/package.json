@@ -1,0 +1,12 @@
+{
+  "name": "veneer-composite-proto",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.2",
+    "rafters": "0.0.71"
+  },
+  "dependencies": {
+    "react": "19.2.0"
+  }
+}

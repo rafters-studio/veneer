@@ -1,0 +1,76 @@
+{
+  "manifest": {
+    "id": "search-box",
+    "name": "Search Box",
+    "category": "search",
+    "description": "Labeled search entry with keyboard shortcut hint, submit action, and pending affordance. Emits the submitted query upward; the host performs the search and feeds pending state back in.",
+    "keywords": ["search", "query", "input", "command"],
+    "cognitiveLoad": 4,
+    "solves": "Users need one obvious, fast entry point to find things without learning the information architecture first.",
+    "appliesWhen": [
+      "Content exceeds what a user will scan",
+      "A downstream view consumes a query (results table, filtered list)"
+    ],
+    "usagePatterns": {
+      "do": [
+        "Keep the label visible - placeholder-only search fields fail recall",
+        "Emit the query upward; never fetch inside the composite"
+      ],
+      "never": [
+        "Multiple search boxes competing for attention on one view",
+        "Auto-search on every keystroke without a pending affordance"
+      ]
+    }
+  },
+  "input": ["search-pending"],
+  "output": ["search-submitted"],
+  "blocks": [
+    {
+      "id": "root-field",
+      "type": "field",
+      "children": ["search-label", "search-group"]
+    },
+    {
+      "id": "search-label",
+      "type": "label",
+      "parentId": "root-field",
+      "content": "Search"
+    },
+    {
+      "id": "search-group",
+      "type": "input-group",
+      "parentId": "root-field",
+      "children": ["query-input", "shortcut-hint", "submit-button", "pending-spinner"]
+    },
+    {
+      "id": "query-input",
+      "type": "input",
+      "parentId": "search-group",
+      "output": ["query"],
+      "rules": ["required"],
+      "meta": { "placeholder": "Search components, tokens, patterns...", "size": "default" }
+    },
+    {
+      "id": "shortcut-hint",
+      "type": "kbd",
+      "parentId": "search-group",
+      "content": "Ctrl K"
+    },
+    {
+      "id": "submit-button",
+      "type": "button",
+      "parentId": "search-group",
+      "input": ["query"],
+      "output": ["search-submitted"],
+      "content": "Search",
+      "meta": { "variant": "default" }
+    },
+    {
+      "id": "pending-spinner",
+      "type": "spinner",
+      "parentId": "search-group",
+      "input": ["search-pending"],
+      "meta": { "size": "sm", "variant": "primary" }
+    }
+  ]
+}

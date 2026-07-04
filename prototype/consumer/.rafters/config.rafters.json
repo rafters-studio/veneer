@@ -1,0 +1,35 @@
+{
+  "framework": "unknown",
+  "componentTarget": "react",
+  "componentsPath": "components/ui",
+  "primitivesPath": "lib/primitives",
+  "compositesPath": "composites",
+  "rulesPath": "lib/rules",
+  "cssPath": null,
+  "shadcn": false,
+  "exports": {
+    "tailwind": true,
+    "typescript": true,
+    "dtcg": false,
+    "compiled": true
+  },
+  "installed": {
+    "components": [
+      "button",
+      "empty",
+      "field",
+      "input",
+      "input-group",
+      "kbd",
+      "label",
+      "spinner"
+    ],
+    "primitives": [
+      "classy",
+      "rafters-element",
+      "slot"
+    ],
+    "composites": [],
+    "rules": []
+  }
+}
