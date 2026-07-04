@@ -17,12 +17,20 @@ consumer requirement, not designed speculatively.
 
 ## Sheet adaptation (compile step, deterministic text transforms)
 
-3. **Re-scope the semantic variable layer to `:host`.** The compiled
-   standalone sheet's utilities reference `var(--primary)` etc.; those
-   variables are defined in `rafters.css`'s `:root` block for document-level
-   consumption and never reach an isolated shadow tree. The compile step
-   extracts that block and prepends it as `:host{...}`.
-   (Observed failure: `bg-primary` resolved to nothing; buttons transparent.)
+3. **ONE stylesheet input: `rafters.standalone.css`.** It carries the
+   complete variable chain (semantic aliases -> `--rafters-*` -> palette;
+   434 definitions), but emits the semantic and alias blocks under bare
+   `:root`, which never matches inside a shadow tree -- only the Tailwind
+   theme block gets `:root,:host`. The compile step applies one
+   deterministic transform: `:root` -> `:root,:host` where Tailwind did not
+   already. Never import a second sheet; `rafters.css` is Tailwind source,
+   not a runtime input. Upstream one-liner requested of rafters:
+   `registryToCompiled` emits `:root,:host` throughout, which deletes this
+   transform entirely.
+   (Observed failure: `bg-primary` resolved to nothing; buttons transparent.
+   First workaround wrongly imported rafters.css for its variables -- the
+   mess was reading the wrong file when the right file had them under the
+   wrong selector.)
 4. **Sever property inheritance with `:host{all:initial}`,** then re-establish
    the token font baseline (`font-family: var(--font-sans)`, size, line-height,
    `color: var(--foreground)`). `adoptedStyleSheets` stop selector matching

@@ -33,37 +33,23 @@
 </section>
 
 <script type="module">
-  // SHEET ADAPTATION (a veneer compile responsibility, modeled here):
-  // 1. The standalone sheet's utilities reference the semantic variable layer
-  //    (--primary, --foreground, ...) which rafters.css defines on :root for
-  //    document-level consumption. A shadow-root preview never loads a
-  //    document sheet, so the :root variable block is re-scoped to :host.
-  // 2. adoptedStyleSheets stop selector matching but not property
-  //    inheritance: a hostile page's font-size/color inherit straight into
-  //    the shadow tree. :host{all:initial} severs inherited properties
-  //    (custom properties are exempt from `all` per spec), then the token
-  //    font baseline is re-established from the variables.
+  // SHEET ADAPTATION (a veneer compile responsibility, modeled here).
+  // ONE input: rafters.standalone.css. It carries the complete variable
+  // chain (semantic -> --rafters-* -> palette), but wraps the semantic and
+  // alias blocks in bare `:root`, which never matches inside a shadow tree;
+  // only the Tailwind theme block is emitted as `:root,:host`. Two
+  // deterministic transforms make single-file shadow adoption work:
+  // 1. `:root` -> `:root,:host` on the blocks Tailwind did not already fix
+  //    (upstream one-liner asked of rafters: emit `:root,:host` throughout).
+  // 2. Prepend the inheritance guard: adoptedStyleSheets stop selector
+  //    matching but not property inheritance, so :host{all:initial} severs
+  //    inherited hostile properties (custom properties are exempt from
+  //    `all` per spec), then the token font baseline is re-established.
   const standalone = await (await fetch('../.rafters/output/rafters.standalone.css')).text();
-  const source = await (await fetch('../.rafters/output/rafters.css')).text();
-
-  function extractRootBlock(css) {
-    const start = css.indexOf(':root');
-    if (start === -1) return '';
-    const open = css.indexOf('{', start);
-    let depth = 1;
-    let i = open + 1;
-    while (i < css.length && depth > 0) {
-      if (css[i] === '{') depth++;
-      if (css[i] === '}') depth--;
-      i++;
-    }
-    return css.slice(open + 1, i - 1);
-  }
-
   const guard = ':host{all:initial;display:block;font-family:var(--font-sans);font-size:16px;line-height:1.5;color:var(--foreground)}';
-  const hostVars = `:host{${extractRootBlock(source)}}`;
+  const adapted = standalone.replace(/:root(?!,:host)/g, ':root,:host');
   const sheet = new CSSStyleSheet();
-  await sheet.replace(guard + hostVars + standalone);
+  await sheet.replace(guard + adapted);
 
   const mod = await import('./search-box.target.mjs');
   mod.define(sheet);
