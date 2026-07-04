@@ -1,11 +1,11 @@
 {
-  "framework": "unknown",
+  "framework": "wc",
   "componentTarget": "react",
   "componentsPath": "components/ui",
   "primitivesPath": "lib/primitives",
   "compositesPath": "composites",
   "rulesPath": "lib/rules",
-  "cssPath": null,
+  "cssPath": "src/styles/global.css",
   "shadcn": false,
   "exports": {
     "tailwind": true,
