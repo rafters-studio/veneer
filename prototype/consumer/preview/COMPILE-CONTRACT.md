@@ -81,3 +81,33 @@ consumer requirement, not designed speculatively.
   `rafters init` (810 tokens) -> `rafters add` (8 components + 3 primitives)
   -> `exports.compiled` -> `rafters.standalone.css` -> adapted shared sheet ->
   isolated, rule-wired, knob-controllable composite preview.
+
+## Corrections after reading the real primitives (2026-07-04, second pass)
+
+Operator-caught: the first hand target substituted shadcn/tailwind training
+patterns for rafters' own layer in two places. Read first, always.
+
+12. **Emit `RaftersElement` subclasses, not raw HTMLElement.** The installed
+    `lib/primitives/rafters-element.ts` already defines the WC base: shadow
+    setup, per-component `static styles`, and `setUtilityCSS()` /
+    `setTokenCSS()` shared constructable sheets. Veneer's `define(sheet)`
+    entry point maps onto `RaftersElement.setUtilityCSS(adaptedSheetText)`
+    at consumer init; contract rules 1-5 stand but are DELIVERED through the
+    rafters base, not a parallel one.
+13. **Applied rules compile to native HTML5 constraint attributes** via the
+    registry's `ruleToAttrs` mapping (`required` -> `required`, `email` ->
+    `type="email"`, parameterized `pattern`/`minlength`). No JS validator
+    predicates in emitted code, ever -- edge validity is read from the
+    browser's own `element.validity`. (First target shipped a JS `required`
+    re-implementation; deleted on correction.)
+14. **The runtime rule bridge is a PROPOSAL, not an existing rafters
+    surface.** Static compatibility (`matchRules`), build-time attributes
+    (`rule-attrs`), and editor palette/serialization (`bridge.ts`) exist
+    upstream; live event dataflow between block instances does not. The
+    `rafters:rule` event protocol (rules 6-8) is veneer's proposed runtime
+    realization of the manifest's edges -- to be ratified with rafters
+    before it hardens into components.jsonl artifacts.
+15. **Editor integration rides `bridge.ts`**: palette items from manifests,
+    fresh-ID instantiation (`instantiateBlocks`), serialize-back. Veneer's
+    KNOBS descriptors complement that surface (live prop/boundary controls
+    on an instantiated preview); they do not replace it.
