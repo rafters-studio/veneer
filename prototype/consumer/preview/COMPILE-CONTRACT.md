@@ -111,3 +111,14 @@ patterns for rafters' own layer in two places. Read first, always.
     fresh-ID instantiation (`instantiateBlocks`), serialize-back. Veneer's
     KNOBS descriptors complement that surface (live prop/boundary controls
     on an instantiated preview); they do not replace it.
+
+16. **Fonts are project assets loaded at document level.** Token files
+    declare the family (`--font-sans: "Noto Sans Variable"`) but @font-face
+    provisioning is app-level (fontsource import); font families resolve
+    across shadow boundaries, so the PREVIEW PAGE loads the project's fonts
+    once. A token-declared family with no loaded @font-face is an index
+    observation (typography renders fallback), never silent.
+    (Observed: whole preview rendered system-sans; the entire type ramp was
+    invisible until the font loaded. Sheet completeness was verified
+    separately: state variants and 19/25 typography utilities present,
+    missing 6 tree-shaken as unused.)
