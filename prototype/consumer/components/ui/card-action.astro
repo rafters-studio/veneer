@@ -1,0 +1,17 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import classy from '@/lib/primitives/classy';
+import { type CardBackground, cardActionClasses, cardBackgroundClasses } from '@/components/ui/card.classes';
+
+interface Props extends HTMLAttributes<'div'> {
+  background?: CardBackground;
+}
+
+const { background, class: className, ...attrs } = Astro.props;
+const bgStyles = background ? cardBackgroundClasses[background] : '';
+const cls = classy(cardActionClasses, bgStyles, className);
+---
+
+<div data-slot="card-action" class={cls} {...attrs}>
+  <slot />
+</div>

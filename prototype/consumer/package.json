@@ -4,9 +4,14 @@
   "type": "module",
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.2",
-    "rafters": "0.0.71"
+    "esbuild": "^0.28.1",
+    "rafters": "0.0.71",
+    "tsx": "^4.23.0",
+    "typescript": "^6.0.3"
   },
   "dependencies": {
-    "react": "19.2.0"
+    "nanostores": "^1.4.0",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
   }
 }

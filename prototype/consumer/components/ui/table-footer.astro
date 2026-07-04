@@ -1,0 +1,11 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import classy from '@/lib/primitives/classy';
+import { tableFooterClasses } from '@/components/ui/table.classes';
+
+interface Props extends HTMLAttributes<'tfoot'> {}
+
+const { class: className, ...attrs } = Astro.props;
+---
+
+<tfoot data-table-footer="" class={classy(tableFooterClasses, className)} {...attrs}><slot /></tfoot>

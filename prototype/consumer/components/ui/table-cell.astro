@@ -1,0 +1,11 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import classy from '@/lib/primitives/classy';
+import { tableCellClasses } from '@/components/ui/table.classes';
+
+interface Props extends HTMLAttributes<'td'> {}
+
+const { class: className, ...attrs } = Astro.props;
+---
+
+<td data-table-cell="" class={classy(tableCellClasses, className)} {...attrs}><slot /></td>
