@@ -9,6 +9,7 @@ pub mod coverage;
 pub mod generator;
 pub mod inline;
 pub mod intelligence;
+pub mod matrix;
 pub mod mdx;
 pub mod rafters_source;
 pub mod react;
@@ -37,6 +38,11 @@ pub use inline::{parse_inline_jsx, parse_inline_jsx_all, to_custom_element, Inli
 pub use intelligence::{
     render_component, CognitiveLoad, CompiledIntelligence, Constraint, ConstraintKind,
     DependencyOrigin, DependencyRef, PropDoc, RenderedComponent, TokenRef, VariantDoc,
+};
+pub use matrix::{
+    parse_matrix, read_matrix, Archetype, BehaviorLayer, ComponentLine, ComponentMetadata,
+    FileStatus, Frameworks, MatrixCognitiveLoad, MatrixError, Motion, PortStatus, Provenance, Uses,
+    COMPONENT_LINE_SCHEMA,
 };
 pub use mdx::{component_page_file_name, generate_component_page, GeneratedComponentPage};
 pub use rafters_source::{
