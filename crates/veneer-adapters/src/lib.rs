@@ -9,10 +9,12 @@ pub mod coverage;
 pub mod generator;
 pub mod inline;
 pub mod intelligence;
+pub mod mdx;
 pub mod rafters_source;
 pub mod react;
 pub mod registry;
 pub mod scope;
+pub mod substrate;
 pub mod tokens;
 pub mod traits;
 pub(crate) mod ts_helpers;
@@ -36,6 +38,7 @@ pub use intelligence::{
     render_component, CognitiveLoad, CompiledIntelligence, Constraint, ConstraintKind,
     DependencyOrigin, DependencyRef, PropDoc, RenderedComponent, TokenRef, VariantDoc,
 };
+pub use mdx::{component_page_file_name, generate_component_page, GeneratedComponentPage};
 pub use rafters_source::{
     read_rafters_namespace, read_rafters_stylesheet, AccessibilityMatrices, ContrastMatrix,
     ContrastPair, IntelligenceSource, NamespaceError, NamespaceFile, NamespaceToken,
@@ -47,6 +50,10 @@ pub use registry::{
 };
 pub use scope::{
     extract_classes_from_ts, scope_css, shadow_css_for_component, ScopeError, ShadowCss,
+};
+pub use substrate::{
+    build_substrate, to_jsonl, DocLine, IndexLine, Substrate, DOC_SCHEMA, INDEX_SCHEMA,
+    STOPLIGHT_RULE_VERSION,
 };
 pub use tokens::{parse_dtcg_tokens, DesignToken, DesignTokens, TokenParseError};
 pub use traits::{FrameworkAdapter, TransformContext, TransformError, TransformedBlock};
