@@ -22,7 +22,7 @@
 
 use std::path::Path;
 
-use crate::intelligence::render_component;
+use crate::intelligence::{render_component, RenderedComponent};
 use crate::rafters_source::IntelligenceSource;
 use crate::registry::{ComponentRegistry, DiscoveredItem, DiscoveredKind, RegistryError};
 use crate::ts_helpers::kebab_case;
@@ -78,6 +78,11 @@ pub enum CoverageState {
 pub struct AssessedItem {
     pub item: DiscoveredItem,
     pub state: CoverageState,
+    /// The rendered preview + intelligence, present exactly when the item
+    /// is [`CoverageState::Documented`]. Carried here so the render the
+    /// assessment already performed can drive page generation without a
+    /// second render; `None` for a not-yet-documented item.
+    pub rendered: Option<RenderedComponent>,
 }
 
 /// Assess the coverage of every discovered item, in the discovered order.
@@ -102,23 +107,32 @@ pub fn assess_coverage(
 ) -> Vec<AssessedItem> {
     items
         .into_iter()
-        .map(|item| AssessedItem {
-            state: assess_item(&item, source, full_css),
-            item,
+        .map(|item| {
+            let (state, rendered) = assess_item(&item, source, full_css);
+            AssessedItem {
+                item,
+                state,
+                rendered,
+            }
         })
         .collect()
 }
 
+/// Render the item once and derive both its coverage state and, on success,
+/// the rendered component the caller can hand to page generation.
 fn assess_item(
     item: &DiscoveredItem,
     source: &IntelligenceSource,
     full_css: &str,
-) -> CoverageState {
+) -> (CoverageState, Option<RenderedComponent>) {
     match render_component(item, source, full_css) {
-        Ok(_) => CoverageState::Documented,
-        Err(error) => CoverageState::NotYetDocumented {
-            reason: error.to_string(),
-        },
+        Ok(rendered) => (CoverageState::Documented, Some(rendered)),
+        Err(error) => (
+            CoverageState::NotYetDocumented {
+                reason: error.to_string(),
+            },
+            None,
+        ),
     }
 }
 
