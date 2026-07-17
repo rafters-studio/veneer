@@ -40,7 +40,10 @@ pub use intelligence::{
     render_component, CognitiveLoad, CompiledIntelligence, Constraint, ConstraintKind,
     DependencyOrigin, DependencyRef, PropDoc, RenderedComponent, TokenRef, VariantDoc,
 };
-pub use config_interface::{attribute_name, parse_config_interface, ConfigInterface};
+pub use config_interface::{
+    attribute_name, parse_config_interface, resolve_config_interface, ConfigInterface,
+    ResolvedConfig,
+};
 pub use matrix::{
     parse_matrix, read_matrix, Archetype, BehaviorLayer, ComponentLine, ComponentMetadata,
     FileStatus, Frameworks, MatrixCognitiveLoad, MatrixError, Motion, PortStatus, Provenance, Uses,

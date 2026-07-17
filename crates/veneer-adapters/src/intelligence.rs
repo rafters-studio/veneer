@@ -39,7 +39,7 @@ use oxc_parser::Parser;
 use oxc_span::{GetSpan, SourceType};
 use serde::Deserialize;
 
-use crate::config_interface::{parse_config_interface, ConfigInterface};
+use crate::config_interface::{resolve_config_interface, ResolvedConfig};
 use crate::generator::{generate_passthrough_web_component, scoped_web_component_block};
 use crate::rafters_source::{IntelligenceSource, UsagePatterns};
 use crate::registry::{extract_component_candidate, is_composite_manifest, DiscoveredItem};
@@ -226,8 +226,8 @@ fn render_source_item(
     // component has one (new constitution); otherwise the `*Props` interface
     // (old constitution). The Config path also names the bases it extends --
     // the unresolved remainder of the surface.
-    let (props, config_extends) = match read_component_config(&item.source_path, &source_text)? {
-        Some(config) => (config.own_props, config.extends),
+    let (props, config_extends) = match read_component_config(&item.source_path)? {
+        Some(config) => (config.props, config.unresolved_extends),
         None => (module_facts.props, Vec::new()),
     };
 
@@ -264,14 +264,12 @@ fn render_source_item(
     })
 }
 
-/// The component's `Config` interface, read from its `.behavior.ts` -- the
-/// item's own file when it is the behavior file, else the same-stem
-/// `.behavior.ts` sibling. `None` when the component has no behavior file (the
-/// old constitution) or its behavior declares no `Config` interface.
-fn read_component_config(
-    path: &Path,
-    own_source: &str,
-) -> Result<Option<ConfigInterface>, String> {
+/// The component's fully-resolved `Config` prop surface, read from its
+/// `.behavior.ts` -- the item's own file when it is the behavior file, else
+/// the same-stem `.behavior.ts` sibling. The extends chain is followed across
+/// files. `None` when the component has no behavior file (the old
+/// constitution) or its behavior declares no `Config` interface.
+fn read_component_config(path: &Path) -> Result<Option<ResolvedConfig>, String> {
     let is_behavior = |candidate: &Path| {
         candidate
             .file_name()
@@ -279,16 +277,16 @@ fn read_component_config(
             .is_some_and(|name| name.ends_with(".behavior.ts"))
     };
 
-    if is_behavior(path) {
-        return parse_config_interface(own_source);
+    let behavior_path = if is_behavior(path) {
+        Some(path.to_path_buf())
+    } else {
+        family_files(path).into_iter().find(|sibling| is_behavior(sibling))
+    };
+
+    match behavior_path {
+        Some(behavior_path) => resolve_config_interface(&behavior_path),
+        None => Ok(None),
     }
-    for sibling in family_files(path) {
-        if is_behavior(&sibling) {
-            let text = read_source_file(&sibling)?;
-            return parse_config_interface(&text);
-        }
-    }
-    Ok(None)
 }
 
 /// The subset of a `*.composite.json` manifest that declares renderable
@@ -1207,12 +1205,14 @@ export const widgetBaseClasses = 'flex';
         )
         .expect("write behavior");
 
-        let config = read_component_config(&tsx, own)
+        let config = read_component_config(&tsx)
             .expect("reads")
             .expect("the behavior sibling declares a Config");
         assert_eq!(config.name, "WidgetConfig");
-        assert_eq!(config.extends, ["BaseConfig"]);
-        let names: Vec<&str> = config.own_props.iter().map(|p| p.name.as_str()).collect();
+        // BaseConfig has no import in the behavior file, so it stays an
+        // honest unresolved base rather than silently vanishing.
+        assert_eq!(config.unresolved_extends, ["BaseConfig"]);
+        let names: Vec<&str> = config.props.iter().map(|p| p.name.as_str()).collect();
         assert_eq!(names, ["label", "open"]);
     }
 
@@ -1222,6 +1222,6 @@ export const widgetBaseClasses = 'flex';
         let tsx = dir.path().join("legacy.tsx");
         let own = "export interface LegacyProps { title: string; } export function Legacy() {}";
         std::fs::write(&tsx, own).expect("write tsx");
-        assert_eq!(read_component_config(&tsx, own).expect("reads"), None);
+        assert_eq!(read_component_config(&tsx).expect("reads"), None);
     }
 }
