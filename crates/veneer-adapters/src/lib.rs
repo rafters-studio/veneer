@@ -5,6 +5,7 @@
 
 pub mod artifact;
 pub mod conventions;
+pub mod config_interface;
 pub mod coverage;
 pub mod generator;
 pub mod inline;
@@ -39,6 +40,7 @@ pub use intelligence::{
     render_component, CognitiveLoad, CompiledIntelligence, Constraint, ConstraintKind,
     DependencyOrigin, DependencyRef, PropDoc, RenderedComponent, TokenRef, VariantDoc,
 };
+pub use config_interface::{attribute_name, parse_config_interface, ConfigInterface};
 pub use matrix::{
     parse_matrix, read_matrix, Archetype, BehaviorLayer, ComponentLine, ComponentMetadata,
     FileStatus, Frameworks, MatrixCognitiveLoad, MatrixError, Motion, PortStatus, Provenance, Uses,
