@@ -331,6 +331,7 @@ mod tests {
                         optional: false,
                     },
                 ],
+                config_extends: vec![],
                 variants: vec![VariantDoc {
                     name: "primary".to_string(),
                     classes: "bg-primary text-primary-foreground".to_string(),
