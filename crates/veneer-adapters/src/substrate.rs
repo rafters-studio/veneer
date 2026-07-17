@@ -109,7 +109,13 @@ pub struct DocLine {
     pub semantic_meaning: Option<String>,
 
     // -- Structure (Audi: named variants, states, motion) --
+    /// The component's own prop/API surface (from the behavior `Config`
+    /// interface for new-constitution components, else the `*Props` interface).
     pub props: Vec<PropDoc>,
+    /// The `Config` interfaces the prop surface extends, by name -- the
+    /// unresolved remainder of the attribute surface. Empty for the `*Props`
+    /// path and composites.
+    pub config_extends: Vec<String>,
     pub variants: Vec<VariantDoc>,
     /// Matrix `states`: the descriptive state vocabulary. Empty for statics
     /// and without a matrix entry.
@@ -319,6 +325,7 @@ fn doc_line(
         semantic_meaning: meta.and_then(|meta| meta.semantic_meaning.clone()),
 
         props: intelligence.props.clone(),
+        config_extends: intelligence.config_extends.clone(),
         variants: intelligence.variants.clone(),
         states: matrix.map(|line| line.states.clone()).unwrap_or_default(),
         motion_intents: matrix
