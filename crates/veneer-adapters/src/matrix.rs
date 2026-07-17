@@ -65,6 +65,25 @@ pub enum Archetype {
     Compound,
 }
 
+impl Archetype {
+    /// The kebab-case wire name, matching the matrix's own spelling. Kept in
+    /// lockstep with the `serde(rename_all = "kebab-case")` above so the doc
+    /// line carries exactly the archetype the matrix declares.
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Archetype::Static => "static",
+            Archetype::SimpleInteractive => "simple-interactive",
+            Archetype::ToggleFamily => "toggle-family",
+            Archetype::TextInputFamily => "text-input-family",
+            Archetype::Disclosure => "disclosure",
+            Archetype::ModalOverlay => "modal-overlay",
+            Archetype::NonModalOverlay => "non-modal-overlay",
+            Archetype::MenuCollectionPopup => "menu-collection-popup",
+            Archetype::Compound => "compound",
+        }
+    }
+}
+
 /// Whether a component has been ported to the new constitution.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
 #[serde(rename_all = "lowercase")]

@@ -1,13 +1,14 @@
 //! Extract documentation from a target project.
 
+use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result};
 use clap::Args;
 use veneer_adapters::{
-    assess_coverage, build_substrate, read_rafters_namespace, read_rafters_stylesheet, to_jsonl,
-    ComponentRegistry, CoverageReport,
+    assess_coverage, build_substrate, read_matrix, read_rafters_namespace, read_rafters_stylesheet,
+    to_jsonl, ComponentLine, ComponentRegistry, CoverageReport,
 };
 use veneer_docs::{
     generate_default_skeletons, generate_reference_pages, generate_sidebar, mark_required_flags,
@@ -160,7 +161,8 @@ fn run_substrate_phase(project: &Path) -> Result<SubstrateOutcome> {
         .unwrap_or_default();
     let assessed = assess_coverage(items, &source, &full_css);
 
-    let substrate = build_substrate(&assessed, project);
+    let matrix = load_component_matrix(project)?;
+    let substrate = build_substrate(&assessed, &matrix, project);
     let docs = to_jsonl(&substrate.docs).context("failed to serialize docs.jsonl")?;
     let index = to_jsonl(&substrate.index).context("failed to serialize index.jsonl")?;
 
@@ -188,6 +190,30 @@ fn write_atomic(path: &Path, content: &str) -> Result<()> {
     fs::write(&tmp, content).with_context(|| format!("failed to write {}", tmp.display()))?;
     fs::rename(&tmp, path).with_context(|| format!("failed to replace {}", path.display()))?;
     Ok(())
+}
+
+/// Load the rafters component matrix (`components.jsonl`) for the project,
+/// keyed by component name. The matrix is the canonical intelligence source
+/// (interface contract): it supplies the doc line's principle-first lead and
+/// intelligence dimensions. A project with no matrix -- a consumer sidecar,
+/// for now -- yields an empty map, and the doc lines carry honestly-absent
+/// intelligence with the compiled source as the fallback. A malformed matrix
+/// fails loudly rather than silently emitting thin docs.
+///
+/// TODO(phase-1/S1): the matrix path is a provisional convention. Confirm it
+/// (or a path declared in the rafters `veneer` config block) with rafters' S1
+/// config work before consumer sidecar mode ships.
+fn load_component_matrix(project: &Path) -> Result<BTreeMap<String, ComponentLine>> {
+    let path = project.join("docs/spec/matrix/components.jsonl");
+    if !path.exists() {
+        return Ok(BTreeMap::new());
+    }
+    let lines = read_matrix(&path)
+        .with_context(|| format!("failed to read the component matrix {}", path.display()))?;
+    Ok(lines
+        .into_iter()
+        .map(|line| (line.name.clone(), line))
+        .collect())
 }
 
 /// The queryable CLI coverage summary: exact counts against the
