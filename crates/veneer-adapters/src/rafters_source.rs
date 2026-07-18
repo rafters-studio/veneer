@@ -266,32 +266,36 @@ pub fn read_rafters_namespace(project_root: &Path) -> Result<IntelligenceSource,
     }))
 }
 
-/// Read the compiled project stylesheet the rafters exporter writes under
-/// `.rafters/output/` (verified against a real `.rafters/` directory).
-/// Previews scope their shadow-root CSS out of it (FR-VEN-018).
+/// Read the project stylesheet the rafters exporter writes to
+/// `.rafters/output/rafters.css`. Previews scope their shadow-root CSS out of
+/// it (FR-VEN-018).
 ///
-/// Prefers `rafters.standalone.css` over `rafters.css`. Previews render in an
-/// isolated shadow root, so they need the self-contained sheet -- the one that
-/// carries its own base and defines theme variables on `:host` -- not the
-/// app-context sheet that assumes the surrounding app's Tailwind runtime
-/// provides the base and defines variables on `:root`. The standard sheet is
-/// the fallback for a project that ships no standalone sheet.
+/// Deliberately `rafters.css`, NOT `rafters.standalone.css`. veneer's scoper
+/// ([`crate::scope`]) matches `@utility` blocks, and only `rafters.css`
+/// carries them (the intermediate authoring form). Verified on the real demo
+/// output: `rafters.css` has 25 `@utility` blocks; `rafters.standalone.css`
+/// has zero -- it is the fully-compiled browser form (`@layer`, no
+/// `@utility`), so scoping it yields a NoRulesMatched refusal. The standalone
+/// sheet is the one that actually carries the container-query context
+/// (`@container`, `container-type` on `:host`); consuming it would need the
+/// scoper to parse compiled CSS instead of `@utility` blocks -- a larger,
+/// separate change, not a sheet-path swap.
 ///
 /// `Ok(None)` when the project declares no compiled stylesheet -- absence is
 /// explicit, never guessed. An existing file that cannot be read is an error
 /// naming the path, so a preview never renders silently missing its styles
 /// because the stylesheet vanished mid-read.
 pub fn read_rafters_stylesheet(project_root: &Path) -> Result<Option<String>, NamespaceError> {
-    let output = project_root.join(".rafters").join("output");
-    for name in ["rafters.standalone.css", "rafters.css"] {
-        let path = output.join(name);
-        if path.is_file() {
-            return std::fs::read_to_string(&path)
-                .map(Some)
-                .map_err(|source| NamespaceError::Io { path, source });
-        }
+    let path = project_root
+        .join(".rafters")
+        .join("output")
+        .join("rafters.css");
+    if !path.is_file() {
+        return Ok(None);
     }
-    Ok(None)
+    std::fs::read_to_string(&path)
+        .map(Some)
+        .map_err(|source| NamespaceError::Io { path, source })
 }
 
 /// Raw serde shape of a `<namespace>.rafters.json` file.
@@ -738,7 +742,7 @@ mod tests {
     }
 
     #[test]
-    fn stylesheet_prefers_the_standalone_sheet_falls_back_and_reports_absence() {
+    fn stylesheet_reads_the_utility_form_sheet_never_the_compiled_standalone() {
         let dir = tempfile::tempdir().expect("tempdir");
         let output = dir.path().join(".rafters/output");
         std::fs::create_dir_all(&output).expect("mkdir output");
@@ -750,23 +754,24 @@ mod tests {
             "no compiled stylesheet is absent, not an error"
         );
 
-        // Only the standard sheet -> it is the fallback.
-        std::fs::write(output.join("rafters.css"), ".app{color:red}").expect("write standard");
-        assert_eq!(
-            read_rafters_stylesheet(dir.path()).expect("reads").as_deref(),
-            Some(".app{color:red}"),
-            "the standard sheet is used when no standalone sheet exists"
-        );
-
-        // Both present -> the self-contained standalone sheet wins, because
-        // shadow-DOM previews need the :host-targeting sheet, not the
-        // app-context one.
-        std::fs::write(output.join("rafters.standalone.css"), ".host{color:blue}")
+        // A standalone-only project has no @utility sheet for the scoper, so
+        // it is still absent -- veneer does not read the compiled standalone
+        // sheet the scoper cannot match.
+        std::fs::write(output.join("rafters.standalone.css"), "@layer theme{:host{--x:1}}")
             .expect("write standalone");
         assert_eq!(
+            read_rafters_stylesheet(dir.path()).expect("reads"),
+            None,
+            "the compiled standalone sheet is not the scoper's input"
+        );
+
+        // rafters.css (the @utility form) is what the scoper needs.
+        std::fs::write(output.join("rafters.css"), "@utility bg-x { background: red; }")
+            .expect("write standard");
+        assert_eq!(
             read_rafters_stylesheet(dir.path()).expect("reads").as_deref(),
-            Some(".host{color:blue}"),
-            "the standalone sheet is preferred for isolated previews"
+            Some("@utility bg-x { background: red; }"),
+            "veneer reads rafters.css, the sheet carrying @utility blocks"
         );
     }
 }
