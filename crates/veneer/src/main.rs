@@ -23,6 +23,9 @@ pub struct Cli {
 enum Commands {
     /// Extract documentation from a target project
     Extract(commands::extract::ExtractArgs),
+
+    /// Watch a project and regenerate its docs substrate on every change
+    Watch(commands::watch::WatchArgs),
 }
 
 #[tokio::main]
@@ -40,6 +43,9 @@ async fn main() -> Result<()> {
     match cli.command {
         Commands::Extract(args) => {
             commands::extract::run(args).await?;
+        }
+        Commands::Watch(args) => {
+            commands::watch::run(args).await?;
         }
     }
 

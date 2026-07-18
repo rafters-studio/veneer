@@ -131,19 +131,19 @@ pub async fn run(args: ExtractArgs) -> Result<()> {
 
 /// Outcome of the substrate phase: the coverage report plus what was written
 /// to `.rafters/veneer/`.
-struct SubstrateOutcome {
-    report: CoverageReport,
+pub(crate) struct SubstrateOutcome {
+    pub report: CoverageReport,
     /// The `.rafters/veneer/` directory the jsonl were written to.
-    dir: PathBuf,
-    docs_lines: usize,
-    index_lines: usize,
+    pub dir: PathBuf,
+    pub docs_lines: usize,
+    pub index_lines: usize,
 }
 
 /// Assess the discovered set and write the `.rafters/veneer/` substrate:
 /// `docs.jsonl` (FR-VEN-022) and `index.jsonl` (FR-VEN-031), both derived
 /// from the same assessment pass. The substrate is veneer's only write under
 /// `.rafters/`; everything else there is read-only input (FR-VEN-021).
-fn run_substrate_phase(project: &Path) -> Result<SubstrateOutcome> {
+pub(crate) fn run_substrate_phase(project: &Path) -> Result<SubstrateOutcome> {
     let source = read_rafters_namespace(project)
         .with_context(|| format!("failed to read the rafters source in {}", project.display()))?;
     let items = ComponentRegistry::discover(project, &source)
