@@ -268,14 +268,10 @@ fn constraints_from_usage(patterns: &[String]) -> Vec<Constraint> {
                     kind: ConstraintKind::Do,
                     text: rest.trim().to_string(),
                 })
-            } else if let Some(rest) = trimmed.strip_prefix("NEVER:") {
-                Some(Constraint {
+            } else { trimmed.strip_prefix("NEVER:").map(|rest| Constraint {
                     kind: ConstraintKind::Never,
                     text: rest.trim().to_string(),
-                })
-            } else {
-                None
-            }
+                }) }
         })
         .collect()
 }
@@ -412,9 +408,9 @@ fn stoplight(dimensions: &IndexDimensions) -> &'static str {
         dimensions.coverage,
         dimensions.freshness,
     ];
-    if all.iter().any(|status| *status == "fail") {
+    if all.contains(&"fail") {
         "red"
-    } else if all.iter().any(|status| *status == "absent") {
+    } else if all.contains(&"absent") {
         "yellow"
     } else {
         "green"
