@@ -266,26 +266,32 @@ pub fn read_rafters_namespace(project_root: &Path) -> Result<IntelligenceSource,
     }))
 }
 
-/// Read the compiled project stylesheet the rafters exporter writes to
-/// `.rafters/output/rafters.css` (verified against a real `.rafters/`
-/// directory). Previews scope their shadow-root CSS out of it
-/// (FR-VEN-018).
+/// Read the compiled project stylesheet the rafters exporter writes under
+/// `.rafters/output/` (verified against a real `.rafters/` directory).
+/// Previews scope their shadow-root CSS out of it (FR-VEN-018).
 ///
-/// `Ok(None)` when the project declares no compiled stylesheet -- absence
-/// is explicit, never guessed. An existing file that cannot be read is an
-/// error naming the path, so a preview never renders silently missing its
-/// styles because the stylesheet vanished mid-read.
+/// Prefers `rafters.standalone.css` over `rafters.css`. Previews render in an
+/// isolated shadow root, so they need the self-contained sheet -- the one that
+/// carries its own base and defines theme variables on `:host` -- not the
+/// app-context sheet that assumes the surrounding app's Tailwind runtime
+/// provides the base and defines variables on `:root`. The standard sheet is
+/// the fallback for a project that ships no standalone sheet.
+///
+/// `Ok(None)` when the project declares no compiled stylesheet -- absence is
+/// explicit, never guessed. An existing file that cannot be read is an error
+/// naming the path, so a preview never renders silently missing its styles
+/// because the stylesheet vanished mid-read.
 pub fn read_rafters_stylesheet(project_root: &Path) -> Result<Option<String>, NamespaceError> {
-    let path = project_root
-        .join(".rafters")
-        .join("output")
-        .join("rafters.css");
-    if !path.is_file() {
-        return Ok(None);
+    let output = project_root.join(".rafters").join("output");
+    for name in ["rafters.standalone.css", "rafters.css"] {
+        let path = output.join(name);
+        if path.is_file() {
+            return std::fs::read_to_string(&path)
+                .map(Some)
+                .map_err(|source| NamespaceError::Io { path, source });
+        }
     }
-    std::fs::read_to_string(&path)
-        .map(Some)
-        .map_err(|source| NamespaceError::Io { path, source })
+    Ok(None)
 }
 
 /// Raw serde shape of a `<namespace>.rafters.json` file.
@@ -729,5 +735,38 @@ mod tests {
             }
             other => panic!("expected InvalidToken error, got {other:?}"),
         }
+    }
+
+    #[test]
+    fn stylesheet_prefers_the_standalone_sheet_falls_back_and_reports_absence() {
+        let dir = tempfile::tempdir().expect("tempdir");
+        let output = dir.path().join(".rafters/output");
+        std::fs::create_dir_all(&output).expect("mkdir output");
+
+        // No sheet at all -> honest absence, never guessed.
+        assert_eq!(
+            read_rafters_stylesheet(dir.path()).expect("reads"),
+            None,
+            "no compiled stylesheet is absent, not an error"
+        );
+
+        // Only the standard sheet -> it is the fallback.
+        std::fs::write(output.join("rafters.css"), ".app{color:red}").expect("write standard");
+        assert_eq!(
+            read_rafters_stylesheet(dir.path()).expect("reads").as_deref(),
+            Some(".app{color:red}"),
+            "the standard sheet is used when no standalone sheet exists"
+        );
+
+        // Both present -> the self-contained standalone sheet wins, because
+        // shadow-DOM previews need the :host-targeting sheet, not the
+        // app-context one.
+        std::fs::write(output.join("rafters.standalone.css"), ".host{color:blue}")
+            .expect("write standalone");
+        assert_eq!(
+            read_rafters_stylesheet(dir.path()).expect("reads").as_deref(),
+            Some(".host{color:blue}"),
+            "the standalone sheet is preferred for isolated previews"
+        );
     }
 }
