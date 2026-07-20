@@ -51,7 +51,13 @@ const record = (name, ok, detail) => {
   report.textContent = results.map(r => `${r.ok ? 'PASS' : 'FAIL'}  ${r.name}\n      ${r.detail}`).join('\n');
 };
 
+// The sheet under test is the REAL rafters standalone sheet, not a fixture:
+//   .rafters/output/rafters.standalone.css  (rafters CLI compiled output)
+//     -> tools/compile.ts prepends the :host guard and rewrites :root -> :root,:host
+//     -> preview-dist/sheet.css
+const RAFTERS_STANDALONE = await (await fetch('../.rafters/output/rafters.standalone.css')).text();
 const BASE = await (await fetch('../preview-dist/sheet.css')).text();
+const hostileEl = document.querySelector('.hostile-inherited');
 const mod = await import('../preview-dist/search-box.mjs');
 await mod.define(BASE);
 
@@ -63,6 +69,17 @@ const rootA = a.shadowRoot;
 const rootB = b.shadowRoot;
 const surfaceA = () => rootA.querySelector('[data-veneer-surface]');
 const surfaceB = () => rootB.querySelector('[data-veneer-surface]');
+
+// --- 0. PROVENANCE: the sheet under test IS the rafters standalone sheet ----
+// Guard against the spike quietly proving something about a fixture.
+const guardOnly = BASE.slice(0, BASE.length - RAFTERS_STANDALONE.length);
+const bodyMatches = BASE.endsWith(RAFTERS_STANDALONE.replace(/:root(?!,:host)/g, ':root,:host'));
+record(
+  '0. the sheet under test is the real rafters compiled output',
+  bodyMatches && guardOnly.startsWith(':host{all:initial'),
+  `rafters.standalone.css=${RAFTERS_STANDALONE.length}B -> adopted sheet=${BASE.length}B; ` +
+  `delta is the :host guard (${guardOnly.length}B) + the :root->:root,:host rewrite; body matches -> ${bodyMatches}`,
+);
 
 // --- 1. SHEET IDENTITY: both roots hold the SAME CSSStyleSheet object -------
 const sheetA = rootA.adoptedStyleSheets[0];
@@ -84,16 +101,52 @@ record(
   `veneer-button root sheet === composite root sheet -> ${innerSheet === sheetA}`,
 );
 
-// --- 2. INHERITED-PROP ISOLATION: the all:initial guard blocks the ancestor -
+// --- 2. ISOLATION, mechanism by mechanism ----------------------------------
+// THREE different mechanisms, not one. Do not collapse them.
 const beforeA = getComputedStyle(surfaceA());
 const beforeB = getComputedStyle(surfaceB());
 const fsA = beforeA.fontSize, fsB = beforeB.fontSize;
 const lsB = beforeB.letterSpacing;
+
+// (a) REGULAR inherited props: genuinely reset by :host{all:initial}.
 record(
-  '2. inherited props from a hostile ancestor do NOT leak past :host{all:initial}',
+  '2a. regular inherited props are blocked by :host{all:initial}',
   fsA === fsB && fsB === '16px' && lsB === 'normal',
   `A font-size=${fsA}  B font-size=${fsB} (ancestor set 90px), B letter-spacing=${lsB} (ancestor set 12px)`,
 );
+
+// (b) color: NOT covered by all:initial in the way you'd assume -- the guard
+//     sets color:var(--foreground) explicitly. Different mechanism.
+record(
+  '2b. color is held by the guard`s explicit color:var(--foreground), not by all:initial',
+  beforeB.color !== 'rgb(255, 0, 0)',
+  `B color=${beforeB.color} (ancestor set rgb(255,0,0)); --foreground resolves to ${beforeB.getPropertyValue('--foreground').trim()}`,
+);
+
+// (c) CUSTOM PROPERTIES are a documented EXCEPTION to the `all` shorthand --
+//     all:initial does NOT reset them. Tokens survive only because the
+//     :root -> :root,:host rewrite redefines them ON the host, and a value
+//     set directly on an element beats an inherited one.
+//     Corollary: a custom prop the sheet does NOT define leaks straight in.
+//     That is the true boundary of the isolation guarantee -- prove it.
+hostileEl.style.setProperty('--veneer-undefined-token', 'rgb(255, 0, 255)');
+sheetA.replaceSync(BASE + `
+[data-veneer-surface]{border-left:4px solid var(--veneer-undefined-token, rgb(1,2,3))}
+`);
+await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+const probeB = getComputedStyle(surfaceB());
+const definedTokenHeld = probeB.getPropertyValue('--foreground').trim() !== 'rgb(255, 0, 0)';
+const undefinedTokenLeaked = probeB.borderLeftColor === 'rgb(255, 0, 255)';
+record(
+  '2c. custom props: sheet-DEFINED tokens are shadowed on :host; UNDEFINED ones LEAK',
+  definedTokenHeld && undefinedTokenLeaked,
+  `--foreground (defined by sheet) held as ${probeB.getPropertyValue('--foreground').trim()}; ` +
+  `--veneer-undefined-token (not in sheet) leaked in as ${probeB.borderLeftColor} -- ` +
+  `isolation covers the token set the sheet defines, NOT arbitrary custom props`,
+);
+sheetA.replaceSync(BASE);
+hostileEl.style.removeProperty('--veneer-undefined-token');
+await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
 // --- 3. LIVE RESTYLE: ONE replaceSync on the shared object updates BOTH -----
 const bgBeforeA = beforeA.backgroundColor;
