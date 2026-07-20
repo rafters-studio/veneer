@@ -1,9 +1,10 @@
 //! Per-component framework-less preview plus compiled intelligence
 //! (FR-VEN-003). For every discovered component and composite,
 //! [`render_component`] produces the Web Component preview (the
-//! `scoped_web_component_block` pipeline: no framework runtime referenced,
-//! shadow-root CSS scoped from the project stylesheet per FR-VEN-018)
-//! together with the intelligence fields present in its source.
+//! `checked_web_component_block` pipeline: no framework runtime referenced,
+//! the shared runtime stylesheet adopted whole into the shadow root, and
+//! every declared class checked for coverage per FR-VEN-018) together with
+//! the intelligence fields present in its source.
 //!
 //! Grounding (verified against the real rafters repo):
 //!
@@ -40,10 +41,9 @@ use oxc_span::{GetSpan, SourceType};
 use serde::Deserialize;
 
 use crate::config_interface::{resolve_config_interface, ResolvedConfig};
-use crate::generator::{generate_passthrough_web_component, scoped_web_component_block};
+use crate::generator::{checked_web_component_block, generate_passthrough_web_component};
 use crate::rafters_source::{IntelligenceSource, UsagePatterns};
 use crate::registry::{extract_component_candidate, is_composite_manifest, DiscoveredItem};
-use crate::scope::shadow_css_for_component;
 use crate::traits::{TransformError, TransformedBlock};
 use crate::ts_helpers::{kebab_case, normalize_whitespace};
 
@@ -158,14 +158,14 @@ pub struct RenderedComponent {
 /// composite manifest renders a passthrough preview with the intelligence
 /// the manifest declares.
 ///
-/// `full_css` is the project stylesheet text (for rafters projects,
-/// `.rafters/output/rafters.css` via `read_rafters_stylesheet`); each
-/// preview's shadow-root CSS is scoped out of it (FR-VEN-018).
+/// `full_css` is the project stylesheet text. Previews adopt it whole at
+/// runtime rather than carrying a scoped subset, so it is used here only to
+/// check that every class a component declares has a rule (FR-VEN-018) --
+/// the check that keeps an uncovered class from rendering silently unstyled.
 ///
-/// Any failure -- including CSS extraction failure, so a preview never
-/// renders silently missing its styles -- is a
-/// [`TransformError::RenderFailed`] naming the item, so a failing
-/// component surfaces in coverage instead of vanishing.
+/// Any failure -- including an empty stylesheet, which means the pipeline
+/// handed us nothing -- is a [`TransformError::RenderFailed`] naming the
+/// item, so a failing component surfaces in coverage instead of vanishing.
 pub fn render_component(
     item: &DiscoveredItem,
     source: &IntelligenceSource,
@@ -213,7 +213,7 @@ fn render_source_item(
     // Scope the component's shadow-root CSS out of the project stylesheet.
     // Extraction failure refuses the preview with the reason -- never a
     // preview silently missing its styles (FR-VEN-018).
-    let preview = scoped_web_component_block(&preview_tag_name(&item.name), &structure, full_css)
+    let preview = checked_web_component_block(&preview_tag_name(&item.name), &structure, full_css)
         .map_err(|error| match error {
         TransformError::RenderFailed { reason, .. } => reason,
         other => other.to_string(),
@@ -312,7 +312,9 @@ struct RenderableManifestFile {
 /// the intelligence the manifest declares.
 fn render_manifest_composite(
     item: &DiscoveredItem,
-    full_css: &str,
+    // A manifest declares blocks, not classes, so there is nothing to
+    // coverage-check. Kept for signature parity with the source path.
+    _full_css: &str,
 ) -> Result<RenderedComponent, String> {
     let text = read_source_file(&item.source_path)?;
     let parsed: RenderableManifestFile = serde_json::from_str(&text).map_err(|error| {
@@ -322,14 +324,12 @@ fn render_manifest_composite(
         )
     })?;
 
-    // A manifest declares no classes; scoping an empty class list out of
-    // the stylesheet is empty CSS by contract, never an error.
-    let shadow =
-        shadow_css_for_component(&item.name, &[], full_css).map_err(|error| error.to_string())?;
-
+    // A manifest declares no classes of its own -- its blocks carry them --
+    // so there is nothing to coverage-check here. The preview adopts the
+    // shared sheet whole at runtime either way.
     let tag_name = preview_tag_name(&item.name);
     let preview = TransformedBlock {
-        web_component: generate_passthrough_web_component(&tag_name, &shadow.css),
+        web_component: generate_passthrough_web_component(&tag_name),
         tag_name,
         classes_used: Vec::new(),
         attributes: Vec::new(),
@@ -797,7 +797,9 @@ mod tests {
             .web_component
             .contains("customElements.define('button-preview'"));
         // No framework runtime referenced by the output.
-        assert!(!preview.web_component.contains("import "));
+        assert!(preview
+            .web_component
+            .contains("import { sheet } from './veneer-runtime.js';"));
         assert!(!preview.web_component.contains("require("));
         assert!(!preview.web_component.to_lowercase().contains("react"));
     }
@@ -928,17 +930,18 @@ mod tests {
         assert!(rendered.intelligence.cognitive_load.is_some());
     }
 
-    // AC (FR-VEN-018): every rendered preview carries its scoped CSS via
-    // the embedded stylesheet -- including classes composed dynamically at
-    // render, whose names never appear as source literals.
+    // AC (FR-VEN-018): a rendered preview carries NO CSS of its own. Styling
+    // arrives from the one shared runtime sheet, which is what lets a single
+    // in-place update restyle every mounted preview at once.
     #[test]
-    fn rendered_preview_embeds_scoped_css_from_the_project_stylesheet() {
+    fn rendered_preview_carries_no_css_and_adopts_the_shared_sheet() {
         let rendered = render_named("Button");
         let js = &rendered.preview.web_component;
-        assert!(js.contains(".bg-primary {"));
-        assert!(js.contains("background-color: var(--color-primary);"));
-        assert!(js.contains(":host {"));
-        // Tailwind source at-rules never reach the browser sheet.
+        assert!(js.contains("this.shadowRoot.adoptedStyleSheets = [sheet()]"));
+        assert!(!js.contains(".bg-primary {"));
+        assert!(!js.contains("background-color: var(--color-primary);"));
+        assert!(!js.contains("new CSSStyleSheet()"));
+        // Tailwind source at-rules never reach the module either.
         assert!(!js.contains("@utility"));
         assert!(!js.contains("@theme"));
     }
@@ -958,13 +961,11 @@ mod tests {
             "the dynamic composition must surface as a pattern: {:?}",
             rendered.preview.classes_used
         );
+        // The tints resolve from the shared sheet at render; the module
+        // itself carries only the class NAMES it can resolve to.
         let js = &rendered.preview.web_component;
-        assert!(
-            js.contains(".text-quality-500 {"),
-            "preview must carry every tint the component can resolve to"
-        );
-        assert!(js.contains(".text-quality-600 {"));
-        assert!(js.contains("--color-quality-600: oklch(0.55 0.14 140);"));
+        assert!(!js.contains(".text-quality-500 {"));
+        assert!(!js.contains("--color-quality-600: oklch(0.55 0.14 140);"));
     }
 
     // AC: composites render through the same path as components.
@@ -995,7 +996,10 @@ mod tests {
             .preview
             .web_component
             .contains("customElements.define('hero-banner-preview'"));
-        assert!(!rendered.preview.web_component.contains("import "));
+        assert!(rendered
+            .preview
+            .web_component
+            .contains("import { sheet } from './veneer-runtime.js';"));
 
         let intelligence = &rendered.intelligence;
         let load = intelligence

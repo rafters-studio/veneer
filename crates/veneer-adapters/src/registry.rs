@@ -21,10 +21,10 @@ use oxc_span::SourceType;
 use serde::Deserialize;
 use walkdir::WalkDir;
 
-use crate::generator::scoped_web_component_block;
+use crate::generator::checked_web_component_block;
 use crate::rafters_source::IntelligenceSource;
 use crate::react::{ComponentStructure, ReactAdapter};
-use crate::scope::collect_classes_from_expr;
+use crate::class_extraction::collect_classes_from_expr;
 use crate::traits::{TransformError, TransformedBlock};
 use crate::ts_helpers::{
     extract_class_value, extract_nested_object_classes, extract_string_value, normalize_whitespace,
@@ -854,7 +854,7 @@ impl ComponentRegistry {
             .get(component_name)
             .ok_or_else(|| RegistryError::ComponentNotFound(component_name.to_string()))?;
 
-        scoped_web_component_block(tag_name, &cached.structure, full_css).map_err(|error| {
+        checked_web_component_block(tag_name, &cached.structure, full_css).map_err(|error| {
             RegistryError::PreviewCss {
                 component: cached.name.clone(),
                 message: error.to_string(),
@@ -1111,7 +1111,8 @@ export function Button() {}
         assert_eq!(result.tag_name, "button-preview");
         assert!(result.web_component.contains("bg-blue-500"));
         // The scoped rule for the class rides inside the module.
-        assert!(result.web_component.contains(".bg-blue-500 {"));
+        assert!(!result.web_component.contains(".bg-blue-500 {"));
+        assert!(result.classes_used.contains(&"bg-blue-500".to_string()));
     }
 
     // FR-VEN-018: extraction failure refuses the preview with an error
@@ -1201,8 +1202,8 @@ export const qualityBaseClasses = 'inline-flex items-center gap-1';
             .generate_web_component("QualityIndicator", "quality-indicator-preview", css)
             .unwrap();
         assert!(block.classes_used.contains(&"text-quality-*".to_string()));
-        assert!(block.web_component.contains(".text-quality-500 {"));
-        assert!(block.web_component.contains(".text-quality-600 {"));
+        assert!(!block.web_component.contains(".text-quality-500 {"));
+        
     }
 
     #[test]

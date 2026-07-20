@@ -7,6 +7,8 @@ pub mod artifact;
 pub mod conventions;
 pub mod config_interface;
 pub mod coverage;
+pub mod class_extraction;
+pub mod css_coverage;
 pub mod generator;
 pub mod inline;
 pub mod intelligence;
@@ -15,7 +17,6 @@ pub mod mdx;
 pub mod rafters_source;
 pub mod react;
 pub mod registry;
-pub mod scope;
 pub mod substrate;
 pub mod tokens;
 pub mod traits;
@@ -32,7 +33,7 @@ pub use coverage::{
 };
 pub use generator::{
     generate_constraints_region, generate_controls_panel, generate_passthrough_web_component,
-    generate_preview_surface, generate_web_component, scoped_web_component_block,
+    generate_preview_surface, generate_web_component, checked_web_component_block,
     web_component_block,
 };
 pub use inline::{parse_inline_jsx, parse_inline_jsx_all, to_custom_element, InlineJsx, PropValue};
@@ -59,9 +60,8 @@ pub use react::{ComponentStructure, ReactAdapter};
 pub use registry::{
     CachedComponent, ComponentRegistry, DiscoveredItem, DiscoveredKind, RegistryError,
 };
-pub use scope::{
-    extract_classes_from_ts, scope_css, shadow_css_for_component, ScopeError, ShadowCss,
-};
+pub use class_extraction::extract_classes_from_ts;
+pub use css_coverage::uncovered_classes;
 pub use substrate::{
     build_substrate, to_jsonl, DocLine, IndexLine, Substrate, DOC_SCHEMA, INDEX_SCHEMA,
     STOPLIGHT_RULE_VERSION,

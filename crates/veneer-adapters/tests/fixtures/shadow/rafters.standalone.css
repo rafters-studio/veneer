@@ -1,0 +1,13 @@
+/* Compiled stylesheet shape -- the form previews actually adopt.
+   Tailwind has already resolved @utility/@theme into plain rules and a
+   token block; escaped selectors carry the pseudo-variants. */
+:root,:host{--font-size-label-small:0.75rem;--font-size-label-medium:0.875rem;--color-quality-500:oklch(0.6 0.14 140);--color-quality-600:oklch(0.55 0.14 140);--primary:oklch(0.2 0 0);--primary-hover:oklch(0.141 0 0)}
+.text-label-small{font-size:var(--font-size-label-small)}
+.text-label-medium{font-size:var(--font-size-label-medium)}
+.text-quality-500{color:var(--color-quality-500)}
+.text-quality-600{color:var(--color-quality-600)}
+.bg-primary{background-color:var(--primary)}
+.text-foreground{color:var(--foreground)}
+.inline-flex{display:inline-flex}
+.rounded-md{border-radius:0.375rem}
+.hover\:bg-primary-hover:hover{background-color:var(--primary-hover)}

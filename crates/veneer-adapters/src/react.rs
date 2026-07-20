@@ -13,7 +13,7 @@ use oxc_parser::Parser;
 use oxc_span::SourceType;
 
 use crate::conventions::ComponentConventions;
-use crate::generator::scoped_web_component_block;
+use crate::generator::checked_web_component_block;
 use crate::traits::{FrameworkAdapter, TransformContext, TransformError, TransformedBlock};
 use crate::ts_helpers::{
     extract_class_value, extract_nested_object_classes, normalize_whitespace,
@@ -226,7 +226,7 @@ impl FrameworkAdapter for ReactAdapter {
         // context carries. Extraction failure is an error naming the
         // component -- a preview never renders silently unstyled
         // (FR-VEN-018).
-        scoped_web_component_block(tag_name, &structure, &ctx.stylesheet)
+        checked_web_component_block(tag_name, &structure, &ctx.stylesheet)
     }
 }
 
@@ -511,8 +511,10 @@ export function Button() {
         assert!(result.web_component.contains("variantClasses"));
         assert!(result.web_component.contains("bg-primary"));
         assert!(result.classes_used.contains(&"bg-primary".to_string()));
-        // The scoped rule from the context stylesheet rides in the module.
-        assert!(result.web_component.contains(".bg-primary {"));
+        // The class rides in the module as a CLASS NAME only. Its rule stays
+        // in the shared sheet -- a module that carried the rule would be the
+        // per-component sheet the live-preview contract rules out.
+        assert!(!result.web_component.contains(".bg-primary {"));
     }
 
     // FR-VEN-018: with no stylesheet in the context, a classed component

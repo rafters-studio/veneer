@@ -1,96 +1,143 @@
 //! Web Component code generator.
 //!
 //! Every generated custom element is style-isolated (FR-VEN-018): it
-//! attaches an open shadow root and delivers its component CSS through
-//! `shadowRoot.adoptedStyleSheets`, built from a scoped CSS string embedded
-//! in the module itself. The generated code never injects a page-global
-//! `<style>` or `<link>` and never reads the host page's stylesheets, so a
-//! preview neither leaks styles into the host page nor absorbs conflicting
-//! global CSS from it.
+//! attaches an open shadow root and delivers CSS through
+//! `shadowRoot.adoptedStyleSheets`. The generated code never injects a
+//! page-global `<style>` or `<link>` and never reads the host page's
+//! stylesheets, so a preview neither leaks styles into the host page nor
+//! absorbs conflicting global CSS from it.
+//!
+//! The CSS is NOT embedded per component. Every preview adopts one shared
+//! `CSSStyleSheet` owned by the emitted runtime module (see
+//! [`runtime_module`]), which the host fills via `setSheetCss`. Two
+//! properties follow, and both are the point:
+//!
+//! - **Live.** One `replaceSync` on the shared instance restyles every
+//!   mounted preview at once, with no remount and no regeneration. A
+//!   compile-ahead pipeline loses that race during active design.
+//! - **Whole.** The sheet is adopted entire, not tree-shaken per component,
+//!   so `@container`/`container-type` context and `:host` token
+//!   redefinitions survive — they do not, if the sheet is subset.
+//!
+//! Isolation covers the token set the sheet defines. A custom property the
+//! sheet does not define still inherits in from the host page; `:host`
+//! guards regular inherited properties, but custom properties are an
+//! exception to the `all` shorthand and are only shadowed where the sheet
+//! redefines them.
 
+use crate::css_coverage::uncovered_classes;
 use crate::intelligence::{Constraint, ConstraintKind, RenderedComponent};
 use crate::react::ComponentStructure;
-use crate::scope::shadow_css_for_component;
 use crate::traits::{TransformError, TransformedBlock};
 
 /// Assemble the full transform result for a component structure: the
 /// generated Web Component plus the classes and attributes the structure
 /// declares. The single assembly point for structure-based previews.
 ///
-/// `scoped_css` is the browser-ready CSS for the component's shadow root,
-/// already extracted by [`shadow_css_for_component`]. Production callers
-/// hold a full stylesheet, not extracted CSS, and go through
-/// [`scoped_web_component_block`], which performs that extraction and
-/// enforces the no-silently-missing-styles contract (FR-VEN-018).
-pub fn web_component_block(
-    tag_name: &str,
-    structure: &ComponentStructure,
-    scoped_css: &str,
-) -> TransformedBlock {
+/// The block carries no CSS: styling arrives at runtime from the shared
+/// sheet (see [`runtime_module`]). Production callers hold the project
+/// stylesheet and go through [`checked_web_component_block`], which keeps
+/// the no-silently-missing-styles contract (FR-VEN-018) by reporting
+/// classes the sheet does not cover.
+pub fn web_component_block(tag_name: &str, structure: &ComponentStructure) -> TransformedBlock {
     TransformedBlock {
-        web_component: generate_web_component(tag_name, structure, scoped_css),
+        web_component: generate_web_component(tag_name, structure),
         tag_name: tag_name.to_string(),
         classes_used: structure.collect_all_classes(),
         attributes: structure.observed_attributes.clone(),
     }
 }
 
-/// Assemble a transform result with CSS scoped from the full project
-/// stylesheet. Extraction failure is a [`TransformError::RenderFailed`]
-/// naming the component — a preview is never emitted silently missing its
-/// styles. Classes with no matching rule are warned about individually.
-pub fn scoped_web_component_block(
+/// Assemble a transform result, checking every class the component declares
+/// against the project stylesheet.
+///
+/// The preview adopts the whole sheet at runtime, so this no longer *builds*
+/// CSS — but the check it performs is the reason the scoping code existed in
+/// the first place, and it outlives it. Adopting the sheet whole means a
+/// class the sheet does not cover renders silently wrong instead of failing
+/// loudly, which is exactly how a component that drifted from its class
+/// records slips through. An empty stylesheet is a
+/// [`TransformError::RenderFailed`] naming the component; individually
+/// uncovered classes are warned (FR-VEN-018).
+pub fn checked_web_component_block(
     tag_name: &str,
     structure: &ComponentStructure,
     full_css: &str,
 ) -> Result<TransformedBlock, TransformError> {
     let classes = structure.collect_all_classes();
-    let shadow =
-        shadow_css_for_component(&structure.name, &classes, full_css).map_err(|error| {
-            TransformError::RenderFailed {
-                component: structure.name.clone(),
-                reason: error.to_string(),
-            }
-        })?;
+    let uncovered = uncovered_classes(&classes, full_css).map_err(|reason| {
+        TransformError::RenderFailed {
+            component: structure.name.clone(),
+            reason,
+        }
+    })?;
 
-    for class in &shadow.unmatched {
+    for class in &uncovered {
         eprintln!(
-            "veneer/scoped_web_component_block: component '{}': no CSS rule found for '{class}'",
+            "veneer/checked_web_component_block: component '{}': no CSS rule found for '{class}'",
             structure.name
         );
     }
 
-    Ok(web_component_block(tag_name, structure, &shadow.css))
+    Ok(web_component_block(tag_name, structure))
 }
 
-/// Generate the shared JS prelude that turns the embedded scoped CSS into a
-/// lazily-constructed `CSSStyleSheet` for `shadowRoot.adoptedStyleSheets`.
-/// Construction is deferred to first connect so the module also loads in
-/// environments without constructable stylesheets (for example SSR).
-fn stylesheet_js(scoped_css: &str) -> String {
-    format!(
-        r#"const componentCss = '{css}';
+/// File name of the shared preview runtime, emitted once per substrate and
+/// imported by every generated preview module.
+pub const RUNTIME_MODULE_FILENAME: &str = "veneer-runtime.js";
 
-let componentSheet = null;
-function componentStyles() {{
-  if (componentSheet === null) {{
-    componentSheet = new CSSStyleSheet();
-    componentSheet.replaceSync(componentCss);
-  }}
-  return componentSheet;
-}}"#,
-        css = escape_string(scoped_css),
-    )
+/// The shared preview runtime: the ONE `CSSStyleSheet` every generated
+/// preview adopts.
+///
+/// This module exists so that sheet identity is a property of the substrate
+/// rather than an accident. Every preview imports `sheet()` from here and
+/// adopts the same instance, which is what makes a single `replaceSync`
+/// restyle every mounted preview at once — the live-preview contract.
+///
+/// The sheet object is created once and never replaced. `setSheetCss`
+/// mutates it in place, because a shadow root holds a reference to the
+/// instance it adopted: handing out a fresh `CSSStyleSheet` would leave
+/// every already-connected root styled by the old one.
+pub fn runtime_module() -> String {
+    r#"/**
+ * veneer preview runtime - GENERATED
+ *
+ * Owns the single CSSStyleSheet shared by every preview on the page.
+ * Every generated preview adopts THIS instance, so one setSheetCss()
+ * restyles all of them with no remount and no recompile.
+ */
+
+let sharedSheet = null;
+
+/** The shared sheet, constructed on first use. */
+export function sheet() {
+  if (sharedSheet === null) {
+    sharedSheet = new CSSStyleSheet();
+  }
+  return sharedSheet;
+}
+
+/**
+ * Replace the shared sheet's contents IN PLACE.
+ *
+ * Never assigns a new CSSStyleSheet: connected shadow roots hold a
+ * reference to the instance they adopted, so a fresh object would not
+ * restyle them. Mutating in place is what makes the update live.
+ */
+export function setSheetCss(css) {
+  const target = sheet();
+  target.replaceSync(css);
+  return target;
+}
+"#
+    .to_string()
 }
 
 /// Generate a Web Component class from the extracted component structure.
-/// Component CSS is delivered via `shadowRoot.adoptedStyleSheets` from the
-/// embedded `scoped_css`; no page-global style is read or injected.
-pub fn generate_web_component(
-    tag_name: &str,
-    structure: &ComponentStructure,
-    scoped_css: &str,
-) -> String {
+/// CSS is delivered via `shadowRoot.adoptedStyleSheets` from the shared
+/// runtime sheet; no page-global style is read or injected, and no CSS is
+/// embedded in the module.
+pub fn generate_web_component(tag_name: &str, structure: &ComponentStructure) -> String {
     let class_name = to_pascal_case(tag_name);
 
     let variant_entries: String = structure
@@ -126,7 +173,7 @@ pub fn generate_web_component(
  * Tag: <{tag_name}>
  */
 
-{stylesheet_js}
+import {{ sheet }} from './{runtime_module}';
 
 const variantClasses = {{
 {variant_entries}
@@ -150,7 +197,7 @@ export class {class_name} extends HTMLElement {{
   }}
 
   connectedCallback() {{
-    this.shadowRoot.adoptedStyleSheets = [componentStyles()];
+    this.shadowRoot.adoptedStyleSheets = [sheet()];
     this.#render();
   }}
 
@@ -219,7 +266,7 @@ export default {class_name};
         class_name = class_name,
         name = structure.name,
         tag_name = tag_name,
-        stylesheet_js = stylesheet_js(scoped_css),
+        runtime_module = RUNTIME_MODULE_FILENAME,
         variant_entries = variant_entries,
         size_entries = size_entries,
         base_classes = base_classes,
@@ -235,8 +282,8 @@ export default {class_name};
 /// Used for compound/structural components (Card, Accordion, Dialog, etc.) that
 /// don't have variant/size switching but still need style isolation for previews.
 /// The component renders its light DOM children inside a shadow root whose
-/// `adoptedStyleSheets` carry the embedded `scoped_css` — never page styles.
-pub fn generate_passthrough_web_component(tag_name: &str, scoped_css: &str) -> String {
+/// `adoptedStyleSheets` carry the shared runtime sheet — never page styles.
+pub fn generate_passthrough_web_component(tag_name: &str) -> String {
     let class_name = to_pascal_case(tag_name);
 
     format!(
@@ -246,7 +293,7 @@ pub fn generate_passthrough_web_component(tag_name: &str, scoped_css: &str) -> S
  * Tag: <{tag_name}>
  */
 
-{stylesheet_js}
+import {{ sheet }} from './{runtime_module}';
 
 export class {class_name} extends HTMLElement {{
   constructor() {{
@@ -255,7 +302,7 @@ export class {class_name} extends HTMLElement {{
   }}
 
   connectedCallback() {{
-    this.shadowRoot.adoptedStyleSheets = [componentStyles()];
+    this.shadowRoot.adoptedStyleSheets = [sheet()];
     this.#render();
   }}
 
@@ -274,7 +321,7 @@ export default {class_name};
 "#,
         class_name = class_name,
         tag_name = tag_name,
-        stylesheet_js = stylesheet_js(scoped_css),
+        runtime_module = RUNTIME_MODULE_FILENAME,
     )
 }
 
@@ -550,7 +597,7 @@ mod tests {
             dynamic_class_patterns: vec![],
         };
 
-        let output = generate_web_component("my-button", &structure, ".bg-primary {\n}");
+        let output = generate_web_component("my-button", &structure);
 
         assert!(output.contains("class MyButton extends HTMLElement"));
         assert!(output.contains("static observedAttributes"));
@@ -559,7 +606,6 @@ mod tests {
         assert!(output.contains("adoptedStyleSheets"));
     }
 
-    const SCOPED_CSS: &str = ":host {\n  --color-primary: oklch(0.645 0.12 180);\n}\n\n.bg-primary {\n  background-color: var(--color-primary);\n}";
 
     /// The isolation contract, asserted structurally on the generated JS:
     /// component CSS enters only through the shadow root, never the page.
@@ -569,14 +615,17 @@ mod tests {
             js.contains("this.attachShadow({ mode: 'open' })"),
             "must attach an open shadow root"
         );
-        // CSS delivered via adoptedStyleSheets on the shadow root.
+        // CSS delivered via adoptedStyleSheets on the shadow root, from the
+        // ONE shared runtime sheet.
         assert!(
-            js.contains("this.shadowRoot.adoptedStyleSheets = [componentStyles()]"),
-            "must adopt component styles onto the shadow root"
+            js.contains("this.shadowRoot.adoptedStyleSheets = [sheet()]"),
+            "must adopt the shared sheet onto the shadow root"
         );
+        // No per-component sheet: constructing one here would break the
+        // shared-instance identity the live update depends on.
         assert!(
-            js.contains("componentSheet.replaceSync(componentCss)"),
-            "must build the sheet from the embedded scoped CSS"
+            !js.contains("new CSSStyleSheet()"),
+            "must not construct its own stylesheet"
         );
         // Zero page-global style interaction: nothing read from or written
         // to the host document's styles.
@@ -589,35 +638,39 @@ mod tests {
         assert!(!js.contains("createElement('link')"));
         assert!(!js.contains("data-veneer-component"));
         // No framework runtime.
-        assert!(!js.contains("import "));
+        // The ONLY import is the veneer runtime -- no framework, nothing
+        // else. "Self-contained" now means exactly this.
+        let imports: Vec<&str> = js.lines().filter(|l| l.starts_with("import ")).collect();
+        assert_eq!(imports, vec!["import { sheet } from './veneer-runtime.js';"]);
         assert!(!js.contains("require("));
         assert!(!js.to_lowercase().contains("react"));
     }
 
     #[test]
-    fn web_component_embeds_scoped_css_and_isolates_styles() {
+    fn web_component_adopts_the_shared_sheet_and_isolates_styles() {
         let structure = make_full_structure();
-        let output = generate_web_component("button-preview", &structure, SCOPED_CSS);
+        let output = generate_web_component("button-preview", &structure);
 
         assert_style_isolated(&output);
         // The scoped CSS itself is embedded in the module (JS-escaped).
-        assert!(output.contains("background-color: var(--color-primary);"));
-        assert!(output.contains(":host {"));
+        assert!(!output.contains("background-color: var(--color-primary);"));
+        // :host token declarations live in the shared sheet, not here.
+        assert!(!output.contains(":host {"));
     }
 
     #[test]
-    fn passthrough_web_component_embeds_scoped_css_and_isolates_styles() {
-        let output = generate_passthrough_web_component("card-preview", SCOPED_CSS);
+    fn passthrough_web_component_adopts_the_shared_sheet_and_isolates_styles() {
+        let output = generate_passthrough_web_component("card-preview");
 
         assert_style_isolated(&output);
-        assert!(output.contains("background-color: var(--color-primary);"));
+        assert!(!output.contains("background-color: var(--color-primary);"));
         assert!(output.contains("customElements.define('card-preview'"));
     }
 
     #[test]
-    fn web_component_block_carries_scoped_css() {
+    fn web_component_block_carries_no_css() {
         let structure = make_full_structure();
-        let block = web_component_block("button-preview", &structure, SCOPED_CSS);
+        let block = web_component_block("button-preview", &structure);
 
         assert_style_isolated(&block.web_component);
         assert_eq!(block.tag_name, "button-preview");
@@ -639,29 +692,28 @@ mod tests {
 "#;
 
     #[test]
-    fn scoped_block_resolves_css_from_full_stylesheet() {
+    fn checked_block_renders_and_leaves_css_to_the_shared_sheet() {
         let structure = make_full_structure();
-        let block = scoped_web_component_block("button-preview", &structure, FULL_CSS)
+        let block = checked_web_component_block("button-preview", &structure, FULL_CSS)
             .expect("classes match rules in the stylesheet");
 
         assert_style_isolated(&block.web_component);
         // The @utility block arrives as a plain class rule, shadow-adoptable.
-        assert!(block
+        assert!(!block
             .web_component
             .contains("background-color: var(--color-primary);"));
         assert!(!block.web_component.contains("@utility"));
     }
 
     #[test]
-    fn scoped_block_errors_naming_component_when_no_css_matches() {
+    fn checked_block_errors_naming_component_when_the_stylesheet_is_empty() {
+        // Uncovered classes are warned, not fatal -- the preview still
+        // renders, because the sheet is adopted whole. An EMPTY sheet is
+        // different: it means the pipeline handed us nothing.
         let structure = make_full_structure();
-        let result = scoped_web_component_block(
-            "button-preview",
-            &structure,
-            "@utility unrelated {\n  color: red;\n}\n",
-        );
+        let result = checked_web_component_block("button-preview", &structure, "   ");
 
-        let error = result.expect_err("no class matches any rule");
+        let error = result.expect_err("an empty stylesheet is a pipeline fault");
         let message = error.to_string();
         assert!(
             message.contains("Button"),
@@ -676,7 +728,7 @@ mod tests {
     #[test]
     fn scoped_block_errors_naming_component_on_empty_stylesheet() {
         let structure = make_full_structure();
-        let error = scoped_web_component_block("button-preview", &structure, "")
+        let error = checked_web_component_block("button-preview", &structure, "")
             .expect_err("empty stylesheet with classes requested");
         assert!(error.to_string().contains("Button"));
     }
