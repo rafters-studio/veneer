@@ -940,10 +940,8 @@ mod tests {
         assert!(js.contains("this.shadowRoot.adoptedStyleSheets = [sheet()"));
         assert!(!js.contains(".bg-primary {"));
         assert!(!js.contains("background-color: var(--color-primary);"));
-        // A structural :host shim may own a sheet; utility CSS may not.
-        for line in js.lines().filter(|l| l.contains("hostCss = ")) {
-            assert!(line.contains(":host{display:"), "host shim is structural only: {line}");
-        }
+        assert!(!js.contains("new CSSStyleSheet()"), "must own no stylesheet");
+        assert!(!js.contains(":host{"), "must not author host CSS");
         // Tailwind source at-rules never reach the module either.
         assert!(!js.contains("@utility"));
         assert!(!js.contains("@theme"));

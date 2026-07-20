@@ -133,8 +133,8 @@ const sheetsAfter = late.shadowRoot.adoptedStyleSheets.length;
 const childrenAfter = late.shadowRoot.childElementCount;
 note(
   '5. disconnect then reconnect',
-  sheetsAfter === 2 && childrenAfter === 1 ? 'HOLDS' : 'BROKEN',
-  `adoptedStyleSheets.length=${sheetsAfter} (want 2: shared + host shim), ` +
+  sheetsAfter === 1 && childrenAfter === 1 ? 'HOLDS' : 'BROKEN',
+  `adoptedStyleSheets.length=${sheetsAfter} (want 1: the shared sheet, nothing veneer authored), ` +
   `shadow children=${childrenAfter} (want 1 -- no duplicate render)`,
 );
 
@@ -173,35 +173,20 @@ try {
 a.shadowRoot.adoptedStyleSheets = [runtime.sheet()];
 note('7. adopting the same instance twice', 'INFO', dup);
 
-// --- CORNER 8 (was 3): does the host shim survive the shared sheet? -------
-// The fix for corner 3: structural :host lives in a per-component sheet
-// adopted AFTER the shared one, so it is component-specific again.
+// --- CORNER 8: the host-display gap stays OPEN --------------------------
+// Corner 3 has no veneer-side fix. Deriving a display from the component's
+// class strings would mean veneer authoring a styling decision rafters did
+// not declare. rafters states host display in its own web component sources;
+// until veneer reads those, this gap is recorded, not filled.
 const hostDisplay = getComputedStyle(b).display;
-const innerDisplay = getComputedStyle(inner(b)).display;
-// Compare the host to what the component's OWN base classes declare -- not
-// to the inner's computed display. Making the host inline-flex turns the
-// shadow child into a flex ITEM, and flex items are blockified, so an inner
-// `inline-flex` correctly computes to `flex`. Comparing the two would fail
-// on correct behavior.
-const declaredDisplay = [...inner(b).classList].find(c =>
+const declared = [...inner(b).classList].find(c =>
   ['inline-flex','inline-grid','inline-block','flex','grid','block','inline'].includes(c));
 note(
-  '8. host display mirrors the display the component declares',
-  hostDisplay === declaredDisplay ? 'HOLDS' : 'BROKEN',
-  `host=${hostDisplay}, component declares '${declaredDisplay}' (inner computes ` +
-  `'${innerDisplay}' -- blockified as a flex item, which is correct). Before the shim ` +
-  `the host was 'inline' and could not take width/height/block margins.`,
-);
-
-// --- CORNER 9: host shim must NOT bleed across components ----------------
-// Regression guard on the fix: the shim is per-component, so it must not be
-// visible to a preview that did not declare it.
-const shimSheets = b.shadowRoot.adoptedStyleSheets.length;
-note(
-  '9. shim is a SECOND sheet, shared sheet still first',
-  shimSheets === 2 && b.shadowRoot.adoptedStyleSheets[0] === runtime.sheet() ? 'HOLDS' : 'BROKEN',
-  `adoptedStyleSheets=[shared, hostShim] -> length ${shimSheets}, ` +
-  `[0]===shared -> ${b.shadowRoot.adoptedStyleSheets[0] === runtime.sheet()}`,
+  '8. host display vs the display the component declares',
+  'OPEN',
+  `host=${hostDisplay}, component declares '${declared}'. The host cannot take ` +
+  `width/height/block margins while it is inline. NOT veneer's to fix: the shim ` +
+  `belongs to rafters' own WC source, not to a display veneer infers.`,
 );
 
 const broken = rows.filter(r => r.verdict === 'BROKEN');

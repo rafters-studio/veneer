@@ -49,15 +49,11 @@ fn assert_isolation_contract(js: &str) {
     assert!(js.contains("this.attachShadow({ mode: 'open' })"));
     assert!(js.contains("this.shadowRoot.adoptedStyleSheets = [sheet()"));
 
-    // No UTILITY CSS is embedded per component -- that is the point of the
-    // shared sheet. A structural :host shim is the one exception, and it is
-    // allowed precisely because a shared sheet cannot carry per-component
-    // :host rules.
+    // The module owns NO CSS: not utility rules, not a host shim. veneer
+    // renders what rafters declares and authors no styling of its own.
+    assert!(!js.contains("new CSSStyleSheet()"), "must own no stylesheet");
     assert!(!js.contains(".bg-primary"), "must not embed utility CSS");
-    assert!(!js.contains("@utility"));
-    for line in js.lines().filter(|l| l.contains("hostCss = ")) {
-        assert!(line.contains(":host{display:"), "host shim is structural only: {line}");
-    }
+    assert!(!js.contains(":host{"), "must not author host CSS");
 
     // Zero page-global style interaction: the module neither reads the host
     // page's stylesheets nor injects a <style>/<link> into it.

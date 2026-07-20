@@ -24,6 +24,25 @@
 //! guards regular inherited properties, but custom properties are an
 //! exception to the `all` shorthand and are only shadowed where the sheet
 //! redefines them.
+//!
+//! # Known gap: host display
+//!
+//! A custom element defaults to `display: inline`, while the element a
+//! component renders is often `inline-flex` or `block`. The preview host
+//! therefore cannot take width, height, or block margins, and its layout
+//! diverges from the component's the moment anything sizes it.
+//!
+//! A `:host` rule cannot come from the shared sheet -- one sheet is adopted
+//! by every preview, so it would apply the same display to all of them
+//! (browser-verified). It has to be per component.
+//!
+//! veneer does not author one. Deriving a display from a component's class
+//! strings would mean inventing a styling decision the design system did not
+//! declare, and veneer renders what rafters declares rather than deciding
+//! for it. rafters states host display in its own web component sources
+//! (`static styles = ':host { display: inline-flex; }'`); when veneer reads
+//! those, the shim comes from there. Until then the gap stays open and
+//! visible rather than papered over with a guess.
 
 use crate::css_coverage::uncovered_classes;
 use crate::intelligence::{Constraint, ConstraintKind, RenderedComponent};
@@ -152,50 +171,11 @@ export function setSheetCss(css) {
     .to_string()
 }
 
-/// Display utilities a component's base classes can declare, longest first
-/// so `inline-flex` is not matched as `flex`.
-const DISPLAY_UTILITIES: &[&str] = &[
-    "inline-flex",
-    "inline-grid",
-    "inline-block",
-    "flex",
-    "grid",
-    "block",
-    "inline",
-];
-
-/// The host shim for a component: `:host { display: X }` mirroring the
-/// display its own base classes declare.
-///
-/// A custom element defaults to `display: inline`, but the element the
-/// component actually renders is usually `inline-flex` or `block`. Left
-/// unshimmed the host cannot take width, height, or block margins, so the
-/// preview's layout is not the component's layout -- the divergence hides
-/// while content shrink-wraps and appears the moment anything sizes it.
-///
-/// This CANNOT live in the shared sheet: one sheet is adopted by every
-/// preview, so a `:host` rule there would apply the same display to all of
-/// them (browser-verified). It is per-component by necessity, and it is
-/// structural only -- no utility CSS returns to the module.
-///
-/// Read, never invented: a component whose base classes declare no display
-/// gets no shim rather than a guess.
-fn host_shim_css(structure: &ComponentStructure) -> Option<String> {
-    let base = &structure.base_classes;
-    DISPLAY_UTILITIES
-        .iter()
-        .find(|utility| {
-            base.split_whitespace()
-                .any(|class| class == **utility)
-        })
-        .map(|utility| format!(":host{{display:{utility}}}"))
-}
-
 /// Generate a Web Component class from the extracted component structure.
-/// Utility CSS is delivered via `shadowRoot.adoptedStyleSheets` from the
-/// shared runtime sheet; no page-global style is read or injected, and no
-/// utility CSS is embedded in the module. The only component-owned CSS is
-/// the structural host shim (see [`host_shim_css`]).
+/// CSS is delivered via `shadowRoot.adoptedStyleSheets` from the shared
+/// runtime sheet. The module owns NO CSS of its own: veneer renders what
+/// rafters declares and authors no styling of its own, not even a host
+/// shim. See the module docs for the host-display gap this leaves open.
 pub fn generate_web_component(tag_name: &str, structure: &ComponentStructure) -> String {
     let class_name = to_pascal_case(tag_name);
 
@@ -225,19 +205,6 @@ pub fn generate_web_component(tag_name: &str, structure: &ComponentStructure) ->
     let base_classes = escape_string(&structure.base_classes);
     let disabled_classes = escape_string(&structure.disabled_classes);
 
-    // The host shim is the ONLY component-owned CSS. It gets its own sheet
-    // because a :host rule in the shared sheet would style every preview.
-    let (host_shim_js, host_shim_adopt) = match host_shim_css(structure) {
-        Some(css) => (
-            format!(
-                "\nconst hostCss = '{css}';\nlet hostSheet = null;\nfunction hostStyles() {{\n  if (hostSheet === null) {{\n    hostSheet = new CSSStyleSheet();\n    hostSheet.replaceSync(hostCss);\n  }}\n  return hostSheet;\n}}\n",
-                css = escape_string(&css)
-            ),
-            ", hostStyles()".to_string(),
-        ),
-        None => (String::new(), String::new()),
-    };
-
     format!(
         r#"/**
  * {class_name} - Generated Web Component Preview
@@ -246,7 +213,7 @@ pub fn generate_web_component(tag_name: &str, structure: &ComponentStructure) ->
  */
 
 import {{ sheet }} from './{runtime_module}';
-{host_shim_js}
+
 const variantClasses = {{
 {variant_entries}
 }};
@@ -269,7 +236,7 @@ export class {class_name} extends HTMLElement {{
   }}
 
   connectedCallback() {{
-    this.shadowRoot.adoptedStyleSheets = [sheet(){host_shim_adopt}];
+    this.shadowRoot.adoptedStyleSheets = [sheet()];
     this.#render();
   }}
 
@@ -339,8 +306,6 @@ export default {class_name};
         name = structure.name,
         tag_name = tag_name,
         runtime_module = RUNTIME_MODULE_FILENAME,
-        host_shim_js = host_shim_js,
-        host_shim_adopt = host_shim_adopt,
         variant_entries = variant_entries,
         size_entries = size_entries,
         base_classes = base_classes,
@@ -695,11 +660,11 @@ mod tests {
             js.contains("this.shadowRoot.adoptedStyleSheets = [sheet()"),
             "must adopt the shared sheet onto the shadow root"
         );
-        // The shared sheet is adopted FIRST. A component may additionally
-        // own a structural host shim, but never utility CSS -- that would be
-        // the per-component sheet the live-update contract rules out.
+        // The module owns no CSS at all -- not utility CSS, not a host
+        // shim. veneer renders what rafters declares and authors none of it.
+        assert!(!js.contains("new CSSStyleSheet()"), "must own no stylesheet");
         assert!(!js.contains(".bg-primary {"), "must not embed utility CSS");
-        assert!(!js.contains("@utility"));
+        assert!(!js.contains(":host{"), "must not author host CSS");
         // Zero page-global style interaction: nothing read from or written
         // to the host document's styles.
         assert!(!js.contains("document.styleSheets"));
