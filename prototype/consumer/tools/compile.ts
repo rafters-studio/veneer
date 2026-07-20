@@ -171,21 +171,27 @@ export class VeneerKbd extends RaftersElement {
 }
 
 function emitInput(block: Block): Emitted {
-  const size = (block.meta?.size as string) ?? 'default';
-  const cls = `${inputBaseClasses} ${inputVariantClasses.default} ${inputSizeClasses[size as keyof typeof inputSizeClasses]}`;
   const attrs = ruleAttrs(block.rules);
   const inputType = (block.meta?.inputType as string) ?? (attrs.type as string) ?? 'search';
   return {
     tag: 'veneer-input',
     source: `
+const INPUT_VARIANTS = ${JSON.stringify(inputVariantClasses)};
+const INPUT_SIZES = ${JSON.stringify(inputSizeClasses)};
 export class VeneerInput extends RaftersElement {
   outputRules = [];
   _input = null;
   _value = '';
+  _disabled = false;
+  _variant = ${JSON.stringify((block.meta?.variant as string) ?? 'default')};
+  _size = ${JSON.stringify((block.meta?.size as string) ?? 'default')};
   render() {
     const input = document.createElement('input');
-    input.className = ${JSON.stringify(cls)};
+    input.className = ${JSON.stringify(inputBaseClasses)}
+      + ' ' + (INPUT_VARIANTS[this._variant] ?? INPUT_VARIANTS.default)
+      + ' ' + (INPUT_SIZES[this._size] ?? INPUT_SIZES.default);
     input.type = ${JSON.stringify(inputType)};
+    input.disabled = this._disabled;
     // Applied rules as native constraint attributes (rule-attrs semantics):
     for (const [k, v] of Object.entries(${JSON.stringify(attrs)})) {
       if (k === 'type') continue;
@@ -213,24 +219,41 @@ export class VeneerInput extends RaftersElement {
   set value(v) { this._value = String(v); if (this._input) { this._input.value = this._value; this._emit(); } }
   get placeholder() { return this.attr('placeholder'); }
   set placeholder(v) { this.setAttribute('placeholder', String(v)); if (this._input) this._input.placeholder = String(v); }
+  get disabled() { return this._disabled; }
+  set disabled(v) { this._disabled = Boolean(v); this.update(); }
+  get variant() { return this._variant; }
+  set variant(v) { this._variant = String(v); this.update(); }
+  get size() { return this._size; }
+  set size(v) { this._size = String(v); this.update(); }
 }`,
   };
 }
 
 function emitButton(block: Block): Emitted {
-  const size = (block.meta?.size as string) ?? 'default';
-  const base = `${buttonBaseClasses} ${buttonSizeClasses[size as keyof typeof buttonSizeClasses] ?? ''}`;
+  // size is a RUNTIME prop, not a compile-time bake -- a state you cannot
+  // set from the outside is a state the preview cannot show.
   return {
     tag: 'veneer-button',
     source: `
 const BUTTON_VARIANTS = ${JSON.stringify(buttonVariantClasses)};
+const BUTTON_SIZES = ${JSON.stringify(buttonSizeClasses)};
 export class VeneerButton extends RaftersElement {
   _latest = {};
-  _disabled = ${JSON.stringify((block.input ?? []).length > 0)};
+  _ruleDisabled = ${JSON.stringify((block.input ?? []).length > 0)};
+  _disabled = false;
+  _loading = false;
   _variant = ${JSON.stringify((block.meta?.variant as string) ?? 'default')};
+  _size = ${JSON.stringify((block.meta?.size as string) ?? 'default')};
   render() {
-    const button = this.el('button', ${JSON.stringify(base)} + ' ' + (BUTTON_VARIANTS[this._variant] ?? BUTTON_VARIANTS.default), this.attr('content'));
-    button.disabled = this._disabled;
+    const cls = ${JSON.stringify(buttonBaseClasses)}
+      + ' ' + (BUTTON_VARIANTS[this._variant] ?? BUTTON_VARIANTS.default)
+      + ' ' + (BUTTON_SIZES[this._size] ?? BUTTON_SIZES.default);
+    const button = this.el('button', cls, this._loading ? 'Loading...' : this.attr('content'));
+    // The rule gate and the author-set disabled are SEPARATE reasons to be
+    // disabled; collapsing them makes the knob fight the dataflow.
+    button.disabled = this._ruleDisabled || this._disabled || this._loading;
+    if (this._loading) button.setAttribute('aria-busy', 'true');
+    if (button.disabled) button.setAttribute('aria-disabled', 'true');
     button.addEventListener('click', () => {
       for (const rule of ${JSON.stringify(block.output ?? [])}) {
         this.dispatchEvent(new CustomEvent('rafters:rule', { bubbles: true, composed: false, detail: { rule, value: this._latest, valid: true, sourceBlock: this.attr('block-id') } }));
@@ -238,11 +261,15 @@ export class VeneerButton extends RaftersElement {
     });
     return button;
   }
-  ruleInput(rule, value, valid) { this._latest[rule] = value; this.disabled = !valid; }
+  ruleInput(rule, value, valid) { this._latest[rule] = value; this._ruleDisabled = !valid; this.update(); }
   get disabled() { return this._disabled; }
   set disabled(v) { this._disabled = Boolean(v); this.update(); }
+  get loading() { return this._loading; }
+  set loading(v) { this._loading = Boolean(v); this.update(); }
   get variant() { return this._variant; }
   set variant(v) { this._variant = String(v); this.update(); }
+  get size() { return this._size; }
+  set size(v) { this._size = String(v); this.update(); }
 }`,
   };
 }
@@ -298,6 +325,39 @@ export class VeneerInputGroup extends RaftersElement {
 }`,
   };
 }
+
+/**
+ * The knob surface, per block type. Enum OPTIONS are never listed here --
+ * they are read off the imported *.classes.ts records, so the editor offers
+ * exactly the vocabulary the component ships (minus what the sheet does not
+ * cover, per contract rule 10).
+ *
+ * INVARIANT: only declare a prop the emitter above actually implements a
+ * setter for. A knob with no setter is worse than a missing knob -- it moves
+ * and nothing happens. spinner/label/kbd bake their variant and size at
+ * compile time today, so they contribute no knobs until their emitters grow
+ * runtime props.
+ */
+interface PropSpec {
+  prop: string;
+  type: 'enum' | 'boolean' | 'string';
+  record?: Record<string, string>;
+  fallback?: unknown;
+}
+const PROP_SURFACE: Record<string, PropSpec[]> = {
+  button: [
+    { prop: 'variant', type: 'enum', record: buttonVariantClasses, fallback: 'default' },
+    { prop: 'size', type: 'enum', record: buttonSizeClasses, fallback: 'default' },
+    { prop: 'disabled', type: 'boolean', fallback: false },
+    { prop: 'loading', type: 'boolean', fallback: false },
+  ],
+  input: [
+    { prop: 'variant', type: 'enum', record: inputVariantClasses, fallback: 'default' },
+    { prop: 'size', type: 'enum', record: inputSizeClasses, fallback: 'default' },
+    { prop: 'disabled', type: 'boolean', fallback: false },
+    { prop: 'placeholder', type: 'string', fallback: '' },
+  ],
+};
 
 type EmitterFn = (block: Block) => Emitted;
 const EMITTERS: Record<string, EmitterFn> = {
@@ -358,23 +418,19 @@ function compile(compositePath: string): string {
     default: false,
   }));
   for (const block of blocks) {
-    if (block.type === 'button')
+    for (const spec of PROP_SURFACE[block.type] ?? []) {
+      const declared = block.meta?.[spec.prop];
       knobs.push({
-        name: `${block.id}.variant`,
+        name: `${block.id}.${spec.prop}`,
         kind: 'block-prop',
-        type: 'enum',
-        options: coveredOptions(buttonVariantClasses),
-        default: (block.meta?.variant as string) ?? 'default',
-        target: { block: block.id, prop: 'variant' },
+        type: spec.type,
+        // Enum options are the REAL keys of the imported class record,
+        // filtered to what the compiled sheet covers (contract rule 10).
+        ...(spec.record ? { options: coveredOptions(spec.record) } : {}),
+        default: declared ?? spec.fallback,
+        target: { block: block.id, prop: spec.prop },
       });
-    if (block.type === 'input' && block.meta?.placeholder)
-      knobs.push({
-        name: `${block.id}.placeholder`,
-        kind: 'block-prop',
-        type: 'string',
-        default: block.meta.placeholder,
-        target: { block: block.id, prop: 'placeholder' },
-      });
+    }
   }
 
   const compositeClass = `

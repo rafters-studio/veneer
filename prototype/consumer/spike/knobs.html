@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>veneer spike: dead-knob detector</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 2rem; max-width: 900px; }
+  #report { font-family: ui-monospace, monospace; font-size: .8rem; white-space: pre-wrap;
+            background: #f4f4f4; padding: .75rem; border-radius: 6px; }
+</style>
+</head>
+<body>
+<h1>Dead-knob detector: every declared knob must MOVE something</h1>
+<p style="font-size:.85rem;max-width:60ch">
+  A knob with no runtime setter is worse than a missing knob: it appears in the
+  editor, the user moves it, and nothing happens. This page drives every knob in
+  KNOBS and fails any whose observable output does not change.
+</p>
+
+<veneer-search-box id="subject"></veneer-search-box>
+<h2 style="font-size:.95rem">Report</h2>
+<div id="report">running...</div>
+
+<script type="module">
+const report = document.getElementById('report');
+// Cache-buster: python http.server sends no cache-control, and Chrome's
+// heuristic caching WILL serve a stale module after a recompile.
+const BUST = location.hash.slice(1) || Date.now();
+
+const BASE = await (await fetch(`../preview-dist/sheet.css?v=${BUST}`)).text();
+const mod = await import(`../preview-dist/search-box.mjs?v=${BUST}`);
+await mod.define(BASE);
+
+const subject = document.getElementById('subject');
+await customElements.whenDefined('veneer-search-box');
+
+// COMPOSITE-WIDE signature: walk every block's own shadow root. A per-block
+// signature misses boundary inputs, which drive a DIFFERENT block than the one
+// the knob names (search-pending drives the spinner, not the button).
+const signature = () => {
+  const parts = [];
+  for (const host of subject.shadowRoot.querySelectorAll('[block-id]')) {
+    const inner = host.shadowRoot?.querySelector('button, input, div, label, kbd');
+    if (!inner) continue;
+    const c = getComputedStyle(inner);
+    parts.push([
+      host.getAttribute('block-id'), inner.className, c.height, c.fontSize,
+      c.backgroundColor, c.opacity, c.display, `${c.paddingLeft}/${c.paddingRight}`,
+      inner.textContent, inner.disabled ?? '', inner.placeholder ?? '', inner.hidden ?? '',
+    ].join('~'));
+  }
+  return parts.join('||');
+};
+
+// Is the observable ALREADY at the state this knob would produce? Then the
+// knob is MASKED (something else dominates), not DEAD (no setter). The
+// distinction matters: masked is correct behavior, dead is a bug.
+const maskedReason = (knob) => {
+  if (knob.type !== 'boolean' || knob.target?.prop !== 'disabled') return null;
+  const host = subject.shadowRoot.querySelector(`[block-id="${knob.target.block}"]`);
+  const inner = host.shadowRoot?.querySelector('button, input');
+  return inner?.disabled
+    ? 'already disabled by the rule gate -- the dataflow dominates the author knob'
+    : null;
+};
+
+const rows = [];
+for (const knob of mod.KNOBS) {
+  const isBoundary = knob.kind === 'boundary-input';
+  const host = isBoundary ? subject : subject.shadowRoot.querySelector(`[block-id="${knob.target.block}"]`);
+  const prop = isBoundary ? knob.name : knob.target.prop;
+  const restore = isBoundary ? false : knob.default;
+
+  const masked = maskedReason(knob);
+  const before = signature();
+
+  // Enums: try EVERY option. Two options can legitimately share a class string
+  // (rafters' `default` and `primary` are byte-identical), so a single probe
+  // that lands on a twin reports a false DEAD.
+  const candidates = knob.type === 'enum' ? knob.options.filter(o => o !== knob.default)
+                   : knob.type === 'boolean' ? [true, false]
+                   : ['PROBE-VALUE'];
+
+  let movedBy = null;
+  for (const value of candidates) {
+    host[prop] = value;
+    if (signature() !== before) { movedBy = value; break; }
+  }
+  host[prop] = restore;
+
+  rows.push({
+    knob: knob.name,
+    kind: `${knob.type}${knob.options ? `(${knob.options.length})` : ''}`,
+    verdict: movedBy !== null ? 'LIVE' : masked ? 'MASKED' : 'DEAD',
+    detail: movedBy !== null
+      ? `${JSON.stringify(knob.default)} -> ${JSON.stringify(movedBy)}`
+      : masked ?? `no value in [${candidates.map(c => JSON.stringify(c)).join(', ')}] changed anything -- no runtime setter`,
+  });
+}
+
+const dead = rows.filter(r => r.verdict === 'DEAD');
+const masked = rows.filter(r => r.verdict === 'MASKED');
+report.textContent =
+  rows.map(r => `${r.verdict.padEnd(6)} ${r.knob}  [${r.kind}]\n       ${r.detail}`).join('\n') +
+  `\n\n${dead.length ? `${dead.length} DEAD KNOB(S)` : 'NO DEAD KNOBS'}` +
+  ` -- ${rows.filter(r => r.verdict === 'LIVE').length} live, ${masked.length} masked, ${dead.length} dead of ${rows.length}`;
+
+window.__KNOBS__ = { total: rows.length, dead: dead.map(d => d.knob), masked: masked.map(m => m.knob), rows };
+</script>
+</body>
+</html>
