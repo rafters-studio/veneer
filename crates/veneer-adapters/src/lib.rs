@@ -63,7 +63,7 @@ pub use registry::{
 pub use class_extraction::extract_classes_from_ts;
 pub use css_coverage::uncovered_classes;
 pub use substrate::{
-    build_substrate, to_jsonl, DocLine, IndexLine, Substrate, DOC_SCHEMA, INDEX_SCHEMA,
+    build_substrate, to_jsonl, DocLine, IndexLine, PreviewRuntime, Substrate, DOC_SCHEMA, INDEX_SCHEMA,
     STOPLIGHT_RULE_VERSION,
 };
 pub use tokens::{parse_dtcg_tokens, DesignToken, DesignTokens, TokenParseError};

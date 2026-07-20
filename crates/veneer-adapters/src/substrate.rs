@@ -25,6 +25,7 @@ use crate::coverage::{AssessedItem, CoverageState};
 use crate::intelligence::{
     CognitiveLoad, Constraint, ConstraintKind, PropDoc, RenderedComponent, TokenRef, VariantDoc,
 };
+use crate::generator::{runtime_module, RUNTIME_MODULE_FILENAME};
 use crate::matrix::{ComponentLine, ComponentMetadata};
 use crate::registry::DiscoveredKind;
 use crate::ts_helpers::kebab_case;
@@ -197,12 +198,29 @@ pub struct IndexNote {
     pub evidence: String,
 }
 
-/// The `.rafters/veneer/` substrate for one pass: the canonical docs lines
-/// and the index lines, both derived from the same assessment.
+/// The shared preview runtime every preview module imports.
+///
+/// Previews reference this module by name, so a host that materializes
+/// preview modules to disk MUST write this file beside them -- otherwise
+/// every preview's import dangles. It is emitted once per pass, not once
+/// per component: one file, one stylesheet instance, which is what makes a
+/// single update restyle every mounted preview.
+#[derive(Debug)]
+pub struct PreviewRuntime {
+    /// File name the generated previews import.
+    pub filename: &'static str,
+    /// Module source.
+    pub source: String,
+}
+
+/// The `.rafters/veneer/` substrate for one pass: the canonical docs lines,
+/// the index lines (both derived from the same assessment), and the shared
+/// preview runtime the doc lines' previews import.
 #[derive(Debug)]
 pub struct Substrate {
     pub docs: Vec<DocLine>,
     pub index: Vec<IndexLine>,
+    pub runtime: PreviewRuntime,
 }
 
 /// Build the substrate from an assessed discovered set and the rafters
@@ -242,7 +260,14 @@ pub fn build_substrate(
         });
         index.push(index_line(entry, docs_id, source));
     }
-    Substrate { docs, index }
+    Substrate {
+        docs,
+        index,
+        runtime: PreviewRuntime {
+            filename: RUNTIME_MODULE_FILENAME,
+            source: runtime_module(),
+        },
+    }
 }
 
 /// Map the matrix cognitive-load `{score, note}` onto veneer's
