@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>veneer spike: live shared-sheet restyle (no iframe, no recompile)</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 2rem; max-width: 900px; }
+  h1 { font-size: 1.1rem; }
+  h2 { font-size: .95rem; margin-block-end: .4rem; }
+  section.demo { margin-block: 1.5rem; }
+
+  /* Inherited-property attack: these DO cross the shadow boundary
+     (selectors do not, inheritance does). The :host all:initial guard
+     is the only thing standing between this and the preview. */
+  .hostile-inherited {
+    font-size: 90px;
+    color: rgb(255, 0, 0);
+    --foreground: rgb(255, 0, 0);
+    letter-spacing: 12px;
+  }
+
+  #report { font-family: ui-monospace, monospace; font-size: .8rem; white-space: pre-wrap;
+            background: #f4f4f4; padding: .75rem; border-radius: 6px; }
+</style>
+</head>
+<body>
+<h1>Spike: one shared constructable sheet, two shadow roots, live replaceSync</h1>
+
+<section class="demo">
+  <h2>Instance A (clean ancestor)</h2>
+  <veneer-search-box id="a"></veneer-search-box>
+</section>
+
+<section class="demo">
+  <h2>Instance B (hostile INHERITED props on the ancestor)</h2>
+  <div class="hostile-inherited">
+    <veneer-search-box id="b"></veneer-search-box>
+  </div>
+</section>
+
+<section class="demo">
+  <h2>Assertions</h2>
+  <div id="report">running...</div>
+</section>
+
+<script type="module">
+const report = document.getElementById('report');
+const results = [];
+const record = (name, ok, detail) => {
+  results.push({ name, ok, detail });
+  report.textContent = results.map(r => `${r.ok ? 'PASS' : 'FAIL'}  ${r.name}\n      ${r.detail}`).join('\n');
+};
+
+const BASE = await (await fetch('../preview-dist/sheet.css')).text();
+const mod = await import('../preview-dist/search-box.mjs');
+await mod.define(BASE);
+
+const a = document.getElementById('a');
+const b = document.getElementById('b');
+await customElements.whenDefined('veneer-search-box');
+
+const rootA = a.shadowRoot;
+const rootB = b.shadowRoot;
+const surfaceA = () => rootA.querySelector('[data-veneer-surface]');
+const surfaceB = () => rootB.querySelector('[data-veneer-surface]');
+
+// --- 1. SHEET IDENTITY: both roots hold the SAME CSSStyleSheet object -------
+const sheetA = rootA.adoptedStyleSheets[0];
+const sheetB = rootB.adoptedStyleSheets[0];
+const sameObject = sheetA === sheetB;
+record(
+  '1. two shadow roots adopt the SAME CSSStyleSheet instance',
+  sameObject && sheetA instanceof CSSStyleSheet,
+  `rootA.adoptedStyleSheets.length=${rootA.adoptedStyleSheets.length}, ` +
+  `identity sheetA===sheetB -> ${sameObject}`,
+);
+
+// Also check a nested child root (veneer-button lives in its own shadow root)
+const innerBtn = rootA.querySelector('[block-id="submit-button"]');
+const innerSheet = innerBtn?.shadowRoot?.adoptedStyleSheets[0];
+record(
+  '1b. nested child shadow root adopts the same instance too',
+  innerSheet === sheetA,
+  `veneer-button root sheet === composite root sheet -> ${innerSheet === sheetA}`,
+);
+
+// --- 2. INHERITED-PROP ISOLATION: the all:initial guard blocks the ancestor -
+const beforeA = getComputedStyle(surfaceA());
+const beforeB = getComputedStyle(surfaceB());
+const fsA = beforeA.fontSize, fsB = beforeB.fontSize;
+const lsB = beforeB.letterSpacing;
+record(
+  '2. inherited props from a hostile ancestor do NOT leak past :host{all:initial}',
+  fsA === fsB && fsB === '16px' && lsB === 'normal',
+  `A font-size=${fsA}  B font-size=${fsB} (ancestor set 90px), B letter-spacing=${lsB} (ancestor set 12px)`,
+);
+
+// --- 3. LIVE RESTYLE: ONE replaceSync on the shared object updates BOTH -----
+const bgBeforeA = beforeA.backgroundColor;
+const bgBeforeB = beforeB.backgroundColor;
+
+const EDIT = BASE + `
+[data-veneer-surface]{background-color:rgb(0,128,0)}
+[data-veneer-surface]{container-type:inline-size;container-name:spike}
+@container spike (min-width:1px){[block-id="submit-button"]{outline:3px dashed rgb(255,0,255)}}
+`;
+
+// The whole point: no re-define, no re-mount, no recompile, no iframe reload.
+sheetA.replaceSync(EDIT);
+
+await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+const afterA = getComputedStyle(surfaceA());
+const afterB = getComputedStyle(surfaceB());
+const bgAfterA = afterA.backgroundColor;
+const bgAfterB = afterB.backgroundColor;
+const bothChanged = bgAfterA === 'rgb(0, 128, 0)' && bgAfterB === 'rgb(0, 128, 0)';
+record(
+  '3. ONE replaceSync on the shared sheet restyles BOTH roots (no remount)',
+  bothChanged,
+  `A: ${bgBeforeA} -> ${bgAfterA}   B: ${bgBeforeB} -> ${bgAfterB}`,
+);
+
+// --- 4. CONTAINER QUERIES resolve inside the shadow root -------------------
+const btnA = rootA.querySelector('[block-id="submit-button"]');
+const btnB = rootB.querySelector('[block-id="submit-button"]');
+const outA = getComputedStyle(btnA).outlineStyle;
+const outB = getComputedStyle(btnB).outlineStyle;
+record(
+  '4. @container context resolves inside the shadow root',
+  outA === 'dashed' && outB === 'dashed',
+  `container-driven outline-style  A=${outA}  B=${outB} (expected dashed)`,
+);
+
+// --- 5. REVERT: replaceSync back, both roots return to baseline ------------
+sheetA.replaceSync(BASE);
+await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+const revertA = getComputedStyle(surfaceA()).backgroundColor;
+const revertB = getComputedStyle(surfaceB()).backgroundColor;
+record(
+  '5. replaceSync back to baseline reverts both roots (edit loop is bidirectional)',
+  revertA === bgBeforeA && revertB === bgBeforeB,
+  `A: ${bgAfterA} -> ${revertA}   B: ${bgAfterB} -> ${revertB}`,
+);
+
+const allPass = results.every(r => r.ok);
+report.textContent += `\n\n${allPass ? 'ALL PASS' : 'FAILURES PRESENT'} (${results.filter(r=>r.ok).length}/${results.length})`;
+window.__SPIKE__ = { allPass, results };
+</script>
+</body>
+</html>
