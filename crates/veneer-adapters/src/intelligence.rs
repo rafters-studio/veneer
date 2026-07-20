@@ -937,10 +937,13 @@ mod tests {
     fn rendered_preview_carries_no_css_and_adopts_the_shared_sheet() {
         let rendered = render_named("Button");
         let js = &rendered.preview.web_component;
-        assert!(js.contains("this.shadowRoot.adoptedStyleSheets = [sheet()]"));
+        assert!(js.contains("this.shadowRoot.adoptedStyleSheets = [sheet()"));
         assert!(!js.contains(".bg-primary {"));
         assert!(!js.contains("background-color: var(--color-primary);"));
-        assert!(!js.contains("new CSSStyleSheet()"));
+        // A structural :host shim may own a sheet; utility CSS may not.
+        for line in js.lines().filter(|l| l.contains("hostCss = ")) {
+            assert!(line.contains(":host{display:"), "host shim is structural only: {line}");
+        }
         // Tailwind source at-rules never reach the module either.
         assert!(!js.contains("@utility"));
         assert!(!js.contains("@theme"));

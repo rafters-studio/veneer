@@ -107,14 +107,23 @@ pub fn runtime_module() -> String {
  * restyles all of them with no remount and no recompile.
  */
 
-let sharedSheet = null;
+// The sheet hangs off a well-known global, NOT a module-local binding.
+// Browser-verified corner: ES modules are keyed by URL, so importing this
+// file under any second specifier (a cache-busting '?v=', a differently
+// resolved path, a bundler emitting two copies) yields a SECOND module with
+// a SECOND sheet. Previews would then adopt a sheet the host never fills and
+// silently never style, with no error raised anywhere. A global key survives
+// module duplication.
+const SHEET_KEY = Symbol.for('veneer.preview.sheet');
 
 /** The shared sheet, constructed on first use. */
 export function sheet() {
-  if (sharedSheet === null) {
-    sharedSheet = new CSSStyleSheet();
+  let shared = globalThis[SHEET_KEY];
+  if (!shared) {
+    shared = new CSSStyleSheet();
+    globalThis[SHEET_KEY] = shared;
   }
-  return sharedSheet;
+  return shared;
 }
 
 /**
@@ -125,6 +134,16 @@ export function sheet() {
  * restyle them. Mutating in place is what makes the update live.
  */
 export function setSheetCss(css) {
+  // replaceSync is specified to DISCARD @import rules -- no throw, no
+  // warning, the rules are simply absent. A project stylesheet importing
+  // webfonts would render in a fallback face with nothing to explain why.
+  // Loud failure beats a silently wrong preview.
+  if (/^\s*@import\b/m.test(css)) {
+    console.warn(
+      'veneer: @import rules are dropped by CSSStyleSheet.replaceSync and will not ' +
+      'apply to previews. Inline the imported CSS, or load it on the host page.',
+    );
+  }
   const target = sheet();
   target.replaceSync(css);
   return target;
@@ -133,10 +152,50 @@ export function setSheetCss(css) {
     .to_string()
 }
 
+/// Display utilities a component's base classes can declare, longest first
+/// so `inline-flex` is not matched as `flex`.
+const DISPLAY_UTILITIES: &[&str] = &[
+    "inline-flex",
+    "inline-grid",
+    "inline-block",
+    "flex",
+    "grid",
+    "block",
+    "inline",
+];
+
+/// The host shim for a component: `:host { display: X }` mirroring the
+/// display its own base classes declare.
+///
+/// A custom element defaults to `display: inline`, but the element the
+/// component actually renders is usually `inline-flex` or `block`. Left
+/// unshimmed the host cannot take width, height, or block margins, so the
+/// preview's layout is not the component's layout -- the divergence hides
+/// while content shrink-wraps and appears the moment anything sizes it.
+///
+/// This CANNOT live in the shared sheet: one sheet is adopted by every
+/// preview, so a `:host` rule there would apply the same display to all of
+/// them (browser-verified). It is per-component by necessity, and it is
+/// structural only -- no utility CSS returns to the module.
+///
+/// Read, never invented: a component whose base classes declare no display
+/// gets no shim rather than a guess.
+fn host_shim_css(structure: &ComponentStructure) -> Option<String> {
+    let base = &structure.base_classes;
+    DISPLAY_UTILITIES
+        .iter()
+        .find(|utility| {
+            base.split_whitespace()
+                .any(|class| class == **utility)
+        })
+        .map(|utility| format!(":host{{display:{utility}}}"))
+}
+
 /// Generate a Web Component class from the extracted component structure.
-/// CSS is delivered via `shadowRoot.adoptedStyleSheets` from the shared
-/// runtime sheet; no page-global style is read or injected, and no CSS is
-/// embedded in the module.
+/// Utility CSS is delivered via `shadowRoot.adoptedStyleSheets` from the
+/// shared runtime sheet; no page-global style is read or injected, and no
+/// utility CSS is embedded in the module. The only component-owned CSS is
+/// the structural host shim (see [`host_shim_css`]).
 pub fn generate_web_component(tag_name: &str, structure: &ComponentStructure) -> String {
     let class_name = to_pascal_case(tag_name);
 
@@ -166,6 +225,19 @@ pub fn generate_web_component(tag_name: &str, structure: &ComponentStructure) ->
     let base_classes = escape_string(&structure.base_classes);
     let disabled_classes = escape_string(&structure.disabled_classes);
 
+    // The host shim is the ONLY component-owned CSS. It gets its own sheet
+    // because a :host rule in the shared sheet would style every preview.
+    let (host_shim_js, host_shim_adopt) = match host_shim_css(structure) {
+        Some(css) => (
+            format!(
+                "\nconst hostCss = '{css}';\nlet hostSheet = null;\nfunction hostStyles() {{\n  if (hostSheet === null) {{\n    hostSheet = new CSSStyleSheet();\n    hostSheet.replaceSync(hostCss);\n  }}\n  return hostSheet;\n}}\n",
+                css = escape_string(&css)
+            ),
+            ", hostStyles()".to_string(),
+        ),
+        None => (String::new(), String::new()),
+    };
+
     format!(
         r#"/**
  * {class_name} - Generated Web Component Preview
@@ -174,7 +246,7 @@ pub fn generate_web_component(tag_name: &str, structure: &ComponentStructure) ->
  */
 
 import {{ sheet }} from './{runtime_module}';
-
+{host_shim_js}
 const variantClasses = {{
 {variant_entries}
 }};
@@ -197,7 +269,7 @@ export class {class_name} extends HTMLElement {{
   }}
 
   connectedCallback() {{
-    this.shadowRoot.adoptedStyleSheets = [sheet()];
+    this.shadowRoot.adoptedStyleSheets = [sheet(){host_shim_adopt}];
     this.#render();
   }}
 
@@ -267,6 +339,8 @@ export default {class_name};
         name = structure.name,
         tag_name = tag_name,
         runtime_module = RUNTIME_MODULE_FILENAME,
+        host_shim_js = host_shim_js,
+        host_shim_adopt = host_shim_adopt,
         variant_entries = variant_entries,
         size_entries = size_entries,
         base_classes = base_classes,
@@ -618,15 +692,14 @@ mod tests {
         // CSS delivered via adoptedStyleSheets on the shadow root, from the
         // ONE shared runtime sheet.
         assert!(
-            js.contains("this.shadowRoot.adoptedStyleSheets = [sheet()]"),
+            js.contains("this.shadowRoot.adoptedStyleSheets = [sheet()"),
             "must adopt the shared sheet onto the shadow root"
         );
-        // No per-component sheet: constructing one here would break the
-        // shared-instance identity the live update depends on.
-        assert!(
-            !js.contains("new CSSStyleSheet()"),
-            "must not construct its own stylesheet"
-        );
+        // The shared sheet is adopted FIRST. A component may additionally
+        // own a structural host shim, but never utility CSS -- that would be
+        // the per-component sheet the live-update contract rules out.
+        assert!(!js.contains(".bg-primary {"), "must not embed utility CSS");
+        assert!(!js.contains("@utility"));
         // Zero page-global style interaction: nothing read from or written
         // to the host document's styles.
         assert!(!js.contains("document.styleSheets"));

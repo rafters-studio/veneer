@@ -47,13 +47,17 @@ fn badge_structure(ts: &str) -> veneer_adapters::ComponentStructure {
 fn assert_isolation_contract(js: &str) {
     // Open shadow root; CSS arrives only through the shared runtime sheet.
     assert!(js.contains("this.attachShadow({ mode: 'open' })"));
-    assert!(js.contains("this.shadowRoot.adoptedStyleSheets = [sheet()]"));
+    assert!(js.contains("this.shadowRoot.adoptedStyleSheets = [sheet()"));
 
-    // No CSS is embedded per component any more -- that is the whole point
-    // of the shared sheet, and a regression would silently reintroduce the
-    // per-component sheet the live-preview contract depends on not existing.
-    assert!(!js.contains("new CSSStyleSheet()"));
-    assert!(!js.contains("replaceSync"));
+    // No UTILITY CSS is embedded per component -- that is the point of the
+    // shared sheet. A structural :host shim is the one exception, and it is
+    // allowed precisely because a shared sheet cannot carry per-component
+    // :host rules.
+    assert!(!js.contains(".bg-primary"), "must not embed utility CSS");
+    assert!(!js.contains("@utility"));
+    for line in js.lines().filter(|l| l.contains("hostCss = ")) {
+        assert!(line.contains(":host{display:"), "host shim is structural only: {line}");
+    }
 
     // Zero page-global style interaction: the module neither reads the host
     // page's stylesheets nor injects a <style>/<link> into it.

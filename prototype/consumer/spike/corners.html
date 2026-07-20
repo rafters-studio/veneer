@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>veneer spike: corners of the shared-sheet contract</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 2rem; max-width: 940px; }
+  #report { font-family: ui-monospace, monospace; font-size: .78rem; white-space: pre-wrap;
+            background: #f4f4f4; padding: .75rem; border-radius: 6px; line-height: 1.5; }
+  h1 { font-size: 1.1rem; }
+</style>
+</head>
+<body>
+<h1>Corners: where does "one shared sheet, adopted whole" break?</h1>
+<p style="font-size:.85rem;max-width:64ch">
+  Adversarial. Each probe tries to BREAK the contract the rework depends on.
+  A probe that reports BROKEN found a real corner; one that reports HOLDS
+  closed a suspicion. Nothing here is a unit test — these are properties only
+  a browser can answer.
+</p>
+
+<badge-preview id="a">A</badge-preview>
+<badge-preview id="b" variant="secondary">B</badge-preview>
+<div id="stage"></div>
+
+<h2 style="font-size:.95rem">Findings</h2>
+<div id="report">running...</div>
+
+<script type="module">
+const report = document.getElementById('report');
+const rows = [];
+const note = (name, verdict, detail) => {
+  rows.push({ name, verdict, detail });
+  report.textContent = rows.map(r => `${r.verdict.padEnd(8)} ${r.name}\n         ${r.detail}`).join('\n');
+};
+
+const runtime = await import('./gen/veneer-runtime.js');
+await import('./gen/badge-preview.js');
+await customElements.whenDefined('badge-preview');
+const a = document.getElementById('a'), b = document.getElementById('b');
+const inner = (el) => el.shadowRoot.querySelector('[class]');
+
+const BASE = `.inline-flex{display:inline-flex}.bg-primary{background-color:rgb(1,2,3)}.bg-secondary{background-color:rgb(4,5,6)}`;
+runtime.setSheetCss(BASE);
+const settle = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+await settle();
+
+// --- CORNER 1: module identity is keyed by URL ---------------------------
+// If anything imports the runtime by a different specifier -- a cache
+// buster, a differently-resolved path, a bundler emitting two copies --
+// the ES module registry hands back a SECOND module with a SECOND sheet,
+// and sharing silently stops working with no error anywhere.
+const twin = await import('./gen/veneer-runtime.js?v=2');
+const sameModule = twin.sheet() === runtime.sheet();
+note(
+  '1. runtime imported under a second URL specifier',
+  sameModule ? 'HOLDS' : 'BROKEN',
+  sameModule
+    ? 'same module instance -- URL variance did not fork the sheet'
+    : `FORKED: ?v=2 produced a SECOND sheet. Previews importing a different specifier ` +
+      `than the host fills would silently never restyle. No error is raised.`,
+);
+
+// --- CORNER 2: @import is dropped by replaceSync --------------------------
+// replaceSync is specified to DISCARD @import rules. A project sheet with
+// @import (webfonts are the usual case) loses them with no throw.
+let importDropped = null;
+try {
+  runtime.setSheetCss(`@import url("data:text/css,.x{}");\n${BASE}`);
+  importDropped = ![...runtime.sheet().cssRules].some(r => r.type === CSSRule.IMPORT_RULE);
+} catch (e) {
+  importDropped = `threw: ${e.name}`;
+}
+note(
+  '2. @import inside a sheet fed to replaceSync',
+  importDropped === true ? 'BROKEN' : 'HOLDS',
+  importDropped === true
+    ? 'SILENTLY DROPPED: no throw, no warning, rule count just excludes it. A project ' +
+      'stylesheet importing webfonts loses them and the preview renders in a fallback face.'
+    : `not dropped (${importDropped})`,
+);
+runtime.setSheetCss(BASE);
+await settle();
+
+// --- CORNER 3: :host in a SHARED sheet hits EVERY preview -----------------
+// One sheet adopted by every root means a :host rule cannot be
+// component-specific. Components needing their own host shim (display,
+// container-type) have nowhere to put it now that per-component CSS is gone.
+runtime.setSheetCss(`${BASE}\n:host{outline:2px solid rgb(255,0,255)}`);
+await settle();
+const outlinedA = getComputedStyle(a).outlineColor;
+const outlinedB = getComputedStyle(b).outlineColor;
+const bleeds = outlinedA === 'rgb(255, 0, 255)' && outlinedB === 'rgb(255, 0, 255)';
+note(
+  '3. :host rule in the shared sheet',
+  bleeds ? 'BROKEN' : 'HOLDS',
+  bleeds
+    ? 'APPLIES TO EVERY PREVIEW: a shared sheet cannot carry component-specific :host ' +
+      'rules. Any component needing its own host shim (display:inline-flex, ' +
+      'container-type) has nowhere to put it -- per-component CSS was removed.'
+    : `A=${outlinedA} B=${outlinedB}`,
+);
+runtime.setSheetCss(BASE);
+await settle();
+
+// --- CORNER 4: adopt BEFORE the host fills the sheet ----------------------
+// Ordering: a preview that connects before setSheetCss must still pick up
+// the fill, because it holds the instance, not a snapshot.
+const late = document.createElement('badge-preview');
+document.getElementById('stage').append(late);
+await settle();
+const lateAdopted = late.shadowRoot.adoptedStyleSheets[0] === runtime.sheet();
+runtime.setSheetCss(`${BASE}\n.bg-primary{background-color:rgb(9,9,9)}`);
+await settle();
+const lateStyled = getComputedStyle(inner(late)).backgroundColor === 'rgb(9, 9, 9)';
+note(
+  '4. preview connected before / independent of the fill',
+  lateAdopted && lateStyled ? 'HOLDS' : 'BROKEN',
+  `adopted the shared instance -> ${lateAdopted}; picked up a later fill -> ${lateStyled}`,
+);
+runtime.setSheetCss(BASE);
+await settle();
+
+// --- CORNER 5: disconnect / reconnect -------------------------------------
+// connectedCallback runs again on re-insert. Does the element re-adopt
+// cleanly, or accumulate duplicate sheets / duplicate DOM?
+const stage = document.getElementById('stage');
+late.remove();
+await settle();
+stage.append(late);
+await settle();
+const sheetsAfter = late.shadowRoot.adoptedStyleSheets.length;
+const childrenAfter = late.shadowRoot.childElementCount;
+note(
+  '5. disconnect then reconnect',
+  sheetsAfter === 2 && childrenAfter === 1 ? 'HOLDS' : 'BROKEN',
+  `adoptedStyleSheets.length=${sheetsAfter} (want 2: shared + host shim), ` +
+  `shadow children=${childrenAfter} (want 1 -- no duplicate render)`,
+);
+
+// --- CORNER 6: cross-document adoption ------------------------------------
+// A constructable sheet belongs to the document that created it. A host
+// rendering previews into another document (iframe, printing view) cannot
+// adopt our sheet at all.
+const frame = document.createElement('iframe');
+frame.style.display = 'none';
+document.body.append(frame);
+let crossDoc;
+try {
+  frame.contentDocument.adoptedStyleSheets = [runtime.sheet()];
+  crossDoc = 'accepted';
+} catch (e) {
+  crossDoc = `${e.name}`;
+}
+note(
+  '6. adopting the sheet into another document',
+  crossDoc === 'accepted' ? 'HOLDS' : 'BROKEN',
+  crossDoc === 'accepted'
+    ? 'cross-document adoption accepted'
+    : `THROWS ${crossDoc}: the sheet is bound to the document that constructed it. A host ` +
+      'rendering previews into an iframe or a separate document cannot reuse it.',
+);
+frame.remove();
+
+// --- CORNER 7: does a second adoption of the same instance duplicate? -----
+let dup;
+try {
+  a.shadowRoot.adoptedStyleSheets = [runtime.sheet(), runtime.sheet()];
+  dup = `accepted (${a.shadowRoot.adoptedStyleSheets.length} entries)`;
+} catch (e) {
+  dup = `threw ${e.name}`;
+}
+a.shadowRoot.adoptedStyleSheets = [runtime.sheet()];
+note('7. adopting the same instance twice', 'INFO', dup);
+
+// --- CORNER 8 (was 3): does the host shim survive the shared sheet? -------
+// The fix for corner 3: structural :host lives in a per-component sheet
+// adopted AFTER the shared one, so it is component-specific again.
+const hostDisplay = getComputedStyle(b).display;
+const innerDisplay = getComputedStyle(inner(b)).display;
+// Compare the host to what the component's OWN base classes declare -- not
+// to the inner's computed display. Making the host inline-flex turns the
+// shadow child into a flex ITEM, and flex items are blockified, so an inner
+// `inline-flex` correctly computes to `flex`. Comparing the two would fail
+// on correct behavior.
+const declaredDisplay = [...inner(b).classList].find(c =>
+  ['inline-flex','inline-grid','inline-block','flex','grid','block','inline'].includes(c));
+note(
+  '8. host display mirrors the display the component declares',
+  hostDisplay === declaredDisplay ? 'HOLDS' : 'BROKEN',
+  `host=${hostDisplay}, component declares '${declaredDisplay}' (inner computes ` +
+  `'${innerDisplay}' -- blockified as a flex item, which is correct). Before the shim ` +
+  `the host was 'inline' and could not take width/height/block margins.`,
+);
+
+// --- CORNER 9: host shim must NOT bleed across components ----------------
+// Regression guard on the fix: the shim is per-component, so it must not be
+// visible to a preview that did not declare it.
+const shimSheets = b.shadowRoot.adoptedStyleSheets.length;
+note(
+  '9. shim is a SECOND sheet, shared sheet still first',
+  shimSheets === 2 && b.shadowRoot.adoptedStyleSheets[0] === runtime.sheet() ? 'HOLDS' : 'BROKEN',
+  `adoptedStyleSheets=[shared, hostShim] -> length ${shimSheets}, ` +
+  `[0]===shared -> ${b.shadowRoot.adoptedStyleSheets[0] === runtime.sheet()}`,
+);
+
+const broken = rows.filter(r => r.verdict === 'BROKEN');
+report.textContent += `\n\n${broken.length} CORNER(S) FOUND of ${rows.length} probes`;
+window.__CORNERS__ = { broken: broken.map(b => b.name), rows };
+</script>
+</body>
+</html>
