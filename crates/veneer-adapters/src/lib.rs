@@ -8,7 +8,6 @@ pub mod config_interface;
 pub mod conventions;
 pub mod coverage;
 pub mod generator;
-pub mod inline;
 pub mod intelligence;
 pub mod matrix;
 pub mod mdx;
@@ -17,7 +16,6 @@ pub mod react;
 pub mod registry;
 pub mod scope;
 pub mod substrate;
-pub mod tokens;
 pub mod traits;
 pub(crate) mod ts_helpers;
 pub mod veneer_config;
@@ -31,16 +29,11 @@ pub use config_interface::{
     ResolvedConfig,
 };
 pub use conventions::ComponentConventions;
-pub use coverage::{
-    assess_coverage, not_yet_documented_placeholder, AssessedItem, CoverageReport, CoverageState,
-    PlaceholderArtifact, NOT_YET_DOCUMENTED_STATUS,
-};
+pub use coverage::{assess_coverage, AssessedItem, CoverageReport, CoverageState};
 pub use generator::{
-    generate_constraints_region, generate_controls_panel, generate_passthrough_web_component,
-    generate_preview_surface, generate_web_component, scoped_web_component_block,
+    generate_passthrough_web_component, generate_web_component, scoped_web_component_block,
     web_component_block,
 };
-pub use inline::{parse_inline_jsx, parse_inline_jsx_all, to_custom_element, InlineJsx, PropValue};
 pub use intelligence::{
     render_component, CognitiveLoad, CompiledIntelligence, Constraint, ConstraintKind,
     DependencyOrigin, DependencyRef, PropDoc, RenderedComponent, TokenRef, VariantDoc,
@@ -67,6 +60,5 @@ pub use substrate::{
     build_substrate, to_jsonl, DocLine, IndexLine, Substrate, DOC_SCHEMA, INDEX_SCHEMA,
     STOPLIGHT_RULE_VERSION,
 };
-pub use tokens::{parse_dtcg_tokens, DesignToken, DesignTokens, TokenParseError};
 pub use traits::{FrameworkAdapter, TransformContext, TransformError, TransformedBlock};
 pub use veneer_config::{read_veneer_config, Reporters, VeneerConfig, VENEER_CONFIG_VERSION};

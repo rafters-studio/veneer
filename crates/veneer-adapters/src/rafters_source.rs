@@ -473,7 +473,6 @@ fn json_type_name(value: &Value) -> &'static str {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::tokens::parse_dtcg_tokens;
 
     fn fixture(name: &str) -> PathBuf {
         Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -646,8 +645,12 @@ mod tests {
         // neutral-50 is "#fafafa" -- the lossy value.
         let dtcg_source =
             std::fs::read_to_string(root.join("tokens.dtcg.json")).expect("dtcg fixture");
-        let dtcg = parse_dtcg_tokens(&dtcg_source).expect("dtcg fixture parses");
-        assert_eq!(dtcg.tokens[0].value, "#fafafa");
+        let dtcg: serde_json::Value =
+            serde_json::from_str(&dtcg_source).expect("dtcg fixture parses");
+        let lossy = dtcg["color"]["neutral"]["50"]["$value"]
+            .as_str()
+            .expect("lossy value");
+        assert_eq!(lossy, "#fafafa");
 
         // The namespace source is what read_rafters_namespace returns; the
         // DTCG export is never consulted and the divergence is invisible.
@@ -657,10 +660,7 @@ mod tests {
             neutral_50.value,
             TokenValue::Literal("oklch(0.985 0 0)".to_string())
         );
-        assert_ne!(
-            neutral_50.value,
-            TokenValue::Literal(dtcg.tokens[0].value.clone())
-        );
+        assert_ne!(neutral_50.value, TokenValue::Literal(lossy.to_string()));
     }
 
     #[test]
