@@ -642,6 +642,7 @@ mod tests {
             kind: DiscoveredKind::Component,
             source_path: fixture_root().join("components/does-not-exist.tsx"),
             generated: true,
+            unsupported_framework: None,
         };
         let error = build_artifact(
             &item,

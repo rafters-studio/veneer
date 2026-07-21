@@ -108,6 +108,14 @@ pub struct DiscoveredItem {
     /// so it is reportable as "not yet documented" instead of silently
     /// absent.
     pub generated: bool,
+    /// Set exactly when this item's source is a `.tsx`/`.jsx` file under a
+    /// project whose declared `componentTarget` names a framework veneer has
+    /// no adapter for (FR-VEN-033). The declared value, never a guess: the
+    /// item is discovered (it exists in source) but its source is never
+    /// parsed for props -- an unsupported framework is an observation, not
+    /// an inference. `None` for every other item, including `.classes.ts`
+    /// sources, which read identically regardless of the declared target.
+    pub unsupported_framework: Option<String>,
 }
 
 /// The subset of `.rafters/config.rafters.json` that declares components
@@ -671,8 +679,10 @@ pub(crate) fn extract_component_candidate(
 
 /// Directory filter for the discovery walk: descend everywhere except
 /// dependency, build-output, and hidden directories (`.rafters/` is read
-/// separately via its config, not walked for component source).
-fn is_walkable_entry(entry: &walkdir::DirEntry) -> bool {
+/// separately via its config, not walked for component source). Shared with
+/// [`crate::mode::detect_mode`]'s behavior-file walk so the two walks agree
+/// on what counts as project source.
+pub(crate) fn is_walkable_entry(entry: &walkdir::DirEntry) -> bool {
     if entry.depth() == 0 || !entry.file_type().is_dir() {
         return true;
     }
@@ -909,6 +919,27 @@ impl ComponentRegistry {
             .and_then(|(_, config)| config.composites_path.as_deref())
             .map(|declared| project_root.join(declared));
 
+        // Framework dispatch (FR-VEN-033): `componentTarget` is an input
+        // fact read from `.rafters/config.rafters.json`, never guessed. A
+        // declared, unsupported target is recorded as an observation on the
+        // discovered items below -- their `.tsx`/`.jsx` source is never
+        // parsed for props, since veneer has no adapter for the shape.
+        // `.classes.ts` extraction does not depend on this dispatch at all
+        // (see `extract_from_source`'s `ClassesTs` arm), so it reads
+        // identically regardless of the declared target.
+        let declaration =
+            crate::rafters_source::read_framework_declaration(project_root).map_err(|error| {
+                RegistryError::MalformedDeclaration {
+                    path: project_root.join(".rafters").join("config.rafters.json"),
+                    message: error.to_string(),
+                }
+            })?;
+        let unsupported_target: Option<String> =
+            match crate::mode::dispatch_framework(declaration.component_target.as_deref()) {
+                crate::mode::FrameworkDispatch::Supported(_) => None,
+                crate::mode::FrameworkDispatch::Unsupported { declared } => Some(declared),
+            };
+
         let adapter = ReactAdapter::new();
         let mut discovered: BTreeMap<(String, DiscoveredKind), DiscoveredItem> = BTreeMap::new();
 
@@ -941,6 +972,7 @@ impl ComponentRegistry {
                         kind: DiscoveredKind::Composite,
                         source_path: path.to_path_buf(),
                         generated: false,
+                        unsupported_framework: None,
                     },
                 );
                 continue;
@@ -954,8 +986,33 @@ impl ComponentRegistry {
                     path: path.to_path_buf(),
                     source,
                 })?;
-            let (name, structure) =
-                extract_from_source(&adapter, file_kind, filename, path, &source_text);
+
+            // A `.tsx`/`.jsx` source under a declared, unsupported
+            // `componentTarget` is never handed to `ReactAdapter`: that
+            // would infer props from a shape veneer has no adapter for.
+            // `.classes.ts` is unaffected -- extract_from_source's
+            // `ClassesTs` arm never reads the adapter argument.
+            let is_unsupported_module = matches!(file_kind, SourceFileKind::ComponentModule)
+                && unsupported_target.is_some();
+            let (name, structure) = if is_unsupported_module {
+                let declared = unsupported_target.clone().unwrap_or_default();
+                let stem = path
+                    .file_stem()
+                    .and_then(|s| s.to_str())
+                    .unwrap_or("unknown");
+                let name = kebab_to_pascal(stem);
+                (
+                    name.clone(),
+                    Err(TransformError::RenderFailed {
+                        component: name,
+                        reason: format!(
+                            "componentTarget \"{declared}\" has no adapter; props are not read from a source shape veneer cannot parse"
+                        ),
+                    }),
+                )
+            } else {
+                extract_from_source(&adapter, file_kind, filename, path, &source_text)
+            };
             let kind = match &composites_root {
                 Some(root) if path.starts_with(root) => DiscoveredKind::Composite,
                 _ => DiscoveredKind::Component,
@@ -967,6 +1024,11 @@ impl ComponentRegistry {
                     kind,
                     source_path: path.to_path_buf(),
                     generated: structure.is_ok(),
+                    unsupported_framework: if is_unsupported_module {
+                        unsupported_target.clone()
+                    } else {
+                        None
+                    },
                 },
             );
         }
@@ -987,6 +1049,7 @@ impl ComponentRegistry {
                             kind,
                             source_path: config_path.clone(),
                             generated: false,
+                            unsupported_framework: None,
                         },
                     );
                 }
@@ -1585,6 +1648,138 @@ export const fooDisabledClasses = 'opacity-50';
             .iter()
             .find(|item| item.name.eq_ignore_ascii_case(name))
             .unwrap_or_else(|| panic!("item named {name} must be discovered"))
+    }
+
+    // AC (FR-VEN-033): the `.classes.ts` spine reads identically regardless
+    // of the declared componentTarget -- extract_from_source's ClassesTs
+    // arm never reads the framework adapter, so an unsupported declaration
+    // never touches its extraction, unlike `.tsx`/`.jsx`.
+    #[test]
+    fn classes_ts_extraction_is_identical_regardless_of_declared_component_target() {
+        let discover_with_target = |component_target: &str| -> Vec<DiscoveredItem> {
+            let temp = tempdir().unwrap();
+            fs::create_dir_all(temp.path().join(".rafters")).unwrap();
+            fs::write(
+                temp.path().join(".rafters/config.rafters.json"),
+                format!(r#"{{"componentTarget":"{component_target}"}}"#),
+            )
+            .unwrap();
+            let comp_dir = temp.path().join("components");
+            fs::create_dir_all(&comp_dir).unwrap();
+            fs::write(
+                comp_dir.join("button.classes.ts"),
+                "export const buttonBase = 'inline-flex items-center';\n\
+                 export const buttonVariants = { primary: 'bg-primary', secondary: 'bg-secondary' };\n",
+            )
+            .unwrap();
+            let source = read_rafters_namespace(temp.path()).expect("namespace must read");
+            ComponentRegistry::discover(temp.path(), &source).expect("discovery must succeed")
+        };
+
+        let react = discover_with_target("react");
+        let vue = discover_with_target("vue");
+
+        assert_eq!(react.len(), 1);
+        assert_eq!(vue.len(), 1);
+        let react_item = &react[0];
+        let vue_item = &vue[0];
+
+        assert_eq!(react_item.name, vue_item.name);
+        assert_eq!(react_item.kind, vue_item.kind);
+        assert_eq!(react_item.generated, vue_item.generated);
+        assert!(
+            react_item.generated,
+            "classes.ts extraction succeeds under a supported target"
+        );
+        assert!(
+            vue_item.generated,
+            "classes.ts extraction succeeds identically under an unsupported target"
+        );
+        assert_eq!(
+            react_item.unsupported_framework, None,
+            "classes.ts is never flagged unsupported"
+        );
+        assert_eq!(
+            vue_item.unsupported_framework, None,
+            "classes.ts is never flagged unsupported, even under a declared componentTarget veneer has no adapter for"
+        );
+    }
+
+    // AC (FR-VEN-033): discover() wires the single dispatch site -- a
+    // declared, unsupported componentTarget marks the .tsx item an
+    // observation (never generated, never inferred), naming the declared
+    // framework, without erroring the whole discovery pass.
+    #[test]
+    fn discover_marks_a_tsx_item_unsupported_when_component_target_has_no_adapter() {
+        let temp = tempdir().unwrap();
+        fs::create_dir_all(temp.path().join(".rafters")).unwrap();
+        fs::write(
+            temp.path().join(".rafters/config.rafters.json"),
+            r#"{"componentTarget":"solid"}"#,
+        )
+        .unwrap();
+        let comp_dir = temp.path().join("components");
+        fs::create_dir_all(&comp_dir).unwrap();
+        fs::write(
+            comp_dir.join("button.tsx"),
+            "export function Button() { return <button>ok</button>; }",
+        )
+        .unwrap();
+
+        let source = read_rafters_namespace(temp.path()).expect("namespace must read");
+        let items =
+            ComponentRegistry::discover(temp.path(), &source).expect("discovery must succeed");
+
+        assert_eq!(items.len(), 1);
+        let item = &items[0];
+        assert!(
+            !item.generated,
+            "an unsupported target's source is never treated as generatable"
+        );
+        assert_eq!(
+            item.unsupported_framework.as_deref(),
+            Some("solid"),
+            "the observation names exactly what was declared"
+        );
+    }
+
+    // AC: componentTarget "react" dispatches ReactAdapter at the discover()
+    // integration level -- a `.tsx` component under a project declaring
+    // `"react"` extracts normally (generated: true, no observation).
+    #[test]
+    fn discover_extracts_normally_when_component_target_is_react() {
+        let temp = tempdir().unwrap();
+        fs::create_dir_all(temp.path().join(".rafters")).unwrap();
+        fs::write(
+            temp.path().join(".rafters/config.rafters.json"),
+            r#"{"componentTarget":"react"}"#,
+        )
+        .unwrap();
+        let comp_dir = temp.path().join("components");
+        fs::create_dir_all(&comp_dir).unwrap();
+        fs::write(
+            comp_dir.join("button.tsx"),
+            r#"
+const variantClasses = {
+  default: 'bg-primary text-white',
+  secondary: 'bg-secondary text-black',
+};
+
+export function Button() {
+  return <button />;
+}
+"#,
+        )
+        .unwrap();
+
+        let source = read_rafters_namespace(temp.path()).expect("namespace must read");
+        let items =
+            ComponentRegistry::discover(temp.path(), &source).expect("discovery must succeed");
+
+        assert_eq!(items.len(), 1);
+        let item = &items[0];
+        assert!(item.generated, "a supported target extracts normally");
+        assert_eq!(item.unsupported_framework, None);
     }
 
     #[test]

@@ -125,6 +125,21 @@ fn assess_item(
     source: &IntelligenceSource,
     full_css: &str,
 ) -> (CoverageState, Option<RenderedComponent>) {
+    // An item under a declared, unsupported `componentTarget` (FR-VEN-033)
+    // is never handed to the render pipeline: `render_component` would parse
+    // its source with `ReactAdapter`, inferring props from a shape veneer
+    // has no adapter for. The observation itself -- naming the declared
+    // framework -- is the honest not-yet-documented reason.
+    if let Some(declared) = &item.unsupported_framework {
+        return (
+            CoverageState::NotYetDocumented {
+                reason: format!(
+                    "componentTarget \"{declared}\" has no adapter; props are not read from a source shape veneer cannot parse"
+                ),
+            },
+            None,
+        );
+    }
     match render_component(item, source, full_css) {
         Ok(rendered) => (CoverageState::Documented, Some(rendered)),
         Err(error) => (
@@ -329,6 +344,7 @@ mod tests {
             kind: DiscoveredKind::Component,
             source_path: PathBuf::from("/nonexistent/vanished.tsx"),
             generated: true,
+            unsupported_framework: None,
         };
         let assessed = assess_coverage(vec![item], &IntelligenceSource::NoSource, "");
         assert_eq!(assessed.len(), 1);
@@ -340,6 +356,41 @@ mod tests {
                 );
             }
             CoverageState::Documented => panic!("a render failure must never be documented"),
+        }
+    }
+
+    // AC (FR-VEN-033): an item under a declared, unsupported componentTarget
+    // is an observation, never an inference -- it never reaches
+    // render_component (which would parse it with ReactAdapter), and the
+    // not-yet-documented reason names the declared framework.
+    #[test]
+    fn unsupported_framework_is_an_observation_never_an_inference() {
+        let item = DiscoveredItem {
+            name: "SolidButton".to_string(),
+            kind: DiscoveredKind::Component,
+            // A path that would fail if `render_component` ever touched it,
+            // proving the short-circuit happens before any read.
+            source_path: PathBuf::from("/nonexistent/solid-button.tsx"),
+            generated: false,
+            unsupported_framework: Some("solid".to_string()),
+        };
+        let assessed = assess_coverage(vec![item], &IntelligenceSource::NoSource, "");
+        assert_eq!(assessed.len(), 1);
+        assert!(assessed[0].rendered.is_none());
+        match &assessed[0].state {
+            CoverageState::NotYetDocumented { reason } => {
+                assert!(
+                    reason.contains("\"solid\""),
+                    "reason names the declared framework: {reason}"
+                );
+                assert!(
+                    reason.contains("no adapter"),
+                    "reason is an observation, not a crash: {reason}"
+                );
+            }
+            CoverageState::Documented => {
+                panic!("an unsupported framework must never count as documented")
+            }
         }
     }
 
@@ -379,6 +430,7 @@ mod tests {
             kind: DiscoveredKind::Composite,
             source_path: PathBuf::from("composites/hero-banner.composite.json"),
             generated: false,
+            unsupported_framework: None,
         };
         let artifact =
             not_yet_documented_placeholder(&item, "no generation pipeline", Some("../Docs.astro"));

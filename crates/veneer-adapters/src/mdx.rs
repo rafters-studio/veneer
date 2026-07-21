@@ -311,6 +311,7 @@ mod tests {
             kind: DiscoveredKind::Component,
             source_path: PathBuf::from("components/button.tsx"),
             generated: true,
+            unsupported_framework: None,
         }
     }
 
@@ -472,6 +473,7 @@ mod tests {
             kind: DiscoveredKind::Composite,
             source_path: PathBuf::from("composites/hero-banner.composite.json"),
             generated: false,
+            unsupported_framework: None,
         };
         let mdx = generate_component_page(&item, &bare)
             .expect("generation must succeed")

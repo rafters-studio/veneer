@@ -7,8 +7,9 @@ use std::path::{Path, PathBuf};
 use anyhow::{Context, Result};
 use clap::Args;
 use veneer_adapters::{
-    assess_coverage, build_substrate, read_matrix, read_rafters_namespace, read_rafters_stylesheet,
-    read_veneer_config, to_jsonl, ComponentLine, ComponentRegistry, CoverageReport, VeneerConfig,
+    assess_coverage, build_substrate, default_matrix_path, detect_mode, read_matrix,
+    read_rafters_namespace, read_rafters_stylesheet, read_veneer_config, to_jsonl, ComponentLine,
+    ComponentRegistry, CoverageReport, VeneerConfig,
 };
 use veneer_docs::{
     generate_default_skeletons, generate_reference_pages, generate_sidebar, mark_required_flags,
@@ -115,6 +116,13 @@ pub async fn run(args: ExtractArgs) -> Result<()> {
     }
 
     tracing::info!("Extracting docs from {}", args.project.display());
+
+    // Name which mode veneer runs in (FR-VEN-033): detected from what the
+    // project root contains -- a component matrix + `.behavior.ts` files
+    // (default, the rafters monorepo) versus their absence (sidecar, an
+    // installed consumer project) -- never a flag, never guessed.
+    let mode = detect_mode(&args.project);
+    tracing::info!("veneer mode: {mode:?}");
 
     // The project's optional input declarations (FR-VEN-021): absence is
     // defaults; a malformed file is a typed refusal naming file and field,
@@ -234,7 +242,7 @@ fn write_atomic(path: &Path, content: &str) -> Result<()> {
 /// (or a path declared in the rafters `veneer` config block) with rafters' S1
 /// config work before consumer sidecar mode ships.
 fn load_component_matrix(project: &Path) -> Result<BTreeMap<String, ComponentLine>> {
-    let path = project.join("docs/spec/matrix/components.jsonl");
+    let path = default_matrix_path(project);
     if !path.exists() {
         return Ok(BTreeMap::new());
     }

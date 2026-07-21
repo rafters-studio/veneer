@@ -270,25 +270,29 @@ fn render_source_item(
 /// files. `None` when the component has no behavior file (the old
 /// constitution) or its behavior declares no `Config` interface.
 fn read_component_config(path: &Path) -> Result<Option<ResolvedConfig>, String> {
-    let is_behavior = |candidate: &Path| {
-        candidate
-            .file_name()
-            .and_then(|name| name.to_str())
-            .is_some_and(|name| name.ends_with(".behavior.ts"))
-    };
-
-    let behavior_path = if is_behavior(path) {
+    let behavior_path = if is_behavior_file(path) {
         Some(path.to_path_buf())
     } else {
         family_files(path)
             .into_iter()
-            .find(|sibling| is_behavior(sibling))
+            .find(|sibling| is_behavior_file(sibling))
     };
 
     match behavior_path {
         Some(behavior_path) => resolve_config_interface(&behavior_path),
         None => Ok(None),
     }
+}
+
+/// True when `path` names a `.behavior.ts` file -- the per-component signal
+/// that distinguishes the new constitution's `Config`-interface path from
+/// the `*Props` fallback (above). [`crate::mode::detect_mode`] elevates this
+/// same predicate to a project-level determination; it is defined here once
+/// so the two never fork.
+pub(crate) fn is_behavior_file(path: &Path) -> bool {
+    path.file_name()
+        .and_then(|name| name.to_str())
+        .is_some_and(|name| name.ends_with(".behavior.ts"))
 }
 
 /// The subset of a `*.composite.json` manifest that declares renderable
