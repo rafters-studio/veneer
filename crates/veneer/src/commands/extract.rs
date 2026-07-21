@@ -7,8 +7,9 @@ use std::path::{Path, PathBuf};
 use anyhow::{Context, Result};
 use clap::Args;
 use veneer_adapters::{
-    assess_coverage, build_substrate, read_matrix, read_rafters_namespace, read_rafters_stylesheet,
-    read_veneer_config, to_jsonl, ComponentLine, ComponentRegistry, CoverageReport, VeneerConfig,
+    assess_coverage, build_substrate, component_page_file_name, generate_component_page,
+    read_matrix, read_rafters_namespace, read_rafters_stylesheet, read_veneer_config, to_jsonl,
+    ComponentLine, ComponentRegistry, CoverageReport, CoverageState, VeneerConfig,
 };
 
 #[derive(Args)]
@@ -50,15 +51,71 @@ pub async fn run(args: ExtractArgs) -> Result<()> {
         substrate.index_lines,
         substrate.dir.display()
     );
+
+    // Pages, from the same model the substrate serialized (FR-VEN-022):
+    // a component page with the DO/NEVER constraints beside the preview
+    // (FR-VEN-004), and an explicit not-yet-documented page for every item
+    // that did not render (FR-VEN-009) -- never a blank where a component
+    // should be.
+    let pages_dir = args
+        .project
+        .join(veneer_config.output_dir())
+        .join("components");
+    let pages = write_pages(&substrate.assessed, &pages_dir)?;
+    tracing::info!("Wrote {} pages to {}", pages, pages_dir.display());
+
     print_coverage_summary(&substrate.report);
 
     Ok(())
+}
+
+/// Write one page per discovered item: the full MDX page (+ its preview
+/// sidecar) for a documented item, an explicit not-yet-documented page for
+/// the rest. Deterministic content; atomic writes.
+fn write_pages(assessed: &[veneer_adapters::AssessedItem], dir: &Path) -> Result<usize> {
+    fs::create_dir_all(dir).with_context(|| format!("failed to create {}", dir.display()))?;
+    let mut written = 0;
+    for entry in assessed {
+        let file = dir.join(component_page_file_name(&entry.item.name));
+        match (&entry.state, &entry.rendered) {
+            (CoverageState::Documented, Some(rendered)) => {
+                let page = generate_component_page(&entry.item, rendered)
+                    .map_err(|error| anyhow::anyhow!("{error}"))?;
+                write_atomic(&file, &page.page)?;
+                write_atomic(&dir.join(&page.sidecar_name), &page.sidecar)?;
+                written += 2;
+            }
+            (CoverageState::NotYetDocumented { reason }, _) => {
+                // FR-VEN-009: an explicit state, never a blank page. Facts
+                // only -- the reason veneer observed, nothing synthesized.
+                let page = format!(
+                    "---
+title: {name}
+status: not-yet-documented
+---
+
+Not yet documented.
+
+veneer could not render this item: {reason}
+",
+                    name = entry.item.name,
+                );
+                write_atomic(&file, &page)?;
+                written += 1;
+            }
+            _ => {}
+        }
+    }
+    Ok(written)
 }
 
 /// Outcome of the substrate phase: the coverage report plus what was written
 /// to `.rafters/veneer/`.
 struct SubstrateOutcome {
     report: CoverageReport,
+    /// The assessed set, carried so page generation reuses the same render
+    /// pass (never a second render).
+    assessed: Vec<veneer_adapters::AssessedItem>,
     /// The `.rafters/veneer/` directory the jsonl were written to.
     dir: PathBuf,
     docs_lines: usize,
@@ -101,6 +158,7 @@ fn run_substrate_phase(project: &Path) -> Result<SubstrateOutcome> {
 
     Ok(SubstrateOutcome {
         report: CoverageReport::from_assessed(&assessed),
+        assessed,
         dir,
         docs_lines: substrate.docs_line_count(),
         index_lines: substrate.index.len(),
