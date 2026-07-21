@@ -52,11 +52,13 @@ fn no_production_code_path_spawns_a_process() {
 
     let mut violations = Vec::new();
     for path in sources {
+        // Normalized to `/` so the allowlist matches on Windows.
         let rel = path
             .strip_prefix(&root)
             .expect("under crates root")
             .display()
-            .to_string();
+            .to_string()
+            .replace(std::path::MAIN_SEPARATOR, "/");
         if ALLOWLIST.contains(&rel.as_str()) {
             continue;
         }

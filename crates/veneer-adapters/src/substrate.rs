@@ -50,12 +50,17 @@ fn line_id(kind: DiscoveredKind, name: &str) -> String {
 
 /// Source path relative to the project root when it sits under it, so the
 /// substrate is portable and not machine-specific; otherwise verbatim.
+/// Separators are normalized to `/` on every platform: the substrate is a
+/// wire format, and a Windows extract must produce the same bytes as a
+/// Linux one (FR-VEN-022 determinism does not stop at the OS boundary).
 fn relative_source(source: &Path, project_root: &Path) -> String {
-    source
-        .strip_prefix(project_root)
-        .unwrap_or(source)
-        .display()
-        .to_string()
+    let relative = source.strip_prefix(project_root).unwrap_or(source);
+    let text = relative.display().to_string();
+    if std::path::MAIN_SEPARATOR == '/' {
+        text
+    } else {
+        text.replace(std::path::MAIN_SEPARATOR, "/")
+    }
 }
 
 /// One `docs.jsonl` line: the canonical record of one documented item.

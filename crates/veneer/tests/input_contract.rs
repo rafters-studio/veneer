@@ -38,11 +38,14 @@ fn snapshot(root: &Path) -> BTreeMap<String, Vec<u8>> {
             if path.is_dir() {
                 stack.push(path);
             } else {
+                // Normalized to `/` so the .rafters/veneer/ prefix check
+                // holds on Windows too.
                 let rel = path
                     .strip_prefix(root)
                     .expect("under root")
                     .display()
-                    .to_string();
+                    .to_string()
+                    .replace(std::path::MAIN_SEPARATOR, "/");
                 files.insert(rel, fs::read(&path).expect("read"));
             }
         }
