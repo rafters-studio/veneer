@@ -39,10 +39,7 @@ pub const INDEX_SCHEMA: &str = "veneer.index/1";
 pub const STOPLIGHT_RULE_VERSION: &str = "1";
 
 fn kind_str(kind: DiscoveredKind) -> &'static str {
-    match kind {
-        DiscoveredKind::Component => "component",
-        DiscoveredKind::Composite => "composite",
-    }
+    kind.as_str()
 }
 
 /// The stable line id an index entry points at: `<kind>:<name>`. Deterministic

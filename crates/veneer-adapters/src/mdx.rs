@@ -58,14 +58,6 @@ pub fn component_page_file_name(name: &str) -> String {
     format!("{}.mdx", kebab_case(name))
 }
 
-/// Human-readable label for a discovered kind, used in the page frontmatter.
-fn kind_label(kind: DiscoveredKind) -> &'static str {
-    match kind {
-        DiscoveredKind::Component => "component",
-        DiscoveredKind::Composite => "composite",
-    }
-}
-
 /// Escape a value for a Markdown table cell. A literal `|` would end the
 /// cell, so it is backslash-escaped; the rest is left verbatim.
 fn table_cell(text: &str) -> String {
@@ -121,7 +113,7 @@ pub fn generate_component_page(
     // Frontmatter: only the data source declares.
     writeln!(out, "---").unwrap();
     writeln!(out, "title: {name}").unwrap();
-    writeln!(out, "kind: {}", kind_label(item.kind)).unwrap();
+    writeln!(out, "kind: {}", item.kind.as_str()).unwrap();
     if let Some(load) = &intelligence.cognitive_load {
         writeln!(out, "cognitiveLoad: {}", load.score).unwrap();
     }
