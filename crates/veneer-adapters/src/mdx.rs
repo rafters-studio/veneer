@@ -132,7 +132,11 @@ pub fn generate_component_page(
     // No wrapper, no classes -- placement and styling are the host's.
     writeln!(out, "<{tag}></{tag}>").unwrap();
     writeln!(out).unwrap();
-    writeln!(out, "<script type=\"module\" src=\"./{sidecar_name}\"></script>").unwrap();
+    writeln!(
+        out,
+        "<script type=\"module\" src=\"./{sidecar_name}\"></script>"
+    )
+    .unwrap();
     writeln!(out).unwrap();
 
     write_constraints(&mut out, name, &intelligence.do_never)?;
@@ -299,7 +303,9 @@ mod tests {
 
     fn preview(tag: &str) -> TransformedBlock {
         TransformedBlock {
-            web_component: format!("customElements.define('{tag}', class extends HTMLElement {{}});"),
+            web_component: format!(
+                "customElements.define('{tag}', class extends HTMLElement {{}});"
+            ),
             tag_name: tag.to_string(),
             classes_used: vec![],
             attributes: vec![],

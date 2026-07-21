@@ -167,8 +167,10 @@ fn run_substrate_phase(project: &Path) -> Result<SubstrateOutcome> {
     let assessed = assess_coverage(items, &source, &full_css);
 
     let matrix = load_component_matrix(project)?;
-    let substrate = build_substrate(&assessed, &matrix, project);
-    let docs = to_jsonl(&substrate.docs).context("failed to serialize docs.jsonl")?;
+    let substrate = build_substrate(&assessed, &matrix, project, &source);
+    let docs = substrate
+        .docs_jsonl()
+        .context("failed to serialize docs.jsonl")?;
     let index = to_jsonl(&substrate.index).context("failed to serialize index.jsonl")?;
 
     let dir = project.join(".rafters").join("veneer");
@@ -179,7 +181,7 @@ fn run_substrate_phase(project: &Path) -> Result<SubstrateOutcome> {
     Ok(SubstrateOutcome {
         report: CoverageReport::from_assessed(&assessed),
         dir,
-        docs_lines: substrate.docs.len(),
+        docs_lines: substrate.docs_line_count(),
         index_lines: substrate.index.len(),
     })
 }
@@ -292,15 +294,22 @@ mod tests {
 
         assert_eq!(outcome.dir, project.path().join(".rafters/veneer"));
         assert_eq!(outcome.index_lines, 4, "one index line per discovered item");
-        assert_eq!(outcome.docs_lines, 2, "one docs line per documented item");
+        assert_eq!(
+            outcome.docs_lines, 3,
+            "one docs line per documented item plus the tokens system line (FR-VEN-022)"
+        );
 
         let index = fs::read_to_string(outcome.dir.join("index.jsonl")).expect("index.jsonl");
         assert_eq!(index.lines().count(), 4);
         assert!(index.contains("\"schema\":\"veneer.index/1\""));
 
         let docs = fs::read_to_string(outcome.dir.join("docs.jsonl")).expect("docs.jsonl");
-        assert_eq!(docs.lines().count(), 2);
+        assert_eq!(docs.lines().count(), 3);
         assert!(docs.contains("\"schema\":\"veneer.doc/1\""));
+        assert!(
+            docs.contains("\"id\":\"system:tokens\""),
+            "the namespace-backed fixture yields the system page line"
+        );
     }
 
     // AC (FR-VEN-022/031): two runs over unchanged input are byte-identical.

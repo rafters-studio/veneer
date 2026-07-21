@@ -44,7 +44,9 @@ pub enum MatrixError {
         source: serde_json::Error,
     },
     /// A line parsed but carried an unrecognized schema discriminator.
-    #[error("matrix line {line}: unexpected schema {schema:?} (expected \"rafters.component-line/1\")")]
+    #[error(
+        "matrix line {line}: unexpected schema {schema:?} (expected \"rafters.component-line/1\")"
+    )]
     Schema { line: usize, schema: String },
 }
 
@@ -291,10 +293,16 @@ mod tests {
 
         let meta = line.metadata.as_ref().expect("metadata present");
         assert_eq!(meta.cognitive_load.as_ref().unwrap().score, 3);
-        assert_eq!(meta.attention_economics.as_deref(), Some("Variant hierarchy"));
+        assert_eq!(
+            meta.attention_economics.as_deref(),
+            Some("Variant hierarchy")
+        );
         assert_eq!(
             meta.usage_patterns.as_ref().unwrap(),
-            &["DO: keep messages concise", "NEVER: use for non-status content"]
+            &[
+                "DO: keep messages concise",
+                "NEVER: use for non-status content"
+            ]
         );
     }
 
@@ -302,8 +310,14 @@ mod tests {
     fn honest_absence_a_line_without_metadata_parses_with_none() {
         let lines = parse_matrix(TOOLTIP_LINE).expect("parse");
         let line = &lines[0];
-        assert!(line.metadata.is_none(), "no old-tree metadata is None, not synthesized");
-        assert!(line.provenance.is_none(), "unpublished item has no provenance");
+        assert!(
+            line.metadata.is_none(),
+            "no old-tree metadata is None, not synthesized"
+        );
+        assert!(
+            line.provenance.is_none(),
+            "unpublished item has no provenance"
+        );
         assert_eq!(line.uses.current, ["classy", "portal"]);
         assert_eq!(line.uses.note.as_deref(), Some("controller-era"));
     }
@@ -314,7 +328,10 @@ mod tests {
         assert!(ported.has_wc_preview(), "wc:ported can be previewed");
 
         let missing = &parse_matrix(ALERT_LINE).expect("parse")[0];
-        assert!(!missing.has_wc_preview(), "wc:missing is honestly absent, not previewable");
+        assert!(
+            !missing.has_wc_preview(),
+            "wc:missing is honestly absent, not previewable"
+        );
     }
 
     #[test]
@@ -329,20 +346,29 @@ mod tests {
     fn an_unknown_schema_discriminator_is_rejected_by_line() {
         let bad = r#"{"schema":"rafters.component-line/2","name":"x","archetype":"static","status":"pending","is":"a","does":"b","states":[],"uses":{"current":[],"planned":[]},"motion":{"current":"","intents":[]},"frameworks":{"behaviorLayer":{"react":"missing","astro":"missing","wc":"missing","vue":"missing"}}}"#;
         let err = parse_matrix(bad).expect_err("unknown schema must fail");
-        assert!(matches!(err, MatrixError::Schema { line: 1, .. }), "got {err:?}");
+        assert!(
+            matches!(err, MatrixError::Schema { line: 1, .. }),
+            "got {err:?}"
+        );
     }
 
     #[test]
     fn a_malformed_line_fails_loudly_with_its_line_number() {
         let text = format!("{ALERT_LINE}\n{{not json}}");
         let err = parse_matrix(&text).expect_err("malformed line must fail");
-        assert!(matches!(err, MatrixError::Parse { line: 2, .. }), "got {err:?}");
+        assert!(
+            matches!(err, MatrixError::Parse { line: 2, .. }),
+            "got {err:?}"
+        );
     }
 
     #[test]
     fn an_unknown_archetype_fails_rather_than_guessing() {
         let bad = r#"{"schema":"rafters.component-line/1","name":"x","archetype":"holographic","status":"pending","is":"a","does":"b","states":[],"uses":{"current":[],"planned":[]},"motion":{"current":"","intents":[]},"frameworks":{"behaviorLayer":{"react":"missing","astro":"missing","wc":"missing","vue":"missing"}}}"#;
         let err = parse_matrix(bad).expect_err("unknown archetype must fail");
-        assert!(matches!(err, MatrixError::Parse { line: 1, .. }), "got {err:?}");
+        assert!(
+            matches!(err, MatrixError::Parse { line: 1, .. }),
+            "got {err:?}"
+        );
     }
 }

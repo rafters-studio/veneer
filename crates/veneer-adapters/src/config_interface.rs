@@ -61,7 +61,9 @@ pub fn parse_config_interface(source: &str) -> Result<Option<ConfigInterface>, S
     let allocator = Allocator::default();
     let ret = Parser::new(&allocator, source, SourceType::ts()).parse();
     if ret.panicked || !ret.errors.is_empty() {
-        return Err("failed to parse the behavior source while reading its Config interface".into());
+        return Err(
+            "failed to parse the behavior source while reading its Config interface".into(),
+        );
     }
 
     for statement in &ret.program.body {
@@ -97,7 +99,10 @@ fn config_from_interface(
         let type_text = property.type_annotation.as_ref().map(|annotation| {
             normalize_whitespace(annotation.type_annotation.span().source_text(source))
         });
-        if !own_props.iter().any(|prop: &PropDoc| prop.name == prop_name) {
+        if !own_props
+            .iter()
+            .any(|prop: &PropDoc| prop.name == prop_name)
+        {
             own_props.push(PropDoc {
                 name: prop_name,
                 type_text,
@@ -106,11 +111,7 @@ fn config_from_interface(
         }
     }
 
-    let extends = interface
-        .extends
-        .iter()
-        .filter_map(heritage_name)
-        .collect();
+    let extends = interface.extends.iter().filter_map(heritage_name).collect();
 
     ConfigInterface {
         name,
@@ -231,7 +232,15 @@ fn resolve_bases(
         if let Some(local) = module.interfaces.iter().find(|iface| &iface.name == base) {
             merge_props(props, &local.own_props);
             let extends = local.extends.clone();
-            resolve_bases(&extends, module_path, module, props, unresolved, visited, depth + 1)?;
+            resolve_bases(
+                &extends,
+                module_path,
+                module,
+                props,
+                unresolved,
+                visited,
+                depth + 1,
+            )?;
             continue;
         }
 
@@ -249,7 +258,10 @@ fn resolve_bases(
             continue;
         };
         let base_module = parse_module(&base_source)?;
-        let Some(base_iface) = base_module.interfaces.iter().find(|iface| &iface.name == base)
+        let Some(base_iface) = base_module
+            .interfaces
+            .iter()
+            .find(|iface| &iface.name == base)
         else {
             unresolved.push(base.clone());
             continue;
@@ -316,7 +328,8 @@ fn parse_module(source: &str) -> Result<ParsedModule, String> {
                 if let Some(specifiers) = &import.specifiers {
                     for entry in specifiers {
                         if let ImportDeclarationSpecifier::ImportSpecifier(named) = entry {
-                            imports.push((named.local.name.as_str().to_string(), specifier.clone()));
+                            imports
+                                .push((named.local.name.as_str().to_string(), specifier.clone()));
                         }
                     }
                 }
@@ -362,7 +375,10 @@ mod tests {
         assert_eq!(config.extends, ["PressableConfig"]);
         let names: Vec<&str> = config.own_props.iter().map(|p| p.name.as_str()).collect();
         assert_eq!(names, ["variant", "size"]);
-        assert_eq!(config.own_props[0].type_text.as_deref(), Some("ButtonVariant"));
+        assert_eq!(
+            config.own_props[0].type_text.as_deref(),
+            Some("ButtonVariant")
+        );
         assert!(!config.own_props[0].optional);
     }
 
@@ -428,7 +444,11 @@ mod tests {
             "BaseConfig resolves via the relative import"
         );
         let names: Vec<&str> = resolved.props.iter().map(|p| p.name.as_str()).collect();
-        assert_eq!(names, ["label", "open", "defaultOpen"], "own first, then inherited");
+        assert_eq!(
+            names,
+            ["label", "open", "defaultOpen"],
+            "own first, then inherited"
+        );
     }
 
     #[test]
@@ -445,7 +465,11 @@ mod tests {
             .expect("resolves")
             .expect("has a Config");
         let names: Vec<&str> = resolved.props.iter().map(|p| p.name.as_str()).collect();
-        assert_eq!(names, ["label"], "own props only; the external base is not read");
+        assert_eq!(
+            names,
+            ["label"],
+            "own props only; the external base is not read"
+        );
         assert_eq!(resolved.unresolved_extends, ["ExternalConfig"]);
     }
 
@@ -465,9 +489,19 @@ mod tests {
         .expect("write behavior");
 
         let resolved = resolve_config_interface(&behavior).unwrap().unwrap();
-        let disabled = resolved.props.iter().find(|p| p.name == "disabled").unwrap();
-        assert!(!disabled.optional, "the subtype's required disabled wins over the base optional");
-        assert_eq!(resolved.props.len(), 2, "disabled (own) + extra (inherited)");
+        let disabled = resolved
+            .props
+            .iter()
+            .find(|p| p.name == "disabled")
+            .unwrap();
+        assert!(
+            !disabled.optional,
+            "the subtype's required disabled wins over the base optional"
+        );
+        assert_eq!(
+            resolved.props.len(),
+            2,
+            "disabled (own) + extra (inherited)"
+        );
     }
-
 }

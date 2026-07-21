@@ -280,7 +280,9 @@ fn read_component_config(path: &Path) -> Result<Option<ResolvedConfig>, String> 
     let behavior_path = if is_behavior(path) {
         Some(path.to_path_buf())
     } else {
-        family_files(path).into_iter().find(|sibling| is_behavior(sibling))
+        family_files(path)
+            .into_iter()
+            .find(|sibling| is_behavior(sibling))
     };
 
     match behavior_path {

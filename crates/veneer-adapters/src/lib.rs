@@ -4,8 +4,8 @@
 //! components into static Web Components for documentation previews.
 
 pub mod artifact;
-pub mod conventions;
 pub mod config_interface;
+pub mod conventions;
 pub mod coverage;
 pub mod generator;
 pub mod inline;
@@ -25,6 +25,10 @@ pub use artifact::{
     build_artifact, write_artifact, ArtifactError, FieldValue, IntelligenceArtifact,
     OverrideReason, ARTIFACT_SCHEMA_VERSION,
 };
+pub use config_interface::{
+    attribute_name, parse_config_interface, resolve_config_interface, ConfigInterface,
+    ResolvedConfig,
+};
 pub use conventions::ComponentConventions;
 pub use coverage::{
     assess_coverage, not_yet_documented_placeholder, AssessedItem, CoverageReport, CoverageState,
@@ -39,10 +43,6 @@ pub use inline::{parse_inline_jsx, parse_inline_jsx_all, to_custom_element, Inli
 pub use intelligence::{
     render_component, CognitiveLoad, CompiledIntelligence, Constraint, ConstraintKind,
     DependencyOrigin, DependencyRef, PropDoc, RenderedComponent, TokenRef, VariantDoc,
-};
-pub use config_interface::{
-    attribute_name, parse_config_interface, resolve_config_interface, ConfigInterface,
-    ResolvedConfig,
 };
 pub use matrix::{
     parse_matrix, read_matrix, Archetype, BehaviorLayer, ComponentLine, ComponentMetadata,
