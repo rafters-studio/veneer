@@ -39,6 +39,7 @@ use oxc_parser::Parser;
 use oxc_span::{GetSpan, SourceType};
 use serde::Deserialize;
 
+use crate::config_interface::{resolve_config_interface, ResolvedConfig};
 use crate::generator::{generate_passthrough_web_component, scoped_web_component_block};
 use crate::rafters_source::{IntelligenceSource, UsagePatterns};
 use crate::registry::{extract_component_candidate, is_composite_manifest, DiscoveredItem};
@@ -131,6 +132,10 @@ pub struct DependencyRef {
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct CompiledIntelligence {
     pub props: Vec<PropDoc>,
+    /// The `Config` interfaces the prop surface extends, by name and
+    /// unresolved (each lives in another file). Empty on the `*Props` path
+    /// and for composites -- the honest remainder of the attribute surface.
+    pub config_extends: Vec<String>,
     pub variants: Vec<VariantDoc>,
     pub cognitive_load: Option<CognitiveLoad>,
     pub do_never: Vec<Constraint>,
@@ -217,6 +222,15 @@ fn render_source_item(
     let module_facts = parse_module_facts(&item.source_path, &source_text)?;
     let jsdoc = read_family_jsdoc(&item.source_path, &source_text)?;
 
+    // The prop/API surface is the behavior's Config interface when the
+    // component has one (new constitution); otherwise the `*Props` interface
+    // (old constitution). The Config path also names the bases it extends --
+    // the unresolved remainder of the surface.
+    let (props, config_extends) = match read_component_config(&item.source_path)? {
+        Some(config) => (config.props, config.unresolved_extends),
+        None => (module_facts.props, Vec::new()),
+    };
+
     let mut dependencies: Vec<DependencyRef> = Vec::new();
     for import in module_facts.external_imports {
         push_unique_dependency(&mut dependencies, import, DependencyOrigin::Import);
@@ -239,7 +253,8 @@ fn render_source_item(
     Ok(RenderedComponent {
         preview,
         intelligence: CompiledIntelligence {
-            props: module_facts.props,
+            props,
+            config_extends,
             variants,
             cognitive_load: jsdoc.cognitive_load,
             do_never: jsdoc.do_never,
@@ -247,6 +262,33 @@ fn render_source_item(
             dependencies,
         },
     })
+}
+
+/// The component's fully-resolved `Config` prop surface, read from its
+/// `.behavior.ts` -- the item's own file when it is the behavior file, else
+/// the same-stem `.behavior.ts` sibling. The extends chain is followed across
+/// files. `None` when the component has no behavior file (the old
+/// constitution) or its behavior declares no `Config` interface.
+fn read_component_config(path: &Path) -> Result<Option<ResolvedConfig>, String> {
+    let is_behavior = |candidate: &Path| {
+        candidate
+            .file_name()
+            .and_then(|name| name.to_str())
+            .is_some_and(|name| name.ends_with(".behavior.ts"))
+    };
+
+    let behavior_path = if is_behavior(path) {
+        Some(path.to_path_buf())
+    } else {
+        family_files(path)
+            .into_iter()
+            .find(|sibling| is_behavior(sibling))
+    };
+
+    match behavior_path {
+        Some(behavior_path) => resolve_config_interface(&behavior_path),
+        None => Ok(None),
+    }
 }
 
 /// The subset of a `*.composite.json` manifest that declares renderable
@@ -1151,5 +1193,37 @@ export const widgetBaseClasses = 'flex';
         // primary-ring wins over its prefix token primary for the ring class.
         assert_eq!(names, ["primary", "primary-ring"]);
         assert_eq!(tokens[1].referenced_by, ["focus-visible:ring-primary-ring"]);
+    }
+
+    #[test]
+    fn config_props_are_read_from_the_behavior_sibling() {
+        let dir = tempfile::tempdir().expect("tempdir");
+        let tsx = dir.path().join("widget.tsx");
+        let own = "export function Widget() { return null; }";
+        std::fs::write(&tsx, own).expect("write tsx");
+        std::fs::write(
+            dir.path().join("widget.behavior.ts"),
+            "export interface WidgetConfig extends BaseConfig { label: string; open?: boolean; }",
+        )
+        .expect("write behavior");
+
+        let config = read_component_config(&tsx)
+            .expect("reads")
+            .expect("the behavior sibling declares a Config");
+        assert_eq!(config.name, "WidgetConfig");
+        // BaseConfig has no import in the behavior file, so it stays an
+        // honest unresolved base rather than silently vanishing.
+        assert_eq!(config.unresolved_extends, ["BaseConfig"]);
+        let names: Vec<&str> = config.props.iter().map(|p| p.name.as_str()).collect();
+        assert_eq!(names, ["label", "open"]);
+    }
+
+    #[test]
+    fn a_component_with_no_behavior_file_has_no_config() {
+        let dir = tempfile::tempdir().expect("tempdir");
+        let tsx = dir.path().join("legacy.tsx");
+        let own = "export interface LegacyProps { title: string; } export function Legacy() {}";
+        std::fs::write(&tsx, own).expect("write tsx");
+        assert_eq!(read_component_config(&tsx).expect("reads"), None);
     }
 }

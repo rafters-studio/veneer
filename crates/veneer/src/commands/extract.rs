@@ -1,14 +1,14 @@
 //! Extract documentation from a target project.
 
+use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result};
 use clap::Args;
 use veneer_adapters::{
-    assess_coverage, not_yet_documented_placeholder, read_rafters_namespace,
-    read_rafters_stylesheet, ComponentRegistry, CoverageReport, CoverageState, PlaceholderArtifact,
-    NOT_YET_DOCUMENTED_STATUS,
+    assess_coverage, build_substrate, read_matrix, read_rafters_namespace, read_rafters_stylesheet,
+    read_veneer_config, to_jsonl, ComponentLine, ComponentRegistry, CoverageReport, VeneerConfig,
 };
 use veneer_docs::{
     generate_default_skeletons, generate_reference_pages, generate_sidebar, mark_required_flags,
@@ -17,21 +17,89 @@ use veneer_docs::{
 
 #[derive(Args)]
 pub struct ExtractArgs {
-    /// Path to the target project to extract docs from
+    /// Path to the target rafters project. Writes the component substrate to
+    /// its .rafters/veneer/ directory.
     #[arg(short, long)]
     project: PathBuf,
 
-    /// Output directory for generated MDX files
-    #[arg(short, long, default_value = "docs")]
-    output: PathBuf,
-
-    /// Path to the project binary for --help extraction
+    /// CLI-docs mode: the project binary to extract --help from. When set,
+    /// also generates CLI reference pages and skeletons under --output.
     #[arg(short, long)]
     binary: Option<PathBuf>,
 
-    /// Layout path to inject into MDX frontmatter (e.g., "../../layouts/Docs.astro")
+    /// CLI-docs mode only: output directory for the generated MDX pages.
+    /// Defaults to veneer.json's outputDir when declared, else `docs`.
+    #[arg(short, long)]
+    output: Option<PathBuf>,
+
+    /// CLI-docs mode only: layout to inject into MDX frontmatter
+    /// (e.g. "../../layouts/Docs.astro").
     #[arg(short, long)]
     layout: Option<String>,
+}
+
+/// Generate the CLI-reference documentation from a project binary's `--help`:
+/// reference pages, a sidebar, and editorial skeletons under `--output`. This
+/// is the CLI-docs feature, distinct from the component substrate, and runs
+/// only when `--binary` is given. `--output` and `--layout` apply here.
+fn run_cli_help_docs(
+    binary_path: &Path,
+    args: &ExtractArgs,
+    output: &Path,
+    project_name: &str,
+) -> Result<()> {
+    if !binary_path.exists() {
+        anyhow::bail!("Binary not found: {}", binary_path.display());
+    }
+
+    tracing::info!("Parsing CLI help from {}", binary_path.display());
+    let mut root_cmd = parse_cli_help(binary_path)?;
+    mark_required_flags(&mut root_cmd);
+
+    // Command groups: subcommands that have their own subcommands.
+    let command_groups: Vec<String> = root_cmd
+        .subcommands
+        .iter()
+        .filter(|sub| !sub.subcommands.is_empty())
+        .map(|sub| sub.name.clone())
+        .collect();
+
+    let reference_pages = generate_reference_pages(&root_cmd, output, args.layout.as_deref())?;
+    tracing::info!("Generated {} reference pages", reference_pages.len());
+
+    let editorial_pages: Vec<EditorialPage> = vec![
+        EditorialPage {
+            title: "Getting Started".to_string(),
+            path: "/getting-started".to_string(),
+            section: "getting-started".to_string(),
+            order: 0,
+        },
+        EditorialPage {
+            title: "Architecture".to_string(),
+            path: "/architecture".to_string(),
+            section: "concepts".to_string(),
+            order: 1,
+        },
+    ];
+    let sidebar = generate_sidebar(&root_cmd, &editorial_pages);
+    let sidebar_path = output.join("sidebar.jsonl");
+    write_sidebar_jsonl(&sidebar, &sidebar_path)?;
+    tracing::info!("Generated sidebar at {}", sidebar_path.display());
+
+    let skeletons = generate_default_skeletons(
+        project_name,
+        &command_groups,
+        output,
+        args.layout.as_deref(),
+    )?;
+    tracing::info!("Generated {} skeleton pages", skeletons.len());
+
+    tracing::info!(
+        "CLI docs complete: {} pages in {}",
+        reference_pages.len() + skeletons.len(),
+        output.display()
+    );
+    Ok(())
 }
 
 pub async fn run(args: ExtractArgs) -> Result<()> {
@@ -48,101 +116,62 @@ pub async fn run(args: ExtractArgs) -> Result<()> {
 
     tracing::info!("Extracting docs from {}", args.project.display());
 
-    // Phase 1: Parse CLI help if binary is provided
-    let mut reference_pages = Vec::new();
-    let mut command_groups: Vec<String> = Vec::new();
-
-    if let Some(ref binary_path) = args.binary {
-        if !binary_path.exists() {
-            anyhow::bail!("Binary not found: {}", binary_path.display());
-        }
-
-        tracing::info!("Parsing CLI help from {}", binary_path.display());
-
-        let mut root_cmd = parse_cli_help(binary_path)?;
-        mark_required_flags(&mut root_cmd);
-
-        // Extract command groups (subcommands that have their own subcommands)
-        for sub in &root_cmd.subcommands {
-            if !sub.subcommands.is_empty() {
-                command_groups.push(sub.name.clone());
-            }
-        }
-
-        // Phase 2: Generate reference MDX pages
-        let ref_dir = args.output.clone();
-        let pages = generate_reference_pages(&root_cmd, &ref_dir, args.layout.as_deref())?;
-        tracing::info!("Generated {} reference pages", pages.len());
-        reference_pages = pages;
-
-        // Phase 3: Generate sidebar JSONL
-        let editorial_pages: Vec<EditorialPage> = vec![
-            EditorialPage {
-                title: "Getting Started".to_string(),
-                path: "/getting-started".to_string(),
-                section: "getting-started".to_string(),
-                order: 0,
-            },
-            EditorialPage {
-                title: "Architecture".to_string(),
-                path: "/architecture".to_string(),
-                section: "concepts".to_string(),
-                order: 1,
-            },
-        ];
-
-        let sidebar = generate_sidebar(&root_cmd, &editorial_pages);
-        let sidebar_path = args.output.join("sidebar.jsonl");
-        write_sidebar_jsonl(&sidebar, &sidebar_path)?;
-        tracing::info!("Generated sidebar at {}", sidebar_path.display());
+    // The project's optional input declarations (FR-VEN-021): absence is
+    // defaults; a malformed file is a typed refusal naming file and field,
+    // never a silent fallback.
+    let veneer_config: VeneerConfig =
+        read_veneer_config(&args.project).map_err(|error| anyhow::anyhow!(error))?;
+    if let Some(reporters) = &veneer_config.reporters {
+        tracing::info!(
+            "veneer.json declares {} test and {} accessibility reporter path(s) (read as input facts; consumed when FR-VEN-028/029 land)",
+            reporters.tests.len(),
+            reporters.accessibility.len()
+        );
     }
 
-    // Phase 4: Generate skeleton editorial pages
-    let skeletons = generate_default_skeletons(
-        &project_name,
-        &command_groups,
-        &args.output,
-        args.layout.as_deref(),
-    )?;
-    tracing::info!("Generated {} skeleton pages", skeletons.len());
+    // CLI-help documentation is opt-in via --binary and is independent of the
+    // component substrate. A plain `extract --project X` skips it and writes
+    // only the substrate; --output / --layout apply only in this mode.
+    if let Some(binary_path) = args.binary.as_ref() {
+        // --output wins over veneer.json's outputDir, which wins over `docs`.
+        let output = args
+            .output
+            .clone()
+            .unwrap_or_else(|| veneer_config.output_dir());
+        run_cli_help_docs(binary_path, &args, &output, &project_name)?;
+    }
 
-    let total = reference_pages.len() + skeletons.len();
+    // The .rafters/veneer/ substrate -- the canonical docs.jsonl
+    // (FR-VEN-022) and the veneer index.jsonl (FR-VEN-031), both derived from
+    // one assessment pass against the discovered set (FR-VEN-009 folds in as
+    // the index coverage dimension).
+    let substrate = run_substrate_phase(&args.project)?;
     tracing::info!(
-        "Extraction complete: {} total pages in {}",
-        total,
-        args.output.display()
+        "Wrote {} docs lines and {} index lines to {}",
+        substrate.docs_lines,
+        substrate.index_lines,
+        substrate.dir.display()
     );
-
-    // Phase 5: component coverage (FR-VEN-009). Measured against the
-    // discovered set; every uncovered item gets an explicit placeholder.
-    let coverage = run_coverage_phase(&args.project, &args.output, args.layout.as_deref())?;
-    tracing::info!(
-        "Emitted {} not-yet-documented placeholder pages",
-        coverage.placeholder_paths.len()
-    );
-    print_coverage_summary(&coverage.report);
+    print_coverage_summary(&substrate.report);
 
     Ok(())
 }
 
-/// Outcome of the coverage phase: the report plus the placeholder pages
-/// that were emitted for uncovered items.
-struct CoverageOutcome {
+/// Outcome of the substrate phase: the coverage report plus what was written
+/// to `.rafters/veneer/`.
+struct SubstrateOutcome {
     report: CoverageReport,
-    placeholder_paths: Vec<PathBuf>,
+    /// The `.rafters/veneer/` directory the jsonl were written to.
+    dir: PathBuf,
+    docs_lines: usize,
+    index_lines: usize,
 }
 
-/// Assess coverage against the discovered set and emit an explicit "not
-/// yet documented" placeholder page under `<output>/components/` for
-/// every uncovered item -- a real artifact, never a blank or a 404.
-/// Placeholders from a previous run whose item is no longer a gap are
-/// removed first, so the pages on disk cannot drift from the reported
-/// numbers.
-fn run_coverage_phase(
-    project: &Path,
-    output: &Path,
-    layout: Option<&str>,
-) -> Result<CoverageOutcome> {
+/// Assess the discovered set and write the `.rafters/veneer/` substrate:
+/// `docs.jsonl` (FR-VEN-022) and `index.jsonl` (FR-VEN-031), both derived
+/// from the same assessment pass. The substrate is veneer's only write under
+/// `.rafters/`; everything else there is read-only input (FR-VEN-021).
+fn run_substrate_phase(project: &Path) -> Result<SubstrateOutcome> {
     let source = read_rafters_namespace(project)
         .with_context(|| format!("failed to read the rafters source in {}", project.display()))?;
     let items = ComponentRegistry::discover(project, &source)
@@ -160,73 +189,61 @@ fn run_coverage_phase(
         .unwrap_or_default();
     let assessed = assess_coverage(items, &source, &full_css);
 
-    let artifacts: Vec<PlaceholderArtifact> = assessed
-        .iter()
-        .filter_map(|entry| match &entry.state {
-            CoverageState::NotYetDocumented { reason } => {
-                Some(not_yet_documented_placeholder(&entry.item, reason, layout))
-            }
-            CoverageState::Documented => None,
-        })
-        .collect();
+    let matrix = load_component_matrix(project)?;
+    let substrate = build_substrate(&assessed, &matrix, project, &source);
+    let docs = substrate
+        .docs_jsonl()
+        .context("failed to serialize docs.jsonl")?;
+    let index = to_jsonl(&substrate.index).context("failed to serialize index.jsonl")?;
 
-    let components_dir = output.join("components");
-    remove_stale_placeholders(&components_dir, &artifacts)?;
+    let dir = project.join(".rafters").join("veneer");
+    fs::create_dir_all(&dir).with_context(|| format!("failed to create {}", dir.display()))?;
+    write_atomic(&dir.join("docs.jsonl"), &docs)?;
+    write_atomic(&dir.join("index.jsonl"), &index)?;
 
-    let mut placeholder_paths: Vec<PathBuf> = Vec::new();
-    for artifact in &artifacts {
-        let path = components_dir.join(&artifact.file_name);
-        if let Some(parent) = path.parent() {
-            fs::create_dir_all(parent)
-                .with_context(|| format!("failed to create {}", parent.display()))?;
-        }
-        fs::write(&path, &artifact.content)
-            .with_context(|| format!("failed to write placeholder {}", path.display()))?;
-        placeholder_paths.push(path);
-    }
-
-    Ok(CoverageOutcome {
+    Ok(SubstrateOutcome {
         report: CoverageReport::from_assessed(&assessed),
-        placeholder_paths,
+        dir,
+        docs_lines: substrate.docs_line_count(),
+        index_lines: substrate.index.len(),
     })
 }
 
-/// Remove placeholder pages a previous run left behind for items that are
-/// no longer in the not-yet-documented set (fixed, or gone from the
-/// discovered set), so a stale "not yet documented" claim never survives
-/// a re-run. Only pages this phase owns are candidates: `.mdx` files
-/// whose frontmatter carries the placeholder status marker. Real
-/// documentation pages are never touched.
-fn remove_stale_placeholders(components_dir: &Path, current: &[PlaceholderArtifact]) -> Result<()> {
-    if !components_dir.is_dir() {
-        return Ok(());
-    }
-    let entries = fs::read_dir(components_dir)
-        .with_context(|| format!("failed to read {}", components_dir.display()))?;
-    for entry in entries {
-        let entry =
-            entry.with_context(|| format!("failed to read {}", components_dir.display()))?;
-        let path = entry.path();
-        let Some(file_name) = path.file_name().and_then(|name| name.to_str()) else {
-            continue;
-        };
-        if !file_name.ends_with(".mdx")
-            || current
-                .iter()
-                .any(|artifact| artifact.file_name == file_name)
-        {
-            continue;
-        }
-        let Ok(content) = fs::read_to_string(&path) else {
-            continue;
-        };
-        if !content.contains(NOT_YET_DOCUMENTED_STATUS) {
-            continue;
-        }
-        fs::remove_file(&path)
-            .with_context(|| format!("failed to remove stale placeholder {}", path.display()))?;
-    }
+/// Write a file by writing a sibling temp file and renaming it into place, so
+/// a reader never observes a torn or partial file (FR-VEN-031).
+fn write_atomic(path: &Path, content: &str) -> Result<()> {
+    let file_name = path
+        .file_name()
+        .and_then(|name| name.to_str())
+        .context("substrate path has no file name")?;
+    let tmp = path.with_file_name(format!("{file_name}.tmp"));
+    fs::write(&tmp, content).with_context(|| format!("failed to write {}", tmp.display()))?;
+    fs::rename(&tmp, path).with_context(|| format!("failed to replace {}", path.display()))?;
     Ok(())
+}
+
+/// Load the rafters component matrix (`components.jsonl`) for the project,
+/// keyed by component name. The matrix is the canonical intelligence source
+/// (interface contract): it supplies the doc line's principle-first lead and
+/// intelligence dimensions. A project with no matrix -- a consumer sidecar,
+/// for now -- yields an empty map, and the doc lines carry honestly-absent
+/// intelligence with the compiled source as the fallback. A malformed matrix
+/// fails loudly rather than silently emitting thin docs.
+///
+/// TODO(phase-1/S1): the matrix path is a provisional convention. Confirm it
+/// (or a path declared in the rafters `veneer` config block) with rafters' S1
+/// config work before consumer sidecar mode ships.
+fn load_component_matrix(project: &Path) -> Result<BTreeMap<String, ComponentLine>> {
+    let path = project.join("docs/spec/matrix/components.jsonl");
+    if !path.exists() {
+        return Ok(BTreeMap::new());
+    }
+    let lines = read_matrix(&path)
+        .with_context(|| format!("failed to read the component matrix {}", path.display()))?;
+    Ok(lines
+        .into_iter()
+        .map(|line| (line.name.clone(), line))
+        .collect())
 }
 
 /// The queryable CLI coverage summary: exact counts against the
@@ -256,101 +273,101 @@ mod tests {
             .join("../veneer-adapters/tests/fixtures/coverage/partial")
     }
 
+    /// Copy the read-only fixture into a temp dir so the phase can write its
+    /// `.rafters/veneer/` output without mutating the committed fixture.
+    fn temp_project() -> tempfile::TempDir {
+        let dir = tempfile::tempdir().expect("tempdir");
+        copy_dir_all(&partial_coverage_project(), dir.path()).expect("copy fixture");
+        dir
+    }
+
+    fn copy_dir_all(src: &Path, dst: &Path) -> std::io::Result<()> {
+        fs::create_dir_all(dst)?;
+        for entry in fs::read_dir(src)? {
+            let entry = entry?;
+            let path = entry.path();
+            let target = dst.join(entry.file_name());
+            if path.is_dir() {
+                copy_dir_all(&path, &target)?;
+            } else {
+                fs::copy(&path, &target)?;
+            }
+        }
+        Ok(())
+    }
+
     // AC: the CLI-facing summary reports exact numbers against the
     // discovered set of a fixture with known partial coverage.
     #[test]
-    fn coverage_phase_reports_exact_numbers() {
-        let project = partial_coverage_project();
-        let output = tempfile::tempdir().expect("output dir");
-
-        let outcome =
-            run_coverage_phase(&project, output.path(), None).expect("coverage phase must run");
+    fn substrate_phase_reports_exact_numbers() {
+        let project = temp_project();
+        let outcome = run_substrate_phase(project.path()).expect("substrate phase must run");
         let report = &outcome.report;
         assert_eq!(report.total, 4);
         assert_eq!(report.documented, ["Button", "hero-banner"]);
         assert_eq!(report.not_yet_documented, ["Broken", "ghost-widget"]);
     }
 
-    // AC: every uncovered item gets an explicit "not yet documented"
-    // artifact on disk; documented items get no placeholder.
+    // AC (FR-VEN-022/031): docs.jsonl carries one line per documented item,
+    // index.jsonl one line per discovered item; both live in .rafters/veneer/.
     #[test]
-    fn coverage_phase_emits_a_placeholder_per_gap_and_only_per_gap() {
-        let project = partial_coverage_project();
-        let output = tempfile::tempdir().expect("output dir");
+    fn writes_docs_and_index_jsonl_to_the_veneer_namespace() {
+        let project = temp_project();
+        let outcome = run_substrate_phase(project.path()).expect("substrate phase must run");
 
-        let outcome = run_coverage_phase(&project, output.path(), Some("../Docs.astro"))
-            .expect("coverage phase must run");
-
-        let components_dir = output.path().join("components");
+        assert_eq!(outcome.dir, project.path().join(".rafters/veneer"));
+        assert_eq!(outcome.index_lines, 4, "one index line per discovered item");
         assert_eq!(
-            outcome.placeholder_paths,
-            [
-                components_dir.join("broken.mdx"),
-                components_dir.join("ghost-widget.mdx"),
-            ]
+            outcome.docs_lines, 3,
+            "one docs line per documented item plus the tokens system line (FR-VEN-022)"
         );
-        for path in &outcome.placeholder_paths {
-            let content = fs::read_to_string(path).expect("placeholder must exist");
-            assert!(!content.trim().is_empty(), "never a blank page");
-            assert!(content.contains("status: not-yet-documented"));
-            assert!(content.contains("layout: ../Docs.astro"));
-        }
+
+        let index = fs::read_to_string(outcome.dir.join("index.jsonl")).expect("index.jsonl");
+        assert_eq!(index.lines().count(), 4);
+        assert!(index.contains("\"schema\":\"veneer.index/1\""));
+
+        let docs = fs::read_to_string(outcome.dir.join("docs.jsonl")).expect("docs.jsonl");
+        assert_eq!(docs.lines().count(), 3);
+        assert!(docs.contains("\"schema\":\"veneer.doc/1\""));
         assert!(
-            !components_dir.join("button.mdx").exists(),
-            "a documented component gets no placeholder"
-        );
-        assert!(
-            !components_dir.join("hero-banner.mdx").exists(),
-            "a documented composite gets no placeholder"
+            docs.contains("\"id\":\"system:tokens\""),
+            "the namespace-backed fixture yields the system page line"
         );
     }
 
-    // A placeholder left by a previous run for an item that is no longer
-    // a gap must be removed on re-run, while real documentation pages in
-    // the same directory are never touched.
+    // AC (FR-VEN-022/031): two runs over unchanged input are byte-identical.
     #[test]
-    fn coverage_phase_removes_stale_placeholders_but_not_real_pages() {
-        let project = partial_coverage_project();
-        let output = tempfile::tempdir().expect("output dir");
-        let components_dir = output.path().join("components");
-        fs::create_dir_all(&components_dir).expect("components dir");
+    fn substrate_is_byte_identical_across_runs() {
+        let project = temp_project();
 
-        // A stale placeholder from a prior run: its item ("Vanished") is
-        // not in the current discovered set, so its claim is now false.
-        let stale = not_yet_documented_placeholder(
-            &veneer_adapters::DiscoveredItem {
-                name: "Vanished".to_string(),
-                kind: veneer_adapters::DiscoveredKind::Component,
-                source_path: PathBuf::from("components/vanished.tsx"),
-                generated: false,
-            },
-            "it used to be broken",
-            None,
-        );
-        let stale_path = components_dir.join(&stale.file_name);
-        fs::write(&stale_path, &stale.content).expect("stale placeholder");
+        let first = run_substrate_phase(project.path()).expect("run 1");
+        let docs1 = fs::read(first.dir.join("docs.jsonl")).expect("docs 1");
+        let index1 = fs::read(first.dir.join("index.jsonl")).expect("index 1");
 
-        // A real documentation page (no placeholder marker) must survive.
-        let real_page = components_dir.join("button.mdx");
-        fs::write(&real_page, "---\ntitle: Button\n---\n\n# Button\n").expect("real page");
+        run_substrate_phase(project.path()).expect("run 2");
+        let docs2 = fs::read(first.dir.join("docs.jsonl")).expect("docs 2");
+        let index2 = fs::read(first.dir.join("index.jsonl")).expect("index 2");
 
-        let outcome =
-            run_coverage_phase(&project, output.path(), None).expect("coverage phase must run");
+        assert_eq!(docs1, docs2, "docs.jsonl must be deterministic");
+        assert_eq!(index1, index2, "index.jsonl must be deterministic");
+    }
 
-        assert!(
-            !stale_path.exists(),
-            "a stale placeholder must not survive a re-run"
-        );
-        assert!(
-            real_page.exists(),
-            "a real documentation page is never removed"
-        );
+    // AC (FR-VEN-021/031): veneer's only writes under .rafters/ are inside
+    // .rafters/veneer/; the rafters config is read-only to veneer.
+    #[test]
+    fn does_not_write_the_rafters_config() {
+        let project = temp_project();
+        let config = project.path().join(".rafters/config.rafters.json");
+        let before = fs::read(&config).expect("fixture config exists");
+
+        run_substrate_phase(project.path()).expect("substrate phase must run");
+
         assert_eq!(
-            outcome.placeholder_paths,
-            [
-                components_dir.join("broken.mdx"),
-                components_dir.join("ghost-widget.mdx"),
-            ]
+            before,
+            fs::read(&config).expect("config still exists"),
+            "veneer never writes the rafters config"
         );
+        assert!(project.path().join(".rafters/veneer/docs.jsonl").exists());
+        assert!(project.path().join(".rafters/veneer/index.jsonl").exists());
     }
 }

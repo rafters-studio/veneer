@@ -76,6 +76,18 @@ pub enum DiscoveredKind {
     Composite,
 }
 
+impl DiscoveredKind {
+    /// The lowercase kind label used across every veneer output surface
+    /// (docs/index line `kind` fields, page frontmatter). One mapping, owned
+    /// by the type, so surfaces cannot drift apart.
+    pub fn as_str(self) -> &'static str {
+        match self {
+            DiscoveredKind::Component => "component",
+            DiscoveredKind::Composite => "composite",
+        }
+    }
+}
+
 /// One component or composite found in a project by [`ComponentRegistry::discover`].
 #[derive(Debug, Clone, PartialEq)]
 pub struct DiscoveredItem {

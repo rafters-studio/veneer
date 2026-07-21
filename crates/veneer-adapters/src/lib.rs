@@ -4,22 +4,31 @@
 //! components into static Web Components for documentation previews.
 
 pub mod artifact;
+pub mod config_interface;
 pub mod conventions;
 pub mod coverage;
 pub mod generator;
 pub mod inline;
 pub mod intelligence;
+pub mod matrix;
+pub mod mdx;
 pub mod rafters_source;
 pub mod react;
 pub mod registry;
 pub mod scope;
+pub mod substrate;
 pub mod tokens;
 pub mod traits;
 pub(crate) mod ts_helpers;
+pub mod veneer_config;
 
 pub use artifact::{
     build_artifact, write_artifact, ArtifactError, FieldValue, IntelligenceArtifact,
     OverrideReason, ARTIFACT_SCHEMA_VERSION,
+};
+pub use config_interface::{
+    attribute_name, parse_config_interface, resolve_config_interface, ConfigInterface,
+    ResolvedConfig,
 };
 pub use conventions::ComponentConventions;
 pub use coverage::{
@@ -36,6 +45,12 @@ pub use intelligence::{
     render_component, CognitiveLoad, CompiledIntelligence, Constraint, ConstraintKind,
     DependencyOrigin, DependencyRef, PropDoc, RenderedComponent, TokenRef, VariantDoc,
 };
+pub use matrix::{
+    parse_matrix, read_matrix, Archetype, BehaviorLayer, ComponentLine, ComponentMetadata,
+    FileStatus, Frameworks, MatrixCognitiveLoad, MatrixError, Motion, PortStatus, Provenance, Uses,
+    COMPONENT_LINE_SCHEMA,
+};
+pub use mdx::{component_page_file_name, generate_component_page, GeneratedComponentPage};
 pub use rafters_source::{
     read_rafters_namespace, read_rafters_stylesheet, AccessibilityMatrices, ContrastMatrix,
     ContrastPair, IntelligenceSource, NamespaceError, NamespaceFile, NamespaceToken,
@@ -48,5 +63,10 @@ pub use registry::{
 pub use scope::{
     extract_classes_from_ts, scope_css, shadow_css_for_component, ScopeError, ShadowCss,
 };
+pub use substrate::{
+    build_substrate, to_jsonl, DocLine, IndexLine, Substrate, DOC_SCHEMA, INDEX_SCHEMA,
+    STOPLIGHT_RULE_VERSION,
+};
 pub use tokens::{parse_dtcg_tokens, DesignToken, DesignTokens, TokenParseError};
 pub use traits::{FrameworkAdapter, TransformContext, TransformError, TransformedBlock};
+pub use veneer_config::{read_veneer_config, Reporters, VeneerConfig, VENEER_CONFIG_VERSION};
