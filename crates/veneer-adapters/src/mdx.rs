@@ -32,7 +32,7 @@ use crate::intelligence::{
     CognitiveLoad, Constraint, ConstraintKind, DependencyOrigin, DependencyRef, PropDoc,
     RenderedComponent, TokenRef, VariantDoc,
 };
-use crate::registry::{DiscoveredItem, DiscoveredKind};
+use crate::registry::DiscoveredItem;
 use crate::traits::TransformError;
 use crate::ts_helpers::kebab_case;
 
@@ -290,6 +290,7 @@ fn write_dependencies(out: &mut String, dependencies: &[DependencyRef]) {
 mod tests {
     use super::*;
     use crate::intelligence::CompiledIntelligence;
+    use crate::registry::DiscoveredKind;
     use crate::traits::TransformedBlock;
     use std::path::PathBuf;
 
