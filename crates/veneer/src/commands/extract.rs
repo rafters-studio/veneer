@@ -8,7 +8,7 @@ use anyhow::{Context, Result};
 use clap::Args;
 use veneer_adapters::{
     assess_coverage, build_substrate, read_matrix, read_rafters_namespace, read_rafters_stylesheet,
-    to_jsonl, ComponentLine, ComponentRegistry, CoverageReport,
+    read_veneer_config, to_jsonl, ComponentLine, ComponentRegistry, CoverageReport, VeneerConfig,
 };
 use veneer_docs::{
     generate_default_skeletons, generate_reference_pages, generate_sidebar, mark_required_flags,
@@ -28,8 +28,9 @@ pub struct ExtractArgs {
     binary: Option<PathBuf>,
 
     /// CLI-docs mode only: output directory for the generated MDX pages.
-    #[arg(short, long, default_value = "docs")]
-    output: PathBuf,
+    /// Defaults to veneer.json's outputDir when declared, else `docs`.
+    #[arg(short, long)]
+    output: Option<PathBuf>,
 
     /// CLI-docs mode only: layout to inject into MDX frontmatter
     /// (e.g. "../../layouts/Docs.astro").
@@ -41,7 +42,12 @@ pub struct ExtractArgs {
 /// reference pages, a sidebar, and editorial skeletons under `--output`. This
 /// is the CLI-docs feature, distinct from the component substrate, and runs
 /// only when `--binary` is given. `--output` and `--layout` apply here.
-fn run_cli_help_docs(binary_path: &Path, args: &ExtractArgs, project_name: &str) -> Result<()> {
+fn run_cli_help_docs(
+    binary_path: &Path,
+    args: &ExtractArgs,
+    output: &Path,
+    project_name: &str,
+) -> Result<()> {
     if !binary_path.exists() {
         anyhow::bail!("Binary not found: {}", binary_path.display());
     }
@@ -58,8 +64,7 @@ fn run_cli_help_docs(binary_path: &Path, args: &ExtractArgs, project_name: &str)
         .map(|sub| sub.name.clone())
         .collect();
 
-    let reference_pages =
-        generate_reference_pages(&root_cmd, &args.output, args.layout.as_deref())?;
+    let reference_pages = generate_reference_pages(&root_cmd, output, args.layout.as_deref())?;
     tracing::info!("Generated {} reference pages", reference_pages.len());
 
     let editorial_pages: Vec<EditorialPage> = vec![
@@ -77,14 +82,14 @@ fn run_cli_help_docs(binary_path: &Path, args: &ExtractArgs, project_name: &str)
         },
     ];
     let sidebar = generate_sidebar(&root_cmd, &editorial_pages);
-    let sidebar_path = args.output.join("sidebar.jsonl");
+    let sidebar_path = output.join("sidebar.jsonl");
     write_sidebar_jsonl(&sidebar, &sidebar_path)?;
     tracing::info!("Generated sidebar at {}", sidebar_path.display());
 
     let skeletons = generate_default_skeletons(
         project_name,
         &command_groups,
-        &args.output,
+        output,
         args.layout.as_deref(),
     )?;
     tracing::info!("Generated {} skeleton pages", skeletons.len());
@@ -92,7 +97,7 @@ fn run_cli_help_docs(binary_path: &Path, args: &ExtractArgs, project_name: &str)
     tracing::info!(
         "CLI docs complete: {} pages in {}",
         reference_pages.len() + skeletons.len(),
-        args.output.display()
+        output.display()
     );
     Ok(())
 }
@@ -111,11 +116,29 @@ pub async fn run(args: ExtractArgs) -> Result<()> {
 
     tracing::info!("Extracting docs from {}", args.project.display());
 
+    // The project's optional input declarations (FR-VEN-021): absence is
+    // defaults; a malformed file is a typed refusal naming file and field,
+    // never a silent fallback.
+    let veneer_config: VeneerConfig =
+        read_veneer_config(&args.project).map_err(|error| anyhow::anyhow!(error))?;
+    if let Some(reporters) = &veneer_config.reporters {
+        tracing::info!(
+            "veneer.json declares {} test and {} accessibility reporter path(s) (read as input facts; consumed when FR-VEN-028/029 land)",
+            reporters.tests.len(),
+            reporters.accessibility.len()
+        );
+    }
+
     // CLI-help documentation is opt-in via --binary and is independent of the
     // component substrate. A plain `extract --project X` skips it and writes
     // only the substrate; --output / --layout apply only in this mode.
     if let Some(binary_path) = args.binary.as_ref() {
-        run_cli_help_docs(binary_path, &args, &project_name)?;
+        // --output wins over veneer.json's outputDir, which wins over `docs`.
+        let output = args
+            .output
+            .clone()
+            .unwrap_or_else(|| veneer_config.output_dir());
+        run_cli_help_docs(binary_path, &args, &output, &project_name)?;
     }
 
     // The .rafters/veneer/ substrate -- the canonical docs.jsonl

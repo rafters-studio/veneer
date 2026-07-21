@@ -20,6 +20,7 @@ pub mod substrate;
 pub mod tokens;
 pub mod traits;
 pub(crate) mod ts_helpers;
+pub mod veneer_config;
 
 pub use artifact::{
     build_artifact, write_artifact, ArtifactError, FieldValue, IntelligenceArtifact,
@@ -68,3 +69,4 @@ pub use substrate::{
 };
 pub use tokens::{parse_dtcg_tokens, DesignToken, DesignTokens, TokenParseError};
 pub use traits::{FrameworkAdapter, TransformContext, TransformError, TransformedBlock};
+pub use veneer_config::{read_veneer_config, Reporters, VeneerConfig, VENEER_CONFIG_VERSION};
