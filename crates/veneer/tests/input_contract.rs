@@ -81,11 +81,13 @@ fn extract_writes_only_inside_the_veneer_namespace() {
             "pre-existing file modified or deleted: {rel}"
         );
     }
-    // Everything created lives under .rafters/veneer/ (and no temp litter).
+    // Everything created lives inside the DECLARED output locations --
+    // the substrate namespace and the pages dir (FR-VEN-021) -- with no
+    // temp litter.
     for rel in after.keys().filter(|rel| !before.contains_key(*rel)) {
         assert!(
-            rel.starts_with(".rafters/veneer/"),
-            "write outside the declared output location: {rel}"
+            rel.starts_with(".rafters/veneer/") || rel.starts_with("docs/"),
+            "write outside the declared output locations: {rel}"
         );
         assert!(!rel.ends_with(".tmp"), "temp file left behind: {rel}");
     }
@@ -127,4 +129,40 @@ fn two_projects_yield_docs_traceable_only_to_their_own_state() {
     // root (paths are project-relative, so outputs carry no machine paths).
     assert!(!docs_a.contains(&b.path().display().to_string()));
     assert!(!docs_b.contains(&a.path().display().to_string()));
+}
+
+// AC (FR-VEN-004): constraints are visible with the component -- on the same
+// generated page as its preview, not in a separate document.
+#[test]
+fn constraints_render_on_the_component_page_beside_the_preview() {
+    let tmp = tempfile::tempdir().expect("tempdir");
+    copy_dir_all(&fixture_root(), tmp.path()).expect("fixture copy");
+    run_extract(tmp.path());
+
+    let page = fs::read_to_string(tmp.path().join("docs/components/button.mdx"))
+        .expect("documented item has a page");
+    // The preview element and the constraints section share the page.
+    assert!(page.contains("<button-preview>"), "preview on page: {page}");
+    assert!(
+        page.to_lowercase().contains("never"),
+        "do/never constraints on the same page: {page}"
+    );
+}
+
+// AC (FR-VEN-009): an undocumented item gets an explicit not-yet-documented
+// page carrying the observed reason -- never a blank where a component
+// should be.
+#[test]
+fn an_undocumented_item_gets_an_explicit_not_yet_documented_page() {
+    let tmp = tempfile::tempdir().expect("tempdir");
+    copy_dir_all(&fixture_root(), tmp.path()).expect("fixture copy");
+    run_extract(tmp.path());
+
+    let page = fs::read_to_string(tmp.path().join("docs/components/broken.mdx"))
+        .expect("undocumented item still has a page");
+    assert!(page.contains("status: not-yet-documented"), "{page}");
+    assert!(
+        page.contains("veneer could not render"),
+        "reason present: {page}"
+    );
 }
