@@ -118,23 +118,30 @@ veneer could not render this item: {reason}
 }
 
 /// Outcome of the substrate phase: the coverage report plus what was written
-/// to `.rafters/veneer/`.
-struct SubstrateOutcome {
-    report: CoverageReport,
+/// to `.rafters/veneer/`. `pub(crate)` so `commands::watch` -- which re-runs
+/// this same phase on a filesystem change instead of forking its own copy of
+/// the derivation -- can read the counts it logs.
+pub(crate) struct SubstrateOutcome {
+    pub(crate) report: CoverageReport,
     /// The assessed set, carried so page generation reuses the same render
     /// pass (never a second render).
-    assessed: Vec<veneer_adapters::AssessedItem>,
+    pub(crate) assessed: Vec<veneer_adapters::AssessedItem>,
     /// The `.rafters/veneer/` directory the jsonl were written to.
-    dir: PathBuf,
-    docs_lines: usize,
-    index_lines: usize,
+    pub(crate) dir: PathBuf,
+    pub(crate) docs_lines: usize,
+    pub(crate) index_lines: usize,
 }
 
 /// Assess the discovered set and write the `.rafters/veneer/` substrate:
 /// `docs.jsonl` (FR-VEN-022) and `index.jsonl` (FR-VEN-031), both derived
 /// from the same assessment pass. The substrate is veneer's only write under
 /// `.rafters/`; everything else there is read-only input (FR-VEN-021).
-fn run_substrate_phase(project: &Path) -> Result<SubstrateOutcome> {
+///
+/// `pub(crate)`: this is the ONE derivation entry point. Both the batch
+/// `extract` command (`run`, above) and `commands::watch`'s re-derive-on-change
+/// loop call this same function -- watch never reimplements or hardcodes
+/// what it emits (issue #94 / FR-VEN-026).
+pub(crate) fn run_substrate_phase(project: &Path) -> Result<SubstrateOutcome> {
     let source = read_rafters_namespace(project)
         .with_context(|| format!("failed to read the rafters source in {}", project.display()))?;
     let items = ComponentRegistry::discover(project, &source)
