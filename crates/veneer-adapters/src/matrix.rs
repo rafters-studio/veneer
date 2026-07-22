@@ -18,7 +18,7 @@
 //! interface, variants from `.classes.ts` -- both from the component source
 //! tree, not from here.
 
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use serde::Deserialize;
 
@@ -270,6 +270,15 @@ pub fn read_matrix(path: &Path) -> Result<Vec<ComponentLine>, MatrixError> {
         source,
     })?;
     parse_matrix(&text)
+}
+
+/// The matrix path convention, relative to a project root: provisional
+/// (rafters' S1 config work may relocate it), but the one place this
+/// literal lives -- [`crate::mode::detect_mode`] and veneer's `extract`
+/// command both resolve the matrix through this function so the convention
+/// cannot fork between them.
+pub fn default_matrix_path(project_root: &Path) -> PathBuf {
+    project_root.join("docs/spec/matrix/components.jsonl")
 }
 
 #[cfg(test)]

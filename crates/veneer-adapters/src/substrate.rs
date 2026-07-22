@@ -607,6 +607,7 @@ mod tests {
                 kind: DiscoveredKind::Component,
                 source_path: PathBuf::from(format!("/proj/components/{name}.tsx")),
                 generated: true,
+                unsupported_framework: None,
             },
             state: CoverageState::Documented,
             rendered: Some(rendered(&format!("{name}-preview"))),
@@ -620,6 +621,7 @@ mod tests {
                 kind: DiscoveredKind::Component,
                 source_path: PathBuf::from(format!("/proj/components/{name}.tsx")),
                 generated: false,
+                unsupported_framework: None,
             },
             state: CoverageState::NotYetDocumented {
                 reason: reason.to_string(),

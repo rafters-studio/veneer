@@ -288,6 +288,68 @@ pub fn read_rafters_stylesheet(project_root: &Path) -> Result<Option<String>, Na
         .map_err(|source| NamespaceError::Io { path, source })
 }
 
+/// The `framework`/`componentTarget` facts declared in
+/// `.rafters/config.rafters.json` (FR-VEN-033), read as input facts and
+/// nothing more: `component_target` is the only field veneer acts on, and
+/// only to select a framework adapter
+/// (`crate::mode::dispatch_framework`) -- never to spawn or manage a
+/// toolchain. `framework` is carried for observability; veneer never
+/// dispatches on it. Absence of the file, or of either field, yields `None`
+/// for that field -- never guessed.
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub struct FrameworkDeclaration {
+    /// The project's declared delivery framework, for example `"wc"`.
+    pub framework: Option<String>,
+    /// The declared source framework of the components, for example
+    /// `"react"`. Drives adapter selection; an unsupported value is an
+    /// observation, never an inference (see
+    /// `crate::mode::FrameworkDispatch`).
+    pub component_target: Option<String>,
+}
+
+/// Raw shape of the subset of `.rafters/config.rafters.json` this reader
+/// captures. The real file declares many more fields (`componentsPath`,
+/// `installed`, `exports`, ...); those are read elsewhere
+/// (`crate::registry`) and are intentionally ignored here rather than
+/// duplicating that parse.
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct RawFrameworkDeclaration {
+    #[serde(default)]
+    framework: Option<String>,
+    #[serde(default)]
+    component_target: Option<String>,
+}
+
+/// Read the `framework`/`componentTarget` facts from
+/// `.rafters/config.rafters.json`. `.rafters/config.rafters.json` absent
+/// yields [`FrameworkDeclaration::default`] (both fields `None`) -- the
+/// common case for a project that declares nothing. Present-but-malformed
+/// JSON is a named error, never a silent default.
+pub fn read_framework_declaration(
+    project_root: &Path,
+) -> Result<FrameworkDeclaration, NamespaceError> {
+    let path = project_root.join(".rafters").join("config.rafters.json");
+    if !path.is_file() {
+        return Ok(FrameworkDeclaration::default());
+    }
+    let text = std::fs::read_to_string(&path).map_err(|source| NamespaceError::Io {
+        path: path.clone(),
+        source,
+    })?;
+    let raw: RawFrameworkDeclaration =
+        serde_json::from_str(&text).map_err(|error| NamespaceError::Malformed {
+            path: path.clone(),
+            line: error.line(),
+            column: error.column(),
+            message: error.to_string(),
+        })?;
+    Ok(FrameworkDeclaration {
+        framework: raw.framework,
+        component_target: raw.component_target,
+    })
+}
+
 /// Raw serde shape of a `<namespace>.rafters.json` file.
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -478,6 +540,49 @@ mod tests {
         Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("tests/fixtures/rafters_source")
             .join(name)
+    }
+
+    // ---- FR-VEN-033: framework/componentTarget input facts ----
+
+    #[test]
+    fn absent_config_yields_no_declaration() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        let declaration =
+            read_framework_declaration(temp.path()).expect("absence must not be an error");
+        assert_eq!(declaration, FrameworkDeclaration::default());
+        assert_eq!(declaration.framework, None);
+        assert_eq!(declaration.component_target, None);
+    }
+
+    #[test]
+    fn declared_framework_and_component_target_are_read_as_facts() {
+        // The real shape (verified against a real `.rafters/config.rafters.json`,
+        // reused from the existing discovery fixture rather than hand-modeling
+        // a new one -- see tests/fixtures/README.md).
+        let root =
+            Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/discovery/with_namespace");
+        let declaration = read_framework_declaration(&root).expect("fixture config must read");
+        assert_eq!(declaration.framework.as_deref(), Some("unknown"));
+        assert_eq!(declaration.component_target.as_deref(), Some("react"));
+    }
+
+    #[test]
+    fn malformed_config_is_a_named_error_never_a_silent_default() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        std::fs::create_dir(temp.path().join(".rafters")).expect("mkdir .rafters");
+        std::fs::write(
+            temp.path().join(".rafters/config.rafters.json"),
+            "{not json",
+        )
+        .expect("write malformed config");
+        let error = read_framework_declaration(temp.path())
+            .expect_err("malformed config must be a named error");
+        match error {
+            NamespaceError::Malformed { path, .. } => {
+                assert!(path.ends_with(".rafters/config.rafters.json"));
+            }
+            other => panic!("expected Malformed error, got {other:?}"),
+        }
     }
 
     fn read_namespace(name: &str) -> RaftersNamespace {

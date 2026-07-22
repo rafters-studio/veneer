@@ -11,6 +11,7 @@ pub mod generator;
 pub mod intelligence;
 pub mod matrix;
 pub mod mdx;
+pub mod mode;
 pub mod rafters_source;
 pub mod react;
 pub mod registry;
@@ -39,15 +40,17 @@ pub use intelligence::{
     DependencyOrigin, DependencyRef, PropDoc, RenderedComponent, TokenRef, VariantDoc,
 };
 pub use matrix::{
-    parse_matrix, read_matrix, Archetype, BehaviorLayer, ComponentLine, ComponentMetadata,
-    FileStatus, Frameworks, MatrixCognitiveLoad, MatrixError, Motion, PortStatus, Provenance, Uses,
-    COMPONENT_LINE_SCHEMA,
+    default_matrix_path, parse_matrix, read_matrix, Archetype, BehaviorLayer, ComponentLine,
+    ComponentMetadata, FileStatus, Frameworks, MatrixCognitiveLoad, MatrixError, Motion,
+    PortStatus, Provenance, Uses, COMPONENT_LINE_SCHEMA,
 };
 pub use mdx::{component_page_file_name, generate_component_page, GeneratedComponentPage};
+pub use mode::{detect_mode, dispatch_framework, FrameworkDispatch, Mode};
 pub use rafters_source::{
-    read_rafters_namespace, read_rafters_stylesheet, AccessibilityMatrices, ContrastMatrix,
-    ContrastPair, IntelligenceSource, NamespaceError, NamespaceFile, NamespaceToken,
-    OklchComponents, RaftersNamespace, StructuredValue, TokenValue, UsagePatterns, UserOverride,
+    read_framework_declaration, read_rafters_namespace, read_rafters_stylesheet,
+    AccessibilityMatrices, ContrastMatrix, ContrastPair, FrameworkDeclaration, IntelligenceSource,
+    NamespaceError, NamespaceFile, NamespaceToken, OklchComponents, RaftersNamespace,
+    StructuredValue, TokenValue, UsagePatterns, UserOverride,
 };
 pub use react::{ComponentStructure, ReactAdapter};
 pub use registry::{
