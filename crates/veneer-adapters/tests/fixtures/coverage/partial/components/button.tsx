@@ -1,3 +1,11 @@
+/**
+ * Primary action trigger.
+ *
+ * @cognitive-load 3/10 - Simple action trigger
+ * @usage-patterns
+ * DO: One primary action per section
+ * NEVER: Multiple primary buttons competing for attention
+ */
 export interface ButtonProps {
   variant?: 'default' | 'secondary';
 }

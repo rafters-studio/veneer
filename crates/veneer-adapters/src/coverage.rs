@@ -24,8 +24,7 @@ use std::path::Path;
 
 use crate::intelligence::{render_component, RenderedComponent};
 use crate::rafters_source::IntelligenceSource;
-use crate::registry::{ComponentRegistry, DiscoveredItem, DiscoveredKind, RegistryError};
-use crate::ts_helpers::kebab_case;
+use crate::registry::{ComponentRegistry, DiscoveredItem, RegistryError};
 
 /// Coverage of a discovered set: documented versus not-yet-documented,
 /// with the discovered set as the denominator.
@@ -158,78 +157,11 @@ impl ComponentRegistry {
     }
 }
 
-/// The frontmatter line that marks a page as a coverage placeholder.
-/// Emitters key on this to recognize the placeholder pages they own (for
-/// example to remove a stale one once its item becomes documented)
-/// without ever touching real documentation pages.
-pub const NOT_YET_DOCUMENTED_STATUS: &str = "status: not-yet-documented";
-
-/// A placeholder artifact ready to be written alongside generator output:
-/// the file name it should be emitted under and its full content.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct PlaceholderArtifact {
-    /// Kebab-cased file name, for example `ghost-widget.mdx`.
-    pub file_name: String,
-    /// Complete MDX page content -- a real artifact, never blank.
-    pub content: String,
-}
-
-/// Build the explicit "not yet documented" placeholder artifact for one
-/// uncovered item: an MDX page (matching the extract output family) that
-/// names the item, where it was discovered, and the honest reason it is
-/// not documented yet. Emitting this page is what turns a coverage gap
-/// into a visible state instead of a blank page or a 404.
-pub fn not_yet_documented_placeholder(
-    item: &DiscoveredItem,
-    reason: &str,
-    layout: Option<&str>,
-) -> PlaceholderArtifact {
-    let layout_line = layout
-        .map(|value| format!("layout: {value}\n"))
-        .unwrap_or_default();
-    let kind = kind_label(item.kind);
-    let name = &item.name;
-    let source_path = item.source_path.display();
-
-    let content = format!(
-        "\
----
-{layout_line}title: {name}
-description: {name} is not yet documented.
-{NOT_YET_DOCUMENTED_STATUS}
----
-
-# {name}
-
-## Not yet documented
-
-Veneer discovered this {kind} at `{source_path}` but has not documented
-it yet.
-
-Reason: {reason}
-
-This page exists so the gap is explicit: an uncovered {kind} surfaces as
-this placeholder, never as a blank page or a 404.
-"
-    );
-
-    PlaceholderArtifact {
-        file_name: format!("{}.mdx", kebab_case(name)),
-        content,
-    }
-}
-
-fn kind_label(kind: DiscoveredKind) -> &'static str {
-    match kind {
-        DiscoveredKind::Component => "component",
-        DiscoveredKind::Composite => "composite",
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::rafters_source::{read_rafters_namespace, read_rafters_stylesheet};
+    use crate::registry::DiscoveredKind;
     use std::path::PathBuf;
 
     fn fixture_root() -> PathBuf {
@@ -345,45 +277,4 @@ mod tests {
 
     // AC: an undocumented component surfaces an explicit "not yet
     // documented" artifact -- a real page, not a blank.
-    #[test]
-    fn placeholder_is_a_real_explicit_artifact() {
-        let assessed = assessed_fixture();
-        let ghost = assessed
-            .iter()
-            .find(|entry| entry.item.name == "ghost-widget")
-            .expect("ghost-widget must be assessed");
-        let CoverageState::NotYetDocumented { reason } = &ghost.state else {
-            panic!("an installed name with no source cannot be documented");
-        };
-
-        let artifact = not_yet_documented_placeholder(&ghost.item, reason, None);
-        assert_eq!(artifact.file_name, "ghost-widget.mdx");
-        assert!(artifact.content.starts_with("---\n"), "real frontmatter");
-        assert!(artifact.content.contains("status: not-yet-documented"));
-        assert!(artifact.content.contains("# ghost-widget"));
-        assert!(artifact.content.contains("Not yet documented"));
-        assert!(
-            artifact.content.contains("config.rafters.json"),
-            "the honest reason names where the item is declared"
-        );
-        assert!(
-            artifact.content.trim().lines().count() > 5,
-            "a placeholder is a page, never a blank"
-        );
-    }
-
-    #[test]
-    fn placeholder_carries_the_layout_when_given() {
-        let item = DiscoveredItem {
-            name: "HeroBanner".to_string(),
-            kind: DiscoveredKind::Composite,
-            source_path: PathBuf::from("composites/hero-banner.composite.json"),
-            generated: false,
-        };
-        let artifact =
-            not_yet_documented_placeholder(&item, "no generation pipeline", Some("../Docs.astro"));
-        assert_eq!(artifact.file_name, "hero-banner.mdx");
-        assert!(artifact.content.contains("layout: ../Docs.astro"));
-        assert!(artifact.content.contains("this composite"));
-    }
 }

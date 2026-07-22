@@ -74,13 +74,13 @@ fn test_error_case() {
 ### Dependencies
 - Required crates (check workspace Cargo.toml for existing deps)
 - Integration points with existing crates in the workspace
-- Compatibility requirements across the 5-crate workspace
+- Compatibility requirements across the 2-crate workspace
 
 ### Crate Dependency Flow
 ```
 veneer (CLI binary)
-  +-- veneer-adapters (JSX -> Web Components, scope_css)
-  +-- veneer-docs (CLI --help parser, sidebar, MDX skeletons)
+  +-- veneer-adapters (rafters source -> docs.jsonl / index.jsonl substrate,
+                       framework-less Web Component previews, mdx serializers)
 ```
 
 ### Usage Examples
