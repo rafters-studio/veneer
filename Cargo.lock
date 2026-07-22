@@ -1216,7 +1216,6 @@ dependencies = [
  "tracing",
  "tracing-subscriber",
  "veneer-adapters",
- "veneer-docs",
 ]
 
 [[package]]
@@ -1234,18 +1233,6 @@ dependencies = [
  "tempfile",
  "thiserror",
  "walkdir",
-]
-
-[[package]]
-name = "veneer-docs"
-version = "0.1.0"
-dependencies = [
- "regex",
- "serde",
- "serde_json",
- "tempfile",
- "thiserror",
- "tracing",
 ]
 
 [[package]]

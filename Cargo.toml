@@ -3,7 +3,6 @@ resolver = "2"
 members = [
     "crates/veneer",
     "crates/veneer-adapters",
-    "crates/veneer-docs",
 ]
 
 [workspace.package]
@@ -47,7 +46,6 @@ notify = "8"
 
 # Crate dependencies
 veneer-adapters = { path = "crates/veneer-adapters" }
-veneer-docs = { path = "crates/veneer-docs" }
 
 [profile.release]
 strip = true

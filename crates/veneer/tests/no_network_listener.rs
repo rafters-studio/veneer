@@ -39,7 +39,7 @@ fn rust_sources(dir: &Path, out: &mut Vec<PathBuf>) {
 fn no_production_code_path_opens_a_network_listener() {
     let root = crates_root();
     let mut sources = Vec::new();
-    for krate in ["veneer", "veneer-adapters", "veneer-docs"] {
+    for krate in ["veneer", "veneer-adapters"] {
         // src/ only: this test file itself (and any future test helper)
         // is not bound by the production contract.
         rust_sources(&root.join(krate).join("src"), &mut sources);
