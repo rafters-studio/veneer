@@ -4,10 +4,9 @@
 //! crate contains no process-spawning call site outside the one allowlisted
 //! seam.
 //!
-//! The allowlisted seam is veneer-docs' CLI-help parser, which runs the
-//! PROJECT'S OWN binary with `--help` -- the opt-in `--binary` CLI-docs
-//! feature. It invokes the documented binary itself, never rafters or
-//! tailwind tooling, and never runs unless the operator passes `--binary`.
+//! Since the CLI-docs chain was retired (2026-07-21 cleanout: the --binary
+//! feature traced to no active FR), the allowlist is EMPTY: no production
+//! code path in any veneer crate spawns a process, full stop.
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -15,8 +14,8 @@ use std::path::{Path, PathBuf};
 const SPAWN_MARKERS: &[&str] = &["process::Command", "Command::new(", "std::process::"];
 
 /// Files permitted to spawn, with the reason recorded here so the exemption
-/// is a decision, not a leak.
-const ALLOWLIST: &[&str] = &["veneer-docs/src/cli_parser.rs"];
+/// is a decision, not a leak. Empty since the CLI-docs chain was retired.
+const ALLOWLIST: &[&str] = &[];
 
 fn crates_root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -40,7 +39,7 @@ fn rust_sources(dir: &Path, out: &mut Vec<PathBuf>) {
 fn no_production_code_path_spawns_a_process() {
     let root = crates_root();
     let mut sources = Vec::new();
-    for krate in ["veneer", "veneer-adapters", "veneer-docs"] {
+    for krate in ["veneer", "veneer-adapters"] {
         // src/ only: tests (including this one) legitimately run the veneer
         // binary itself; the contract binds production code.
         rust_sources(&root.join(krate).join("src"), &mut sources);

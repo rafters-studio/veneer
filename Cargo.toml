@@ -3,7 +3,6 @@ resolver = "2"
 members = [
     "crates/veneer",
     "crates/veneer-adapters",
-    "crates/veneer-docs",
 ]
 
 [workspace.package]
@@ -44,7 +43,6 @@ walkdir = "2"
 
 # Crate dependencies
 veneer-adapters = { path = "crates/veneer-adapters" }
-veneer-docs = { path = "crates/veneer-docs" }
 
 [profile.release]
 strip = true

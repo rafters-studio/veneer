@@ -7,13 +7,10 @@ use std::path::{Path, PathBuf};
 use anyhow::{Context, Result};
 use clap::Args;
 use veneer_adapters::{
-    assess_coverage, build_substrate, default_matrix_path, detect_mode, read_matrix,
-    read_rafters_namespace, read_rafters_stylesheet, read_veneer_config, to_jsonl, ComponentLine,
-    ComponentRegistry, CoverageReport, VeneerConfig,
-};
-use veneer_docs::{
-    generate_default_skeletons, generate_reference_pages, generate_sidebar, mark_required_flags,
-    parse_cli_help, write_sidebar_jsonl, EditorialPage,
+    assess_coverage, build_substrate, component_page_file_name, default_matrix_path, detect_mode,
+    generate_component_page, read_matrix, read_rafters_namespace, read_rafters_stylesheet,
+    read_veneer_config, to_jsonl, ComponentLine, ComponentRegistry, CoverageReport, CoverageState,
+    VeneerConfig,
 };
 
 #[derive(Args)]
@@ -22,95 +19,9 @@ pub struct ExtractArgs {
     /// its .rafters/veneer/ directory.
     #[arg(short, long)]
     project: PathBuf,
-
-    /// CLI-docs mode: the project binary to extract --help from. When set,
-    /// also generates CLI reference pages and skeletons under --output.
-    #[arg(short, long)]
-    binary: Option<PathBuf>,
-
-    /// CLI-docs mode only: output directory for the generated MDX pages.
-    /// Defaults to veneer.json's outputDir when declared, else `docs`.
-    #[arg(short, long)]
-    output: Option<PathBuf>,
-
-    /// CLI-docs mode only: layout to inject into MDX frontmatter
-    /// (e.g. "../../layouts/Docs.astro").
-    #[arg(short, long)]
-    layout: Option<String>,
-}
-
-/// Generate the CLI-reference documentation from a project binary's `--help`:
-/// reference pages, a sidebar, and editorial skeletons under `--output`. This
-/// is the CLI-docs feature, distinct from the component substrate, and runs
-/// only when `--binary` is given. `--output` and `--layout` apply here.
-fn run_cli_help_docs(
-    binary_path: &Path,
-    args: &ExtractArgs,
-    output: &Path,
-    project_name: &str,
-) -> Result<()> {
-    if !binary_path.exists() {
-        anyhow::bail!("Binary not found: {}", binary_path.display());
-    }
-
-    tracing::info!("Parsing CLI help from {}", binary_path.display());
-    let mut root_cmd = parse_cli_help(binary_path)?;
-    mark_required_flags(&mut root_cmd);
-
-    // Command groups: subcommands that have their own subcommands.
-    let command_groups: Vec<String> = root_cmd
-        .subcommands
-        .iter()
-        .filter(|sub| !sub.subcommands.is_empty())
-        .map(|sub| sub.name.clone())
-        .collect();
-
-    let reference_pages = generate_reference_pages(&root_cmd, output, args.layout.as_deref())?;
-    tracing::info!("Generated {} reference pages", reference_pages.len());
-
-    let editorial_pages: Vec<EditorialPage> = vec![
-        EditorialPage {
-            title: "Getting Started".to_string(),
-            path: "/getting-started".to_string(),
-            section: "getting-started".to_string(),
-            order: 0,
-        },
-        EditorialPage {
-            title: "Architecture".to_string(),
-            path: "/architecture".to_string(),
-            section: "concepts".to_string(),
-            order: 1,
-        },
-    ];
-    let sidebar = generate_sidebar(&root_cmd, &editorial_pages);
-    let sidebar_path = output.join("sidebar.jsonl");
-    write_sidebar_jsonl(&sidebar, &sidebar_path)?;
-    tracing::info!("Generated sidebar at {}", sidebar_path.display());
-
-    let skeletons = generate_default_skeletons(
-        project_name,
-        &command_groups,
-        output,
-        args.layout.as_deref(),
-    )?;
-    tracing::info!("Generated {} skeleton pages", skeletons.len());
-
-    tracing::info!(
-        "CLI docs complete: {} pages in {}",
-        reference_pages.len() + skeletons.len(),
-        output.display()
-    );
-    Ok(())
 }
 
 pub async fn run(args: ExtractArgs) -> Result<()> {
-    let project_name = args
-        .project
-        .file_name()
-        .and_then(|n| n.to_str())
-        .unwrap_or("project")
-        .to_string();
-
     if !args.project.exists() {
         anyhow::bail!("Project path does not exist: {}", args.project.display());
     }
@@ -137,18 +48,6 @@ pub async fn run(args: ExtractArgs) -> Result<()> {
         );
     }
 
-    // CLI-help documentation is opt-in via --binary and is independent of the
-    // component substrate. A plain `extract --project X` skips it and writes
-    // only the substrate; --output / --layout apply only in this mode.
-    if let Some(binary_path) = args.binary.as_ref() {
-        // --output wins over veneer.json's outputDir, which wins over `docs`.
-        let output = args
-            .output
-            .clone()
-            .unwrap_or_else(|| veneer_config.output_dir());
-        run_cli_help_docs(binary_path, &args, &output, &project_name)?;
-    }
-
     // The .rafters/veneer/ substrate -- the canonical docs.jsonl
     // (FR-VEN-022) and the veneer index.jsonl (FR-VEN-031), both derived from
     // one assessment pass against the discovered set (FR-VEN-009 folds in as
@@ -160,15 +59,71 @@ pub async fn run(args: ExtractArgs) -> Result<()> {
         substrate.index_lines,
         substrate.dir.display()
     );
+
+    // Pages, from the same model the substrate serialized (FR-VEN-022):
+    // a component page with the DO/NEVER constraints beside the preview
+    // (FR-VEN-004), and an explicit not-yet-documented page for every item
+    // that did not render (FR-VEN-009) -- never a blank where a component
+    // should be.
+    let pages_dir = args
+        .project
+        .join(veneer_config.output_dir())
+        .join("components");
+    let pages = write_pages(&substrate.assessed, &pages_dir)?;
+    tracing::info!("Wrote {} pages to {}", pages, pages_dir.display());
+
     print_coverage_summary(&substrate.report);
 
     Ok(())
+}
+
+/// Write one page per discovered item: the full MDX page (+ its preview
+/// sidecar) for a documented item, an explicit not-yet-documented page for
+/// the rest. Deterministic content; atomic writes.
+fn write_pages(assessed: &[veneer_adapters::AssessedItem], dir: &Path) -> Result<usize> {
+    fs::create_dir_all(dir).with_context(|| format!("failed to create {}", dir.display()))?;
+    let mut written = 0;
+    for entry in assessed {
+        let file = dir.join(component_page_file_name(&entry.item.name));
+        match (&entry.state, &entry.rendered) {
+            (CoverageState::Documented, Some(rendered)) => {
+                let page = generate_component_page(&entry.item, rendered)
+                    .map_err(|error| anyhow::anyhow!("{error}"))?;
+                write_atomic(&file, &page.page)?;
+                write_atomic(&dir.join(&page.sidecar_name), &page.sidecar)?;
+                written += 2;
+            }
+            (CoverageState::NotYetDocumented { reason }, _) => {
+                // FR-VEN-009: an explicit state, never a blank page. Facts
+                // only -- the reason veneer observed, nothing synthesized.
+                let page = format!(
+                    "---
+title: {name}
+status: not-yet-documented
+---
+
+Not yet documented.
+
+veneer could not render this item: {reason}
+",
+                    name = entry.item.name,
+                );
+                write_atomic(&file, &page)?;
+                written += 1;
+            }
+            _ => {}
+        }
+    }
+    Ok(written)
 }
 
 /// Outcome of the substrate phase: the coverage report plus what was written
 /// to `.rafters/veneer/`.
 struct SubstrateOutcome {
     report: CoverageReport,
+    /// The assessed set, carried so page generation reuses the same render
+    /// pass (never a second render).
+    assessed: Vec<veneer_adapters::AssessedItem>,
     /// The `.rafters/veneer/` directory the jsonl were written to.
     dir: PathBuf,
     docs_lines: usize,
@@ -211,6 +166,7 @@ fn run_substrate_phase(project: &Path) -> Result<SubstrateOutcome> {
 
     Ok(SubstrateOutcome {
         report: CoverageReport::from_assessed(&assessed),
+        assessed,
         dir,
         docs_lines: substrate.docs_line_count(),
         index_lines: substrate.index.len(),
