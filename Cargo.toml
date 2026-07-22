@@ -42,6 +42,9 @@ oxc_span = "0.72"
 regex = "1"
 walkdir = "2"
 
+# Filesystem watching (watch mode, FR-VEN-026)
+notify = "8"
+
 # Crate dependencies
 veneer-adapters = { path = "crates/veneer-adapters" }
 veneer-docs = { path = "crates/veneer-docs" }

@@ -61,7 +61,8 @@ pub use rafters_source::{
 };
 pub use react::{ComponentStructure, ReactAdapter};
 pub use registry::{
-    CachedComponent, ComponentRegistry, DiscoveredItem, DiscoveredKind, RegistryError,
+    is_excluded_dir_name, CachedComponent, ComponentRegistry, DiscoveredItem, DiscoveredKind,
+    RegistryError,
 };
 pub use scope::{
     extract_classes_from_ts, scope_css, shadow_css_for_component, ScopeError, ShadowCss,

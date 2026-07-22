@@ -677,6 +677,21 @@ pub(crate) fn extract_component_candidate(
     ))
 }
 
+/// True when a directory name is excluded from the discovery/mode-detection
+/// walk: hidden directories, dependency and build output. The single source
+/// of truth for that exclusion list -- [`is_walkable_entry`] (the `WalkDir`
+/// predicate) and veneer's watch mode (which mirrors this same input
+/// contract when deciding whether a filesystem change should trigger a
+/// re-derivation) both call this rather than each keeping their own copy of
+/// the name list.
+pub fn is_excluded_dir_name(name: &str) -> bool {
+    name.starts_with('.')
+        || name == "node_modules"
+        || name == "target"
+        || name == "dist"
+        || name == "build"
+}
+
 /// Directory filter for the discovery walk: descend everywhere except
 /// dependency, build-output, and hidden directories (`.rafters/` is read
 /// separately via its config, not walked for component source). Shared with
@@ -687,11 +702,7 @@ pub(crate) fn is_walkable_entry(entry: &walkdir::DirEntry) -> bool {
         return true;
     }
     let name = entry.file_name().to_str().unwrap_or("");
-    !(name.starts_with('.')
-        || name == "node_modules"
-        || name == "target"
-        || name == "dist"
-        || name == "build")
+    !is_excluded_dir_name(name)
 }
 
 /// Read the component/composite declarations from
