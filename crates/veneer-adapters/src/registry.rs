@@ -163,7 +163,7 @@ enum SourceFileKind {
 
 /// A single discovered export from a .classes.ts file.
 #[derive(Debug)]
-struct DiscoveredExport {
+struct DiscoveredClassDeclaration {
     name: String,
     shape: ExportShape,
     /// `prefix-*` patterns for class tokens the export composes
@@ -215,7 +215,7 @@ impl ExportRole {
 /// This is the core of the discovery approach: instead of looking for
 /// specific variable names, we read every `export const` and determine
 /// its shape (flat record, nested record, string, array, object).
-fn discover_exports(source: &str, file_hint: &str) -> Vec<DiscoveredExport> {
+fn discover_class_declarations(source: &str, file_hint: &str) -> Vec<DiscoveredClassDeclaration> {
     let allocator = Allocator::default();
     let source_type = SourceType::ts();
     let ret = Parser::new(&allocator, source, source_type).parse();
@@ -236,42 +236,59 @@ fn discover_exports(source: &str, file_hint: &str) -> Vec<DiscoveredExport> {
         return Vec::new();
     }
 
-    let mut exports = Vec::new();
+    let mut declarations = Vec::new();
 
     for stmt in &ret.program.body {
-        let Statement::ExportNamedDeclaration(export) = stmt else {
-            continue;
-        };
-        let Some(ref decl) = export.declaration else {
-            continue;
-        };
-        let Declaration::VariableDeclaration(var_decl) = decl else {
-            continue;
-        };
-
-        for declarator in &var_decl.declarations {
-            let name = match &declarator.id.kind {
-                BindingPatternKind::BindingIdentifier(id) => id.name.as_str().to_string(),
+        // A class constant declares classes whether or not it is exported.
+        // rafters keeps `variantClasses` / `sizeClasses` / `baseClasses`
+        // module-private and exposes them through an exported `<name>Classes()`
+        // composer, so walking exports alone finds nothing in a real classes
+        // file and reports the component as having no class data at all.
+        let var_decl = match stmt {
+            Statement::VariableDeclaration(var_decl) => var_decl,
+            Statement::ExportNamedDeclaration(export) => match export.declaration {
+                Some(Declaration::VariableDeclaration(ref var_decl)) => var_decl,
                 _ => continue,
-            };
+            },
+            _ => continue,
+        };
 
-            let Some(ref init) = declarator.init else {
-                continue;
-            };
-
-            let init = unwrap_type_expressions(init);
-
-            if let Some(export) = try_extract_export(&name, init) {
-                exports.push(export);
-            }
-        }
+        collect_class_declarations(var_decl, &mut declarations);
     }
 
-    exports
+    declarations
 }
 
-/// Try to extract a DiscoveredExport from an expression.
-fn try_extract_export(name: &str, expr: &Expression<'_>) -> Option<DiscoveredExport> {
+/// Collect the class declarations one `const`/`let` statement declares, whether
+/// that statement is exported or module-private. Shared by both entry points in
+/// [`discover_class_declarations`] so the two cannot drift apart.
+fn collect_class_declarations(
+    var_decl: &oxc_ast::ast::VariableDeclaration<'_>,
+    declarations: &mut Vec<DiscoveredClassDeclaration>,
+) {
+    for declarator in &var_decl.declarations {
+        let name = match &declarator.id.kind {
+            BindingPatternKind::BindingIdentifier(id) => id.name.as_str().to_string(),
+            _ => continue,
+        };
+
+        let Some(ref init) = declarator.init else {
+            continue;
+        };
+
+        let init = unwrap_type_expressions(init);
+
+        if let Some(declaration) = try_extract_class_declaration(&name, init) {
+            declarations.push(declaration);
+        }
+    }
+}
+
+/// Try to extract a DiscoveredClassDeclaration from an expression.
+fn try_extract_class_declaration(
+    name: &str,
+    expr: &Expression<'_>,
+) -> Option<DiscoveredClassDeclaration> {
     let mut patterns: Vec<String> = Vec::new();
 
     // Try as object expression first (Records and plain objects)
@@ -322,7 +339,7 @@ fn try_extract_export(name: &str, expr: &Expression<'_>) -> Option<DiscoveredExp
             flat_entries
         };
         if !entries.is_empty() {
-            return Some(DiscoveredExport {
+            return Some(DiscoveredClassDeclaration {
                 name: name.to_string(),
                 shape: ExportShape::Record { entries },
                 patterns,
@@ -341,7 +358,7 @@ fn try_extract_export(name: &str, expr: &Expression<'_>) -> Option<DiscoveredExp
         if value.static_classes.is_empty() && value.patterns.is_empty() {
             return None;
         }
-        return Some(DiscoveredExport {
+        return Some(DiscoveredClassDeclaration {
             name: name.to_string(),
             shape: ExportShape::Scalar {
                 value: value.static_classes,
@@ -354,7 +371,7 @@ fn try_extract_export(name: &str, expr: &Expression<'_>) -> Option<DiscoveredExp
     if let Expression::ArrayExpression(arr) = expr {
         let parts = collect_array_string_values(arr);
         if !parts.is_empty() {
-            return Some(DiscoveredExport {
+            return Some(DiscoveredClassDeclaration {
                 name: name.to_string(),
                 shape: ExportShape::Scalar {
                     value: parts.join(" "),
@@ -376,7 +393,7 @@ fn try_extract_export(name: &str, expr: &Expression<'_>) -> Option<DiscoveredExp
         if statics.is_empty() && dynamic.is_empty() {
             return None;
         }
-        return Some(DiscoveredExport {
+        return Some(DiscoveredClassDeclaration {
             name: name.to_string(),
             shape: ExportShape::Scalar {
                 value: statics.join(" "),
@@ -403,7 +420,7 @@ fn try_extract_export(name: &str, expr: &Expression<'_>) -> Option<DiscoveredExp
                                 }
                             })
                             .unwrap_or_else(|| " ".to_string());
-                        return Some(DiscoveredExport {
+                        return Some(DiscoveredClassDeclaration {
                             name: name.to_string(),
                             shape: ExportShape::Scalar {
                                 value: parts.join(&sep),
@@ -444,7 +461,7 @@ fn collect_array_string_values(arr: &oxc_ast::ast::ArrayExpression<'_>) -> Vec<S
 /// was found. Never rejects a file for missing a specific export name.
 fn build_structure_from_exports(
     component_name: &str,
-    exports: Vec<DiscoveredExport>,
+    exports: Vec<DiscoveredClassDeclaration>,
 ) -> Option<ComponentStructure> {
     if exports.is_empty() {
         return None;
@@ -629,7 +646,7 @@ fn extract_from_source(
         SourceFileKind::ClassesTs => {
             let stem = filename.strip_suffix(".classes.ts").unwrap_or("unknown");
             let component_name = kebab_to_pascal(stem);
-            let exports = discover_exports(source, filename);
+            let exports = discover_class_declarations(source, filename);
             let structure = build_structure_from_exports(&component_name, exports)
                 .ok_or(TransformError::MissingVariants);
 
@@ -1658,8 +1675,65 @@ export const fooBaseClasses = 'inline-flex items-center';
 export const fooDisabledClasses = 'opacity-50';
         "#;
 
-        let exports = discover_exports(source, "test.classes.ts");
+        let exports = discover_class_declarations(source, "test.classes.ts");
         assert_eq!(exports.len(), 3);
+    }
+
+    /// A real rafters `.classes.ts` keeps its class constants MODULE-PRIVATE and
+    /// exposes them only through an exported `<name>Classes()` composer. Walking
+    /// exported declarations alone finds nothing here, which reported 43 of the
+    /// 65 components in the rafters demo app as having no class data at all.
+    ///
+    /// Shape copied from `apps/demo/src/components/ui/badge.classes.ts`: bare
+    /// `const` with a typed key (`Record<BadgeVariant, string>`), not the
+    /// exported `Record<string, string>` the older fixtures model.
+    #[test]
+    fn class_constants_are_found_when_the_source_keeps_them_module_private() {
+        let source = r#"
+import type { BadgeConfig, BadgeSize, BadgeState, BadgeVariant } from '@/components/ui/badge.behavior';
+
+export interface BadgeClassSet {
+  root: string;
+}
+
+const variantClasses: Record<BadgeVariant, string> = {
+  default: 'bg-primary text-primary-foreground',
+  secondary: 'bg-secondary text-secondary-foreground',
+};
+
+const sizeClasses: Record<BadgeSize, string> = {
+  sm: 'px-2 py-0.5 text-label-small',
+  default: 'px-2.5 py-0.5 text-label-small',
+};
+
+const baseClasses = 'inline-flex items-center justify-center rounded-full';
+
+export function badgeClasses(config: BadgeConfig, _state: BadgeState): BadgeClassSet {
+  return {
+    root: `${baseClasses} ${variantClasses[config.variant ?? 'default']} ${sizeClasses[config.size ?? 'default']}`,
+  };
+}
+        "#;
+
+        let declarations = discover_class_declarations(source, "badge.classes.ts");
+        let structure = build_structure_from_exports("Badge", declarations)
+            .expect("a module-private classes file still declares class data");
+
+        assert_eq!(
+            structure.variant_lookup.len(),
+            2,
+            "both variants are declared, exported or not"
+        );
+        assert_eq!(
+            structure.size_lookup.len(),
+            2,
+            "both sizes are declared, exported or not"
+        );
+        assert!(
+            structure.base_classes.contains("rounded-full"),
+            "base classes come from the module-private constant, got {:?}",
+            structure.base_classes
+        );
     }
 
     // ---- FR-VEN-017: component and composite discovery ----
