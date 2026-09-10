@@ -47,6 +47,21 @@ pub struct ComponentStructure {
     /// Observed attributes from props
     pub observed_attributes: Vec<String>,
 
+    /// The root part's classes as the component's own classes function
+    /// resolves them, one entry per `variant/size` the source declares.
+    ///
+    /// A preview that reaches for this never composes anything: it looks up
+    /// the string the source produced for the config on display. Composing
+    /// `base + variantClasses[v] + sizeClasses[s]` in the element instead is
+    /// how a badge came to wear two sizes at once -- `base` is already a
+    /// RESOLVED root, defaults folded in, so re-applying the records stacks a
+    /// second `px-*` on top and the winner is decided by stylesheet order
+    /// rather than by the knob.
+    ///
+    /// Empty when the source declares no parts function; the element then
+    /// falls back to composing, which is all the `.tsx` path has.
+    pub resolved_roots: Vec<(String, String)>,
+
     /// `prefix-*` patterns for classes the component composes dynamically
     /// at render (for example `text-quality-${tint}`). Tailwind tree-shakes
     /// those names from compiled output (bullpen 019f1f4d), so scoping
@@ -193,14 +208,18 @@ impl ReactAdapter {
                 .component_name
                 .unwrap_or_else(|| "Component".to_string()),
             base_classes: state.base_classes.unwrap_or_default(),
-            disabled_classes: state
-                .disabled_classes
-                .unwrap_or_else(|| "opacity-50 pointer-events-none cursor-not-allowed".to_string()),
+            // Undeclared means undeclared. rafters components spell their own
+            // disabled treatment as state variants inside the base string
+            // (`disabled:opacity-50 disabled:cursor-not-allowed`), so a set
+            // invented here is both unsourced and a second answer to a
+            // question the component already answered.
+            disabled_classes: state.disabled_classes.unwrap_or_default(),
             variant_lookup: state.variant_lookup,
             size_lookup: state.size_lookup,
             default_variant,
             default_size,
             observed_attributes: state.observed_attributes,
+            resolved_roots: Vec::new(),
             dynamic_class_patterns,
         })
     }

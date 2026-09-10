@@ -168,6 +168,13 @@ pub fn generate_web_component(
     let base_classes = escape_string(&structure.base_classes);
     let disabled_classes = escape_string(&structure.disabled_classes);
 
+    let root_entries: String = structure
+        .resolved_roots
+        .iter()
+        .map(|(config, classes)| format!("  '{}': '{}',", config, escape_string(classes)))
+        .collect::<Vec<_>>()
+        .join("\n");
+
     format!(
         r#"/**
  * {class_name} - Generated Web Component Preview
@@ -187,6 +194,30 @@ const sizeClasses = {{
 
 const baseClasses = '{base_classes}';
 const disabledClasses = '{disabled_classes}';
+
+// The root part as the component's own classes function resolved it, one
+// entry per config the source declares. Looked up, never recomposed: the
+// strings above are the ingredients that function used, and applying them
+// again on top of its result is how one element came to carry two sizes.
+const resolvedRoots = {{
+{root_entries}
+}};
+
+function resolveRoot(variant, size) {{
+  const exact = resolvedRoots[variant + '/' + size];
+  if (exact !== undefined) return exact;
+  const fallback = resolvedRoots['{default_variant}/{default_size}'];
+  if (fallback !== undefined) return fallback;
+  // No parts function in this source -- compose, which is all the component
+  // module path ever had.
+  return [
+    baseClasses,
+    variantClasses[variant] ?? variantClasses['{default_variant}'],
+    sizeClasses[size] ?? sizeClasses['{default_size}'],
+  ]
+    .filter(Boolean)
+    .join(' ');
+}}
 
 export class {class_name} extends HTMLElement {{
   static observedAttributes = [{attrs_array}];
@@ -218,9 +249,7 @@ export class {class_name} extends HTMLElement {{
     const isDisabled = disabled || loading;
 
     const classes = [
-      baseClasses,
-      variantClasses[variant] ?? variantClasses['{default_variant}'],
-      sizeClasses[size] ?? sizeClasses['{default_size}'],
+      resolveRoot(variant, size),
       isDisabled ? disabledClasses : '',
     ]
       .filter(Boolean)
@@ -387,6 +416,7 @@ mod tests {
             default_variant: "primary".to_string(),
             default_size: "md".to_string(),
             observed_attributes: vec!["variant".to_string(), "size".to_string()],
+            resolved_roots: Vec::new(),
             dynamic_class_patterns: vec![],
         };
 
@@ -555,6 +585,61 @@ mod tests {
         assert!(error.to_string().contains("Button"));
     }
 
+    /// A component whose source declares its parts hands the preview one
+    /// resolved string per config, and the element must WEAR that string
+    /// rather than rebuild it. The fixture makes the difference observable:
+    /// `base_classes` is a root already resolved at the default size, so a
+    /// preview that also applies `sizeClasses[size]` puts two `px-*` on one
+    /// element and lets stylesheet order pick the winner.
+    #[test]
+    fn a_declared_root_is_looked_up_rather_than_recomposed() {
+        let mut structure = make_full_structure();
+        structure.base_classes = "inline-flex items-center h-10 px-4".to_string();
+        structure.resolved_roots = vec![
+            (
+                "primary/md".to_string(),
+                "inline-flex items-center bg-primary h-10 px-4".to_string(),
+            ),
+            (
+                "primary/lg".to_string(),
+                "inline-flex items-center bg-primary h-12 px-6".to_string(),
+            ),
+        ];
+
+        let output = generate_web_component("button-preview", &structure, "button");
+
+        assert!(
+            output.contains("resolveRoot(variant, size),"),
+            "the rendered class list must come from the resolved lookup"
+        );
+        assert!(
+            output.contains("'primary/lg': 'inline-flex items-center bg-primary h-12 px-6',"),
+            "each declared config carries the string the source resolved for it"
+        );
+
+        // The defect, asserted where it can fail: whatever the element applies
+        // for a config must not carry two widths.
+        let rendered = output
+            .split("const resolvedRoots = {")
+            .nth(1)
+            .and_then(|rest| rest.split("};").next())
+            .expect("the lookup must be emitted");
+        for row in rendered.lines() {
+            let Some((_, classes)) = row.split_once(": '") else {
+                continue;
+            };
+            let classes = classes.trim_end_matches("',");
+            let widths: Vec<&str> = classes
+                .split_whitespace()
+                .filter(|token| !token.contains(':') && token.starts_with("px-"))
+                .collect();
+            assert!(
+                widths.len() <= 1,
+                "config {row:?} carries conflicting widths {widths:?}"
+            );
+        }
+    }
+
     fn make_full_structure() -> ComponentStructure {
         ComponentStructure {
             name: "Button".to_string(),
@@ -578,6 +663,7 @@ mod tests {
                 "disabled".to_string(),
                 "loading".to_string(),
             ],
+            resolved_roots: Vec::new(),
             dynamic_class_patterns: vec![],
         }
     }

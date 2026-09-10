@@ -595,11 +595,12 @@ fn build_structure_from_exports(
         variant_lookup,
         size_lookup,
         base_classes: normalize_whitespace(&base_classes),
-        disabled_classes: disabled_classes
-            .unwrap_or_else(|| "opacity-50 pointer-events-none cursor-not-allowed".to_string()),
+        // Undeclared means undeclared -- see the note in react.rs.
+        disabled_classes: disabled_classes.unwrap_or_default(),
         default_variant,
         default_size,
         observed_attributes,
+        resolved_roots: Vec::new(),
         dynamic_class_patterns,
     })
 }
@@ -677,6 +678,7 @@ fn extract_from_source(
                     if let Some(size) = parts.declared_config.get("size") {
                         structure.default_size = size.clone();
                     }
+                    structure.resolved_roots = resolve_roots_per_config(stem, source, &structure);
                 }
                 structure
             });
@@ -710,6 +712,56 @@ fn extract_from_source(
 /// not a component source candidate at all (wrong extension, test/story
 /// file); otherwise the declared name plus the structure or the named
 /// reason it is not generatable.
+/// Ask the component's own classes function for its root part once per
+/// `variant/size` it declares, so a preview can look up the string the source
+/// produced instead of rebuilding it from the records.
+///
+/// Only configs the source declares are asked for: the keys come from the
+/// records the file itself defines. A component declaring neither dimension
+/// still gets its one resting-state entry, which is what a preview with no
+/// knobs displays.
+fn resolve_roots_per_config(
+    stem: &str,
+    source: &str,
+    structure: &ComponentStructure,
+) -> Vec<(String, String)> {
+    let variants: Vec<&str> = if structure.variant_lookup.is_empty() {
+        vec![structure.default_variant.as_str()]
+    } else {
+        structure
+            .variant_lookup
+            .iter()
+            .map(|(k, _)| k.as_str())
+            .collect()
+    };
+    let sizes: Vec<&str> = if structure.size_lookup.is_empty() {
+        vec![structure.default_size.as_str()]
+    } else {
+        structure
+            .size_lookup
+            .iter()
+            .map(|(k, _)| k.as_str())
+            .collect()
+    };
+
+    let mut roots = Vec::new();
+    for variant in &variants {
+        for size in &sizes {
+            let mut config = std::collections::BTreeMap::new();
+            config.insert("variant".to_string(), (*variant).to_string());
+            config.insert("size".to_string(), (*size).to_string());
+            let Some(parts) = crate::class_parts::read_class_parts_for(stem, source, &config)
+            else {
+                continue;
+            };
+            if let Some(root) = parts.root() {
+                roots.push((format!("{variant}/{size}"), root.to_string()));
+            }
+        }
+    }
+    roots
+}
+
 pub(crate) fn extract_component_candidate(
     path: &Path,
     source: &str,
