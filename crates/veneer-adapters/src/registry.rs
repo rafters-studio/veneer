@@ -665,6 +665,18 @@ fn extract_from_source(
                     if let Some(root) = parts.root() {
                         structure.base_classes = root.to_string();
                     }
+                    // The root part above was resolved AT these defaults, so
+                    // the preview has to start at them too. Taking the first
+                    // key of each record instead puts the knob on one config
+                    // while the classes it wears were resolved for another --
+                    // badge's sizes begin at `sm`, its declared default is
+                    // `default`, and the preview wore both at once.
+                    if let Some(variant) = parts.declared_config.get("variant") {
+                        structure.default_variant = variant.clone();
+                    }
+                    if let Some(size) = parts.declared_config.get("size") {
+                        structure.default_size = size.clone();
+                    }
                 }
                 structure
             });

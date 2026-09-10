@@ -42,6 +42,13 @@ pub struct ClassParts {
     /// that silently vanishes is indistinguishable from one that does not
     /// exist.
     pub unresolved: Vec<(String, String)>,
+    /// The config the classes function declares defaults for, as
+    /// `variant -> "default"`, read from the consts it opens with
+    /// (`const size = config.size ?? 'default'`). This is the component's
+    /// own statement of what it renders when given nothing, and it is the
+    /// only honest source for a preview's starting knob positions: a
+    /// record's first entry is insertion order, not a default.
+    pub declared_config: BTreeMap<String, String>,
 }
 
 impl ClassParts {
@@ -244,13 +251,21 @@ pub fn read_class_parts(source: &str, defaults: &BTreeMap<String, String>) -> Op
     }
 
     let (returned, body_locals) = classes_function_return(&ret.program.body, &locals)?;
+    let mut parts = ClassParts::default();
     // Consts declared INSIDE the classes function are where several
-    // components assemble their parts (`const root = [...].join(' ')`).
+    // components assemble their parts (`const root = [...].join(' ')`), and
+    // where the component states its own defaults (`const size = config.size
+    // ?? 'default'`). A module constant of the same name never shadows one:
+    // the function's binding is what the return expression actually reads.
     for (name, local) in body_locals {
+        if !locals.contains_key(&name) {
+            if let Local::Text(text) = &local {
+                parts.declared_config.insert(name.clone(), text.clone());
+            }
+        }
         locals.entry(name).or_insert(local);
     }
 
-    let mut parts = ClassParts::default();
     for property in &returned.properties {
         let ObjectPropertyKind::ObjectProperty(property) = property else {
             continue;
@@ -446,7 +461,7 @@ fn text_of(
         Expression::ComputedMemberExpression(member) => {
             match local_of(&member.object, locals, defaults)? {
                 Local::Record(entries) => {
-                    let key = key_text(&member.expression, defaults);
+                    let key = key_text(&member.expression, locals, defaults);
                     let picked = match key {
                         Some(key) => entries
                             .iter()
@@ -510,7 +525,7 @@ fn local_of(
             let Local::Record(entries) = local_of(&member.object, locals, defaults)? else {
                 return None;
             };
-            let key = key_text(&member.expression, defaults);
+            let key = key_text(&member.expression, locals, defaults);
             match key {
                 Some(key) => entries
                     .iter()
@@ -535,13 +550,29 @@ fn local_of(
 
 /// The key an index expression selects: a literal, a declared default, or
 /// the right-hand side of `config.x ?? 'default'`.
-fn key_text(expr: &Expression<'_>, defaults: &BTreeMap<String, String>) -> Option<String> {
+fn key_text(
+    expr: &Expression<'_>,
+    locals: &BTreeMap<String, Local>,
+    defaults: &BTreeMap<String, String>,
+) -> Option<String> {
     match expr {
         Expression::StringLiteral(literal) => Some(literal.value.to_string()),
-        Expression::Identifier(ident) => defaults.get(ident.name.as_str()).cloned(),
-        Expression::LogicalExpression(logical) => {
-            key_text(&logical.right, defaults).or_else(|| key_text(&logical.left, defaults))
-        }
+        // `variantClasses[variant]`. `defaults` is the config the caller asked
+        // to render and wins outright. Failing that, the identifier is usually
+        // a const the classes function declares one line above the return --
+        // `const size = config.size ?? 'default'` -- which states the
+        // component's own default. Reading it beats falling through to the
+        // record's first entry, which is insertion order wearing a default's
+        // name: badge's sizes begin at `sm` while the source declares
+        // `default`.
+        Expression::Identifier(ident) => defaults.get(ident.name.as_str()).cloned().or_else(|| {
+            match locals.get(ident.name.as_str()) {
+                Some(Local::Text(text)) => Some(text.clone()),
+                _ => None,
+            }
+        }),
+        Expression::LogicalExpression(logical) => key_text(&logical.right, locals, defaults)
+            .or_else(|| key_text(&logical.left, locals, defaults)),
         Expression::StaticMemberExpression(member) => {
             defaults.get(member.property.name.as_str()).cloned()
         }
@@ -565,6 +596,66 @@ mod tests {
 
     fn no_defaults() -> BTreeMap<String, String> {
         BTreeMap::new()
+    }
+
+    /// The component states its default in the const it opens with, and that
+    /// default is deliberately NOT the record's first entry here -- the same
+    /// shape as the real badge, whose sizes begin at `sm` while the source
+    /// declares `default`. Falling through to the first entry resolves the
+    /// root part at a config the component never renders by itself.
+    #[test]
+    fn a_declared_default_beats_the_records_first_entry() {
+        let source = r#"
+const sizeClasses: Record<BadgeSize, string> = {
+  sm: 'px-2 py-0.5',
+  default: 'px-2.5 py-0.5',
+  lg: 'px-3 py-1',
+};
+
+const baseClasses = 'inline-flex rounded-full';
+
+export function badgeClasses(config: BadgeConfig): BadgeClassSet {
+  const size = config.size ?? 'default';
+  return { root: `${baseClasses} ${sizeClasses[size]}` };
+}
+        "#;
+
+        let parts = read_class_parts(source, &no_defaults()).expect("parts must read");
+
+        assert_eq!(
+            parts.root(),
+            Some("inline-flex rounded-full px-2.5 py-0.5"),
+            "root must resolve at the declared default, not the first key"
+        );
+        assert_eq!(
+            parts.declared_config.get("size").map(String::as_str),
+            Some("default"),
+            "the declared default is reported so the preview can start there"
+        );
+    }
+
+    /// An explicit request outranks the source's default: this is how a
+    /// preview asks for one knob position rather than the resting state.
+    #[test]
+    fn a_requested_config_beats_the_declared_default() {
+        let source = r#"
+const sizeClasses: Record<BadgeSize, string> = {
+  sm: 'px-2 py-0.5',
+  default: 'px-2.5 py-0.5',
+  lg: 'px-3 py-1',
+};
+
+export function badgeClasses(config: BadgeConfig): BadgeClassSet {
+  const size = config.size ?? 'default';
+  return { root: sizeClasses[size] };
+}
+        "#;
+
+        let mut asked = BTreeMap::new();
+        asked.insert("size".to_string(), "lg".to_string());
+
+        let parts = read_class_parts(source, &asked).expect("parts must read");
+        assert_eq!(parts.root(), Some("px-3 py-1"));
     }
 
     const AVATAR: &str = r#"
