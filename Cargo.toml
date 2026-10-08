@@ -44,6 +44,11 @@ walkdir = "2"
 # Filesystem watching (watch mode, FR-VEN-026)
 notify = "8"
 
+# BDD acceptance scenarios (dev-dependencies only)
+rstest = "0.26"
+rstest-bdd = "0.6"
+rstest-bdd-macros = "0.6"
+
 # Crate dependencies
 veneer-adapters = { path = "crates/veneer-adapters" }
 

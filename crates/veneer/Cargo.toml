@@ -22,3 +22,6 @@ veneer-adapters = { workspace = true }
 
 [dev-dependencies]
 tempfile = "3"
+rstest = { workspace = true }
+rstest-bdd = { workspace = true }
+rstest-bdd-macros = { workspace = true }
