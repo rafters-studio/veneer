@@ -12,22 +12,21 @@ A Rust workspace with two crates, on the stable toolchain:
 
 - `crates/veneer`: the CLI, with two commands.
   - `veneer extract --project <path>` reads a rafters project and writes its documentation.
-  - `veneer watch --project <path>` runs in the foreground and re-runs the same derivation when a watched input changes. It has no server, no hot reload and no daemon.
-- `crates/veneer-adapters`: the library the CLI calls. It reads component source with oxc (`react.rs`, `registry.rs`, `rafters_source.rs`), turns each component into a Web Component class (`generator.rs`), compiles its intelligence and constraints (`intelligence.rs`, `artifact.rs`), assesses coverage (`coverage.rs`), and writes pages (`mdx.rs`).
+  - `veneer watch --project <path>` runs in the foreground and, after a debounced file change (`--debounce-ms`, default 300), rewrites the `.rafters/veneer/` jsonl files. It does not write pages or re-read `veneer.json`; only `extract` does. It has no server, no hot reload and no daemon.
+- `crates/veneer-adapters`: the library the CLI calls. It reads component source with oxc (`react.rs`, `registry.rs`, `rafters_source.rs`), turns each component into a Web Component class (`generator.rs`), compiles its intelligence and constraints (`intelligence.rs`, `artifact.rs`), assesses coverage (`coverage.rs`), and generates page text (`mdx.rs`). `extract.rs` writes the files.
 
 ### What `extract` does
 
 1. Names the mode from what the project root contains, never from a flag (`mode.rs`). A component matrix plus `.behavior.ts` files means the rafters monorepo (default mode); their absence means an installed consumer project (sidecar mode).
-2. Picks the source reader from `componentTarget` in `.rafters/config.rafters.json`. A framework with no adapter is reported, not guessed at.
-3. Reads the optional `veneer.json` at the project root (`veneer_config.rs`). A missing file means defaults; a malformed one is an error naming the file and field.
-4. Writes `docs.jsonl` and `index.jsonl` to `<project>/.rafters/veneer/`, from one assessment pass.
-5. Writes one page per component to `<project>/<outputDir>/components/` (`outputDir` defaults to `docs`). A component that renders gets an MDX page plus a preview file. One that does not gets a page marked `status: not-yet-documented` with the reason, never a blank.
+2. Reads the optional `veneer.json` at the project root (`veneer_config.rs`). A missing file means defaults; a malformed one is an error naming the file and field.
+3. Discovers components and writes `docs.jsonl` and `index.jsonl` to `<project>/.rafters/veneer/`, from one assessment pass. Discovery picks the source reader from `componentTarget` in `.rafters/config.rafters.json`; a framework with no adapter is reported, not guessed at.
+4. Writes one page per component to `<project>/<outputDir>/components/` (`outputDir` defaults to `docs`). A component that renders gets an MDX page plus a preview file. One that does not gets a page marked `status: not-yet-documented` with the reason, never a blank.
 
 ## Operations
 
 | Command                                           | What it does                   |
 | ------------------------------------------------- | ------------------------------ |
-| `cargo build`                                     | Builds the workspace           |
+| `cargo check`                                     | Type-checks the workspace      |
 | `cargo test`                                      | Runs the tests                 |
 | `cargo fmt --all -- --check`                      | Format check                   |
 | `cargo clippy --all-targets -- -D warnings`       | Lint; warnings fail            |
@@ -38,9 +37,8 @@ CI (`.github/workflows/ci.yml`) runs check, fmt, clippy, tests and `shellcheck i
 ## Rules that hold across the rebuild
 
 - **Read, never infer.** When rafters publishes a fact as data (tokens, intelligence, DO/NEVER constraints, prop domains), read it. Never derive meaning from names or source shape.
-- **Run the system's code, never reimplement it.** Validation uses the consumer project's own Zod, not a copy of its logic.
+- **Run the system's code, never reimplement it.** When veneer needs a project's logic, it calls that logic rather than copying it.
 - **Web Components are the preview contract.** A site renders a preview without React, Vue or Solid at runtime.
-- **The gitpress contract.** Generated components expose props as typed camelCase property setters that re-render on set, and emit a `veneer:prop-change` event (bubbles, composed, payload `{prop, value}`, not fired on a programmatic set). Any change to the Web Component pipeline keeps both.
 - Conventions: no emoji in code, comments, commits or docs; pnpm only for JS/TS; no `any` in TypeScript; UUIDv7 for IDs. Branch first and never commit to `main`.
 
 ## Outside this repo
