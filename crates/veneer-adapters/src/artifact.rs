@@ -272,8 +272,8 @@ pub fn write_artifact(
         path: path.clone(),
         reason: error.to_string(),
     };
-    fs::create_dir_all(output_dir).map_err(&write_error)?;
-    fs::write(&path, json).map_err(&write_error)?;
+    fs::create_dir_all(output_dir).map_err(write_error)?;
+    fs::write(&path, json).map_err(write_error)?;
     Ok(path)
 }
 
