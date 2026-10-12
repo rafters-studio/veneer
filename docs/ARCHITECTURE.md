@@ -1,98 +1,53 @@
 # Architecture
 
-## What veneer is
+Veneer turns a rafters project's components into documentation that any site can render: framework-less Web Component previews (Shadow DOM with adopted style sheets) and structured records describing each component. It is being rebuilt, and nothing here is fixed before 1.0.
 
-A documentation engine that emits MDX for consumption by an Astro site. One command today (`extract`) and a component-transformation library (`veneer-adapters`) that turns framework-specific JSX into framework-less Web Components.
+## The rebuild
 
-## Workspace
+On 2026-10-09 every open issue was closed as not planned, because veneer is being retooled from a fresh intent: watch a project, map it, run checks on every save, and compile composites to Astro, React 19 and Web Components. That intent is not written yet. Until it lands, treat the code below as the previous build. It will be reused only where the new spec calls for it.
 
-```
-crates/
-├── veneer            CLI binary — entry, arg parsing, command dispatch
-├── veneer-adapters   JSX → Web Component (React adapter), scope_css
-└── veneer-docs       CLI --help parser, sidebar generation, MDX skeletons
-```
+## What exists
 
-### Dependency graph
+A Rust workspace with two crates, on the stable toolchain:
 
-```
-veneer (CLI)
-  ├── veneer-adapters
-  └── veneer-docs
-```
+- `crates/veneer`: the CLI, with two commands.
+  - `veneer extract --project <path>` reads a rafters project and writes its documentation.
+  - `veneer watch --project <path>` runs in the foreground and re-runs the same derivation when a watched input changes. It has no server, no hot reload and no daemon.
+- `crates/veneer-adapters`: the library the CLI calls. It reads component source with oxc (`react.rs`, `registry.rs`, `rafters_source.rs`), turns each component into a Web Component class (`generator.rs`), compiles its intelligence and constraints (`intelligence.rs`, `artifact.rs`), assesses coverage (`coverage.rs`), and writes pages (`mdx.rs`).
 
-No cross-dependencies between the two library crates.
+### What `extract` does
 
-## veneer-adapters
+1. Names the mode from what the project root contains, never from a flag (`mode.rs`). A component matrix plus `.behavior.ts` files means the rafters monorepo (default mode); their absence means an installed consumer project (sidecar mode).
+2. Picks the source reader from `componentTarget` in `.rafters/config.rafters.json`. A framework with no adapter is reported, not guessed at.
+3. Reads the optional `veneer.json` at the project root (`veneer_config.rs`). A missing file means defaults; a malformed one is an error naming the file and field.
+4. Writes `docs.jsonl` and `index.jsonl` to `<project>/.rafters/veneer/`, from one assessment pass.
+5. Writes one page per component to `<project>/<outputDir>/components/` (`outputDir` defaults to `docs`). A component that renders gets an MDX page plus a preview file. One that does not gets a page marked `status: not-yet-documented` with the reason, never a blank.
 
-Transforms framework-specific component source into vanilla Web Components so previews work in any site with zero runtime.
+## Operations
 
-Responsibilities:
+| Command                                           | What it does                   |
+| ------------------------------------------------- | ------------------------------ |
+| `cargo build`                                     | Builds the workspace           |
+| `cargo test`                                      | Runs the tests                 |
+| `cargo fmt --all -- --check`                      | Format check                   |
+| `cargo clippy --all-targets -- -D warnings`       | Lint; warnings fail            |
+| `cargo run -p veneer -- extract --project <path>` | Runs extract against a project |
 
-- **React adapter** (`react.rs`) — parses `.tsx` / `.classes.ts` via oxc, extracts variants/sizes/base classes, emits an ES6 class extending `HTMLElement` with Shadow DOM
-- **scope_css** (`scope.rs`) — scopes Tailwind-generated CSS to a specific component's used classes, so a preview on a docs page cannot leak styles into the page shell
-- **Registry discovery** (`registry.rs`) — walks a component source tree to find declared components
-- **TS helpers** (`ts_helpers.rs`) — shared oxc utilities used by react.rs and registry.rs
+CI (`.github/workflows/ci.yml`) runs check, fmt, clippy, tests and `shellcheck install.sh`.
 
-## veneer-docs
+## Rules that hold across the rebuild
 
-Parses a clap binary's `--help` tree and generates MDX.
+- **Read, never infer.** When rafters publishes a fact as data (tokens, intelligence, DO/NEVER constraints, prop domains), read it. Never derive meaning from names or source shape.
+- **Run the system's code, never reimplement it.** Validation uses the consumer project's own Zod, not a copy of its logic.
+- **Web Components are the preview contract.** A site renders a preview without React, Vue or Solid at runtime.
+- **The gitpress contract.** Generated components expose props as typed camelCase property setters that re-render on set, and emit a `veneer:prop-change` event (bubbles, composed, payload `{prop, value}`, not fired on a programmatic set). Any change to the Web Component pipeline keeps both.
+- Conventions: no emoji in code, comments, commits or docs; pnpm only for JS/TS; no `any` in TypeScript; UUIDv7 for IDs. Branch first and never commit to `main`.
 
-Responsibilities:
+## Outside this repo
 
-- **`cli_parser.rs`** — reads `--help` stdout, recursively walks subcommands, builds a typed `Command` tree with flags, usage, and required-flag detection
-- **`reference.rs`** — renders the command tree into per-command MDX pages under `reference/`
-- **`skeleton.rs`** — generates editorial MDX pages (getting-started, architecture, one per command group) with veneer-editorial slots
-- **`sidebar.rs`** — produces a JSONL file the consuming Astro site imports to build nav
+- **rafters** owns tokens, components, intelligence and lint rules. Veneer reads them as input.
+- **shingle** hosts the sites that render veneer's output (rafters.studio and others).
 
-## veneer (CLI)
+## The previous version
 
-Thin clap wrapper. Dispatches to `commands::extract::run`.
-
-## Data flow
-
-```
-CLI binary (any clap app)
-    │
-    └─ --help stdout
-           │
-           ▼
-   ┌───────────────┐
-   │ veneer-docs   │  parse, skeleton, sidebar
-   └───────┬───────┘
-           │
-           ▼
-   .mdx files + sidebar.jsonl
-           │
-           ▼
-   Astro site consumes via layout + import
-```
-
-## Web Component pipeline (library, not yet wired into a command)
-
-```
-React source (.tsx + .classes.ts)
-    │
-    ▼
-┌─────────────────┐
-│ veneer-adapters │  parse, extract variants, emit WC class
-└───────┬─────────┘
-        │
-        ▼
-ES6 class extending HTMLElement
-with Shadow DOM + scoped styles
-```
-
-The scope_css function takes the full Tailwind output CSS and the set of classes used by a given component, and returns a minimal stylesheet containing only rules that match those classes (plus their `@keyframes`, custom properties, and `@supports` / `@media` parents). This keeps Shadow DOM style sheets small and prevents cross-component bleed.
-
-## What lives outside this repo
-
-- **Target sites** — Astro sites (rafters.studio, runlegion.dev, huttspawn.com, gitpress.app) consume the MDX veneer emits. Veneer has no opinion on the site's layout components beyond the `--layout` frontmatter pointer.
-- **Service design artifacts** — moved to a private premium repo.
-- **Registry / component intelligence enrichment** — planned, not yet built. See issues #24–#27.
-
-## Design invariants
-
-- **Framework-less previews.** Any site should be able to render a veneer preview without running React, Vue, or Solid at runtime. Web Components are the contract.
-- **No inference when data exists.** If intelligence (cognitive load, DO/NEVER, token usage) lives as structured data, read it. Don't guess from source.
-- **MDX as the interchange format.** Astro is the rendering target. Emit MDX with layout pointers; let the site own layout, nav, and typography.
+`../veneer-archive` is a copy of veneer as it stood before the rebuild. Read it to see how something worked before. Its `README.md` and `docs/` describe an earlier version still (the MDX-from-`--help` engine and a `veneer-docs` crate), so check the code itself.
