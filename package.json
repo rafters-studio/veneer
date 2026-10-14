@@ -1,0 +1,11 @@
+{
+  "name": "veneer-workspace",
+  "private": true,
+  "packageManager": "pnpm@12.11.2",
+  "scripts": {
+    "build": "pnpm -r build"
+  },
+  "devDependencies": {
+    "@rafters/toolchain": "catalog:"
+  }
+}

@@ -1,0 +1,6 @@
+id = "veneer"
+name = "veneer"
+description = "rafters check in the editor, through the veneer language server"
+version = "0.1.0"
+schema_version = 1
+repository = "https://github.com/rafters-studio/veneer"

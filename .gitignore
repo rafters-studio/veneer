@@ -22,3 +22,10 @@ Thumbs.db
 
 # Claude Code machine-local settings
 .claude/settings.local.json
+
+# Node
+node_modules/
+*.node
+
+# fastembed model cache (legion)
+.fastembed_cache/
