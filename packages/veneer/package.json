@@ -1,0 +1,19 @@
+{
+  "name": "veneer",
+  "version": "0.1.0",
+  "description": "Docs, rafters check and the composite compile for rafters projects",
+  "license": "MIT",
+  "repository": "https://github.com/rafters-studio/veneer",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": ["index.js", "index.d.ts", "*.node"],
+  "napi": {
+    "binaryName": "veneer"
+  },
+  "scripts": {
+    "build": "napi build --platform --release --manifest-path ../../crates/veneer-node/Cargo.toml --output-dir ."
+  },
+  "devDependencies": {
+    "@napi-rs/cli": "^3"
+  }
+}

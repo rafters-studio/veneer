@@ -1,0 +1,11 @@
+packages:
+  - packages/*
+  - editors/*
+configDependencies:
+  "@rafters/toolchain": 0.1.3
+
+catalog:
+  "@rafters/toolchain": ^0.1.3
+
+minimumReleaseAgeExclude:
+  - "@rafters/toolchain"

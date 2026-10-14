@@ -1,0 +1,13 @@
+{
+  "name": "veneer-vscode",
+  "displayName": "veneer",
+  "description": "rafters check in the editor, through the veneer language server",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "repository": "https://github.com/rafters-studio/veneer",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": ["Linters"]
+}

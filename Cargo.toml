@@ -3,6 +3,9 @@ resolver = "2"
 members = [
     "crates/veneer",
     "crates/veneer-adapters",
+    "crates/veneer-check",
+    "crates/veneer-lsp",
+    "crates/veneer-node",
 ]
 
 [workspace.package]
@@ -44,8 +47,14 @@ walkdir = "2"
 # Filesystem watching (watch mode, FR-VEN-026)
 notify = "8"
 
+# Node binding
+napi = { version = "3", default-features = false, features = ["napi4"] }
+napi-derive = "3"
+napi-build = "2"
+
 # Crate dependencies
 veneer-adapters = { path = "crates/veneer-adapters" }
+veneer-check = { path = "crates/veneer-check" }
 
 [profile.release]
 strip = true

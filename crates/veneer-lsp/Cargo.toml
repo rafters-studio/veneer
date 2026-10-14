@@ -1,0 +1,14 @@
+[package]
+name = "veneer-lsp"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Language server for .rafter files and rafters code, built on veneer-check"
+
+[[bin]]
+name = "veneer-lsp"
+path = "src/main.rs"
+
+[dependencies]
+veneer-check = { workspace = true }
