@@ -1,0 +1,8 @@
+---
+interface Props {
+  title?: string;
+  tone?: 'b' | 'a';
+}
+const { title = 'Hello', tone } = Astro.props;
+---
+<h2 data-tone={tone}>{title}</h2>
