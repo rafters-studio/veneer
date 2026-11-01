@@ -1,0 +1,44 @@
+---
+import Base from '@/src/layouts/Base.astro';
+import Container from '@/components/ui/container.astro';
+import Grid from '@/components/ui/grid.astro';
+import H1 from '@/components/ui/typography-h1.astro';
+import P from '@/components/ui/typography-p.astro';
+import Button from "@/components/ui/button.astro";
+
+const githubUrl = 'https://github.com/rafters-studio/kelex';
+// C3 other
+const t11Plain: number = "x";
+---
+
+<Base title="Kelex" description="Kelex is a schema-first code generator in the Rafters Studio ecosystem.">
+  <Container size="6xl" padding="16" gap="12">
+    <Grid columns={2} gap="4">
+      <a href="/kelex/">Kelex</a>
+      <Grid columns={2} gap="8">
+        <a href="/kelex/docs/">Docs</a>
+        <a href={githubUrl}>GitHub</a>
+      </Grid>
+    </Grid>
+
+    <Container gap="8">
+      <!-- C1 rafters -->
+      <Button tone="x">Undeclared</Button>
+      <!-- C2 rafters -->
+      <Button variant="nope">Bad value</Button>
+      <H1 size="display-large" tracking="tight">
+        Kelex
+      </H1>
+
+      <P size="body-large" color="muted-foreground">
+        A schema-first code generator in the Rafters Studio ecosystem. Kelex has
+        no interface of its own: its output is the material other tools render.
+      </P>
+
+      <P size="body-medium" color="muted-foreground">
+        This section is a scaffold. Documentation and reference material land under
+        <a href="/kelex/docs/">docs</a> as the surface fills in.
+      </P>
+    </Container>
+  </Container>
+</Base>

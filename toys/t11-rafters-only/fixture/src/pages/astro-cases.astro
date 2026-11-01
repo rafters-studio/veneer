@@ -1,0 +1,50 @@
+---
+import Button from '@/components/ui/button.astro';
+import B from '@/components/ui/button.astro';
+import Card from '@/components/ui/card.astro';
+import MyWidget from '@/components/ui/my-widget.astro';
+import { Button as BB } from '@/components/ui/index';
+import * as UI from '@/components/ui/index';
+import LocalButton from '@/widgets/button.astro';
+import Wrap from '@/widgets/wrap.astro';
+import { Button as ThirdButton } from 'third-party-ui';
+const Tag = Button;
+const wrong = { nope: 1 };
+const good = 1;
+// A8 other
+const plain: number = 'x';
+---
+<!-- A1 rafters undeclared prop -->
+<Button tone="x">a</Button>
+<!-- A2 rafters bad value -->
+<Button variant="huge">a</Button>
+<!-- A3 rafters missing required prop -->
+<Card />
+<!-- A4 rafters renamed import -->
+<B tone="x">a</B>
+<!-- A5 rafters through a barrel -->
+<BB tone="x">a</BB>
+<!-- A6 other the project's own Button -->
+<LocalButton tone="x">a</LocalButton>
+<!-- A7 other a third-party Button -->
+<ThirdButton tone="x" />
+<!-- A9 other a type error in a rafters element's children -->
+<Card title="t">{good.nope}</Card>
+<!-- A10 other an undefined name in an attribute value -->
+<Button variant={missing}>a</Button>
+<!-- A11 rafters a bad spread -->
+<Button {...wrong}>a</Button>
+<Wrap>
+<!-- A12 rafters nested inside the project's own component -->
+<Button tone="x">a</Button>
+</Wrap>
+<!-- A13 rafters under componentsPath, not installed -->
+<MyWidget size="c" />
+<!-- A14 rafters namespace import -->
+<UI.Button tone="x">a</UI.Button>
+<!-- A15 rafters a local alias of the component -->
+<Tag tone="x">a</Tag>
+<!-- A16 rafters a deprecated prop -->
+<Button quiet>a</Button>
+<!-- A17 other a plain element -->
+<div nope="1">{plain}{wrong}</div>

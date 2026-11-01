@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "strict": true,
+    "paths": { "@/components/*": ["./src/components/*"], "@/widgets/*": ["./src/widgets/*"] }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.astro"]
+}

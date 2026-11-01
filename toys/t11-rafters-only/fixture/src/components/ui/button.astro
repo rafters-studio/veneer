@@ -1,0 +1,9 @@
+---
+interface Props {
+  variant?: 'default' | 'ghost';
+  /** @deprecated Use variant="ghost". */
+  quiet?: boolean;
+}
+const { variant = 'default' } = Astro.props;
+---
+<button data-variant={variant}><slot /></button>
