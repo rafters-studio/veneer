@@ -47,6 +47,8 @@ async function serve(root: string): Promise<void> {
   const { componentFolders } = config;
   let project = await openProject(root);
   const unsaved = new Map<string, string>();
+  // Files the tsconfig does not take. Remembered, so typing in one does not reopen the project.
+  const outside = new Set<string>();
   const isRoot = (file: string): boolean =>
     project.checker.getRootFileNames().includes(path.join(project.root, file));
 
@@ -56,12 +58,17 @@ async function serve(root: string): Promise<void> {
   };
 
   const lintText = async (file: string, text: string) => {
+    if (outside.has(file)) return [];
     unsaved.set(file, text);
     if (isRoot(file)) {
       project.setUnsaved(file, text);
     } else {
       await reopen();
-      if (!isRoot(file)) return [];
+      if (!isRoot(file)) {
+        outside.add(file);
+        unsaved.delete(file);
+        return [];
+      }
     }
     return lint(project, { componentFolders, files: [file] });
   };
@@ -70,20 +77,26 @@ async function serve(root: string): Promise<void> {
   for await (const raw of createInterface({ input: process.stdin })) {
     const line: Line = JSON.parse(raw);
     const { seq } = line;
-    if ("save" in line) {
-      const { diagnostics } = await save(root);
-      write({ seq, files: Object.groupBy(diagnostics, ({ file }) => file) });
-    } else if ("close" in line) {
-      const file = line.close;
-      unsaved.delete(file);
-      if (isRoot(file)) {
-        // A root with no text left on disk would answer nothing if it were opened again.
-        if (existsSync(path.join(project.root, file))) project.clearUnsaved(file);
-        else await reopen();
+    // One line failing, such as a save with a config typo, must not stop reporting on the rest.
+    try {
+      if ("save" in line) {
+        const { diagnostics } = await save(root);
+        write({ seq, files: Object.groupBy(diagnostics, ({ file }) => file) });
+      } else if ("close" in line) {
+        const file = line.close;
+        unsaved.delete(file);
+        outside.delete(file);
+        if (isRoot(file)) {
+          // A root with no text left on disk would answer nothing if it were opened again.
+          if (existsSync(path.join(project.root, file))) project.clearUnsaved(file);
+          else await reopen();
+        }
+        write({ seq, file, diagnostics: [] });
+      } else {
+        write({ seq, file: line.file, diagnostics: await lintText(line.file, line.text) });
       }
-      write({ seq, file, diagnostics: [] });
-    } else {
-      write({ seq, file: line.file, diagnostics: await lintText(line.file, line.text) });
+    } catch (error) {
+      write({ seq, error: error instanceof Error ? error.message : String(error) });
     }
   }
 }

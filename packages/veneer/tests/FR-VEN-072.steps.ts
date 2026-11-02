@@ -202,7 +202,7 @@ Given(
 );
 
 Given(
-  /^the lint fixture and veneer-lsp started on it, with (?:src\/pages\/brackets\.astro open and its|a) first publish received$/,
+  /^the lint fixture and veneer-lsp started on it, with (?:src\/pages\/brackets\.astro open and its|a) first publish received(?: for src\/pages\/brackets\.astro)?$/,
   { timeout: INSTALL_TIMEOUT_MS + SERVER_MS },
   async function (this: LspWorld) {
     await start(this, ["--worker", WORKER]);
@@ -243,6 +243,21 @@ Given(
     await start(this, []);
   },
 );
+
+Given(
+  /^(\S+) in the copy now holds the text "(.*)"$/,
+  function (this: LspWorld, file: string, text: string) {
+    writeFileSync(join(copyOf(this), file), unescaped(text));
+  },
+);
+
+When(/^the client sends didSave$/, function (this: LspWorld) {
+  assert.ok(this.page, "no file is open");
+  send(this, {
+    method: "textDocument/didSave",
+    params: { textDocument: { uri: uriOf(this, this.page) } },
+  });
+});
 
 When(
   /^the client opens (\S+) with the text on disk and sends didSave$/,
@@ -311,6 +326,18 @@ Then(
         },
       ],
     );
+  },
+);
+
+Then(
+  /^when the client changes (\S+) to the text "(.*)" the server publishes one diagnostic for it$/,
+  { timeout: SERVER_MS },
+  async function (this: LspWorld, file: string, text: string) {
+    assert.equal(this.page, file);
+    const seen = publishesOf(this, file).length;
+    change(this, unescaped(text));
+    const { diagnostics } = await nextPublish(this, file, seen);
+    assert.equal(diagnostics.length, 1, JSON.stringify(diagnostics));
   },
 );
 

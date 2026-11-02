@@ -1,4 +1,4 @@
-# Generated from legion requirement FR-VEN-072, revision 2026-11-02T09:36:42.041445+00:00.
+# Generated from legion requirement FR-VEN-072, revision 2026-11-02T09:39:35.899071+00:00.
 # Do not edit: regenerate with scripts/features.mjs.
 
 Feature: The language server
@@ -51,3 +51,11 @@ Feature: The language server
     When the client opens src/pages/brackets.astro
     Then the server sends one window/showMessage of type 2
     And the marker file does not exist
+
+  @criterion-FR-VEN-072-c10 @module:crates/veneer-lsp
+  Scenario: A failed save warns and reporting goes on
+    Given the lint fixture and veneer-lsp started on it, with a first publish received for src/pages/brackets.astro
+    And .rafters/config.rafters.json in the copy now holds the text "{"
+    When the client sends didSave
+    Then the server sends one window/showMessage of type 2
+    And when the client changes src/pages/brackets.astro to the text "<div class=\"p-[1px]\">a</div>" the server publishes one diagnostic for it

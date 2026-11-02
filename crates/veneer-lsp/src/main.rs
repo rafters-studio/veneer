@@ -258,7 +258,9 @@ impl Server {
             }
         } else if let Some(seq) = line["seq"].as_i64() {
             self.in_flight = false;
-            if let Some(files) = line["files"].as_object() {
+            if let Some(reason) = line["error"].as_str() {
+                self.warn(reason);
+            } else if let Some(files) = line["files"].as_object() {
                 self.publish_save(seq, files);
             } else if let Some(file) = line["file"].as_str() {
                 self.publish(seq, file, list_of(&line["diagnostics"]));
