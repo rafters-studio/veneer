@@ -3,9 +3,12 @@
   "private": true,
   "packageManager": "pnpm@12.11.2",
   "scripts": {
-    "build": "pnpm -r build"
+    "build": "pnpm -r build",
+    "bdd": "cucumber-js"
   },
   "devDependencies": {
-    "@rafters/toolchain": "catalog:"
+    "@cucumber/cucumber": "catalog:",
+    "@rafters/toolchain": "catalog:",
+    "@rafters/veneer": "workspace:*"
   }
 }
