@@ -16,7 +16,10 @@ const SEVERITIES = { 1: "error", 2: "warning", 3: "info", 4: "hint" } as const;
 const require = createRequire(import.meta.url);
 const typescriptPath = require.resolve("typescript");
 // The same module AstroCheck loads from typescriptPath: its own `ts` member is private.
-const ts: typeof TypeScript = require(typescriptPath);
+// matchFiles is internal to TypeScript, which FR-VEN-064 pins exactly.
+const ts: typeof TypeScript & { matchFiles(...args: unknown[]): string[] } = require(
+  typescriptPath,
+);
 
 export class ProjectError extends Error {
   readonly code: "already-open" | "tsconfig-missing" | "bad-path" | "not-root-file" | "closed";
@@ -92,16 +95,48 @@ function constructAstroCheck(root: string): AstroCheck {
   }
 }
 
+// A file system holding only the file, for ts.matchFiles.
+function holdingOnly(file: string) {
+  return (directory: string): { files: string[]; directories: string[] } => {
+    const prefix = directory.endsWith("/") ? directory : `${directory}/`;
+    if (!file.startsWith(prefix)) return { files: [], directories: [] };
+    const [next = "", ...below] = file.slice(prefix.length).split("/");
+    return below.length === 0
+      ? { files: [next], directories: [] }
+      : { files: [], directories: [next] };
+  };
+}
+
 function overlaySys(unsaved: Map<string, { text: string; modified: Date }>): () => void {
   const { sys } = ts;
-  const { readFile, getModifiedTime, fileExists } = sys;
+  const { readFile, getModifiedTime, fileExists, readDirectory } = sys;
   sys.readFile = (file, encoding) => unsaved.get(file)?.text ?? readFile.call(sys, file, encoding);
   sys.getModifiedTime = (file) => unsaved.get(file)?.modified ?? getModifiedTime?.call(sys, file);
   sys.fileExists = (file) => unsaved.has(file) || fileExists.call(sys, file);
+  sys.readDirectory = (directory, extensions, excludes, includes, depth) => {
+    const found = readDirectory.call(sys, directory, extensions, excludes, includes, depth);
+    const taken = [...unsaved.keys()].filter(
+      (file) =>
+        !found.includes(file) &&
+        ts.matchFiles(
+          directory,
+          extensions,
+          excludes,
+          includes,
+          sys.useCaseSensitiveFileNames,
+          sys.getCurrentDirectory(),
+          depth,
+          holdingOnly(file),
+          (name: string) => name,
+        ).length > 0,
+    );
+    return [...found, ...taken];
+  };
   return () => {
     sys.readFile = readFile;
     sys.getModifiedTime = getModifiedTime;
     sys.fileExists = fileExists;
+    sys.readDirectory = readDirectory;
   };
 }
 
@@ -138,7 +173,19 @@ function isProjectRelative(file: string): boolean {
   );
 }
 
-export async function openProject(projectRoot: string): Promise<Project> {
+function badPath(file: string): ProjectError {
+  return new ProjectError("bad-path", `${file} is not a project-relative path with / separators`);
+}
+
+function unsavedEntry(text: string): { text: string; modified: Date } {
+  unsavedChanges += 1;
+  return { text, modified: new Date(-unsavedChanges) };
+}
+
+export async function openProject(
+  projectRoot: string,
+  options: { unsaved?: Record<string, string> } = {},
+): Promise<Project> {
   if (aProjectIsOpen) {
     throw new ProjectError("already-open", "a veneer project is already open in this process");
   }
@@ -146,13 +193,17 @@ export async function openProject(projectRoot: string): Promise<Project> {
   if (!existsSync(path.join(root, "tsconfig.json"))) {
     throw new ProjectError("tsconfig-missing", `tsconfig.json not found at ${root}`);
   }
+  const unsaved = new Map<string, { text: string; modified: Date }>();
+  for (const [file, text] of Object.entries(options.unsaved ?? {})) {
+    if (!isProjectRelative(file)) throw badPath(file);
+    unsaved.set(path.join(root, file), unsavedEntry(text));
+  }
 
   aProjectIsOpen = true;
   const consoleInfo = console.info;
   console.info = (...args: unknown[]) => {
     if (!format(...args).startsWith(NO_INTEGRATION_LINE)) consoleInfo(...args);
   };
-  const unsaved = new Map<string, { text: string; modified: Date }>();
   const restoreSys = overlaySys(unsaved);
   try {
     prepareLanguageServer();
@@ -167,12 +218,7 @@ export async function openProject(projectRoot: string): Promise<Project> {
 
     const rootFile = (file: string): string => {
       if (closed) throw new ProjectError("closed", "the veneer project is closed");
-      if (!isProjectRelative(file)) {
-        throw new ProjectError(
-          "bad-path",
-          `${file} is not a project-relative path with / separators`,
-        );
-      }
+      if (!isProjectRelative(file)) throw badPath(file);
       const absolute = path.join(root, file);
       if (!astroCheck.linter.getRootFileNames().includes(absolute)) {
         throw new ProjectError("not-root-file", `${file} is not a root file of the program`);
@@ -196,8 +242,7 @@ export async function openProject(projectRoot: string): Promise<Project> {
       },
       setUnsaved(file, text) {
         const absolute = rootFile(file);
-        unsavedChanges += 1;
-        unsaved.set(absolute, { text, modified: new Date(-unsavedChanges) });
+        unsaved.set(absolute, unsavedEntry(text));
         astroCheck.linter.fileUpdated(absolute);
       },
       clearUnsaved(file) {

@@ -1,4 +1,4 @@
-# Generated from legion requirement FR-VEN-064, revision 2026-11-02T08:05:49.311428+00:00.
+# Generated from legion requirement FR-VEN-064, revision 2026-11-02T08:57:10.233445+00:00.
 # Do not edit: regenerate with scripts/features.mjs.
 
 Feature: Read: the project as astro check's one TypeScript program
@@ -81,3 +81,16 @@ Feature: Read: the project as astro check's one TypeScript program
     Then its stdout is the line [{"code":"ts(2306)","line":2,"column":17}]
     And its stderr is empty
     And it exits with code 0
+
+  @criterion-FR-VEN-064-c15 @module:packages/veneer
+  Scenario: A page that is not on disk yet can be opened with its text
+    Given the read fixture
+    When the project is opened with openProject and unsaved holding src/pages/new.astro with the text of src/pages/index.astro, its fourth line replaced by `<Card title={1} />`
+    Then diagnostics("src/pages/new.astro") is one diagnostic with code "ts(2322)", severity "error", line 4, column 7, endLine 4, endColumn 12
+    And src/pages/new.astro does not exist on disk
+
+  @criterion-FR-VEN-064-c16 @module:packages/veneer
+  Scenario: A new path the tsconfig does not take is not a root file
+    Given the read fixture
+    When the project is opened with openProject and unsaved holding elsewhere/new.astro with the text "<div />"
+    Then diagnostics("elsewhere/new.astro") rejects with a ProjectError of code "not-root-file"

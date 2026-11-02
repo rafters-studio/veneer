@@ -58,9 +58,12 @@ async function writeWhole(docsPath: string, text: string): Promise<void> {
   }
 }
 
-export async function openOrError(root: string): Promise<Project | VeneerError> {
+export async function openOrError(
+  root: string,
+  unsaved?: Record<string, string>,
+): Promise<Project | VeneerError> {
   try {
-    return await openProject(root);
+    return await openProject(root, { unsaved });
   } catch (error) {
     if (error instanceof ProjectError && error.code === "tsconfig-missing") {
       return { code: error.code, message: error.message };
