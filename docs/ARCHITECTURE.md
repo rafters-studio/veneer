@@ -9,11 +9,12 @@ The intent is legion document `01a058f3`. The requirements are `FR-VEN-061` to `
 1. The package, its scenario runner, CI and release (`FR-VEN-075`).
 2. Read: one TypeScript program across `.astro` and `.tsx`, through astro check's own checker (`FR-VEN-064`).
 3. `writeDocs`: settings, resolving components and writing `docs.jsonl` (`FR-VEN-061`, `FR-VEN-065`, `FR-VEN-074`).
-4. Lint, the composite, compile, the docs pages and the language server. Their requirements are still drafts.
+4. Lint, and `check`, its one entry (`FR-VEN-066`, `FR-VEN-071`).
+5. The composite, compile, the docs pages and the language server. Their requirements are still drafts.
 
 ## What exists
 
-- `packages/veneer`: `@rafters/veneer`, an ES module compiled by `vp pack`. It holds no binary. Its entry exports `openProject`, the read (`FR-VEN-064`), from `src/read.ts`.
+- `packages/veneer`: `@rafters/veneer`, an ES module compiled by `vp pack`. It holds no binary. Its entry exports `check`, the one call for `rafters check`, and the pieces behind it: `openProject`, `writeDocs`, `lint` and `report`. Opening a project never runs its code.
 - `packages/veneer/tests`: each requirement's scenarios, in a feature file generated from the requirement.
 - `crates/veneer-check` and `crates/veneer-lsp`: scaffolds.
 - `editors/`: scaffolds.
