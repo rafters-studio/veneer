@@ -127,7 +127,8 @@ Given(
     );
     manifest.devDependencies.typescript = "7.0.2";
     writeFileSync(file, JSON.stringify(manifest));
-    install(folder, []);
+    // This step adds a dependency, and pnpm defaults to a frozen lockfile under CI.
+    install(folder, ["--no-frozen-lockfile"]);
     this.fixture = folder;
   },
 );
