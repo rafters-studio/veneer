@@ -1,3 +1,5 @@
+export { check } from "./check.ts";
+export type { CheckResult } from "./check.ts";
 export type { Notice, VeneerError } from "./config.ts";
 export { writeDocs } from "./docs.ts";
 export type { DocsResult } from "./docs.ts";
