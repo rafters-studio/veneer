@@ -52,14 +52,20 @@ async function serve(root: string): Promise<void> {
   const isRoot = (file: string): boolean =>
     project.checker.getRootFileNames().includes(path.join(project.root, file));
 
+  // One project opens per process, so a reopen closes first. If the open then fails, the next
+  // line tries again rather than using the closed project.
+  let isOpen = true;
   const reopen = async (): Promise<void> => {
-    project.close();
+    if (isOpen) project.close();
+    isOpen = false;
     project = await openProject(root, { unsaved: Object.fromEntries(unsaved) });
+    isOpen = true;
   };
 
   const lintText = async (file: string, text: string) => {
     if (outside.has(file)) return [];
     unsaved.set(file, text);
+    if (!isOpen) await reopen();
     if (isRoot(file)) {
       project.setUnsaved(file, text);
     } else {
@@ -86,6 +92,7 @@ async function serve(root: string): Promise<void> {
         const file = line.close;
         unsaved.delete(file);
         outside.delete(file);
+        if (!isOpen) await reopen();
         if (isRoot(file)) {
           // A root with no text left on disk would answer nothing if it were opened again.
           if (existsSync(path.join(project.root, file))) project.clearUnsaved(file);

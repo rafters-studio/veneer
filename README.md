@@ -8,8 +8,8 @@ Veneer is being rebuilt. The previous Rust CLI is gone, and `@rafters/veneer` do
 
 ```
 packages/veneer        @rafters/veneer, TypeScript, published to npm
-crates/veneer-check    the shared check core, a scaffold so far
-crates/veneer-lsp      the language server, a scaffold so far
+crates/veneer-check    a scaffold with no dependents
+crates/veneer-lsp      the language server
 editors/               the editor packages, a scaffold so far
 ```
 
