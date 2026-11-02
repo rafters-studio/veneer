@@ -1,0 +1,5 @@
+{
+  "framework": "astro",
+  "componentsPath": "src/components/ui",
+  "installed": { "components": ["button", "card", "react-button", "index"] }
+}

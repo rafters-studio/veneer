@@ -1,8 +1,18 @@
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
-import { existsSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from "node:fs";
 import fsPromises from "node:fs/promises";
 import { syncBuiltinESMExports } from "node:module";
+import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { After, Given, Then, When } from "@cucumber/cucumber";
 import {
@@ -54,6 +64,12 @@ process.stdout.write(JSON.stringify(await writeDocs(${JSON.stringify(folder)})))
   );
   assert.equal(status, 0, stderr);
   world.result = JSON.parse(stdout);
+}
+
+function outsideFolder(world: DocsWorld): string {
+  const folder = mkdtempSync(join(tmpdir(), "veneer-outside-"));
+  (world.folders ??= []).push(folder);
+  return folder;
 }
 
 function runChild(folder: string): Promise<NonNullable<DocsWorld["children"]>[number]> {
@@ -160,6 +176,27 @@ Given(
 Given(/^the docs fixture with its tsconfig\.json deleted$/, function (this: DocsWorld) {
   rmSync(join(docsCopy(this), "tsconfig.json"));
 });
+
+Given(
+  /^the docs fixture, with \.rafters\/veneer replaced by a symbolic link to a folder outside the copy$/,
+  function (this: DocsWorld) {
+    const link = join(docsCopy(this), ".rafters/veneer");
+    rmSync(link, { recursive: true, force: true });
+    this.outside = outsideFolder(this);
+    symlinkSync(this.outside, link);
+  },
+);
+
+Given(
+  /^the docs fixture, with \.rafters\/veneer\/docs\.jsonl\.tmp a symbolic link to a file outside the copy holding the text "([^"]+)"$/,
+  function (this: DocsWorld, text: string) {
+    const folder = docsCopy(this);
+    this.outside = join(outsideFolder(this), "outside.txt");
+    writeFileSync(this.outside, text);
+    mkdirSync(join(folder, ".rafters/veneer"), { recursive: true });
+    symlinkSync(this.outside, join(folder, `${DOCS}.tmp`));
+  },
+);
 
 When(
   /^(?:writeDocs runs on it(?:, called with the copy's absolute path)?|veneer writes the docs)$/,
@@ -286,3 +323,27 @@ Then(
     ]);
   },
 );
+
+Then(
+  /^it returns ok false with one error of code "([^"]+)"$/,
+  function (this: DocsWorld, code: string) {
+    assert.deepEqual(
+      errorsOf(this).map((error) => error.code),
+      [code],
+    );
+  },
+);
+
+Then(/^that outside folder is empty$/, function (this: DocsWorld) {
+  assert.ok(this.outside, "no outside folder");
+  assert.deepEqual(readdirSync(this.outside), []);
+});
+
+Then(/^it returns ok true$/, function (this: DocsWorld) {
+  okResult(this);
+});
+
+Then(/^that outside file holds the text "([^"]+)"$/, function (this: DocsWorld, text: string) {
+  assert.ok(this.outside, "no outside file");
+  assert.equal(readFileSync(this.outside, "utf8"), text);
+});

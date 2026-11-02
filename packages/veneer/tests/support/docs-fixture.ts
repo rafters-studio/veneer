@@ -33,6 +33,7 @@ export interface DocsWorld {
   renames?: [string, string][];
   restoreRename?: () => void;
   earlier?: Buffer;
+  outside?: string;
   children?: { status: number | null; exitedAfterMs: number; sawResolved: boolean }[];
 }
 

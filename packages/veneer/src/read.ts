@@ -3,12 +3,14 @@ import { createRequire } from "node:module";
 import path from "node:path";
 import { format } from "node:util";
 import { AstroCheck, type Diagnostic as LspDiagnostic } from "@astrojs/language-server";
+import type * as ImportPackage from "@astrojs/language-server/dist/importPackage.js";
 import type { LanguageServiceContext, LanguageServicePlugin } from "@volar/kit";
 import type * as CreateChecker from "@volar/kit/lib/createChecker.js";
 import type * as TypeScript from "typescript";
 
 const NO_ASTRO_LINE =
   "seems to be an Astro project, but we couldn't find Astro or Astro is not installed";
+const NO_INTEGRATION_LINE = "Couldn't find package @astrojs/";
 const SEVERITIES = { 1: "error", 2: "warning", 3: "info", 4: "hint" } as const;
 
 const require = createRequire(import.meta.url);
@@ -49,7 +51,7 @@ export interface Project {
 }
 
 let aProjectIsOpen = false;
-let kitIsWrapped = false;
+let serverIsPrepared = false;
 let constructedContext: LanguageServiceContext | undefined;
 // Module-wide, because kit's snapshot cache outlives a Project and compares modified times.
 let unsavedChanges = 0;
@@ -65,10 +67,13 @@ const capturePlugin: LanguageServicePlugin = {
   },
 };
 
-function wrapCreateTypeScriptChecker(): void {
-  if (kitIsWrapped) return;
-  kitIsWrapped = true;
+function prepareLanguageServer(): void {
+  if (serverIsPrepared) return;
+  serverIsPrepared = true;
   const serverRequire = createRequire(require.resolve("@astrojs/language-server/package.json"));
+  // A project is untrusted: the server must not load an editor integration from it.
+  const { setIsTrusted }: typeof ImportPackage = serverRequire("./dist/importPackage.js");
+  setIsTrusted(false);
   const kit: typeof CreateChecker = serverRequire("@volar/kit/lib/createChecker.js");
   const original = kit.createTypeScriptChecker;
   kit.createTypeScriptChecker = (languages, services, ...rest) =>
@@ -143,10 +148,14 @@ export async function openProject(projectRoot: string): Promise<Project> {
   }
 
   aProjectIsOpen = true;
+  const consoleInfo = console.info;
+  console.info = (...args: unknown[]) => {
+    if (!format(...args).startsWith(NO_INTEGRATION_LINE)) consoleInfo(...args);
+  };
   const unsaved = new Map<string, { text: string; modified: Date }>();
   const restoreSys = overlaySys(unsaved);
   try {
-    wrapCreateTypeScriptChecker();
+    prepareLanguageServer();
     constructedContext = undefined;
     const astroCheck = constructAstroCheck(root);
     let context: LanguageServiceContext | undefined = constructedContext;
@@ -209,5 +218,7 @@ export async function openProject(projectRoot: string): Promise<Project> {
     restoreSys();
     aProjectIsOpen = false;
     throw error;
+  } finally {
+    console.info = consoleInfo;
   }
 }

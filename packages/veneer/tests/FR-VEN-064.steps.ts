@@ -1,6 +1,14 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { cpSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import {
+  cpSync,
+  existsSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -12,6 +20,7 @@ const pkg = fileURLToPath(new URL("../", import.meta.url));
 const INSTALL_TIMEOUT_MS = 5 * 60 * 1000;
 const STEP_TIMEOUT_MS = 60 * 1000;
 const PAGE = "src/pages/index.astro";
+const SVELTE_PAGE = "src/pages/imports-svelte.astro";
 
 interface Disk {
   bytes: Buffer;
@@ -22,6 +31,7 @@ interface ReadWorld {
   folders?: string[];
   fixture?: string;
   noAstro?: string;
+  marker?: string;
   project?: Project;
   disk?: Disk;
   sys?: Pick<typeof import("typescript").sys, "readFile" | "getModifiedTime" | "fileExists">;
@@ -94,6 +104,21 @@ function assertAt(found: Diagnostic | undefined, at: string): void {
   );
 }
 
+function writeChildScript(world: ReadWorld, body: string): void {
+  const folder = mkdtempSync(join(tmpdir(), "veneer-child-"));
+  (world.folders ??= []).push(folder);
+  world.script = join(folder, "child.mjs");
+  writeFileSync(
+    world.script,
+    `import path from "node:path";
+import { openProject } from ${JSON.stringify(join(pkg, "dist/index.mjs"))};
+const project = await openProject(${JSON.stringify(fixture(world))});
+${body}
+project.close();
+`,
+  );
+}
+
 function noteDisk(path: string): Disk {
   return { bytes: readFileSync(path), mtimeMs: statSync(path).mtimeMs };
 }
@@ -106,6 +131,7 @@ After(async function (this: ReadWorld) {
     if (!(error instanceof ProjectError && error.code === "closed")) throw error;
   }
   for (const folder of this.folders ?? []) rmSync(folder, { recursive: true, force: true });
+  delete process.env.VENEER_TEST_MARKER;
 });
 
 Given(/^the read fixture$/, { timeout: INSTALL_TIMEOUT_MS }, function (this: ReadWorld) {
@@ -114,6 +140,15 @@ Given(/^the read fixture$/, { timeout: INSTALL_TIMEOUT_MS }, function (this: Rea
 
 Given(/^the no-Astro fixture$/, { timeout: INSTALL_TIMEOUT_MS }, function (this: ReadWorld) {
   this.fixture = installedCopy(this, "no-astro");
+});
+
+Given(/^the untrusted fixture$/, { timeout: INSTALL_TIMEOUT_MS }, function (this: ReadWorld) {
+  this.fixture = installedCopy(this, "untrusted");
+});
+
+Given(/^VENEER_TEST_MARKER names a path in the fixture copy$/, function (this: ReadWorld) {
+  this.marker = join(fixture(this), "project-code-ran.txt");
+  process.env.VENEER_TEST_MARKER = this.marker;
 });
 
 Given(
@@ -191,6 +226,16 @@ When(/^clearUnsaved\("src\/pages\/index\.astro"\) is called$/, function (this: R
 });
 
 When(
+  /^the project is opened with openProject and diagnostics\("src\/pages\/imports-svelte\.astro"\) is called$/,
+  { timeout: STEP_TIMEOUT_MS },
+  async function (this: ReadWorld) {
+    const { openProject } = await veneer();
+    this.project = await openProject(fixture(this));
+    await this.project.diagnostics(SVELTE_PAGE);
+  },
+);
+
+When(
   /^openProject is called on the no-Astro fixture before the first is closed$/,
   { timeout: INSTALL_TIMEOUT_MS },
   async function (this: ReadWorld) {
@@ -241,6 +286,11 @@ Then(/^project\.ts\.version is "([^"]+)"$/, function (this: ReadWorld, version: 
   assert.equal(project(this).ts.version, version);
 });
 
+Then(/^the file at that path does not exist$/, function (this: ReadWorld) {
+  assert.ok(this.marker, "no marker path");
+  assert.equal(existsSync(this.marker), false, "the project's code ran");
+});
+
 Then(
   /^project\.ts is the module require\("typescript"\) gives from veneer's own package$/,
   function (this: ReadWorld) {
@@ -251,18 +301,21 @@ Then(
 Given(
   /^a child script, written by the step to a temporary \.mjs file, that imports openProject from the absolute path of packages\/veneer\/dist\/index\.mjs, opens the copy, writes to stdout one line of JSON \{"hasButton": <program\(\)\.getSourceFile\(path\.join\(project\.root, "src\/components\/button\.tsx"\)\) !== undefined>\}, and closes the project$/,
   function (this: ReadWorld) {
-    const folder = mkdtempSync(join(tmpdir(), "veneer-child-"));
-    (this.folders ??= []).push(folder);
-    this.script = join(folder, "child.mjs");
-    writeFileSync(
-      this.script,
-      `import path from "node:path";
-import { openProject } from ${JSON.stringify(join(pkg, "dist/index.mjs"))};
-const project = await openProject(${JSON.stringify(fixture(this))});
-const hasButton = project.program().getSourceFile(path.join(project.root, "src/components/button.tsx")) !== undefined;
-process.stdout.write(JSON.stringify({ hasButton }) + "\\n");
-project.close();
-`,
+    writeChildScript(
+      this,
+      `const hasButton = project.program().getSourceFile(path.join(project.root, "src/components/button.tsx")) !== undefined;
+process.stdout.write(JSON.stringify({ hasButton }) + "\\n");`,
+    );
+  },
+);
+
+Given(
+  /^a child script, written by the step to a temporary \.mjs file, that imports openProject from the absolute path of packages\/veneer\/dist\/index\.mjs, opens the copy, writes to stdout one line of JSON of diagnostics\("src\/pages\/imports-svelte\.astro"\) mapped to its code, line and column, and closes the project$/,
+  function (this: ReadWorld) {
+    writeChildScript(
+      this,
+      `const found = await project.diagnostics(${JSON.stringify(SVELTE_PAGE)});
+process.stdout.write(JSON.stringify(found.map(({ code, line, column }) => ({ code, line, column }))) + "\\n");`,
     );
   },
 );
@@ -276,7 +329,7 @@ When(/^node runs the child script$/, { timeout: STEP_TIMEOUT_MS }, function (thi
   this.run = { status, stdout, stderr };
 });
 
-Then(/^its stdout is the line (\{.*\})$/, function (this: ReadWorld, line: string) {
+Then(/^its stdout is the line (\[?\{.*\}\]?)$/, function (this: ReadWorld, line: string) {
   assert.equal(this.run?.stdout, `${line}\n`);
 });
 

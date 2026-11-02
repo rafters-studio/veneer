@@ -1,0 +1,23 @@
+---
+import Button from '@/components/ui/button.astro';
+const dynamic = "p-[9px]";
+---
+<Button tone="x">undeclared</Button>
+<!-- B1 flag -->
+<div class="p-[32px]">a</div>
+<!-- B2 flag: second class -->
+<div class="flex w-[10px]">a</div>
+<!-- B3 ok: a modifier's brackets -->
+<div class="data-[state=open]:p-4">a</div>
+<!-- B4 flag: bracket utility behind a modifier -->
+<div class="hover:h-[3rem]">a</div>
+<!-- B5 flag: arbitrary property -->
+<div class="[color:red]">a</div>
+<!-- B6 ok: plain -->
+<div class="p-4">a</div>
+<!-- B7 flag: class:list literal -->
+<div class:list={["p-[1px]", { "m-[2px]": true }]}>a</div>
+<!-- B8 dynamic: nothing -->
+<div class={dynamic}>a</div>
+<!-- B9 flag: value with a quote and a space -->
+<div class="bg-[url('a.png')] flex">a</div>
