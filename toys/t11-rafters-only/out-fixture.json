@@ -1,0 +1,589 @@
+{
+  "versions": {
+    "typescript": "6.0.3",
+    "sameModule": true
+  },
+  "root": "/Volumes/store/projects/rafters-studio/veneer/toys/t11-rafters-only/fixture",
+  "rootFiles": 10,
+  "diagnostics": 24,
+  "timeMs": {
+    "constructAndCheck": 647,
+    "classify": 2.34
+  },
+  "scores": {
+    "symbol": {
+      "right": 23,
+      "of": 24,
+      "wrong": [
+        "A11 expected rafters"
+      ]
+    },
+    "signature": {
+      "right": 20,
+      "of": 24,
+      "wrong": [
+        "T1 expected rafters",
+        "T2 expected rafters",
+        "T3 expected rafters",
+        "A11 expected rafters"
+      ]
+    },
+    "installed": {
+      "right": 22,
+      "of": 24,
+      "wrong": [
+        "A11 expected rafters",
+        "A13 expected rafters"
+      ]
+    }
+  },
+  "noDiagnostic": [
+    "A11"
+  ],
+  "reportedBySymbol": [
+    "src/pages/tsx-cases.tsx:19:8 error ts(2741) ReactButton",
+    "src/pages/tsx-cases.tsx:17:30 error ts(2322) variant",
+    "src/pages/tsx-cases.tsx:15:30 error ts(2322) tone",
+    "src/pages/astro-cases.astro:46:6 error ts(2322) tone",
+    "src/pages/astro-cases.astro:44:12 error ts(2322) tone",
+    "src/pages/astro-cases.astro:42:11 error ts(2322) size",
+    "src/pages/astro-cases.astro:39:9 error ts(2322) tone",
+    "src/pages/astro-cases.astro:26:5 error ts(2322) tone",
+    "src/pages/astro-cases.astro:24:4 error ts(2322) tone",
+    "src/pages/astro-cases.astro:22:2 error ts(2322) Card",
+    "src/pages/astro-cases.astro:20:9 error ts(2322) variant",
+    "src/pages/astro-cases.astro:18:9 error ts(2322) tone",
+    "src/pages/astro-cases.astro:48:9 hint ts(6385) quiet"
+  ],
+  "unmapped": 0,
+  "cases": [
+    {
+      "id": "T4",
+      "expect": "other",
+      "at": "src/pages/tsx-cases.tsx:9",
+      "rows": [
+        {
+          "file": "src/pages/tsx-cases.tsx",
+          "line": 9,
+          "col": 7,
+          "severity": "error",
+          "code": "ts(2322)",
+          "message": "Type 'string' is not assignable to type 'number'.",
+          "slice": "plain",
+          "isUse": false,
+          "symbol": false,
+          "signature": false,
+          "installed": false,
+          "node": "Identifier"
+        }
+      ]
+    },
+    {
+      "id": "T1",
+      "expect": "rafters",
+      "at": "src/pages/tsx-cases.tsx:15",
+      "rows": [
+        {
+          "file": "src/pages/tsx-cases.tsx",
+          "line": 15,
+          "col": 30,
+          "severity": "error",
+          "code": "ts(2322)",
+          "message": "Type '{ label: string; tone: string; }' is not assignable to type 'IntrinsicAttributes & ReactButtonProps & RefAttributes<HTMLButtonElement>'.",
+          "slice": "tone",
+          "isUse": true,
+          "symbol": true,
+          "signature": false,
+          "installed": true,
+          "node": "Identifier",
+          "resolvedTo": "src/components/ui/react-button.tsx"
+        }
+      ]
+    },
+    {
+      "id": "T2",
+      "expect": "rafters",
+      "at": "src/pages/tsx-cases.tsx:17",
+      "rows": [
+        {
+          "file": "src/pages/tsx-cases.tsx",
+          "line": 17,
+          "col": 30,
+          "severity": "error",
+          "code": "ts(2322)",
+          "message": "Type '\"huge\"' is not assignable to type '\"default\" | \"ghost\" | undefined'.",
+          "slice": "variant",
+          "isUse": true,
+          "symbol": true,
+          "signature": false,
+          "installed": true,
+          "node": "Identifier",
+          "resolvedTo": "src/components/ui/react-button.tsx"
+        }
+      ]
+    },
+    {
+      "id": "T3",
+      "expect": "rafters",
+      "at": "src/pages/tsx-cases.tsx:19",
+      "rows": [
+        {
+          "file": "src/pages/tsx-cases.tsx",
+          "line": 19,
+          "col": 8,
+          "severity": "error",
+          "code": "ts(2741)",
+          "message": "Property 'label' is missing in type '{}' but required in type 'ReactButtonProps'.",
+          "slice": "ReactButton",
+          "isUse": true,
+          "symbol": true,
+          "signature": false,
+          "installed": true,
+          "node": "Identifier",
+          "resolvedTo": "src/components/ui/react-button.tsx"
+        }
+      ]
+    },
+    {
+      "id": "T5",
+      "expect": "other",
+      "at": "src/pages/tsx-cases.tsx:21",
+      "rows": [
+        {
+          "file": "src/pages/tsx-cases.tsx",
+          "line": 21,
+          "col": 20,
+          "severity": "error",
+          "code": "ts(2322)",
+          "message": "Type '{ tone: string; }' is not assignable to type 'IntrinsicAttributes & { size?: \"a\" | \"b\" | undefined; }'.",
+          "slice": "tone",
+          "isUse": true,
+          "symbol": false,
+          "signature": false,
+          "installed": false,
+          "node": "Identifier",
+          "resolvedTo": "src/pages/tsx-cases.tsx"
+        }
+      ]
+    },
+    {
+      "id": "T6",
+      "expect": "other",
+      "at": "src/pages/tsx-cases.tsx:23",
+      "rows": [
+        {
+          "file": "src/pages/tsx-cases.tsx",
+          "line": 23,
+          "col": 20,
+          "severity": "error",
+          "code": "ts(2322)",
+          "message": "Type '{ tone: string; }' is not assignable to type 'IntrinsicAttributes & { kind?: \"a\" | \"b\" | undefined; }'.",
+          "slice": "tone",
+          "isUse": true,
+          "symbol": false,
+          "signature": false,
+          "installed": false,
+          "node": "Identifier",
+          "resolvedTo": "node_modules/.pnpm/third-party-ui@file+vendor+third-party-ui/node_modules/third-party-ui/index.d.ts"
+        }
+      ]
+    },
+    {
+      "id": "T7",
+      "expect": "other",
+      "at": "src/pages/tsx-cases.tsx:25",
+      "rows": [
+        {
+          "file": "src/pages/tsx-cases.tsx",
+          "line": 25,
+          "col": 12,
+          "severity": "error",
+          "code": "ts(2322)",
+          "message": "Type '{ children: number; nope: string; }' is not assignable to type 'DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>'.",
+          "slice": "nope",
+          "isUse": true,
+          "symbol": false,
+          "signature": false,
+          "installed": false,
+          "node": "Identifier",
+          "resolvedTo": "node_modules/.pnpm/@types+react@19.3.0/node_modules/@types/react/index.d.ts"
+        }
+      ]
+    },
+    {
+      "id": "A8",
+      "expect": "other",
+      "at": "src/pages/astro-cases.astro:15",
+      "rows": [
+        {
+          "file": "src/pages/astro-cases.astro",
+          "line": 15,
+          "col": 7,
+          "severity": "error",
+          "code": "ts(2322)",
+          "message": "Type 'string' is not assignable to type 'number'.",
+          "slice": "plain",
+          "isUse": false,
+          "symbol": false,
+          "signature": false,
+          "installed": false,
+          "node": "Identifier"
+        }
+      ]
+    },
+    {
+      "id": "A1",
+      "expect": "rafters",
+      "at": "src/pages/astro-cases.astro:18",
+      "rows": [
+        {
+          "file": "src/pages/astro-cases.astro",
+          "line": 18,
+          "col": 9,
+          "severity": "error",
+          "code": "ts(2322)",
+          "message": "Type '{ children: string; tone: string; }' is not assignable to type 'IntrinsicAttributes & Props'.",
+          "slice": "tone",
+          "isUse": true,
+          "symbol": true,
+          "signature": true,
+          "installed": true,
+          "node": "Identifier",
+          "resolvedTo": "src/components/ui/button.astro"
+        }
+      ]
+    },
+    {
+      "id": "A2",
+      "expect": "rafters",
+      "at": "src/pages/astro-cases.astro:20",
+      "rows": [
+        {
+          "file": "src/pages/astro-cases.astro",
+          "line": 20,
+          "col": 9,
+          "severity": "error",
+          "code": "ts(2322)",
+          "message": "Type '\"huge\"' is not assignable to type '\"default\" | \"ghost\" | undefined'.",
+          "slice": "variant",
+          "isUse": true,
+          "symbol": true,
+          "signature": true,
+          "installed": true,
+          "node": "Identifier",
+          "resolvedTo": "src/components/ui/button.astro"
+        }
+      ]
+    },
+    {
+      "id": "A3",
+      "expect": "rafters",
+      "at": "src/pages/astro-cases.astro:22",
+      "rows": [
+        {
+          "file": "src/pages/astro-cases.astro",
+          "line": 22,
+          "col": 2,
+          "severity": "error",
+          "code": "ts(2322)",
+          "message": "Type '{}' is not assignable to type 'IntrinsicAttributes & Props'.",
+          "slice": "Card",
+          "isUse": true,
+          "symbol": true,
+          "signature": true,
+          "installed": true,
+          "node": "Identifier",
+          "resolvedTo": "src/components/ui/card.astro"
+        }
+      ]
+    },
+    {
+      "id": "A4",
+      "expect": "rafters",
+      "at": "src/pages/astro-cases.astro:24",
+      "rows": [
+        {
+          "file": "src/pages/astro-cases.astro",
+          "line": 24,
+          "col": 4,
+          "severity": "error",
+          "code": "ts(2322)",
+          "message": "Type '{ children: string; tone: string; }' is not assignable to type 'IntrinsicAttributes & Props'.",
+          "slice": "tone",
+          "isUse": true,
+          "symbol": true,
+          "signature": true,
+          "installed": true,
+          "node": "Identifier",
+          "resolvedTo": "src/components/ui/button.astro"
+        }
+      ]
+    },
+    {
+      "id": "A5",
+      "expect": "rafters",
+      "at": "src/pages/astro-cases.astro:26",
+      "rows": [
+        {
+          "file": "src/pages/astro-cases.astro",
+          "line": 26,
+          "col": 5,
+          "severity": "error",
+          "code": "ts(2322)",
+          "message": "Type '{ children: string; tone: string; }' is not assignable to type 'IntrinsicAttributes & Props'.",
+          "slice": "tone",
+          "isUse": true,
+          "symbol": true,
+          "signature": true,
+          "installed": true,
+          "node": "Identifier",
+          "resolvedTo": "src/components/ui/button.astro"
+        }
+      ]
+    },
+    {
+      "id": "A6",
+      "expect": "other",
+      "at": "src/pages/astro-cases.astro:28",
+      "rows": [
+        {
+          "file": "src/pages/astro-cases.astro",
+          "line": 28,
+          "col": 14,
+          "severity": "error",
+          "code": "ts(2322)",
+          "message": "Type '{ children: string; tone: string; }' is not assignable to type 'IntrinsicAttributes & Props'.",
+          "slice": "tone",
+          "isUse": true,
+          "symbol": false,
+          "signature": false,
+          "installed": false,
+          "node": "Identifier",
+          "resolvedTo": "src/widgets/button.astro"
+        }
+      ]
+    },
+    {
+      "id": "A7",
+      "expect": "other",
+      "at": "src/pages/astro-cases.astro:30",
+      "rows": [
+        {
+          "file": "src/pages/astro-cases.astro",
+          "line": 30,
+          "col": 14,
+          "severity": "error",
+          "code": "ts(2322)",
+          "message": "Type '{ tone: string; }' is not assignable to type 'IntrinsicAttributes & { kind?: \"a\" | \"b\" | undefined; }'.",
+          "slice": "tone",
+          "isUse": true,
+          "symbol": false,
+          "signature": false,
+          "installed": false,
+          "node": "Identifier",
+          "resolvedTo": "node_modules/.pnpm/third-party-ui@file+vendor+third-party-ui/node_modules/third-party-ui/index.d.ts"
+        }
+      ]
+    },
+    {
+      "id": "A9",
+      "expect": "other",
+      "at": "src/pages/astro-cases.astro:32",
+      "rows": [
+        {
+          "file": "src/pages/astro-cases.astro",
+          "line": 32,
+          "col": 23,
+          "severity": "error",
+          "code": "ts(2339)",
+          "message": "Property 'nope' does not exist on type '1'.",
+          "slice": "nope",
+          "isUse": false,
+          "symbol": false,
+          "signature": false,
+          "installed": false,
+          "node": "Identifier"
+        }
+      ]
+    },
+    {
+      "id": "A10",
+      "expect": "other",
+      "at": "src/pages/astro-cases.astro:34",
+      "rows": [
+        {
+          "file": "src/pages/astro-cases.astro",
+          "line": 34,
+          "col": 18,
+          "severity": "error",
+          "code": "ts(2304)",
+          "message": "Cannot find name 'missing'.",
+          "slice": "missing",
+          "isUse": false,
+          "symbol": false,
+          "signature": false,
+          "installed": false,
+          "node": "Identifier"
+        }
+      ]
+    },
+    {
+      "id": "A11",
+      "expect": "rafters",
+      "at": "src/pages/astro-cases.astro:36",
+      "rows": []
+    },
+    {
+      "id": "A12",
+      "expect": "rafters",
+      "at": "src/pages/astro-cases.astro:39",
+      "rows": [
+        {
+          "file": "src/pages/astro-cases.astro",
+          "line": 39,
+          "col": 9,
+          "severity": "error",
+          "code": "ts(2322)",
+          "message": "Type '{ children: string; tone: string; }' is not assignable to type 'IntrinsicAttributes & Props'.",
+          "slice": "tone",
+          "isUse": true,
+          "symbol": true,
+          "signature": true,
+          "installed": true,
+          "node": "Identifier",
+          "resolvedTo": "src/components/ui/button.astro"
+        }
+      ]
+    },
+    {
+      "id": "A13",
+      "expect": "rafters",
+      "at": "src/pages/astro-cases.astro:42",
+      "rows": [
+        {
+          "file": "src/pages/astro-cases.astro",
+          "line": 42,
+          "col": 11,
+          "severity": "error",
+          "code": "ts(2322)",
+          "message": "Type '\"c\"' is not assignable to type '\"a\" | \"b\" | undefined'.",
+          "slice": "size",
+          "isUse": true,
+          "symbol": true,
+          "signature": true,
+          "installed": false,
+          "node": "Identifier",
+          "resolvedTo": "src/components/ui/my-widget.astro"
+        }
+      ]
+    },
+    {
+      "id": "A14",
+      "expect": "rafters",
+      "at": "src/pages/astro-cases.astro:44",
+      "rows": [
+        {
+          "file": "src/pages/astro-cases.astro",
+          "line": 44,
+          "col": 12,
+          "severity": "error",
+          "code": "ts(2322)",
+          "message": "Type '{ children: string; tone: string; }' is not assignable to type 'IntrinsicAttributes & Props'.",
+          "slice": "tone",
+          "isUse": true,
+          "symbol": true,
+          "signature": true,
+          "installed": true,
+          "node": "Identifier",
+          "resolvedTo": "src/components/ui/button.astro"
+        }
+      ]
+    },
+    {
+      "id": "A15",
+      "expect": "rafters",
+      "at": "src/pages/astro-cases.astro:46",
+      "rows": [
+        {
+          "file": "src/pages/astro-cases.astro",
+          "line": 46,
+          "col": 6,
+          "severity": "error",
+          "code": "ts(2322)",
+          "message": "Type '{ children: string; tone: string; }' is not assignable to type 'IntrinsicAttributes & Props'.",
+          "slice": "tone",
+          "isUse": true,
+          "symbol": true,
+          "signature": true,
+          "installed": true,
+          "node": "Identifier",
+          "resolvedTo": "src/components/ui/button.astro"
+        }
+      ]
+    },
+    {
+      "id": "A16",
+      "expect": "rafters",
+      "at": "src/pages/astro-cases.astro:48",
+      "rows": [
+        {
+          "file": "src/pages/astro-cases.astro",
+          "line": 48,
+          "col": 9,
+          "severity": "hint",
+          "code": "ts(6385)",
+          "message": "'quiet' is deprecated.",
+          "slice": "quiet",
+          "isUse": true,
+          "symbol": true,
+          "signature": true,
+          "installed": true,
+          "node": "Identifier",
+          "resolvedTo": "src/components/ui/button.astro",
+          "deprecatedAtAttribute": [],
+          "deprecatedText": [
+            "Use variant=\"ghost\"."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A17",
+      "expect": "other",
+      "at": "src/pages/astro-cases.astro:50",
+      "rows": [
+        {
+          "file": "src/pages/astro-cases.astro",
+          "line": 50,
+          "col": 6,
+          "severity": "error",
+          "code": "ts(2322)",
+          "message": "Type '{ children: (number | { nope: number; })[]; nope: string; }' is not assignable to type 'HTMLAttributes'.",
+          "slice": "nope",
+          "isUse": true,
+          "symbol": false,
+          "signature": false,
+          "installed": false,
+          "node": "Identifier",
+          "resolvedTo": "node_modules/.pnpm/astro@6.4.4_rollup@4.67.3/node_modules/astro/astro-jsx.d.ts"
+        }
+      ]
+    }
+  ],
+  "unmarked": [
+    {
+      "file": "src/components/ui/broken.astro",
+      "line": 5,
+      "col": 7,
+      "severity": "error",
+      "code": "ts(2322)",
+      "message": "Type 'string' is not assignable to type 'number'.",
+      "slice": "inside",
+      "isUse": false,
+      "symbol": false,
+      "signature": false,
+      "installed": false,
+      "node": "Identifier"
+    }
+  ]
+}
