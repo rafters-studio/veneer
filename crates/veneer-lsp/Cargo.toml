@@ -4,11 +4,13 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "Language server for .rafter files and rafters code, built on veneer-check"
+description = "Language server for rafters code, answering from one @rafters/veneer worker"
 
 [[bin]]
 name = "veneer-lsp"
 path = "src/main.rs"
 
 [dependencies]
-veneer-check = { workspace = true }
+lsp-server = "0.7"
+lsp-types = "0.97"
+serde_json = "1"

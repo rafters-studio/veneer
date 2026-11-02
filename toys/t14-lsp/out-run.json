@@ -1,0 +1,54 @@
+{
+ "firstPublishMs": 1518,
+ "first": {
+  "n": 1,
+  "codes": [
+   "23:15 ts(2322)"
+  ],
+  "error": null,
+  "outside": null,
+  "reopened": false,
+  "seq": 1,
+  "serverMs": 130.053,
+  "workerMs": 129.2
+ },
+ "warm": {
+  "medianMs": 49.8,
+  "maxMs": 64.4,
+  "workerMedianMs": 49.5,
+  "rustLayerMedianMs": 0.14
+ },
+ "burst": {
+  "published": 1,
+  "lastSeq": 31,
+  "sentLastSeq": 30,
+  "n": 1
+ },
+ "newPage": {
+  "ms": 227,
+  "n": 1,
+  "codes": [
+   "4:9 ts(2322)"
+  ],
+  "error": null,
+  "outside": null,
+  "reopened": true,
+  "seq": 32,
+  "serverMs": 226.321542,
+  "workerMs": 226
+ },
+ "newPageNextChange": {
+  "ms": 38,
+  "n": 1,
+  "codes": [
+   "4:9 ts(2322)"
+  ],
+  "error": null,
+  "outside": null,
+  "reopened": false,
+  "seq": 33,
+  "serverMs": 37.34775,
+  "workerMs": 36.9
+ }
+}
+server killed, pid 6426
