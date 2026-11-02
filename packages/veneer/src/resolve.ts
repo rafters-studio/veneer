@@ -714,7 +714,8 @@ async function parseErrorReason(
     .filter(
       ({ severity, source, message }) =>
         (severity === undefined || severity === 1) &&
-        (source === "astro" || (source === "ts" && syntactic.has(message))),
+        (source === "astro" ||
+          (source === "ts" && typeof message === "string" && syntactic.has(message))),
     )
     .sort(
       (a, b) =>

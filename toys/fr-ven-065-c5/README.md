@@ -6,7 +6,7 @@ Runs `writeDocs` in fresh processes on each corpus: twice, then once with `tscon
 node measure.mjs <packages/veneer/dist/index.mjs> <project>
 ```
 
-Apple M4, Node 26.13.0, at the #127 build. Each corpus is the tree of its commit, from GitHub's tarball for that commit, installed at the workspace root with `pnpm install --frozen-lockfile` and `pnpm_config_strict_dep_builds=false`.
+Apple M4, Node 26.13.0, at the #127 build. Each corpus is the tree of its commit, from GitHub's tarball for that commit, extracted fresh and installed at the workspace root with `pnpm install --frozen-lockfile` under `pnpm_config_strict_dep_builds=false`, which keeps an install that skips build scripts from failing.
 
 | | shingle a5ae5dee, `sites/rafters.studio`, its own config | rafters 9c7b0d0a, `packages/ui`, `{"componentsPath":"src/components"}` |
 |---|---|---|
