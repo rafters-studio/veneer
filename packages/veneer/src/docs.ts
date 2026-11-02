@@ -46,7 +46,10 @@ async function writeWhole(docsPath: string, text: string): Promise<void> {
   const temporary = `${docsPath}.tmp`;
   await mkdir(path.dirname(docsPath), { recursive: true });
   try {
-    await writeFile(temporary, text);
+    // A repo could commit the temporary path as a symlink. Removing it and creating the file
+    // exclusively means the write never follows one out of the project.
+    await rm(temporary, { force: true });
+    await writeFile(temporary, text, { flag: "wx" });
     await rename(temporary, docsPath);
   } catch (error) {
     await rm(temporary, { force: true });
