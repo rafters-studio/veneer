@@ -1,0 +1,12 @@
+{
+  "namespace": "fill",
+  "tokens": [
+    {
+      "name": "surface-background",
+      "value": { "background": { "color": { "token": "background" } }, "foreground": { "token": "foreground" } },
+      "category": "fill",
+      "namespace": "fill",
+      "userOverride": null
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "namespace": "semantic",
+  "tokens": [
+    {
+      "name": "surface-foreground",
+      "value": "oklch(0.2 0 0)",
+      "category": "color",
+      "namespace": "semantic",
+      "userOverride": null
+    }
+  ]
+}

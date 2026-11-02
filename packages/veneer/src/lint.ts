@@ -190,6 +190,66 @@ function bracketValues(
   return found;
 }
 
+// ---- Rule three: a retired fill value.
+
+const FILL_WORD = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
+const FILL_ALPHA = /^(100|[1-9]?[0-9])$/;
+const AUTHORED_FILL = 'a fill the designer authors, fill="bg-fill-<name>"';
+
+const isFillStop = (stop: string): boolean => {
+  const [word = "", alpha, ...rest] = stop.split("/");
+  return (
+    FILL_WORD.test(word) && (alpha === undefined || FILL_ALPHA.test(alpha)) && rest.length === 0
+  );
+};
+
+// The forms rafters' retired fill signature took. A bg-fill-* value is the current form.
+function retiredFillForm(value: string): "bare" | "composed" | undefined {
+  if (value.startsWith("bg-fill-")) return undefined;
+  if (FILL_WORD.test(value) && !value.includes("-to-")) return "bare";
+  return value.split("-to-").length <= 2 && value.split("-to-").every(isFillStop)
+    ? "composed"
+    : undefined;
+}
+
+// Asked for only when a bare word is found, so nothing else pays for the tokens or their code.
+type Surfaces = { words: ReadonlySet<string> } | { failure: string };
+
+async function loadSurfaces(root: string): Promise<Surfaces> {
+  try {
+    const { surfaceWords } = await import("./tokens.ts");
+    return { words: surfaceWords(root) };
+  } catch (error) {
+    return { failure: error instanceof Error ? error.message : String(error) };
+  }
+}
+
+function fillLiteral(
+  ts: Ts,
+  node: TypeScript.JsxAttribute,
+): TypeScript.StringLiteralLike | undefined {
+  const { initializer } = node;
+  if (!initializer) return undefined;
+  if (ts.isStringLiteral(initializer)) return initializer;
+  const inner = ts.isJsxExpression(initializer) ? initializer.expression : undefined;
+  return inner && ts.isStringLiteralLike(inner) ? inner : undefined;
+}
+
+function fillAttributes(
+  { ts }: Reader,
+  sourceFile: TypeScript.SourceFile,
+): TypeScript.JsxAttribute[] {
+  const found: TypeScript.JsxAttribute[] = [];
+  const visit = (node: TypeScript.Node): void => {
+    if (ts.isJsxAttribute(node) && ts.isIdentifier(node.name) && node.name.text === "fill") {
+      found.push(node);
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(sourceFile);
+  return found;
+}
+
 // ---- The call.
 
 export async function lint(
@@ -246,6 +306,47 @@ export async function lint(
     return help ? { ...diagnostic, help } : diagnostic;
   };
 
+  let surfaces: Promise<Surfaces> | undefined;
+  const replacement = async (value: string, form: "bare" | "composed"): Promise<string> => {
+    if (form === "composed") return AUTHORED_FILL;
+    surfaces ??= loadSurfaces(project.root);
+    const loaded = await surfaces;
+    if ("failure" in loaded) {
+      return `the project's tokens could not be loaded, so no replacement is named: ${loaded.failure}`;
+    }
+    return loaded.words.has(value) ? `surface="${value}"` : AUTHORED_FILL;
+  };
+
+  const retiredFills = async (
+    file: string,
+    sourceFile: TypeScript.SourceFile,
+  ): Promise<LintDiagnostic[]> => {
+    const flagged: LintDiagnostic[] = [];
+    for (const attribute of fillAttributes(reader, sourceFile)) {
+      const literal = fillLiteral(ts, attribute);
+      const form = literal && retiredFillForm(literal.text);
+      if (!literal || !form) continue;
+      const component = resolveTag(reader, attribute.parent.parent);
+      const declaration = component?.valueDeclaration ?? component?.declarations?.[0];
+      if (!declaration || !isUnderFolder(declaration.getSourceFile().fileName)) continue;
+      const start = positionOf(reader, sourceFile, attribute.getStart(sourceFile));
+      const end = positionOf(reader, sourceFile, attribute.end);
+      if (!start || !end) continue;
+      flagged.push({
+        file,
+        line: start.line,
+        column: start.column,
+        endLine: end.line,
+        endColumn: end.column,
+        severity: "error",
+        code: "rafters(retired-fill)",
+        message: `fill="${literal.text}" is a retired fill value`,
+        help: await replacement(literal.text, form),
+      });
+    }
+    return flagged;
+  };
+
   const found: LintDiagnostic[] = [];
   for (const [file, diagnostics] of perFile) {
     const absolute = path.join(project.root, file);
@@ -255,7 +356,10 @@ export async function lint(
       const reported = reportedUse(sourceFile, diagnostic);
       if (reported) found.push(reported);
     }
-    if (!isUnderFolder(absolute)) found.push(...bracketValues(reader, file, sourceFile));
+    if (!isUnderFolder(absolute)) {
+      found.push(...bracketValues(reader, file, sourceFile));
+      found.push(...(await retiredFills(file, sourceFile)));
+    }
   }
   return found.sort(
     (a, b) => compareCodePoints(a.file, b.file) || a.line - b.line || a.column - b.column,
