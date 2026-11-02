@@ -1,6 +1,6 @@
 {
   "name": "@rafters/veneer",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Docs, rafters check and the composite compile for rafters projects",
   "license": "MIT",
   "repository": "https://github.com/rafters-studio/veneer",
