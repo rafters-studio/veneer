@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { spawn, spawnSync, type ChildProcess } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, symlinkSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 import { After, Given, Then, When } from "@cucumber/cucumber";
 import {
@@ -16,7 +16,8 @@ import {
 const SERVER_MS = 60 * 1000;
 const WAIT_MS = 30 * 1000;
 const WORKER = join(pkg, "dist/worker.mjs");
-const INSTALLED_WORKER = "node_modules/@rafters/veneer/dist/worker.mjs";
+const PLANTED_WORKER = "node_modules/@rafters/veneer/dist/worker.mjs";
+const MARKER = "planted-worker-ran";
 
 interface LspDiagnostic {
   range: { start: { line: number; character: number }; end: { line: number; character: number } };
@@ -93,17 +94,17 @@ function buildOnce(): string {
   return binary;
 }
 
-async function start(world: LspWorld, option: string[]): Promise<void> {
+function makeCopy(world: LspWorld): void {
   const copy = mkdtempSync(join(tmpdir(), "veneer-lsp-"));
   (world.folders ??= []).push(copy);
   cpSync(join(pkg, "test/fixtures/lint"), copy, { recursive: true });
   installOnce(world, copy);
   world.copy = copy;
   world.fixture = copy;
-  // The default worker path: the copy has @rafters/veneer installed as a project would.
-  mkdirSync(join(copy, "node_modules/@rafters"), { recursive: true });
-  symlinkSync(pkg, join(copy, "node_modules/@rafters/veneer"));
+}
 
+async function start(world: LspWorld, option: string[]): Promise<void> {
+  if (!world.copy) makeCopy(world);
   const server = spawn(buildOnce(), option, { stdio: ["pipe", "pipe", "inherit"] });
   world.server = server;
   let buffer = Buffer.alloc(0);
@@ -173,9 +174,7 @@ const unescaped = (text: string): string => text.replaceAll("\\n", "\n").replace
 
 function workerProcesses(world: LspWorld): string[] {
   const { stdout } = spawnSync("ps", ["-axww", "-o", "command="], { encoding: "utf8" });
-  return stdout
-    .split("\n")
-    .filter((line) => line.includes(INSTALLED_WORKER) && line.includes(copyOf(world)));
+  return stdout.split("\n").filter((line) => line.includes(WORKER) && line.includes(copyOf(world)));
 }
 
 After(async function (this: LspWorld) {
@@ -198,7 +197,7 @@ Given(
   /^the lint fixture and veneer-lsp started on it$/,
   { timeout: INSTALL_TIMEOUT_MS + SERVER_MS },
   async function (this: LspWorld) {
-    await start(this, []);
+    await start(this, ["--worker", WORKER]);
   },
 );
 
@@ -206,7 +205,7 @@ Given(
   /^the lint fixture and veneer-lsp started on it, with (?:src\/pages\/brackets\.astro open and its|a) first publish received$/,
   { timeout: INSTALL_TIMEOUT_MS + SERVER_MS },
   async function (this: LspWorld) {
-    await start(this, []);
+    await start(this, ["--worker", WORKER]);
     const file = "src/pages/brackets.astro";
     open(this, file, readFileSync(join(copyOf(this), file), "utf8"));
     await nextPublish(this, file, 0);
@@ -218,6 +217,30 @@ Given(
   { timeout: INSTALL_TIMEOUT_MS + SERVER_MS },
   async function (this: LspWorld) {
     await start(this, ["--worker", join(tmpdir(), "veneer-no-such-worker.mjs")]);
+  },
+);
+
+Given(
+  /^the lint fixture, with node_modules\/@rafters\/veneer\/dist\/worker\.mjs in the copy writing a marker file when run$/,
+  { timeout: INSTALL_TIMEOUT_MS },
+  function (this: LspWorld) {
+    makeCopy(this);
+    const planted = join(copyOf(this), PLANTED_WORKER);
+    mkdirSync(dirname(planted), { recursive: true });
+    writeFileSync(
+      planted,
+      `import { writeFileSync } from "node:fs";
+writeFileSync(${JSON.stringify(join(copyOf(this), MARKER))}, "ran");
+`,
+    );
+  },
+);
+
+Given(
+  /^veneer-lsp started on it with no --worker$/,
+  { timeout: INSTALL_TIMEOUT_MS + SERVER_MS },
+  async function (this: LspWorld) {
+    await start(this, []);
   },
 );
 
@@ -382,6 +405,10 @@ Then(
     assert.equal(this.shown?.[0]?.type, Number(type));
   },
 );
+
+Then(/^the marker file does not exist$/, function (this: LspWorld) {
+  assert.ok(!existsSync(join(copyOf(this), MARKER)), "the folder's worker ran");
+});
 
 Then(/^it answers shutdown$/, { timeout: SERVER_MS }, async function (this: LspWorld) {
   send(this, { id: 2, method: "shutdown", params: null });

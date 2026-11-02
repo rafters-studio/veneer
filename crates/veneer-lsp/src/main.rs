@@ -19,8 +19,6 @@ use std::process::{ChildStdin, Command, ExitStatus, Stdio};
 use std::sync::mpsc;
 use std::thread;
 
-const DEFAULT_WORKER: &str = "node_modules/@rafters/veneer/dist/worker.mjs";
-
 enum Event {
     Lsp(Message),
     LspClosed,
@@ -348,14 +346,14 @@ fn main() -> Result<(), Box<dyn Error>> {
         uris: HashMap::new(),
         showing: BTreeSet::new(),
     };
-    if server.root.is_empty() {
-        server.warn("the client named no rootUri, so there is no project to check");
-    } else {
-        let worker = option.unwrap_or_else(|| format!("{}/{DEFAULT_WORKER}", server.root));
+    // No default path: opening a folder must not run a worker that folder supplied.
+    if let Some(worker) = option.filter(|_| !server.root.is_empty()) {
         match start_worker(&worker, &server.root, events) {
             Ok(stdin) => server.worker = stdin,
             Err(error) => server.warn(&format!("node could not start {worker}: {error}")),
         }
+    } else {
+        server.warn("the server needs --worker and a client rootUri, so there are no diagnostics");
     }
 
     for event in inbox {

@@ -1,4 +1,4 @@
-# Generated from legion requirement FR-VEN-072, revision 2026-11-02T09:22:56.764951+00:00.
+# Generated from legion requirement FR-VEN-072, revision 2026-11-02T09:36:42.041445+00:00.
 # Do not edit: regenerate with scripts/features.mjs.
 
 Feature: The language server
@@ -43,3 +43,11 @@ Feature: The language server
     When the client opens src/pages/brackets.astro
     Then the server sends one window/showMessage of type 2
     And it answers shutdown
+
+  @criterion-FR-VEN-072-c9 @module:crates/veneer-lsp
+  Scenario: Opening a folder never runs a worker from that folder
+    Given the lint fixture, with node_modules/@rafters/veneer/dist/worker.mjs in the copy writing a marker file when run
+    And veneer-lsp started on it with no --worker
+    When the client opens src/pages/brackets.astro
+    Then the server sends one window/showMessage of type 2
+    And the marker file does not exist
