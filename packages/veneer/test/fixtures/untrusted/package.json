@@ -1,0 +1,13 @@
+{
+  "name": "read-fixture",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "astro": "6.4.4",
+    "react": "19.3.1",
+    "@astrojs/svelte": "file:./vendor/fake-svelte"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0"
+  }
+}

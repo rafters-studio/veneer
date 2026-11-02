@@ -1,0 +1,23 @@
+{"file": "src/pages/astro-cases.astro", "line": 18, "column": 9, "endLine": 18, "endColumn": 13, "severity": "error", "code": "ts(2322)", "help": "variant, quiet"}
+{"file": "src/pages/astro-cases.astro", "line": 20, "column": 9, "endLine": 20, "endColumn": 16, "severity": "error", "code": "ts(2322)", "help": "variant, quiet"}
+{"file": "src/pages/astro-cases.astro", "line": 22, "column": 2, "endLine": 22, "endColumn": 6, "severity": "error", "code": "ts(2322)", "help": "title"}
+{"file": "src/pages/astro-cases.astro", "line": 24, "column": 4, "endLine": 24, "endColumn": 8, "severity": "error", "code": "ts(2322)", "help": "variant, quiet"}
+{"file": "src/pages/astro-cases.astro", "line": 26, "column": 5, "endLine": 26, "endColumn": 9, "severity": "error", "code": "ts(2322)", "help": "variant, quiet"}
+{"file": "src/pages/astro-cases.astro", "line": 39, "column": 9, "endLine": 39, "endColumn": 13, "severity": "error", "code": "ts(2322)", "help": "variant, quiet"}
+{"file": "src/pages/astro-cases.astro", "line": 42, "column": 11, "endLine": 42, "endColumn": 15, "severity": "error", "code": "ts(2322)", "help": "size"}
+{"file": "src/pages/astro-cases.astro", "line": 44, "column": 12, "endLine": 44, "endColumn": 16, "severity": "error", "code": "ts(2322)", "help": "variant, quiet"}
+{"file": "src/pages/astro-cases.astro", "line": 46, "column": 6, "endLine": 46, "endColumn": 10, "severity": "error", "code": "ts(2322)", "help": "variant, quiet"}
+{"file": "src/pages/astro-cases.astro", "line": 48, "column": 9, "endLine": 48, "endColumn": 14, "severity": "hint", "code": "ts(6385)", "help": "Use variant=\"ghost\"."}
+{"file": "src/pages/brackets-tsx.tsx", "line": 7, "column": 23, "endLine": 7, "endColumn": 31, "severity": "error", "code": "rafters(arbitrary-value)", "message": "p-[32px] is an arbitrary value"}
+{"file": "src/pages/brackets-tsx.tsx", "line": 9, "column": 24, "endLine": 9, "endColumn": 32, "severity": "error", "code": "rafters(arbitrary-value)", "message": "w-[10px] is an arbitrary value"}
+{"file": "src/pages/brackets-tsx.tsx", "line": 11, "column": 24, "endLine": 11, "endColumn": 31, "severity": "error", "code": "rafters(arbitrary-value)", "message": "h-[3px] is an arbitrary value"}
+{"file": "src/pages/brackets.astro", "line": 5, "column": 13, "endLine": 5, "endColumn": 21, "severity": "error", "code": "rafters(arbitrary-value)", "message": "p-[32px] is an arbitrary value"}
+{"file": "src/pages/brackets.astro", "line": 7, "column": 18, "endLine": 7, "endColumn": 26, "severity": "error", "code": "rafters(arbitrary-value)", "message": "w-[10px] is an arbitrary value"}
+{"file": "src/pages/brackets.astro", "line": 11, "column": 13, "endLine": 11, "endColumn": 27, "severity": "error", "code": "rafters(arbitrary-value)", "message": "hover:h-[3rem] is an arbitrary value"}
+{"file": "src/pages/brackets.astro", "line": 13, "column": 13, "endLine": 13, "endColumn": 24, "severity": "error", "code": "rafters(arbitrary-value)", "message": "[color:red] is an arbitrary value"}
+{"file": "src/pages/brackets.astro", "line": 17, "column": 20, "endLine": 17, "endColumn": 27, "severity": "error", "code": "rafters(arbitrary-value)", "message": "p-[1px] is an arbitrary value"}
+{"file": "src/pages/brackets.astro", "line": 17, "column": 33, "endLine": 17, "endColumn": 40, "severity": "error", "code": "rafters(arbitrary-value)", "message": "m-[2px] is an arbitrary value"}
+{"file": "src/pages/brackets.astro", "line": 21, "column": 13, "endLine": 21, "endColumn": 30, "severity": "error", "code": "rafters(arbitrary-value)", "message": "bg-[url('a.png')] is an arbitrary value"}
+{"file": "src/pages/tsx-cases.tsx", "line": 15, "column": 30, "endLine": 15, "endColumn": 34, "severity": "error", "code": "ts(2322)", "help": "variant, label"}
+{"file": "src/pages/tsx-cases.tsx", "line": 17, "column": 30, "endLine": 17, "endColumn": 37, "severity": "error", "code": "ts(2322)", "help": "variant, label"}
+{"file": "src/pages/tsx-cases.tsx", "line": 19, "column": 8, "endLine": 19, "endColumn": 19, "severity": "error", "code": "ts(2741)", "help": "variant, label"}
