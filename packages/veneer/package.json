@@ -20,7 +20,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "vp pack",
+    "build": "vp pack && node scripts/assert-dist.ts dist",
     "check": "vp check"
   },
   "dependencies": {
@@ -29,9 +29,14 @@
     "typescript": "catalog:ts6"
   },
   "devDependencies": {
-    "vite-plus": "catalog:"
+    "apca-w3": "0.1.9",
+    "colorjs.io": "0.5.2",
+    "comment-parser": "1.4.1",
+    "rafters-monorepo": "github:rafters-studio/rafters#e39634e2ad75b3b33fb42cbe958261549e6f0480",
+    "vite-plus": "catalog:",
+    "zod": "catalog:"
   },
   "engines": {
-    "node": ">=22.15.0"
+    "node": ">=24.0.0"
   }
 }

@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Node 22.15 or later, with the pnpm version `packageManager` names
+- Node 24 or later, with the pnpm version `packageManager` names
 - Rust on the stable toolchain
 
 ## Building and testing
