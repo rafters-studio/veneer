@@ -1,0 +1,150 @@
+{
+  "versions": {
+    "typescript": "6.0.3",
+    "sameModule": true
+  },
+  "root": "/Volumes/store/projects/rafters-studio/shingle/sites/rafters.studio",
+  "rootFiles": 89,
+  "diagnostics": 6,
+  "timeMs": {
+    "constructAndCheck": 2262,
+    "classify": 1.75
+  },
+  "scores": {
+    "symbol": {
+      "right": 3,
+      "of": 3,
+      "wrong": []
+    },
+    "signature": {
+      "right": 3,
+      "of": 3,
+      "wrong": []
+    },
+    "installed": {
+      "right": 1,
+      "of": 3,
+      "wrong": [
+        "C1 expected rafters",
+        "C2 expected rafters"
+      ]
+    }
+  },
+  "noDiagnostic": [],
+  "reportedBySymbol": [
+    "src/pages/kelex/index.astro:28:15 error ts(2322) variant",
+    "src/pages/kelex/index.astro:26:15 error ts(2322) tone"
+  ],
+  "unmapped": 0,
+  "cases": [
+    {
+      "id": "C3",
+      "expect": "other",
+      "at": "src/pages/kelex/index.astro:11",
+      "rows": [
+        {
+          "file": "src/pages/kelex/index.astro",
+          "line": 11,
+          "col": 7,
+          "severity": "error",
+          "code": "ts(2322)",
+          "message": "Type 'string' is not assignable to type 'number'.",
+          "slice": "t11Plain",
+          "isUse": false,
+          "symbol": false,
+          "signature": false,
+          "installed": false,
+          "node": "Identifier"
+        },
+        {
+          "file": "src/pages/kelex/index.astro",
+          "line": 11,
+          "col": 7,
+          "severity": "hint",
+          "code": "ts(6133)",
+          "message": "'t11Plain' is declared but its value is never read.",
+          "slice": "t11Plain",
+          "isUse": false,
+          "symbol": false,
+          "signature": false,
+          "installed": false,
+          "node": "Identifier"
+        }
+      ]
+    },
+    {
+      "id": "C1",
+      "expect": "rafters",
+      "at": "src/pages/kelex/index.astro:26",
+      "rows": [
+        {
+          "file": "src/pages/kelex/index.astro",
+          "line": 26,
+          "col": 15,
+          "severity": "error",
+          "code": "ts(2322)",
+          "message": "Type '{ children: string; tone: string; }' is not assignable to type 'IntrinsicAttributes & Props'.",
+          "slice": "tone",
+          "isUse": true,
+          "symbol": true,
+          "signature": true,
+          "installed": false,
+          "node": "Identifier",
+          "resolvedTo": "src/components/ui/button.astro"
+        }
+      ]
+    },
+    {
+      "id": "C2",
+      "expect": "rafters",
+      "at": "src/pages/kelex/index.astro:28",
+      "rows": [
+        {
+          "file": "src/pages/kelex/index.astro",
+          "line": 28,
+          "col": 15,
+          "severity": "error",
+          "code": "ts(2322)",
+          "message": "Type '\"nope\"' is not assignable to type '\"default\" | \"primary\" | \"secondary\" | \"destructive\" | \"success\" | \"warning\" | \"info\" | \"muted\" | \"accent\" | \"outline\" | \"ghost\" | \"link\" | undefined'.",
+          "slice": "variant",
+          "isUse": true,
+          "symbol": true,
+          "signature": true,
+          "installed": false,
+          "node": "Identifier",
+          "resolvedTo": "src/components/ui/button.astro"
+        }
+      ]
+    }
+  ],
+  "unmarked": [
+    {
+      "file": "src/components/ui/card.astro",
+      "line": 41,
+      "col": 3,
+      "severity": "hint",
+      "code": "ts(6385)",
+      "message": "'background' is deprecated.",
+      "slice": "background",
+      "isUse": false,
+      "symbol": false,
+      "signature": false,
+      "installed": false,
+      "node": "Identifier"
+    },
+    {
+      "file": "src/components/ui/container.astro",
+      "line": 48,
+      "col": 3,
+      "severity": "hint",
+      "code": "ts(6385)",
+      "message": "'background' is deprecated.",
+      "slice": "background",
+      "isUse": false,
+      "symbol": false,
+      "signature": false,
+      "installed": false,
+      "node": "Identifier"
+    }
+  ]
+}
