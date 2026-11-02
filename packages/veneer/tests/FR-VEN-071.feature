@@ -1,4 +1,4 @@
-# Generated from legion requirement FR-VEN-071, revision 2026-11-02T08:05:49.788264+00:00.
+# Generated from legion requirement FR-VEN-071, revision 2026-11-02T08:57:10.326815+00:00.
 # Do not edit: regenerate with scripts/features.mjs.
 
 Feature: One entry: what a save does
@@ -32,3 +32,17 @@ Feature: One entry: what a save does
     When node runs the child script
     Then its stdout is the line resolved
     And it exits with code 0
+
+  @criterion-FR-VEN-071-c7 @module:packages/veneer
+  Scenario: A new page is checked before it is written
+    Given the lint fixture
+    When check runs with unsaved holding src/pages/new.astro with the text "---\nimport Button from '@/components/ui/button.astro';\n---\n<Button tone=\"x\">a</Button>\n"
+    Then its one diagnostic is at src/pages/new.astro 4:9 with code "ts(2322)" and help "variant, quiet"
+    And src/pages/new.astro does not exist on disk
+
+  @criterion-FR-VEN-071-c8 @module:packages/veneer
+  Scenario: A new page the tsconfig does not take gives a notice
+    Given the lint fixture
+    When check runs with unsaved holding elsewhere/new.astro with the text "<div />"
+    Then it returns ok true with no diagnostics
+    And its notices hold one of code "outside-program" naming elsewhere/new.astro

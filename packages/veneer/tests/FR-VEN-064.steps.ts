@@ -38,6 +38,7 @@ interface ReadWorld {
   rejection?: unknown;
   script?: string;
   run?: { status: number | null; stdout: string; stderr: string };
+  opened?: { diagnostics?: Diagnostic[]; rejection?: { name: string; code: string } };
 }
 
 // A dynamic import, so a checkout that has not built yet still loads every scenario file:
@@ -117,6 +118,29 @@ ${body}
 project.close();
 `,
   );
+}
+
+// A child process, as FR-VEN-071's steps do: an open leaves memory behind (#134), and this
+// process has no room for more of them.
+function openWithUnsaved(world: ReadWorld, file: string, text: string): void {
+  const script = `import { openProject } from ${JSON.stringify(join(pkg, "dist/index.mjs"))};
+const project = await openProject(${JSON.stringify(fixture(world))}, {
+  unsaved: ${JSON.stringify({ [file]: text })},
+});
+const result = await project.diagnostics(${JSON.stringify(file)}).then(
+  (diagnostics) => ({ diagnostics }),
+  ({ name, code }) => ({ rejection: { name, code } }),
+);
+project.close();
+process.stdout.write(JSON.stringify(result));
+`;
+  const { status, stdout, stderr } = spawnSync(
+    process.execPath,
+    ["--input-type=module", "--eval", script],
+    { encoding: "utf8", timeout: STEP_TIMEOUT_MS },
+  );
+  assert.equal(status, 0, stderr);
+  world.opened = JSON.parse(stdout);
 }
 
 function noteDisk(path: string): Disk {
@@ -409,3 +433,42 @@ Then(
     });
   },
 );
+
+When(
+  /^the project is opened with openProject and unsaved holding (\S+) with the text of src\/pages\/index\.astro, its fourth line replaced by `(.*)`$/,
+  { timeout: STEP_TIMEOUT_MS },
+  function (this: ReadWorld, file: string, line: string) {
+    openWithUnsaved(this, file, withFourthLine(this, line));
+  },
+);
+
+When(
+  /^the project is opened with openProject and unsaved holding (\S+) with the text "(.*)"$/,
+  { timeout: STEP_TIMEOUT_MS },
+  function (this: ReadWorld, file: string, text: string) {
+    openWithUnsaved(this, file, text);
+  },
+);
+
+Then(
+  /^diagnostics\("src\/pages\/new\.astro"\) is one diagnostic with code "([^"]+)", severity "([^"]+)", (line \d+, column \d+, endLine \d+, endColumn \d+)$/,
+  function (this: ReadWorld, code: string, severity: string, at: string) {
+    const found = this.opened?.diagnostics ?? [];
+    assert.equal(found.length, 1, JSON.stringify(this.opened));
+    assert.equal(found[0]?.code, code);
+    assert.equal(found[0]?.severity, severity);
+    assertAt(found[0], at);
+  },
+);
+
+Then(
+  /^diagnostics\("elsewhere\/new\.astro"\) rejects with a ProjectError of code "([^"]+)"$/,
+  function (this: ReadWorld, code: string) {
+    assert.deepEqual(this.opened?.rejection, { name: "ProjectError", code });
+  },
+);
+
+// FR-VEN-071's lint fixture sets fixture too.
+Then(/^(\S+) does not exist on disk$/, function (this: ReadWorld, file: string) {
+  assert.equal(existsSync(join(fixture(this), file)), false);
+});
