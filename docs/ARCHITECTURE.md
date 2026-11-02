@@ -13,7 +13,7 @@ The intent is legion document `01a058f3`. The requirements are `FR-VEN-061` to `
 
 ## What exists
 
-- `packages/veneer`: `@rafters/veneer`, an ES module compiled by `vp pack`. It holds no binary. Its entry exports nothing yet.
+- `packages/veneer`: `@rafters/veneer`, an ES module compiled by `vp pack`. It holds no binary. Its entry exports `openProject`, the read (`FR-VEN-064`), from `src/read.ts`.
 - `packages/veneer/tests`: each requirement's scenarios, in a feature file generated from the requirement.
 - `crates/veneer-check` and `crates/veneer-lsp`: scaffolds.
 - `editors/`: scaffolds.
