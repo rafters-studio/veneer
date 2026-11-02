@@ -1,7 +1,7 @@
 import { lstatSync } from "node:fs";
 import { mkdir, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { readConfig, type Notice, type VeneerError } from "./config.ts";
+import { readConfig, type DocsConfig, type Notice, type VeneerError } from "./config.ts";
 import { openProject, ProjectError, type Project } from "./read.ts";
 import { compareCodePoints, resolveComponents, type Component, type Prop } from "./resolve.ts";
 
@@ -58,7 +58,7 @@ async function writeWhole(docsPath: string, text: string): Promise<void> {
   }
 }
 
-async function open(root: string): Promise<Project | VeneerError> {
+export async function openOrError(root: string): Promise<Project | VeneerError> {
   try {
     return await openProject(root);
   } catch (error) {
@@ -69,33 +69,44 @@ async function open(root: string): Promise<Project | VeneerError> {
   }
 }
 
+export function outputSymlinkError(root: string): VeneerError | undefined {
+  const symlink = [".rafters", ".rafters/veneer"].find((folder) =>
+    lstatSync(path.join(root, folder), { throwIfNoEntry: false })?.isSymbolicLink(),
+  );
+  if (!symlink) return undefined;
+  const message = `${symlink} is a symbolic link; veneer writes only inside the project`;
+  return { code: "output-symlink", message };
+}
+
+export function sortedNotices(notices: Notice[]): Notice[] {
+  return notices.toSorted(
+    (a, b) => compareCodePoints(a.code, b.code) || compareCodePoints(a.message, b.message),
+  );
+}
+
+export async function writeDocsFrom(
+  project: Project,
+  config: DocsConfig,
+): Promise<{ docsPath: string; notices: Notice[] }> {
+  const { components, notices } = await resolveComponents(project, config.componentFolders);
+  const docsPath = path.join(project.root, ".rafters/veneer/docs.jsonl");
+  await writeWhole(docsPath, docsText(config.intent, components));
+  return { docsPath, notices: sortedNotices([...config.notices, ...notices]) };
+}
+
 export async function writeDocs(projectRoot: string): Promise<DocsResult> {
   const root = path.resolve(projectRoot);
   const config = await readConfig(root);
   if (!config.ok) return { ok: false, errors: config.errors };
 
-  const symlink = [".rafters", ".rafters/veneer"].find((folder) =>
-    lstatSync(path.join(root, folder), { throwIfNoEntry: false })?.isSymbolicLink(),
-  );
-  if (symlink) {
-    const message = `${symlink} is a symbolic link; veneer writes only inside the project`;
-    return { ok: false, errors: [{ code: "output-symlink", message }] };
-  }
+  const symlink = outputSymlinkError(root);
+  if (symlink) return { ok: false, errors: [symlink] };
 
-  const project = await open(root);
+  const project = await openOrError(root);
   if ("code" in project) return { ok: false, errors: [project] };
 
   try {
-    const { components, notices } = await resolveComponents(project, config.componentFolders);
-    const docsPath = path.join(root, ".rafters/veneer/docs.jsonl");
-    await writeWhole(docsPath, docsText(config.intent, components));
-    return {
-      ok: true,
-      docsPath,
-      notices: [...config.notices, ...notices].sort(
-        (a, b) => compareCodePoints(a.code, b.code) || compareCodePoints(a.message, b.message),
-      ),
-    };
+    return { ok: true, ...(await writeDocsFrom(project, config)) };
   } finally {
     project.close();
   }
