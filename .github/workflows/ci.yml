@@ -40,12 +40,21 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - run: cargo clippy --all-targets -- -D warnings
 
-  shellcheck:
-    name: ShellCheck
-    runs-on: ubuntu-latest
+  node:
+    name: node
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - run: shellcheck install.sh
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: pnpm/action-setup@v6.0.10
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm -r build
+      - run: pnpm exec toolchain drift
+      - run: pnpm bdd
 
   test:
     name: Test
