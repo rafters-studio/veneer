@@ -45,7 +45,7 @@ export interface Component {
   inheritedDefaults: Record<string, string>;
 }
 
-interface Reader {
+export interface Reader {
   project: Project;
   ts: Ts;
   tc: TypeScript.TypeChecker;
@@ -68,7 +68,8 @@ export function compareCodePoints(a: string, b: string): number {
 }
 
 const posix = (file: string): string => file.split(path.sep).join("/");
-const relativeFile = (root: string, file: string): string => posix(path.relative(root, file));
+export const relativeFile = (root: string, file: string): string =>
+  posix(path.relative(root, file));
 const inNodeModules = (declaration: TypeScript.Declaration): boolean =>
   declaration.getSourceFile().fileName.includes("/node_modules/");
 
@@ -97,7 +98,7 @@ async function walkFolder(folder: string, into: Set<string>): Promise<void> {
 
 // ---- The source map and positions.
 
-function scriptOf(reader: Reader, file: string) {
+export function scriptOf(reader: Reader, file: string) {
   return reader.project.checker.language.scripts.get(URI.file(file));
 }
 
@@ -110,7 +111,18 @@ function sourceOffset(reader: Reader, file: string, offset: number): number | un
   return undefined;
 }
 
-function positionOf(
+export function generatedOffset(reader: Reader, file: string, offset: number): number | undefined {
+  const { language } = reader.project.checker;
+  const script = scriptOf(reader, file);
+  const tsx = script?.generated?.embeddedCodes.get("tsx");
+  if (!script || !tsx) return undefined;
+  for (const [generated] of language.maps.get(tsx, script).toGeneratedLocation(offset)) {
+    return generated;
+  }
+  return undefined;
+}
+
+export function positionOf(
   reader: Reader,
   sourceFile: TypeScript.SourceFile,
   offset: number,
@@ -650,6 +662,28 @@ function readProps(
   };
 }
 
+function propsOfSignature(
+  reader: Reader,
+  signature: TypeScript.Signature,
+  sourceFile: TypeScript.SourceFile,
+  defaults: Map<string, string>,
+): ReadProps {
+  const parameter = signature.parameters[0];
+  return parameter
+    ? readProps(reader, reader.tc.getTypeOfSymbol(parameter), sourceFile, defaults)
+    : { props: [], inherited: [], inheritedDefaults: {}, anyNames: [] };
+}
+
+export function ownPropNames(
+  reader: Reader,
+  component: TypeScript.Symbol,
+  sourceFile: TypeScript.SourceFile,
+): string[] {
+  const signature = reader.tc.getTypeOfSymbol(component).getCallSignatures()[0];
+  if (!signature) return [];
+  return propsOfSignature(reader, signature, sourceFile, new Map()).props.map(({ name }) => name);
+}
+
 // ---- Intelligence.
 
 function intelligenceBlock(
@@ -752,13 +786,10 @@ async function componentsOfFile(reader: Reader, file: string): Promise<Component
     const signature = tc.getTypeOfSymbol(symbol).getCallSignatures()[0];
     if (name === undefined || !signature) continue;
 
-    const parameter = signature.parameters[0];
     let defaults = new Map<string, string>();
     if (!isAstro) defaults = tsxDefaults(reader, symbol.valueDeclaration);
     else if (names.includes("default")) defaults = astroDefaults(ts, sourceFile);
-    const read: ReadProps = parameter
-      ? readProps(reader, tc.getTypeOfSymbol(parameter), sourceFile, defaults)
-      : { props: [], inherited: [], inheritedDefaults: {}, anyNames: [] };
+    const read = propsOfSignature(reader, signature, sourceFile, defaults);
 
     const component: Component = {
       name,
