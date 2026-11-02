@@ -1,4 +1,4 @@
-# Generated from legion requirement FR-VEN-074, revision 2026-11-01T20:06:35.330657+00:00.
+# Generated from legion requirement FR-VEN-074, revision 2026-11-02T08:05:49.414837+00:00.
 # Do not edit: regenerate with scripts/features.mjs.
 
 Feature: docs.jsonl: the line shape, the file and the call that writes it
@@ -59,3 +59,17 @@ Feature: docs.jsonl: the line shape, the file and the call that writes it
     When writeDocs runs on it
     Then it returns ok false with errors [{"code":"tsconfig-missing","message":"tsconfig.json not found at <the copy's absolute path>"}]
     And nothing exists at .rafters/veneer
+
+  @criterion-FR-VEN-074-c9 @module:packages/veneer
+  Scenario: A symbolic link cannot send the write outside the project
+    Given the docs fixture, with .rafters/veneer replaced by a symbolic link to a folder outside the copy
+    When writeDocs runs on it
+    Then it returns ok false with one error of code "output-symlink"
+    And that outside folder is empty
+
+  @criterion-FR-VEN-074-c10 @module:packages/veneer
+  Scenario: A symbolic link at the temporary path is not followed
+    Given the docs fixture, with .rafters/veneer/docs.jsonl.tmp a symbolic link to a file outside the copy holding the text "untouched"
+    When writeDocs runs on it
+    Then it returns ok true
+    And that outside file holds the text "untouched"

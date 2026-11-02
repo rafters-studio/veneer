@@ -1,4 +1,4 @@
-# Generated from legion requirement FR-VEN-064, revision 2026-11-02T05:40:39.587422+00:00.
+# Generated from legion requirement FR-VEN-064, revision 2026-11-02T08:05:49.311428+00:00.
 # Do not edit: regenerate with scripts/features.mjs.
 
 Feature: Read: the project as astro check's one TypeScript program
@@ -65,3 +65,19 @@ Feature: Read: the project as astro check's one TypeScript program
     When the project is closed
     Then ts.sys.readFile, getModifiedTime and fileExists are the noted functions
     And diagnostics("src/pages/index.astro") rejects with a ProjectError of code "closed" and the message "the veneer project is closed"
+
+  @criterion-FR-VEN-064-c13 @module:packages/veneer
+  Scenario: Opening a project never runs its code
+    Given the untrusted fixture
+    And VENEER_TEST_MARKER names a path in the fixture copy
+    When the project is opened with openProject and diagnostics("src/pages/imports-svelte.astro") is called
+    Then the file at that path does not exist
+
+  @criterion-FR-VEN-064-c14 @module:packages/veneer
+  Scenario: An import of a svelte file gives one diagnostic and no output
+    Given the untrusted fixture
+    And a child script, written by the step to a temporary .mjs file, that imports openProject from the absolute path of packages/veneer/dist/index.mjs, opens the copy, writes to stdout one line of JSON of diagnostics("src/pages/imports-svelte.astro") mapped to its code, line and column, and closes the project
+    When node runs the child script
+    Then its stdout is the line [{"code":"ts(2306)","line":2,"column":17}]
+    And its stderr is empty
+    And it exits with code 0

@@ -1,3 +1,4 @@
+import { lstatSync } from "node:fs";
 import { mkdir, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { readConfig, type Notice, type VeneerError } from "./config.ts";
@@ -47,7 +48,7 @@ async function writeWhole(docsPath: string, text: string): Promise<void> {
   await mkdir(path.dirname(docsPath), { recursive: true });
   try {
     // A repo could commit the temporary path as a symlink. Removing it and creating the file
-    // exclusively stops the write following that one. A symlinked folder above it is #131.
+    // exclusively stops the write following that one.
     await rm(temporary, { force: true });
     await writeFile(temporary, text, { flag: "wx" });
     await rename(temporary, docsPath);
@@ -72,6 +73,14 @@ export async function writeDocs(projectRoot: string): Promise<DocsResult> {
   const root = path.resolve(projectRoot);
   const config = await readConfig(root);
   if (!config.ok) return { ok: false, errors: config.errors };
+
+  const symlink = [".rafters", ".rafters/veneer"].find((folder) =>
+    lstatSync(path.join(root, folder), { throwIfNoEntry: false })?.isSymbolicLink(),
+  );
+  if (symlink) {
+    const message = `${symlink} is a symbolic link; veneer writes only inside the project`;
+    return { ok: false, errors: [{ code: "output-symlink", message }] };
+  }
 
   const project = await open(root);
   if ("code" in project) return { ok: false, errors: [project] };
