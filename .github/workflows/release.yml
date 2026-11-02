@@ -5,12 +5,21 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   publish:
     name: Publish @rafters/veneer
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Refuse a tag that is not on main
+        run: git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+      - uses: dtolnay/rust-toolchain@stable
       - uses: pnpm/action-setup@v6.0.10
       - uses: actions/setup-node@v5
         with:
@@ -29,7 +38,7 @@ jobs:
             pkg.version = process.env.TAG.replace(/^v/, "");
             fs.writeFileSync(file, JSON.stringify(pkg, null, 2) + "\n");
           '
-      - run: pnpm --filter @rafters/veneer exec vp pack
+      - run: pnpm -r build
+      - run: cargo build -p veneer-lsp
+      - run: pnpm bdd
       - run: pnpm --filter @rafters/veneer publish --access public --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

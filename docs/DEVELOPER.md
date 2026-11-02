@@ -32,7 +32,7 @@ Steps live in `packages/veneer/tests/*.steps.ts`. A scenario with no `@criterion
 
 ## Release
 
-A pushed `v*` tag publishes `@rafters/veneer` to npm with the tag's version, using the `NPM_TOKEN` secret. See #128 before the first publish.
+A pushed `v*` tag on a commit on main publishes `@rafters/veneer` to npm with the tag's version, through npm trusted publishing, after `pnpm -r build` and `pnpm bdd` pass.
 
 ## CI
 
