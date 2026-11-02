@@ -33,9 +33,9 @@ function compareCodePoints(a: string, b: string): number {
   return left.length - right.length;
 }
 
-// A closed Project's memory stays with the language server per copy opened, and one process
-// running every scenario runs out of heap. So only the scenario that wraps rename, which must
-// share a process with writeDocs, runs in this one.
+// A closed Project leaves memory behind, and one process running every scenario runs out of
+// heap. So only the scenario that wraps rename, which must share a process with writeDocs,
+// runs in this one.
 async function runDocs(world: DocsWorld): Promise<void> {
   const folder = docsCopy(world);
   installOnce(world, folder);
