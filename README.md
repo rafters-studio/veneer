@@ -1,47 +1,21 @@
 # veneer
 
-A documentation engine. Currently ships one command: `veneer extract`, which reads a CLI binary's `--help` output and emits Astro-compatible MDX reference pages plus a sidebar JSONL.
+Veneer reads a rafters project and turns it into that project's docs, current with the code and maintained by nobody by hand. The same reading lets it check every use of rafters and compile composites into the project's own framework.
 
-The component-documentation pipeline (framework-less Web Component previews from React/Vue/Solid source) lives in `veneer-adapters` and is being rewired into a registry-first flow. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
-
-## Install
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/rafters-studio/veneer/main/install.sh | bash
-```
-
-Or from source:
-
-```bash
-cargo install --path crates/veneer
-```
-
-## Extract CLI docs
-
-```bash
-veneer extract \
-  --project ./path/to/your-cli \
-  --binary ./path/to/your-cli/target/release/your-cli \
-  --output ./docs \
-  --layout "@/layouts/Docs.astro"
-```
-
-Produces:
-
-- `docs/reference/**/*.mdx` — one page per command, with flag tables and usage
-- `docs/sidebar.jsonl` — nav data the consuming site imports
-- `docs/concepts/*.mdx` — editorial skeleton pages (getting-started, architecture, etc.)
-
-The `--layout` value is written into MDX frontmatter as `layout:` so Astro resolves it.
+Veneer is being rebuilt. The previous Rust CLI is gone, and `@rafters/veneer` does not do anything yet. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for where the rebuild stands.
 
 ## Workspace
 
 ```
-crates/
-├── veneer            CLI binary (extract command)
-├── veneer-adapters   JSX → Web Component transformation, scope_css
-└── veneer-docs       CLI help parser, MDX skeletons, sidebar generation
+packages/veneer        @rafters/veneer, TypeScript, published to npm
+crates/veneer-check    the shared check core, a scaffold so far
+crates/veneer-lsp      the language server, a scaffold so far
+editors/               the editor packages, a scaffold so far
 ```
+
+## Contributing
+
+See [docs/DEVELOPER.md](docs/DEVELOPER.md).
 
 ## License
 
