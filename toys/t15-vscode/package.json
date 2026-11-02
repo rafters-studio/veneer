@@ -1,0 +1,10 @@
+{
+  "name": "t15-vscode",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./extension.cjs",
+  "engines": { "vscode": "^1.90.0" },
+  "activationEvents": ["workspaceContains:**/*.astro", "onLanguage:astro", "onLanguage:typescriptreact"],
+  "dependencies": { "vscode-languageclient": "9.0.1" },
+  "devDependencies": { "@vscode/test-electron": "2.5.2" }
+}

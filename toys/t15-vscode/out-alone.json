@@ -1,0 +1,16 @@
+{
+ "astroInstalled": false,
+ "languageId": "plaintext",
+ "veneerMs": 751,
+ "othersMs": null,
+ "diagnostics": [
+  {
+   "source": "veneer",
+   "code": "ts(2322)",
+   "line": 4,
+   "column": 9,
+   "message": "Type '{ children: string; tone: string; }' is not assignable to type 'IntrinsicAttributes "
+  }
+ ],
+ "clearedMs": 352
+}
