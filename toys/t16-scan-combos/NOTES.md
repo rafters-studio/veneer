@@ -60,7 +60,7 @@ The recorded `results/astro-check` came from the `pnpm exec` run; the changed sc
 - Facts: `facts.ts` opens each site with veneer's `openProject`, runs veneer's `lint`, and writes a row
   per JSX element from the same program. Helpers lint.ts does not export are copied verbatim and marked.
 - Combinations: `combos.mjs` queries the rows offline. 10 scan definitions x 4 gates x 4 element sets x
-  16 class filters per site and in total: `results/combos.csv`.
+  18 class filters per site and in total: `results/combos.csv`.
 - Precision: I read every element of each family in non-exempt files, so it is a census of this corpus and
   not a sample: 94 divs, 59 sectioning elements, 206 raw elements (`results/census-*.txt`). Divs and
   sectioning have one verdict per line in `verdicts.mjs`. Raw elements were read, then given verdicts by
@@ -72,6 +72,11 @@ The recorded `results/astro-check` came from the `pnpm exec` run; the changed sc
 Verdicts: **R** Container or Grid truly replaces it, with a gain. **W** a mechanical swap works but gains
 little or needs overrides. **O** another rafters component is the answer, so the help text misleads.
 **K** raw is right, or nothing installed replaces it. Strict precision is R/n, lenient is (R+W)/n.
+
+Verdicts are judged against each site's installed Container. About ten `header` and `nav` verdicts are K because
+that copy has no such mode. The current Container (huttspawn's) has header and footer modes and says never to
+write raw sticky or z-* utilities, so `mail/SiteHeader.astro:17` breaks it and most `header` verdicts would
+become W under current rafters. Dropping sectioning at warning still stands: W is a weak swap, not a finding.
 
 ## The corpus
 
@@ -106,6 +111,8 @@ Divs, `format`, all sites. Per-site counts are in `results/precision.csv`.
 | split: `flex flex-col` | 7 / 5 | 43% | 86% | 9 / 7 | 33% | 78% |
 | split: flex row | 8 / 6 | 0% | 0% | 14 / 9 | 0% | 0% |
 | **grid, shell or flex-col** | **10 / 7** | **40%** | **80%** | 13 / 10 | 31% | 69% |
+| **as recommended, warning tier** | **0 / 0** | - | - | 0 / 0 | - | - |
+| **as recommended, hint tier** | **8 / 6** | **50%** | **88%** | 10 / 8 | 40% | 80% |
 | holds text directly | 10 / 3 | 0% | 0% | 34 / 14 | 0% | 0% |
 
 The last row is 0% for Container or Grid, but 31 of its 34 have another answer: 22 Typography, 9 Card.
@@ -179,21 +186,30 @@ The 4 true replacements: `OssCallout.astro:19`, `SectionHead.astro:14`, `stories
 
 **#159: do not ship "every div" at warning.** At 43 findings, 9% strict, its help is wrong for at least 79% of
 them. That teaches people to ignore the check. Telling layout divs from others is out of scope in the issue;
-I would bring it into scope, because it is the difference between 21% and 80%.
+I would bring it into scope, because it is the difference between 21% and 88% lenient.
 
 Ship, keeping #159's file gate and exemptions:
 
 | Div carries | Severity | Help | Evidence |
 |---|---|---|---|
 | `grid`, `inline-grid`, `grid-cols-*`, `container`, `mx-auto` | warning | Grid, or Container size | Inferred: 0 findings here, so no measured noise and no measured value. These are the utilities the two components exist to own. |
-| `flex flex-col` with a gap, `max-w-*` | hint | Container gap, or Container size | Measured with the above: n=10, R 4, W 4, K 2. Half the usable ones need overrides, so a hint. |
+| unprefixed `flex flex-col gap-*`, unprefixed `max-w-*` except `max-w-none` and `max-w-prose` | hint | Container gap, or Container size | Measured: n=8, R 4, W 3, K 1. Nearly half the usable ones need overrides, so a hint. |
 
-The help should name the one component that fits, not "Container or Grid". Why the file gate: it costs 3 of
-12 R or W findings against every file, and lifts precision from 69% to 80%. Its known weakness: a wholly
-freehand file escapes, including 21 divs in `LegionHero.astro`. On this corpus that loses no true replacement.
+The filters are `recommendedWarn` and `recommendedHint` in `lib.mjs`. I wrote them after reading this corpus,
+so 50% and 88% are in-sample, and a fresh project will likely score lower. The one K is `MrsBlock.astro:139`.
+
+The help should name the one component that fits, not "Container or Grid". Why the file gate: against every
+file, for this rule, it costs 1 of 8 usable findings (`HeroInstallCTA.astro:17`) and removes the one that
+points at the wrong component (`HeroTopology.astro:21`, Card chrome), taking lenient from 80% to 88%. That is
+two findings, so a weak preference, and I keep it mainly because #159 already says it. Its known weakness: a
+wholly freehand file escapes, including 21 divs in `LegionHero.astro`. No true replacement is lost here.
+
+**The brief's bar of at least 20 hand-read findings per promising combination is not met for what I recommend.**
+The warning tier has 0 findings and the hint tier 8. Those are whole populations, so this corpus cannot supply
+more. Treat the hint tier as a direction with a small n, and the warning tier as untested.
 
 I would expect Sean to weigh in on one thing: he asked for warns, and the measured half is a hint. Warning is
-defensible at 80% lenient. Hint is what 40% strict supports.
+defensible at 88% lenient. Hint is what 50% strict on 8 findings supports.
 
 **#158: ship `scan` as written, strict definition, `format` default.** Loosening buys nothing: at most 1 or 2
 findings and 12 uses. Three things for its builder:
@@ -252,3 +268,5 @@ node extra.mjs <copies>
 ```
 
 Run on Node 26.13. The `results` here were made with the older `prep.mjs` and `baseline.mjs` described above.
+Do not rerun `facts.ts` or `baseline.mjs` in the copies from this run: their `.bin` links into the originals
+remain, because they are kept until Sean decides the repair. Make fresh copies first.

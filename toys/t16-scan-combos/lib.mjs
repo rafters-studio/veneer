@@ -121,6 +121,15 @@ export const CLASSES = {
   flexRow: (r) => has(r, (t) => /^(flex|inline-flex)$/.test(t)) && !has(r, (t) => t === "flex-col"),
   // Added after reading the census: a div that directly holds text.
   textHolding: (r) => r.text || (r.expressions > 0 && r.children.length === 0),
+  // The rule as recommended. Written after reading this corpus, so its precision here is in-sample.
+  // Hint: an unprefixed flex, flex-col and gap, or an unprefixed max-w size. max-w-none and max-w-prose
+  // are excluded: the first is no width, and the second is a text measure, which Container has no size for.
+  recommendedWarn: (r) => has(r, (t) => /^(grid|inline-grid|container|mx-auto)$/.test(t) || /^grid-cols-/.test(t)),
+  recommendedHint: (r) => {
+    const written = r.classes.split(/\s+/).filter(Boolean);
+    const stack = written.includes("flex") && written.includes("flex-col") && written.some((c) => c.startsWith("gap-"));
+    return stack || written.some((c) => /^max-w-/.test(c) && c !== "max-w-none" && c !== "max-w-prose");
+  },
   gridOrShell: (r) => CLASSES.gridLike(r) || CLASSES.shellLike(r),
   gridShellOrFlexCol: (r) => CLASSES.gridLike(r) || CLASSES.shellLike(r) || CLASSES.flexCol(r),
 };

@@ -58,6 +58,44 @@ format every    div           flexRow              n= 14 files=  9 R= 0 W= 0 O= 
 format every    div           gridShellOrFlexCol   n= 13 files= 10 R= 4 W= 5 O= 1 K=  3 strict= 31% lenient= 69% anyRafters= 77%
 format every    div           textHolding          n= 34 files= 14 R= 0 W= 0 O=31 K=  3 strict=  0% lenient=  0% anyRafters= 91%
 
+-- the rule as recommended, by scan and gate
+system file     div           recommendedWarn      n=  0 files=  0 R= 0 W= 0 O= 0 K=  0 strict=   - lenient=   - anyRafters=   -
+system file     div           recommendedHint      n=  8 files=  6 R= 4 W= 3 O= 0 K=  1 strict= 50% lenient= 88% anyRafters= 88%
+system parent   div           recommendedWarn      n=  0 files=  0 R= 0 W= 0 O= 0 K=  0 strict=   - lenient=   - anyRafters=   -
+system parent   div           recommendedHint      n=  2 files=  2 R= 2 W= 0 O= 0 K=  0 strict=100% lenient=100% anyRafters=100%
+system ancestor div           recommendedWarn      n=  0 files=  0 R= 0 W= 0 O= 0 K=  0 strict=   - lenient=   - anyRafters=   -
+system ancestor div           recommendedHint      n=  4 files=  3 R= 3 W= 1 O= 0 K=  0 strict= 75% lenient=100% anyRafters=100%
+system every    div           recommendedWarn      n=  0 files=  0 R= 0 W= 0 O= 0 K=  0 strict=   - lenient=   - anyRafters=   -
+system every    div           recommendedHint      n= 10 files=  8 R= 4 W= 4 O= 1 K=  1 strict= 40% lenient= 80% anyRafters= 90%
+format file     div           recommendedWarn      n=  0 files=  0 R= 0 W= 0 O= 0 K=  0 strict=   - lenient=   - anyRafters=   -
+format file     div           recommendedHint      n=  8 files=  6 R= 4 W= 3 O= 0 K=  1 strict= 50% lenient= 88% anyRafters= 88%
+format parent   div           recommendedWarn      n=  0 files=  0 R= 0 W= 0 O= 0 K=  0 strict=   - lenient=   - anyRafters=   -
+format parent   div           recommendedHint      n=  2 files=  2 R= 2 W= 0 O= 0 K=  0 strict=100% lenient=100% anyRafters=100%
+format ancestor div           recommendedWarn      n=  0 files=  0 R= 0 W= 0 O= 0 K=  0 strict=   - lenient=   - anyRafters=   -
+format ancestor div           recommendedHint      n=  4 files=  3 R= 3 W= 1 O= 0 K=  0 strict= 75% lenient=100% anyRafters=100%
+format every    div           recommendedWarn      n=  0 files=  0 R= 0 W= 0 O= 0 K=  0 strict=   - lenient=   - anyRafters=   -
+format every    div           recommendedHint      n= 10 files=  8 R= 4 W= 4 O= 1 K=  1 strict= 40% lenient= 80% anyRafters= 90%
+all    file     div           recommendedWarn      n=  0 files=  0 R= 0 W= 0 O= 0 K=  0 strict=   - lenient=   - anyRafters=   -
+all    file     div           recommendedHint      n=  8 files=  6 R= 4 W= 3 O= 0 K=  1 strict= 50% lenient= 88% anyRafters= 88%
+all    parent   div           recommendedWarn      n=  0 files=  0 R= 0 W= 0 O= 0 K=  0 strict=   - lenient=   - anyRafters=   -
+all    parent   div           recommendedHint      n=  4 files=  3 R= 3 W= 1 O= 0 K=  0 strict= 75% lenient=100% anyRafters=100%
+all    ancestor div           recommendedWarn      n=  0 files=  0 R= 0 W= 0 O= 0 K=  0 strict=   - lenient=   - anyRafters=   -
+all    ancestor div           recommendedHint      n=  6 files=  4 R= 4 W= 2 O= 0 K=  0 strict= 67% lenient=100% anyRafters=100%
+all    every    div           recommendedWarn      n=  0 files=  0 R= 0 W= 0 O= 0 K=  0 strict=   - lenient=   - anyRafters=   -
+all    every    div           recommendedHint      n= 10 files=  8 R= 4 W= 4 O= 1 K=  1 strict= 40% lenient= 80% anyRafters= 90%
+
+-- recommended hint rows, format, every gate
+rafters.studio:src/components/mail/Hero.astro:59 W label and value stack, nesting a Container here is what its doc warns of | flex flex-col gap-1 font-mono text-label-small uppercase tracking-wide
+rafters.studio:src/components/mail/OssCallout.astro:19 R flex-col gap: Container gap | flex flex-col gap-3
+rafters.studio:src/components/mail/OssCallout.astro:32 W stack with responsive alignment overrides | flex flex-col items-start gap-3 lg:items-end
+rafters.studio:src/components/mail/composites/SectionHead.astro:13 W stack that turns into a row at lg, needs overrides | flex flex-col gap-6 border-b border-border pb-8 mb-12 lg:flex-row lg:j
+rafters.studio:src/components/mail/composites/SectionHead.astro:14 R flex-col gap: Container gap | flex flex-col gap-3
+sean.silvius.me:src/pages/stories/index.astro:20 R flex-col gap: Container gap | mt-12 flex flex-col gap-6
+smugglr.dev:src/components/HeroInstallCTA.astro:17 W stack, but gap-2.5 is off Container's scale | flex flex-col items-center gap-2.5 w-full
+smugglr.dev:src/components/HeroTopology.astro:21 O chrome: Card or a Card part | w-full border border-border rounded bg-background px-8 py-7 flex flex-
+smugglr.dev:src/components/MrsBlock.astro:139 K dt and dd group: HTML wants a div in a dl | flex flex-col gap-0.5 md:flex-row md:gap-3
+smugglr.dev:src/components/VoiceHero.astro:37 R w-full max-w-xl: Container size=xl | w-full max-w-xl
+
 -- scan, div every
 system file     div           every                n= 43 files= 16 R= 4 W= 5 O=16 K= 18 strict=  9% lenient= 21% anyRafters= 58%
 system parent   div           every                n=  7 files=  6 R= 2 W= 1 O= 1 K=  3 strict= 29% lenient= 43% anyRafters= 57%

@@ -1,4 +1,4 @@
-combos.csv: 17920 rows
+combos.csv: 20160 rows
 
 gitpress.app: root files 2, shapes 2, system uses 0
   strict           own   0 (used   0) system   0
@@ -80,6 +80,8 @@ format x class filter, div, (findings/files) by gate
   flexCol              file 7/5  parent 2/2  ancestor 4/3  every 9/7
   flexRow              file 8/6  parent 1/1  ancestor 1/1  every 14/9
   textHolding          file 10/3  parent 0/0  ancestor 0/0  every 34/14
+  recommendedWarn      file 0/0  parent 0/0  ancestor 0/0  every 0/0
+  recommendedHint      file 8/6  parent 2/2  ancestor 4/3  every 10/8
   gridOrShell          file 3/3  parent 1/1  ancestor 1/1  every 4/4
   gridShellOrFlexCol   file 10/7  parent 3/2  ancestor 5/3  every 13/10
 

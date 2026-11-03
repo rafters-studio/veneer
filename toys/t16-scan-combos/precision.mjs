@@ -53,6 +53,12 @@ const show = (scan, gate, family, cls) => {
 };
 console.log("\n-- divs by class filter and gate, format");
 for (const gate of Object.keys(GATES)) for (const cls of ["every", "anyClass", "layout", "visual", "visualNoLayout", "noClass", "wrapsOne", "noClassOrWraps", "gridLike", "shellLike", "flexCol", "flexRow", "gridShellOrFlexCol", "textHolding"]) show("format", gate, "div", cls);
+console.log("\n-- the rule as recommended, by scan and gate");
+for (const scan of ["system", "format", "all"]) for (const gate of Object.keys(GATES)) for (const cls of ["recommendedWarn", "recommendedHint"]) show(scan, gate, "div", cls);
+console.log("\n-- recommended hint rows, format, every gate");
+for (const data of sites) for (const row of run(data, "format", "every", "div", "recommendedHint")) {
+  console.log(`${data.site}:${row.file}:${row.line} ${verdictOf(row, data.site, "div").join(" ")} | ${row.classes.slice(0, 70)}`);
+}
 console.log("\n-- scan, div every");
 for (const scan of ["system", "format", "all"]) for (const gate of Object.keys(GATES)) show(scan, gate, "div", "every");
 console.log("\n-- sectioning");

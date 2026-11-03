@@ -13,6 +13,8 @@ system,file,div,shellLike,3,3,1,1,0,1,33%,67%,67%,{"rafters.studio":1;"sean.silv
 system,file,div,flexCol,7,5,3,3,0,1,43%,86%,86%,{"rafters.studio":5;"sean.silvius.me":1;"smugglr.dev":1}
 system,file,div,flexRow,8,6,0,0,2,6,0%,0%,25%,{"rafters.studio":4;"sean.silvius.me":2;"smugglr.dev":2}
 system,file,div,textHolding,10,3,0,0,8,2,0%,0%,80%,{"rafters.studio":2;"smugglr.dev":8}
+system,file,div,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+system,file,div,recommendedHint,8,6,4,3,0,1,50%,88%,88%,{"rafters.studio":5;"sean.silvius.me":1;"smugglr.dev":2}
 system,file,div,gridOrShell,3,3,1,1,0,1,33%,67%,67%,{"rafters.studio":1;"sean.silvius.me":1;"smugglr.dev":1}
 system,file,div,gridShellOrFlexCol,10,7,4,4,0,2,40%,80%,80%,{"rafters.studio":6;"sean.silvius.me":2;"smugglr.dev":2}
 system,file,sectioning,every,46,26,3,17,0,26,7%,43%,43%,{"huttspawn":1;"rafters.studio":12;"runlegion.dev":3;"sean.silvius.me":8;"smugglr.dev":22}
@@ -29,6 +31,8 @@ system,file,sectioning,shellLike,0,0,0,0,0,0,-,-,-,{}
 system,file,sectioning,flexCol,0,0,0,0,0,0,-,-,-,{}
 system,file,sectioning,flexRow,2,2,0,0,0,2,0%,0%,0%,{"rafters.studio":1;"smugglr.dev":1}
 system,file,sectioning,textHolding,0,0,0,0,0,0,-,-,-,{}
+system,file,sectioning,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+system,file,sectioning,recommendedHint,0,0,0,0,0,0,-,-,-,{}
 system,file,sectioning,gridOrShell,0,0,0,0,0,0,-,-,-,{}
 system,file,sectioning,gridShellOrFlexCol,0,0,0,0,0,0,-,-,-,{}
 system,file,rawEquivalent,every,98,36,0,0,0,98,0%,0%,0%,{"huttspawn":26;"rafters.studio":18;"runlegion.dev":10;"sean.silvius.me":22;"smugglr.dev":22}
@@ -45,6 +49,8 @@ system,file,rawEquivalent,shellLike,0,0,0,0,0,0,-,-,-,{}
 system,file,rawEquivalent,flexCol,0,0,0,0,0,0,-,-,-,{}
 system,file,rawEquivalent,flexRow,0,0,0,0,0,0,-,-,-,{}
 system,file,rawEquivalent,textHolding,59,27,0,0,0,59,0%,0%,0%,{"huttspawn":25;"rafters.studio":14;"sean.silvius.me":8;"smugglr.dev":12}
+system,file,rawEquivalent,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+system,file,rawEquivalent,recommendedHint,0,0,0,0,0,0,-,-,-,{}
 system,file,rawEquivalent,gridOrShell,0,0,0,0,0,0,-,-,-,{}
 system,file,rawEquivalent,gridShellOrFlexCol,0,0,0,0,0,0,-,-,-,{}
 system,parent,div,every,7,6,2,1,1,3,29%,43%,57%,{"rafters.studio":4;"sean.silvius.me":1;"smugglr.dev":2}
@@ -61,6 +67,8 @@ system,parent,div,shellLike,1,1,0,0,0,1,0%,0%,0%,{"rafters.studio":1}
 system,parent,div,flexCol,2,2,2,0,0,0,100%,100%,100%,{"rafters.studio":2}
 system,parent,div,flexRow,1,1,0,0,1,0,0%,0%,100%,{"rafters.studio":1}
 system,parent,div,textHolding,0,0,0,0,0,0,-,-,-,{}
+system,parent,div,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+system,parent,div,recommendedHint,2,2,2,0,0,0,100%,100%,100%,{"rafters.studio":2}
 system,parent,div,gridOrShell,1,1,0,0,0,1,0%,0%,0%,{"rafters.studio":1}
 system,parent,div,gridShellOrFlexCol,3,2,2,0,0,1,67%,67%,67%,{"rafters.studio":3}
 system,parent,sectioning,every,33,25,3,9,0,21,9%,36%,36%,{"huttspawn":1;"rafters.studio":11;"runlegion.dev":2;"sean.silvius.me":4;"smugglr.dev":15}
@@ -77,6 +85,8 @@ system,parent,sectioning,shellLike,0,0,0,0,0,0,-,-,-,{}
 system,parent,sectioning,flexCol,0,0,0,0,0,0,-,-,-,{}
 system,parent,sectioning,flexRow,1,1,0,0,0,1,0%,0%,0%,{"smugglr.dev":1}
 system,parent,sectioning,textHolding,0,0,0,0,0,0,-,-,-,{}
+system,parent,sectioning,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+system,parent,sectioning,recommendedHint,0,0,0,0,0,0,-,-,-,{}
 system,parent,sectioning,gridOrShell,0,0,0,0,0,0,-,-,-,{}
 system,parent,sectioning,gridShellOrFlexCol,0,0,0,0,0,0,-,-,-,{}
 system,parent,rawEquivalent,every,24,11,0,0,0,24,0%,0%,0%,{"runlegion.dev":7;"sean.silvius.me":11;"smugglr.dev":6}
@@ -93,6 +103,8 @@ system,parent,rawEquivalent,shellLike,0,0,0,0,0,0,-,-,-,{}
 system,parent,rawEquivalent,flexCol,0,0,0,0,0,0,-,-,-,{}
 system,parent,rawEquivalent,flexRow,0,0,0,0,0,0,-,-,-,{}
 system,parent,rawEquivalent,textHolding,0,0,0,0,0,0,-,-,-,{}
+system,parent,rawEquivalent,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+system,parent,rawEquivalent,recommendedHint,0,0,0,0,0,0,-,-,-,{}
 system,parent,rawEquivalent,gridOrShell,0,0,0,0,0,0,-,-,-,{}
 system,parent,rawEquivalent,gridShellOrFlexCol,0,0,0,0,0,0,-,-,-,{}
 system,ancestor,div,every,9,6,3,2,1,3,33%,56%,67%,{"rafters.studio":5;"sean.silvius.me":2;"smugglr.dev":2}
@@ -109,6 +121,8 @@ system,ancestor,div,shellLike,1,1,0,0,0,1,0%,0%,0%,{"rafters.studio":1}
 system,ancestor,div,flexCol,4,3,3,1,0,0,75%,100%,100%,{"rafters.studio":3;"sean.silvius.me":1}
 system,ancestor,div,flexRow,1,1,0,0,1,0,0%,0%,100%,{"rafters.studio":1}
 system,ancestor,div,textHolding,0,0,0,0,0,0,-,-,-,{}
+system,ancestor,div,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+system,ancestor,div,recommendedHint,4,3,3,1,0,0,75%,100%,100%,{"rafters.studio":3;"sean.silvius.me":1}
 system,ancestor,div,gridOrShell,1,1,0,0,0,1,0%,0%,0%,{"rafters.studio":1}
 system,ancestor,div,gridShellOrFlexCol,5,3,3,1,0,1,60%,80%,80%,{"rafters.studio":4;"sean.silvius.me":1}
 system,ancestor,sectioning,every,36,26,3,10,0,23,8%,36%,36%,{"huttspawn":1;"rafters.studio":11;"runlegion.dev":2;"sean.silvius.me":6;"smugglr.dev":16}
@@ -125,6 +139,8 @@ system,ancestor,sectioning,shellLike,0,0,0,0,0,0,-,-,-,{}
 system,ancestor,sectioning,flexCol,0,0,0,0,0,0,-,-,-,{}
 system,ancestor,sectioning,flexRow,1,1,0,0,0,1,0%,0%,0%,{"smugglr.dev":1}
 system,ancestor,sectioning,textHolding,0,0,0,0,0,0,-,-,-,{}
+system,ancestor,sectioning,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+system,ancestor,sectioning,recommendedHint,0,0,0,0,0,0,-,-,-,{}
 system,ancestor,sectioning,gridOrShell,0,0,0,0,0,0,-,-,-,{}
 system,ancestor,sectioning,gridShellOrFlexCol,0,0,0,0,0,0,-,-,-,{}
 system,ancestor,rawEquivalent,every,24,11,0,0,0,24,0%,0%,0%,{"runlegion.dev":7;"sean.silvius.me":11;"smugglr.dev":6}
@@ -141,6 +157,8 @@ system,ancestor,rawEquivalent,shellLike,0,0,0,0,0,0,-,-,-,{}
 system,ancestor,rawEquivalent,flexCol,0,0,0,0,0,0,-,-,-,{}
 system,ancestor,rawEquivalent,flexRow,0,0,0,0,0,0,-,-,-,{}
 system,ancestor,rawEquivalent,textHolding,0,0,0,0,0,0,-,-,-,{}
+system,ancestor,rawEquivalent,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+system,ancestor,rawEquivalent,recommendedHint,0,0,0,0,0,0,-,-,-,{}
 system,ancestor,rawEquivalent,gridOrShell,0,0,0,0,0,0,-,-,-,{}
 system,ancestor,rawEquivalent,gridShellOrFlexCol,0,0,0,0,0,0,-,-,-,{}
 system,every,div,every,94,38,4,8,41,41,4%,13%,56%,{"huttspawn":2;"rafters.studio":27;"runlegion.dev":24;"sean.silvius.me":19;"smugglr.dev":22}
@@ -157,6 +175,8 @@ system,every,div,shellLike,4,4,1,1,0,2,25%,50%,50%,{"rafters.studio":2;"sean.sil
 system,every,div,flexCol,9,7,3,4,1,1,33%,78%,89%,{"rafters.studio":5;"sean.silvius.me":1;"smugglr.dev":3}
 system,every,div,flexRow,14,9,0,0,2,12,0%,0%,14%,{"rafters.studio":6;"sean.silvius.me":2;"smugglr.dev":6}
 system,every,div,textHolding,34,14,0,0,31,3,0%,0%,91%,{"rafters.studio":2;"runlegion.dev":14;"sean.silvius.me":10;"smugglr.dev":8}
+system,every,div,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+system,every,div,recommendedHint,10,8,4,4,1,1,40%,80%,90%,{"rafters.studio":5;"sean.silvius.me":1;"smugglr.dev":4}
 system,every,div,gridOrShell,4,4,1,1,0,2,25%,50%,50%,{"rafters.studio":2;"sean.silvius.me":1;"smugglr.dev":1}
 system,every,div,gridShellOrFlexCol,13,10,4,5,1,3,31%,69%,77%,{"rafters.studio":7;"sean.silvius.me":2;"smugglr.dev":4}
 system,every,sectioning,every,59,33,3,23,0,33,5%,44%,44%,{"gitpress.app":1;"huttspawn":1;"rafters.studio":20;"runlegion.dev":4;"sean.silvius.me":8;"smugglr.dev":25}
@@ -173,6 +193,8 @@ system,every,sectioning,shellLike,0,0,0,0,0,0,-,-,-,{}
 system,every,sectioning,flexCol,0,0,0,0,0,0,-,-,-,{}
 system,every,sectioning,flexRow,4,3,0,0,0,4,0%,0%,0%,{"rafters.studio":1;"smugglr.dev":3}
 system,every,sectioning,textHolding,0,0,0,0,0,0,-,-,-,{}
+system,every,sectioning,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+system,every,sectioning,recommendedHint,0,0,0,0,0,0,-,-,-,{}
 system,every,sectioning,gridOrShell,0,0,0,0,0,0,-,-,-,{}
 system,every,sectioning,gridShellOrFlexCol,0,0,0,0,0,0,-,-,-,{}
 system,every,rawEquivalent,every,206,49,6,2,0,198,3%,4%,4%,{"gitpress.app":2;"huttspawn":26;"rafters.studio":93;"runlegion.dev":17;"sean.silvius.me":22;"smugglr.dev":46}
@@ -189,6 +211,8 @@ system,every,rawEquivalent,shellLike,1,1,0,1,0,0,0%,100%,100%,{"smugglr.dev":1}
 system,every,rawEquivalent,flexCol,0,0,0,0,0,0,-,-,-,{}
 system,every,rawEquivalent,flexRow,1,1,0,1,0,0,0%,100%,100%,{"smugglr.dev":1}
 system,every,rawEquivalent,textHolding,159,36,5,1,0,153,3%,4%,4%,{"gitpress.app":2;"huttspawn":25;"rafters.studio":87;"runlegion.dev":4;"sean.silvius.me":8;"smugglr.dev":33}
+system,every,rawEquivalent,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+system,every,rawEquivalent,recommendedHint,1,1,0,1,0,0,0%,100%,100%,{"smugglr.dev":1}
 system,every,rawEquivalent,gridOrShell,1,1,0,1,0,0,0%,100%,100%,{"smugglr.dev":1}
 system,every,rawEquivalent,gridShellOrFlexCol,1,1,0,1,0,0,0%,100%,100%,{"smugglr.dev":1}
 format,file,div,every,43,16,4,5,16,18,9%,21%,58%,{"rafters.studio":19;"sean.silvius.me":9;"smugglr.dev":15}
@@ -205,6 +229,8 @@ format,file,div,shellLike,3,3,1,1,0,1,33%,67%,67%,{"rafters.studio":1;"sean.silv
 format,file,div,flexCol,7,5,3,3,0,1,43%,86%,86%,{"rafters.studio":5;"sean.silvius.me":1;"smugglr.dev":1}
 format,file,div,flexRow,8,6,0,0,2,6,0%,0%,25%,{"rafters.studio":4;"sean.silvius.me":2;"smugglr.dev":2}
 format,file,div,textHolding,10,3,0,0,8,2,0%,0%,80%,{"rafters.studio":2;"smugglr.dev":8}
+format,file,div,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+format,file,div,recommendedHint,8,6,4,3,0,1,50%,88%,88%,{"rafters.studio":5;"sean.silvius.me":1;"smugglr.dev":2}
 format,file,div,gridOrShell,3,3,1,1,0,1,33%,67%,67%,{"rafters.studio":1;"sean.silvius.me":1;"smugglr.dev":1}
 format,file,div,gridShellOrFlexCol,10,7,4,4,0,2,40%,80%,80%,{"rafters.studio":6;"sean.silvius.me":2;"smugglr.dev":2}
 format,file,sectioning,every,46,26,3,17,0,26,7%,43%,43%,{"huttspawn":1;"rafters.studio":12;"runlegion.dev":3;"sean.silvius.me":8;"smugglr.dev":22}
@@ -221,6 +247,8 @@ format,file,sectioning,shellLike,0,0,0,0,0,0,-,-,-,{}
 format,file,sectioning,flexCol,0,0,0,0,0,0,-,-,-,{}
 format,file,sectioning,flexRow,2,2,0,0,0,2,0%,0%,0%,{"rafters.studio":1;"smugglr.dev":1}
 format,file,sectioning,textHolding,0,0,0,0,0,0,-,-,-,{}
+format,file,sectioning,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+format,file,sectioning,recommendedHint,0,0,0,0,0,0,-,-,-,{}
 format,file,sectioning,gridOrShell,0,0,0,0,0,0,-,-,-,{}
 format,file,sectioning,gridShellOrFlexCol,0,0,0,0,0,0,-,-,-,{}
 format,file,rawEquivalent,every,98,36,0,0,0,98,0%,0%,0%,{"huttspawn":26;"rafters.studio":18;"runlegion.dev":10;"sean.silvius.me":22;"smugglr.dev":22}
@@ -237,6 +265,8 @@ format,file,rawEquivalent,shellLike,0,0,0,0,0,0,-,-,-,{}
 format,file,rawEquivalent,flexCol,0,0,0,0,0,0,-,-,-,{}
 format,file,rawEquivalent,flexRow,0,0,0,0,0,0,-,-,-,{}
 format,file,rawEquivalent,textHolding,59,27,0,0,0,59,0%,0%,0%,{"huttspawn":25;"rafters.studio":14;"sean.silvius.me":8;"smugglr.dev":12}
+format,file,rawEquivalent,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+format,file,rawEquivalent,recommendedHint,0,0,0,0,0,0,-,-,-,{}
 format,file,rawEquivalent,gridOrShell,0,0,0,0,0,0,-,-,-,{}
 format,file,rawEquivalent,gridShellOrFlexCol,0,0,0,0,0,0,-,-,-,{}
 format,parent,div,every,7,6,2,1,1,3,29%,43%,57%,{"rafters.studio":4;"sean.silvius.me":1;"smugglr.dev":2}
@@ -253,6 +283,8 @@ format,parent,div,shellLike,1,1,0,0,0,1,0%,0%,0%,{"rafters.studio":1}
 format,parent,div,flexCol,2,2,2,0,0,0,100%,100%,100%,{"rafters.studio":2}
 format,parent,div,flexRow,1,1,0,0,1,0,0%,0%,100%,{"rafters.studio":1}
 format,parent,div,textHolding,0,0,0,0,0,0,-,-,-,{}
+format,parent,div,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+format,parent,div,recommendedHint,2,2,2,0,0,0,100%,100%,100%,{"rafters.studio":2}
 format,parent,div,gridOrShell,1,1,0,0,0,1,0%,0%,0%,{"rafters.studio":1}
 format,parent,div,gridShellOrFlexCol,3,2,2,0,0,1,67%,67%,67%,{"rafters.studio":3}
 format,parent,sectioning,every,33,25,3,9,0,21,9%,36%,36%,{"huttspawn":1;"rafters.studio":11;"runlegion.dev":2;"sean.silvius.me":4;"smugglr.dev":15}
@@ -269,6 +301,8 @@ format,parent,sectioning,shellLike,0,0,0,0,0,0,-,-,-,{}
 format,parent,sectioning,flexCol,0,0,0,0,0,0,-,-,-,{}
 format,parent,sectioning,flexRow,1,1,0,0,0,1,0%,0%,0%,{"smugglr.dev":1}
 format,parent,sectioning,textHolding,0,0,0,0,0,0,-,-,-,{}
+format,parent,sectioning,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+format,parent,sectioning,recommendedHint,0,0,0,0,0,0,-,-,-,{}
 format,parent,sectioning,gridOrShell,0,0,0,0,0,0,-,-,-,{}
 format,parent,sectioning,gridShellOrFlexCol,0,0,0,0,0,0,-,-,-,{}
 format,parent,rawEquivalent,every,24,11,0,0,0,24,0%,0%,0%,{"runlegion.dev":7;"sean.silvius.me":11;"smugglr.dev":6}
@@ -285,6 +319,8 @@ format,parent,rawEquivalent,shellLike,0,0,0,0,0,0,-,-,-,{}
 format,parent,rawEquivalent,flexCol,0,0,0,0,0,0,-,-,-,{}
 format,parent,rawEquivalent,flexRow,0,0,0,0,0,0,-,-,-,{}
 format,parent,rawEquivalent,textHolding,0,0,0,0,0,0,-,-,-,{}
+format,parent,rawEquivalent,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+format,parent,rawEquivalent,recommendedHint,0,0,0,0,0,0,-,-,-,{}
 format,parent,rawEquivalent,gridOrShell,0,0,0,0,0,0,-,-,-,{}
 format,parent,rawEquivalent,gridShellOrFlexCol,0,0,0,0,0,0,-,-,-,{}
 format,ancestor,div,every,9,6,3,2,1,3,33%,56%,67%,{"rafters.studio":5;"sean.silvius.me":2;"smugglr.dev":2}
@@ -301,6 +337,8 @@ format,ancestor,div,shellLike,1,1,0,0,0,1,0%,0%,0%,{"rafters.studio":1}
 format,ancestor,div,flexCol,4,3,3,1,0,0,75%,100%,100%,{"rafters.studio":3;"sean.silvius.me":1}
 format,ancestor,div,flexRow,1,1,0,0,1,0,0%,0%,100%,{"rafters.studio":1}
 format,ancestor,div,textHolding,0,0,0,0,0,0,-,-,-,{}
+format,ancestor,div,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+format,ancestor,div,recommendedHint,4,3,3,1,0,0,75%,100%,100%,{"rafters.studio":3;"sean.silvius.me":1}
 format,ancestor,div,gridOrShell,1,1,0,0,0,1,0%,0%,0%,{"rafters.studio":1}
 format,ancestor,div,gridShellOrFlexCol,5,3,3,1,0,1,60%,80%,80%,{"rafters.studio":4;"sean.silvius.me":1}
 format,ancestor,sectioning,every,36,26,3,10,0,23,8%,36%,36%,{"huttspawn":1;"rafters.studio":11;"runlegion.dev":2;"sean.silvius.me":6;"smugglr.dev":16}
@@ -317,6 +355,8 @@ format,ancestor,sectioning,shellLike,0,0,0,0,0,0,-,-,-,{}
 format,ancestor,sectioning,flexCol,0,0,0,0,0,0,-,-,-,{}
 format,ancestor,sectioning,flexRow,1,1,0,0,0,1,0%,0%,0%,{"smugglr.dev":1}
 format,ancestor,sectioning,textHolding,0,0,0,0,0,0,-,-,-,{}
+format,ancestor,sectioning,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+format,ancestor,sectioning,recommendedHint,0,0,0,0,0,0,-,-,-,{}
 format,ancestor,sectioning,gridOrShell,0,0,0,0,0,0,-,-,-,{}
 format,ancestor,sectioning,gridShellOrFlexCol,0,0,0,0,0,0,-,-,-,{}
 format,ancestor,rawEquivalent,every,24,11,0,0,0,24,0%,0%,0%,{"runlegion.dev":7;"sean.silvius.me":11;"smugglr.dev":6}
@@ -333,6 +373,8 @@ format,ancestor,rawEquivalent,shellLike,0,0,0,0,0,0,-,-,-,{}
 format,ancestor,rawEquivalent,flexCol,0,0,0,0,0,0,-,-,-,{}
 format,ancestor,rawEquivalent,flexRow,0,0,0,0,0,0,-,-,-,{}
 format,ancestor,rawEquivalent,textHolding,0,0,0,0,0,0,-,-,-,{}
+format,ancestor,rawEquivalent,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+format,ancestor,rawEquivalent,recommendedHint,0,0,0,0,0,0,-,-,-,{}
 format,ancestor,rawEquivalent,gridOrShell,0,0,0,0,0,0,-,-,-,{}
 format,ancestor,rawEquivalent,gridShellOrFlexCol,0,0,0,0,0,0,-,-,-,{}
 format,every,div,every,94,38,4,8,41,41,4%,13%,56%,{"huttspawn":2;"rafters.studio":27;"runlegion.dev":24;"sean.silvius.me":19;"smugglr.dev":22}
@@ -349,6 +391,8 @@ format,every,div,shellLike,4,4,1,1,0,2,25%,50%,50%,{"rafters.studio":2;"sean.sil
 format,every,div,flexCol,9,7,3,4,1,1,33%,78%,89%,{"rafters.studio":5;"sean.silvius.me":1;"smugglr.dev":3}
 format,every,div,flexRow,14,9,0,0,2,12,0%,0%,14%,{"rafters.studio":6;"sean.silvius.me":2;"smugglr.dev":6}
 format,every,div,textHolding,34,14,0,0,31,3,0%,0%,91%,{"rafters.studio":2;"runlegion.dev":14;"sean.silvius.me":10;"smugglr.dev":8}
+format,every,div,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+format,every,div,recommendedHint,10,8,4,4,1,1,40%,80%,90%,{"rafters.studio":5;"sean.silvius.me":1;"smugglr.dev":4}
 format,every,div,gridOrShell,4,4,1,1,0,2,25%,50%,50%,{"rafters.studio":2;"sean.silvius.me":1;"smugglr.dev":1}
 format,every,div,gridShellOrFlexCol,13,10,4,5,1,3,31%,69%,77%,{"rafters.studio":7;"sean.silvius.me":2;"smugglr.dev":4}
 format,every,sectioning,every,59,33,3,23,0,33,5%,44%,44%,{"gitpress.app":1;"huttspawn":1;"rafters.studio":20;"runlegion.dev":4;"sean.silvius.me":8;"smugglr.dev":25}
@@ -365,6 +409,8 @@ format,every,sectioning,shellLike,0,0,0,0,0,0,-,-,-,{}
 format,every,sectioning,flexCol,0,0,0,0,0,0,-,-,-,{}
 format,every,sectioning,flexRow,4,3,0,0,0,4,0%,0%,0%,{"rafters.studio":1;"smugglr.dev":3}
 format,every,sectioning,textHolding,0,0,0,0,0,0,-,-,-,{}
+format,every,sectioning,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+format,every,sectioning,recommendedHint,0,0,0,0,0,0,-,-,-,{}
 format,every,sectioning,gridOrShell,0,0,0,0,0,0,-,-,-,{}
 format,every,sectioning,gridShellOrFlexCol,0,0,0,0,0,0,-,-,-,{}
 format,every,rawEquivalent,every,206,49,6,2,0,198,3%,4%,4%,{"gitpress.app":2;"huttspawn":26;"rafters.studio":93;"runlegion.dev":17;"sean.silvius.me":22;"smugglr.dev":46}
@@ -381,6 +427,8 @@ format,every,rawEquivalent,shellLike,1,1,0,1,0,0,0%,100%,100%,{"smugglr.dev":1}
 format,every,rawEquivalent,flexCol,0,0,0,0,0,0,-,-,-,{}
 format,every,rawEquivalent,flexRow,1,1,0,1,0,0,0%,100%,100%,{"smugglr.dev":1}
 format,every,rawEquivalent,textHolding,159,36,5,1,0,153,3%,4%,4%,{"gitpress.app":2;"huttspawn":25;"rafters.studio":87;"runlegion.dev":4;"sean.silvius.me":8;"smugglr.dev":33}
+format,every,rawEquivalent,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+format,every,rawEquivalent,recommendedHint,1,1,0,1,0,0,0%,100%,100%,{"smugglr.dev":1}
 format,every,rawEquivalent,gridOrShell,1,1,0,1,0,0,0%,100%,100%,{"smugglr.dev":1}
 format,every,rawEquivalent,gridShellOrFlexCol,1,1,0,1,0,0,0%,100%,100%,{"smugglr.dev":1}
 all,file,div,every,46,17,4,6,16,20,9%,22%,57%,{"rafters.studio":22;"sean.silvius.me":9;"smugglr.dev":15}
@@ -397,6 +445,8 @@ all,file,div,shellLike,3,3,1,1,0,1,33%,67%,67%,{"rafters.studio":1;"sean.silvius
 all,file,div,flexCol,7,5,3,3,0,1,43%,86%,86%,{"rafters.studio":5;"sean.silvius.me":1;"smugglr.dev":1}
 all,file,div,flexRow,8,6,0,0,2,6,0%,0%,25%,{"rafters.studio":4;"sean.silvius.me":2;"smugglr.dev":2}
 all,file,div,textHolding,10,3,0,0,8,2,0%,0%,80%,{"rafters.studio":2;"smugglr.dev":8}
+all,file,div,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+all,file,div,recommendedHint,8,6,4,3,0,1,50%,88%,88%,{"rafters.studio":5;"sean.silvius.me":1;"smugglr.dev":2}
 all,file,div,gridOrShell,3,3,1,1,0,1,33%,67%,67%,{"rafters.studio":1;"sean.silvius.me":1;"smugglr.dev":1}
 all,file,div,gridShellOrFlexCol,10,7,4,4,0,2,40%,80%,80%,{"rafters.studio":6;"sean.silvius.me":2;"smugglr.dev":2}
 all,file,sectioning,every,56,31,3,23,0,30,5%,46%,46%,{"gitpress.app":1;"huttspawn":1;"rafters.studio":20;"runlegion.dev":3;"sean.silvius.me":8;"smugglr.dev":23}
@@ -413,6 +463,8 @@ all,file,sectioning,shellLike,0,0,0,0,0,0,-,-,-,{}
 all,file,sectioning,flexCol,0,0,0,0,0,0,-,-,-,{}
 all,file,sectioning,flexRow,2,2,0,0,0,2,0%,0%,0%,{"rafters.studio":1;"smugglr.dev":1}
 all,file,sectioning,textHolding,0,0,0,0,0,0,-,-,-,{}
+all,file,sectioning,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+all,file,sectioning,recommendedHint,0,0,0,0,0,0,-,-,-,{}
 all,file,sectioning,gridOrShell,0,0,0,0,0,0,-,-,-,{}
 all,file,sectioning,gridShellOrFlexCol,0,0,0,0,0,0,-,-,-,{}
 all,file,rawEquivalent,every,186,42,0,1,0,185,0%,1%,1%,{"gitpress.app":2;"huttspawn":26;"rafters.studio":91;"runlegion.dev":10;"sean.silvius.me":22;"smugglr.dev":35}
@@ -429,6 +481,8 @@ all,file,rawEquivalent,shellLike,0,0,0,0,0,0,-,-,-,{}
 all,file,rawEquivalent,flexCol,0,0,0,0,0,0,-,-,-,{}
 all,file,rawEquivalent,flexRow,0,0,0,0,0,0,-,-,-,{}
 all,file,rawEquivalent,textHolding,147,33,0,1,0,146,0%,1%,1%,{"gitpress.app":2;"huttspawn":25;"rafters.studio":87;"sean.silvius.me":8;"smugglr.dev":25}
+all,file,rawEquivalent,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+all,file,rawEquivalent,recommendedHint,0,0,0,0,0,0,-,-,-,{}
 all,file,rawEquivalent,gridOrShell,0,0,0,0,0,0,-,-,-,{}
 all,file,rawEquivalent,gridShellOrFlexCol,0,0,0,0,0,0,-,-,-,{}
 all,parent,div,every,11,9,3,2,1,5,27%,45%,55%,{"rafters.studio":7;"sean.silvius.me":1;"smugglr.dev":3}
@@ -445,6 +499,8 @@ all,parent,div,shellLike,2,2,1,0,0,1,50%,50%,50%,{"rafters.studio":1;"smugglr.de
 all,parent,div,flexCol,3,2,2,1,0,0,67%,100%,100%,{"rafters.studio":3}
 all,parent,div,flexRow,2,2,0,0,1,1,0%,0%,50%,{"rafters.studio":2}
 all,parent,div,textHolding,0,0,0,0,0,0,-,-,-,{}
+all,parent,div,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+all,parent,div,recommendedHint,4,3,3,1,0,0,75%,100%,100%,{"rafters.studio":3;"smugglr.dev":1}
 all,parent,div,gridOrShell,2,2,1,0,0,1,50%,50%,50%,{"rafters.studio":1;"smugglr.dev":1}
 all,parent,div,gridShellOrFlexCol,5,3,3,1,0,1,60%,80%,80%,{"rafters.studio":4;"smugglr.dev":1}
 all,parent,sectioning,every,41,26,3,16,0,22,7%,46%,46%,{"huttspawn":1;"rafters.studio":13;"runlegion.dev":2;"sean.silvius.me":4;"smugglr.dev":21}
@@ -461,6 +517,8 @@ all,parent,sectioning,shellLike,0,0,0,0,0,0,-,-,-,{}
 all,parent,sectioning,flexCol,0,0,0,0,0,0,-,-,-,{}
 all,parent,sectioning,flexRow,2,2,0,0,0,2,0%,0%,0%,{"rafters.studio":1;"smugglr.dev":1}
 all,parent,sectioning,textHolding,0,0,0,0,0,0,-,-,-,{}
+all,parent,sectioning,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+all,parent,sectioning,recommendedHint,0,0,0,0,0,0,-,-,-,{}
 all,parent,sectioning,gridOrShell,0,0,0,0,0,0,-,-,-,{}
 all,parent,sectioning,gridShellOrFlexCol,0,0,0,0,0,0,-,-,-,{}
 all,parent,rawEquivalent,every,24,11,0,0,0,24,0%,0%,0%,{"runlegion.dev":7;"sean.silvius.me":11;"smugglr.dev":6}
@@ -477,6 +535,8 @@ all,parent,rawEquivalent,shellLike,0,0,0,0,0,0,-,-,-,{}
 all,parent,rawEquivalent,flexCol,0,0,0,0,0,0,-,-,-,{}
 all,parent,rawEquivalent,flexRow,0,0,0,0,0,0,-,-,-,{}
 all,parent,rawEquivalent,textHolding,0,0,0,0,0,0,-,-,-,{}
+all,parent,rawEquivalent,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+all,parent,rawEquivalent,recommendedHint,0,0,0,0,0,0,-,-,-,{}
 all,parent,rawEquivalent,gridOrShell,0,0,0,0,0,0,-,-,-,{}
 all,parent,rawEquivalent,gridShellOrFlexCol,0,0,0,0,0,0,-,-,-,{}
 all,ancestor,div,every,13,9,4,3,1,5,31%,54%,62%,{"rafters.studio":8;"sean.silvius.me":2;"smugglr.dev":3}
@@ -493,6 +553,8 @@ all,ancestor,div,shellLike,2,2,1,0,0,1,50%,50%,50%,{"rafters.studio":1;"smugglr.
 all,ancestor,div,flexCol,5,3,3,2,0,0,60%,100%,100%,{"rafters.studio":4;"sean.silvius.me":1}
 all,ancestor,div,flexRow,2,2,0,0,1,1,0%,0%,50%,{"rafters.studio":2}
 all,ancestor,div,textHolding,0,0,0,0,0,0,-,-,-,{}
+all,ancestor,div,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+all,ancestor,div,recommendedHint,6,4,4,2,0,0,67%,100%,100%,{"rafters.studio":4;"sean.silvius.me":1;"smugglr.dev":1}
 all,ancestor,div,gridOrShell,2,2,1,0,0,1,50%,50%,50%,{"rafters.studio":1;"smugglr.dev":1}
 all,ancestor,div,gridShellOrFlexCol,7,4,4,2,0,1,57%,86%,86%,{"rafters.studio":5;"sean.silvius.me":1;"smugglr.dev":1}
 all,ancestor,sectioning,every,43,27,3,16,0,24,7%,44%,44%,{"huttspawn":1;"rafters.studio":13;"runlegion.dev":2;"sean.silvius.me":6;"smugglr.dev":21}
@@ -509,6 +571,8 @@ all,ancestor,sectioning,shellLike,0,0,0,0,0,0,-,-,-,{}
 all,ancestor,sectioning,flexCol,0,0,0,0,0,0,-,-,-,{}
 all,ancestor,sectioning,flexRow,2,2,0,0,0,2,0%,0%,0%,{"rafters.studio":1;"smugglr.dev":1}
 all,ancestor,sectioning,textHolding,0,0,0,0,0,0,-,-,-,{}
+all,ancestor,sectioning,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+all,ancestor,sectioning,recommendedHint,0,0,0,0,0,0,-,-,-,{}
 all,ancestor,sectioning,gridOrShell,0,0,0,0,0,0,-,-,-,{}
 all,ancestor,sectioning,gridShellOrFlexCol,0,0,0,0,0,0,-,-,-,{}
 all,ancestor,rawEquivalent,every,24,11,0,0,0,24,0%,0%,0%,{"runlegion.dev":7;"sean.silvius.me":11;"smugglr.dev":6}
@@ -525,6 +589,8 @@ all,ancestor,rawEquivalent,shellLike,0,0,0,0,0,0,-,-,-,{}
 all,ancestor,rawEquivalent,flexCol,0,0,0,0,0,0,-,-,-,{}
 all,ancestor,rawEquivalent,flexRow,0,0,0,0,0,0,-,-,-,{}
 all,ancestor,rawEquivalent,textHolding,0,0,0,0,0,0,-,-,-,{}
+all,ancestor,rawEquivalent,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+all,ancestor,rawEquivalent,recommendedHint,0,0,0,0,0,0,-,-,-,{}
 all,ancestor,rawEquivalent,gridOrShell,0,0,0,0,0,0,-,-,-,{}
 all,ancestor,rawEquivalent,gridShellOrFlexCol,0,0,0,0,0,0,-,-,-,{}
 all,every,div,every,94,38,4,8,41,41,4%,13%,56%,{"huttspawn":2;"rafters.studio":27;"runlegion.dev":24;"sean.silvius.me":19;"smugglr.dev":22}
@@ -541,6 +607,8 @@ all,every,div,shellLike,4,4,1,1,0,2,25%,50%,50%,{"rafters.studio":2;"sean.silviu
 all,every,div,flexCol,9,7,3,4,1,1,33%,78%,89%,{"rafters.studio":5;"sean.silvius.me":1;"smugglr.dev":3}
 all,every,div,flexRow,14,9,0,0,2,12,0%,0%,14%,{"rafters.studio":6;"sean.silvius.me":2;"smugglr.dev":6}
 all,every,div,textHolding,34,14,0,0,31,3,0%,0%,91%,{"rafters.studio":2;"runlegion.dev":14;"sean.silvius.me":10;"smugglr.dev":8}
+all,every,div,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+all,every,div,recommendedHint,10,8,4,4,1,1,40%,80%,90%,{"rafters.studio":5;"sean.silvius.me":1;"smugglr.dev":4}
 all,every,div,gridOrShell,4,4,1,1,0,2,25%,50%,50%,{"rafters.studio":2;"sean.silvius.me":1;"smugglr.dev":1}
 all,every,div,gridShellOrFlexCol,13,10,4,5,1,3,31%,69%,77%,{"rafters.studio":7;"sean.silvius.me":2;"smugglr.dev":4}
 all,every,sectioning,every,59,33,3,23,0,33,5%,44%,44%,{"gitpress.app":1;"huttspawn":1;"rafters.studio":20;"runlegion.dev":4;"sean.silvius.me":8;"smugglr.dev":25}
@@ -557,6 +625,8 @@ all,every,sectioning,shellLike,0,0,0,0,0,0,-,-,-,{}
 all,every,sectioning,flexCol,0,0,0,0,0,0,-,-,-,{}
 all,every,sectioning,flexRow,4,3,0,0,0,4,0%,0%,0%,{"rafters.studio":1;"smugglr.dev":3}
 all,every,sectioning,textHolding,0,0,0,0,0,0,-,-,-,{}
+all,every,sectioning,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+all,every,sectioning,recommendedHint,0,0,0,0,0,0,-,-,-,{}
 all,every,sectioning,gridOrShell,0,0,0,0,0,0,-,-,-,{}
 all,every,sectioning,gridShellOrFlexCol,0,0,0,0,0,0,-,-,-,{}
 all,every,rawEquivalent,every,206,49,6,2,0,198,3%,4%,4%,{"gitpress.app":2;"huttspawn":26;"rafters.studio":93;"runlegion.dev":17;"sean.silvius.me":22;"smugglr.dev":46}
@@ -573,5 +643,7 @@ all,every,rawEquivalent,shellLike,1,1,0,1,0,0,0%,100%,100%,{"smugglr.dev":1}
 all,every,rawEquivalent,flexCol,0,0,0,0,0,0,-,-,-,{}
 all,every,rawEquivalent,flexRow,1,1,0,1,0,0,0%,100%,100%,{"smugglr.dev":1}
 all,every,rawEquivalent,textHolding,159,36,5,1,0,153,3%,4%,4%,{"gitpress.app":2;"huttspawn":25;"rafters.studio":87;"runlegion.dev":4;"sean.silvius.me":8;"smugglr.dev":33}
+all,every,rawEquivalent,recommendedWarn,0,0,0,0,0,0,-,-,-,{}
+all,every,rawEquivalent,recommendedHint,1,1,0,1,0,0,0%,100%,100%,{"smugglr.dev":1}
 all,every,rawEquivalent,gridOrShell,1,1,0,1,0,0,0%,100%,100%,{"smugglr.dev":1}
 all,every,rawEquivalent,gridShellOrFlexCol,1,1,0,1,0,0,0%,100%,100%,{"smugglr.dev":1}
