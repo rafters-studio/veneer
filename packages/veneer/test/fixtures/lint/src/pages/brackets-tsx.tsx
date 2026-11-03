@@ -11,7 +11,7 @@ export function Page() {
       <div className={`h-[3px]`} />
       {/* T4 ok: modifier */}
       <div className="group-data-[state=open]:p-4" />
-      {/* T5 dynamic: nothing */}
+      {/* T5 flag at the const: a const string */}
       <div className={dynamic} />
     </main>
   );

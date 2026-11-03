@@ -20,6 +20,8 @@ export interface PropsWorld extends DocsWorld {
   propsCopy?: string;
   pagesBefore?: Buffer[];
   propsChecked?: LintDiagnostic[];
+  // What FR-VEN-066's "it reports nothing" reads.
+  found?: LintDiagnostic[];
   modulesLoaded?: string[];
   workerAnswer?: LintDiagnostic[];
   dist?: string;
@@ -49,12 +51,12 @@ export function project(world: PropsWorld, tsxPage: string, astroPage: string): 
   place(
     world,
     "src/components/ui/surface.tsx",
-    "export function Surface(props: { fill?: string }) {\n  return <div>{props.fill}</div>;\n}\n",
+    "export function Surface(props: { fill?: string; surface?: string }) {\n  return <div>{props.fill}</div>;\n}\n",
   );
   place(
     world,
     "src/components/ui/surface-astro.astro",
-    "---\ninterface Props { fill?: string }\n---\n<div><slot /></div>\n",
+    "---\ninterface Props { fill?: string; surface?: string }\n---\n<div><slot /></div>\n",
   );
   place(world, TSX_PAGE, tsxPage);
   place(world, ASTRO_PAGE, astroPage);
@@ -140,6 +142,7 @@ process.stdout.write(JSON.stringify({ result, loaded }));
   const { result, loaded }: { result: CheckResult; loaded: string[] } = JSON.parse(stdout);
   assert.ok(result.ok, stdout);
   this.propsChecked = result.diagnostics;
+  this.found = result.diagnostics;
   this.modulesLoaded = loaded;
 });
 

@@ -7,6 +7,13 @@
       "category": "fill",
       "namespace": "fill",
       "userOverride": null
+    },
+    {
+      "name": "surface-card",
+      "value": { "background": { "color": { "token": "background" } }, "foreground": { "token": "foreground" } },
+      "category": "fill",
+      "namespace": "fill",
+      "userOverride": null
     }
   ]
 }

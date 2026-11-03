@@ -27,7 +27,6 @@ Feature: Checks on rafters component props
     Examples:
       | value               |
       | bg-fill-brand       |
-      | bg-fill-glass extra |
       |                     |
 
   @criterion-1

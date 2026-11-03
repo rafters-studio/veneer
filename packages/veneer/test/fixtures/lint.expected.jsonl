@@ -8,9 +8,11 @@
 {"file": "src/pages/astro-cases.astro", "line": 44, "column": 12, "endLine": 44, "endColumn": 16, "severity": "error", "code": "ts(2322)", "help": "variant, quiet"}
 {"file": "src/pages/astro-cases.astro", "line": 46, "column": 6, "endLine": 46, "endColumn": 10, "severity": "error", "code": "ts(2322)", "help": "variant, quiet"}
 {"file": "src/pages/astro-cases.astro", "line": 48, "column": 9, "endLine": 48, "endColumn": 14, "severity": "hint", "code": "ts(6385)", "help": "Use variant=\"ghost\"."}
+{"file": "src/pages/brackets-tsx.tsx", "line": 1, "column": 18, "endLine": 1, "endColumn": 25, "severity": "error", "code": "rafters(arbitrary-value)", "message": "p-[9px] is an arbitrary value"}
 {"file": "src/pages/brackets-tsx.tsx", "line": 7, "column": 23, "endLine": 7, "endColumn": 31, "severity": "error", "code": "rafters(arbitrary-value)", "message": "p-[32px] is an arbitrary value"}
 {"file": "src/pages/brackets-tsx.tsx", "line": 9, "column": 24, "endLine": 9, "endColumn": 32, "severity": "error", "code": "rafters(arbitrary-value)", "message": "w-[10px] is an arbitrary value"}
 {"file": "src/pages/brackets-tsx.tsx", "line": 11, "column": 24, "endLine": 11, "endColumn": 31, "severity": "error", "code": "rafters(arbitrary-value)", "message": "h-[3px] is an arbitrary value"}
+{"file": "src/pages/brackets.astro", "line": 2, "column": 18, "endLine": 2, "endColumn": 25, "severity": "error", "code": "rafters(arbitrary-value)", "message": "p-[9px] is an arbitrary value"}
 {"file": "src/pages/brackets.astro", "line": 5, "column": 13, "endLine": 5, "endColumn": 21, "severity": "error", "code": "rafters(arbitrary-value)", "message": "p-[32px] is an arbitrary value"}
 {"file": "src/pages/brackets.astro", "line": 7, "column": 18, "endLine": 7, "endColumn": 26, "severity": "error", "code": "rafters(arbitrary-value)", "message": "w-[10px] is an arbitrary value"}
 {"file": "src/pages/brackets.astro", "line": 11, "column": 13, "endLine": 11, "endColumn": 27, "severity": "error", "code": "rafters(arbitrary-value)", "message": "hover:h-[3rem] is an arbitrary value"}
