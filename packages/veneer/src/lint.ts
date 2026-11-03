@@ -87,13 +87,11 @@ function elementUsing(ts: Ts, node: TypeScript.Node): TypeScript.JsxOpeningLikeE
   return ts.isJsxOpeningLikeElement(element) && element.tagName === tag ? element : undefined;
 }
 
-function resolveTag(
+function resolveSymbol(
   { ts, tc }: Reader,
-  { tagName }: TypeScript.JsxOpeningLikeElement,
+  start: TypeScript.Symbol | undefined,
 ): TypeScript.Symbol | undefined {
-  let symbol = tc.getSymbolAtLocation(
-    ts.isPropertyAccessExpression(tagName) ? tagName.name : tagName,
-  );
+  let symbol = start;
   for (let step = 0; symbol && step < MAX_RESOLVE_STEPS; step += 1) {
     const declaration = symbol.valueDeclaration;
     if (symbol.flags & ts.SymbolFlags.Alias) {
@@ -110,6 +108,17 @@ function resolveTag(
     }
   }
   return undefined;
+}
+
+function resolveTag(
+  reader: Reader,
+  { tagName }: TypeScript.JsxOpeningLikeElement,
+): TypeScript.Symbol | undefined {
+  const { ts, tc } = reader;
+  return resolveSymbol(
+    reader,
+    tc.getSymbolAtLocation(ts.isPropertyAccessExpression(tagName) ? tagName.name : tagName),
+  );
 }
 
 function deprecatedText(
@@ -138,34 +147,70 @@ function utilityOf(className: string): string {
   return className.slice(start);
 }
 
-function classLiterals(ts: Ts, node: TypeScript.Node): TypeScript.StringLiteralLike[] {
-  if (ts.isStringLiteralLike(node)) return [node];
-  if (ts.isJsxExpression(node) || ts.isParenthesizedExpression(node)) {
-    return node.expression ? classLiterals(ts, node.expression) : [];
+// The string a const holds, wherever the identifier's symbol leads.
+function constString(
+  reader: Reader,
+  identifier: TypeScript.Identifier,
+): TypeScript.StringLiteralLike | undefined {
+  const { ts, tc } = reader;
+  const declaration = resolveSymbol(reader, tc.getSymbolAtLocation(identifier))?.valueDeclaration;
+  if (
+    !declaration ||
+    !ts.isVariableDeclaration(declaration) ||
+    !(ts.getCombinedNodeFlags(declaration) & ts.NodeFlags.Const) ||
+    !declaration.initializer
+  ) {
+    return undefined;
   }
-  if (ts.isArrayLiteralExpression(node)) {
-    return node.elements.flatMap((element) => classLiterals(ts, element));
+  return ts.isStringLiteralLike(declaration.initializer) ? declaration.initializer : undefined;
+}
+
+// Each literal by the node a finding on it sits at: itself, or the use of a const written in
+// another file, since a file's answer holds only that file. A map, because a node can be reached
+// twice: a classy call in a class attribute, a const used twice.
+type ClassStrings = Map<TypeScript.Node, TypeScript.StringLiteralLike>;
+
+function collectClassStrings(
+  reader: Reader,
+  sourceFile: TypeScript.SourceFile,
+  isOwnSource: (file: string) => boolean,
+  node: TypeScript.Node,
+  found: ClassStrings,
+): void {
+  const { ts } = reader;
+  if (ts.isStringLiteralLike(node)) {
+    found.set(node, node);
+  } else if (ts.isIdentifier(node)) {
+    const literal = constString(reader, node);
+    const declaredIn = literal?.getSourceFile();
+    if (!literal || !declaredIn) return;
+    if (declaredIn === sourceFile) found.set(literal, literal);
+    else if (isOwnSource(declaredIn.fileName)) found.set(node, literal);
+  } else {
+    ts.forEachChild(node, (child) => {
+      collectClassStrings(reader, sourceFile, isOwnSource, child, found);
+    });
   }
-  if (ts.isObjectLiteralExpression(node)) {
-    return node.properties.flatMap((property) =>
-      ts.isPropertyAssignment(property) && ts.isStringLiteral(property.name) ? [property.name] : [],
-    );
-  }
-  return [];
 }
 
 function bracketsInLiteral(
   reader: Reader,
   file: string,
   sourceFile: TypeScript.SourceFile,
+  at: TypeScript.Node,
   literal: TypeScript.StringLiteralLike,
 ): LintDiagnostic[] {
   // The literal as written, so an offset in it is an offset in the file.
-  const written = literal.getText(sourceFile).slice(1, -1);
+  const written = literal.getText(literal.getSourceFile()).slice(1, -1);
   return [...written.matchAll(/\S+/g)].flatMap((match): LintDiagnostic[] => {
     const [className] = match;
     if (!utilityOf(className).includes("[")) return [];
-    const position = positionOf(reader, sourceFile, literal.getStart(sourceFile) + 1 + match.index);
+    const inLiteral = at === literal;
+    const position = positionOf(
+      reader,
+      sourceFile,
+      at.getStart(sourceFile) + (inLiteral ? 1 + match.index : 0),
+    );
     if (!position) return [];
     return [
       {
@@ -173,7 +218,7 @@ function bracketsInLiteral(
         line: position.line,
         column: position.column,
         endLine: position.line,
-        endColumn: position.column + className.length,
+        endColumn: position.column + (inLiteral ? className.length : at.getWidth(sourceFile)),
         severity: "error",
         code: "rafters(arbitrary-value)",
         message: `${className} is an arbitrary value`,
@@ -186,9 +231,10 @@ function bracketValues(
   reader: Reader,
   file: string,
   sourceFile: TypeScript.SourceFile,
+  isOwnSource: (file: string) => boolean,
 ): LintDiagnostic[] {
   const { ts } = reader;
-  const found: LintDiagnostic[] = [];
+  const strings: ClassStrings = new Map();
   const visit = (node: TypeScript.Node): void => {
     if (ts.isJsxAttribute(node) && node.initializer) {
       const { name } = node;
@@ -196,20 +242,29 @@ function bracketValues(
         ? `${name.namespace.text}:${name.name.text}`
         : name.text;
       if (CLASS_ATTRIBUTES.has(attribute)) {
-        for (const literal of classLiterals(ts, node.initializer)) {
-          found.push(...bracketsInLiteral(reader, file, sourceFile, literal));
-        }
+        collectClassStrings(reader, sourceFile, isOwnSource, node.initializer, strings);
+      }
+    } else if (
+      ts.isCallExpression(node) &&
+      ts.isIdentifier(node.expression) &&
+      node.expression.text === "classy"
+    ) {
+      for (const argument of node.arguments) {
+        collectClassStrings(reader, sourceFile, isOwnSource, argument, strings);
       }
     }
     ts.forEachChild(node, visit);
   };
   visit(sourceFile);
-  return found;
+  return [...strings].flatMap(([at, literal]) =>
+    bracketsInLiteral(reader, file, sourceFile, at, literal),
+  );
 }
 
-// ---- Rule three: a retired fill value.
+// ---- Rule three: a fill or surface value.
 
 const FILL_WORD = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
+const FILL_TOKEN = /^bg-fill-[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 const FILL_ALPHA = /^(100|[1-9]?[0-9])$/;
 const AUTHORED_FILL = 'a fill the designer authors, fill="bg-fill-<name>"';
 
@@ -229,7 +284,9 @@ function retiredFillForm(value: string): "bare" | "composed" | undefined {
     : undefined;
 }
 
-// Asked for only when a bare word is found, so nothing else pays for the tokens or their code.
+type ValueFinding = Pick<LintDiagnostic, "code" | "message" | "help">;
+
+// Asked for only when a bare word or a surface is found, so nothing else pays for the tokens or their code.
 type Surfaces = { words: ReadonlySet<string> } | { failure: string };
 
 async function loadSurfaces(root: string): Promise<Surfaces> {
@@ -241,7 +298,7 @@ async function loadSurfaces(root: string): Promise<Surfaces> {
   }
 }
 
-function fillLiteral(
+function valueLiteral(
   ts: Ts,
   node: TypeScript.JsxAttribute,
 ): TypeScript.StringLiteralLike | undefined {
@@ -252,13 +309,17 @@ function fillLiteral(
   return inner && ts.isStringLiteralLike(inner) ? inner : undefined;
 }
 
-function fillAttributes(
+function valueAttributes(
   { ts }: Reader,
   sourceFile: TypeScript.SourceFile,
 ): TypeScript.JsxAttribute[] {
   const found: TypeScript.JsxAttribute[] = [];
   const visit = (node: TypeScript.Node): void => {
-    if (ts.isJsxAttribute(node) && ts.isIdentifier(node.name) && node.name.text === "fill") {
+    if (
+      ts.isJsxAttribute(node) &&
+      ts.isIdentifier(node.name) &&
+      (node.name.text === "fill" || node.name.text === "surface")
+    ) {
       found.push(node);
     }
     ts.forEachChild(node, visit);
@@ -346,18 +407,55 @@ export async function lint(
     return loaded.words.has(value) ? `surface="${value}"` : AUTHORED_FILL;
   };
 
-  const retiredFills = async (
+  const fillFinding = async (value: string): Promise<ValueFinding | undefined> => {
+    if (value === "" || FILL_TOKEN.test(value)) return undefined;
+    const form = retiredFillForm(value);
+    if (!form) {
+      return {
+        code: "rafters(invalid-fill)",
+        message: `fill="${value}" is not exactly one bg-fill-* token`,
+      };
+    }
+    return {
+      code: "rafters(retired-fill)",
+      message: `fill="${value}" is a retired fill value`,
+      help: await replacement(value, form),
+    };
+  };
+
+  const surfaceFinding = async (value: string): Promise<ValueFinding | undefined> => {
+    if (value === "") return undefined;
+    surfaces ??= loadSurfaces(project.root);
+    const loaded = await surfaces;
+    if ("failure" in loaded) {
+      return {
+        code: "rafters(unknown-surface)",
+        message: `surface="${value}" could not be checked`,
+        help: `the project's tokens could not be loaded, so no surface is named: ${loaded.failure}`,
+      };
+    }
+    if (loaded.words.has(value)) return undefined;
+    return {
+      code: "rafters(unknown-surface)",
+      message: `surface="${value}" is not a surface in the project's tokens`,
+    };
+  };
+
+  const badValues = async (
     file: string,
     sourceFile: TypeScript.SourceFile,
   ): Promise<LintDiagnostic[]> => {
     const flagged: LintDiagnostic[] = [];
-    for (const attribute of fillAttributes(reader, sourceFile)) {
-      const literal = fillLiteral(ts, attribute);
-      const form = literal && retiredFillForm(literal.text);
-      if (!literal || !form) continue;
+    for (const attribute of valueAttributes(reader, sourceFile)) {
+      const literal = valueLiteral(ts, attribute);
+      if (!literal) continue;
       const component = resolveTag(reader, attribute.parent.parent);
       const declaration = component?.valueDeclaration ?? component?.declarations?.[0];
       if (!declaration || !isCheckedUse(declaration.getSourceFile())) continue;
+      const finding = await (attribute.name.getText(sourceFile) === "fill"
+        ? fillFinding(literal.text)
+        : surfaceFinding(literal.text));
+      if (!finding) continue;
       const start = positionOf(reader, sourceFile, attribute.getStart(sourceFile));
       const end = positionOf(reader, sourceFile, attribute.end);
       if (!start || !end) continue;
@@ -368,9 +466,7 @@ export async function lint(
         endLine: end.line,
         endColumn: end.column,
         severity: "error",
-        code: "rafters(retired-fill)",
-        message: `fill="${literal.text}" is a retired fill value`,
-        help: await replacement(literal.text, form),
+        ...finding,
       });
     }
     return flagged;
@@ -386,8 +482,8 @@ export async function lint(
       if (reported) found.push(reported);
     }
     if (!isExempt(sourceFile)) {
-      found.push(...bracketValues(reader, file, sourceFile));
-      found.push(...(await retiredFills(file, sourceFile)));
+      found.push(...bracketValues(reader, file, sourceFile, isOwnSource));
+      found.push(...(await badValues(file, sourceFile)));
     }
   }
   return found.sort(
