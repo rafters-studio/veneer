@@ -1,0 +1,27 @@
+-- div findings per qualification definition (file gate / every gate), and own components in scan
+  system                   file  43  every  94  own uses in scan 0
+  format                   file  43  every  94  own uses in scan 90
+  format:strictUnion       file  43  every  94  own uses in scan 90
+  format:filesAnyTag       file  43  every  94  own uses in scan 90
+  format:filesOnly         file  43  every  94  own uses in scan 90
+  format:classesAnyTag     file  43  every  93  own uses in scan 97
+  format:classesOnly       file  43  every  93  own uses in scan 97
+  format:sixTagsNoFiles    file  43  every  93  own uses in scan 97
+  format:anyTag            file  43  every  92  own uses in scan 102
+  all                      file  46  every  94  own uses in scan 217
+
+-- layout divs: program against a per-line grep, non-exempt files
+  gitpress.app       program 0  grep 0  grep missed []  grep extra []
+  huttspawn          program 0  grep 0  grep missed []  grep extra []
+  rafters.studio     program 11  grep 11  grep missed []  grep extra []
+  runlegion.dev      program 0  grep 0  grep missed []  grep extra []
+  sean.silvius.me    program 3  grep 3  grep missed []  grep extra []
+  smugglr.dev        program 9  grep 8  grep missed ["src/components/HeroTopology.astro:21"]  grep extra []
+
+-- local bindings rendered as tags, which #158's all could count as declared in source
+  huttspawn: 11 {"Tag":9,"Title":1,"Content":1}
+  sean.silvius.me: 3 {"Content":3}
+  smugglr.dev: 1 {"Content":1}
+
+-- near misses on huttspawn: uses of own components that do not qualify
+  {"src/components/nav/SiteFooter.astro":1,"src/layouts/Base.astro":13,"src/components/hs-panel.astro":7,"src/layouts/Guide.astro":1,"src/components/Shape.astro":5}

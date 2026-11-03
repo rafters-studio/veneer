@@ -1,0 +1,103 @@
+combos.csv: 17920 rows
+
+gitpress.app: root files 2, shapes 2, system uses 0
+  strict           own   0 (used   0) system   0
+  strictUnion      own   0 (used   0) system   0
+  filesAnyTag      own   0 (used   0) system   0
+  filesOnly        own   0 (used   0) system   0
+  classesAnyTag    own   0 (used   0) system   0
+  classesOnly      own   0 (used   0) system   0
+  sixTagsNoFiles   own   0 (used   0) system   0
+  anyTag           own   0 (used   0) system   0
+
+huttspawn: root files 134, shapes 134, system uses 133
+  strict           own  11 (used  11) system  63
+  strictUnion      own  11 (used  11) system  63
+  filesAnyTag      own  11 (used  11) system  63
+  filesOnly        own  11 (used  11) system  64
+  classesAnyTag    own  12 (used  12) system  63
+  classesOnly      own  12 (used  12) system  64
+  sixTagsNoFiles   own  13 (used  12) system  69
+  anyTag           own  14 (used  13) system  69
+
+rafters.studio: root files 75, shapes 77, system uses 151
+  strict           own   0 (used   0) system   0
+  strictUnion      own   0 (used   0) system   0
+  filesAnyTag      own   0 (used   0) system   0
+  filesOnly        own   0 (used   0) system   0
+  classesAnyTag    own   0 (used   0) system  11
+  classesOnly      own   0 (used   0) system  11
+  sixTagsNoFiles   own   0 (used   0) system   0
+  anyTag           own   0 (used   0) system  28
+
+runlegion.dev: root files 49, shapes 51, system uses 64
+  strict           own   0 (used   0) system   0
+  strictUnion      own   0 (used   0) system   0
+  filesAnyTag      own   0 (used   0) system   0
+  filesOnly        own   0 (used   0) system   0
+  classesAnyTag    own   0 (used   0) system   7
+  classesOnly      own   0 (used   0) system   8
+  sixTagsNoFiles   own   0 (used   0) system   0
+  anyTag           own   0 (used   0) system  22
+
+sean.silvius.me: root files 30, shapes 30, system uses 166
+  strict           own   0 (used   0) system   0
+  strictUnion      own   0 (used   0) system   0
+  filesAnyTag      own   0 (used   0) system   0
+  filesOnly        own   0 (used   0) system   0
+  classesAnyTag    own   0 (used   0) system   5
+  classesOnly      own   0 (used   0) system   5
+  sixTagsNoFiles   own   0 (used   0) system   0
+  anyTag           own   0 (used   0) system   7
+
+smugglr.dev: root files 55, shapes 56, system uses 105
+  strict           own   0 (used   0) system   0
+  strictUnion      own   0 (used   0) system   0
+  filesAnyTag      own   0 (used   0) system   0
+  filesOnly        own   0 (used   0) system   0
+  classesAnyTag    own   0 (used   0) system   8
+  classesOnly      own   0 (used   0) system   8
+  sixTagsNoFiles   own   0 (used   0) system   0
+  anyTag           own   0 (used   0) system  22
+
+scan x gate, div, every class (findings/files)
+  system   file 43/16  parent 7/6  ancestor 9/6  every 94/38
+  format   file 43/16  parent 7/6  ancestor 9/6  every 94/38
+  all      file 46/17  parent 11/9  ancestor 13/9  every 94/38
+
+format x class filter, div, (findings/files) by gate
+  every                file 43/16  parent 7/6  ancestor 9/6  every 94/38
+  anyClass             file 40/16  parent 7/6  ancestor 9/6  every 90/38
+  layout               file 15/9  parent 3/3  ancestor 5/4  every 23/13
+  visual               file 23/10  parent 3/3  ancestor 4/4  every 38/22
+  visualNoLayout       file 16/6  parent 2/2  ancestor 2/2  every 27/17
+  noClass              file 3/2  parent 0/0  ancestor 0/0  every 4/3
+  wrapsOne             file 9/8  parent 3/3  ancestor 3/3  every 17/15
+  wrapsOneNoClass      file 0/0  parent 0/0  ancestor 0/0  every 0/0
+  noClassOrWraps       file 12/9  parent 3/3  ancestor 3/3  every 21/16
+  gridLike             file 0/0  parent 0/0  ancestor 0/0  every 0/0
+  shellLike            file 3/3  parent 1/1  ancestor 1/1  every 4/4
+  flexCol              file 7/5  parent 2/2  ancestor 4/3  every 9/7
+  flexRow              file 8/6  parent 1/1  ancestor 1/1  every 14/9
+  textHolding          file 10/3  parent 0/0  ancestor 0/0  every 34/14
+  gridOrShell          file 3/3  parent 1/1  ancestor 1/1  every 4/4
+  gridShellOrFlexCol   file 10/7  parent 3/2  ancestor 5/3  every 13/10
+
+format, file gate, per site: div every / sectioningOnly every / rawEquivalent every
+  gitpress.app       0/0   0/0   0/0
+  huttspawn          0/0   1/1   26/9
+  rafters.studio     19/8   12/11   18/5
+  runlegion.dev      0/0   3/2   10/3
+  sean.silvius.me    9/5   8/5   22/13
+  smugglr.dev        15/3   22/7   22/6
+
+raw elements by tag (format, file gate / every gate), all sites
+a 68/131, div 43/94, section 31/31, p 13/29, h2 0/13, h1 7/12, header 8/11, img 8/8, main 2/7, nav 4/7, button 0/7, h3 2/5, aside 0/1, article 0/1, footer 1/1, table 0/1
+
+files holding a div (non exempt) reached by the file gate, per scan
+  gitpress.app       system 0/0  format 0/0  all 0/0
+  huttspawn          system 0/2  format 0/2  all 0/2
+  rafters.studio     system 8/12  format 8/12  all 9/12
+  runlegion.dev      system 0/3  format 0/3  all 0/3
+  sean.silvius.me    system 5/15  format 5/15  all 5/15
+  smugglr.dev        system 3/6  format 3/6  all 3/6

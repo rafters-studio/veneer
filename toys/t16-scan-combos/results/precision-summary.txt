@@ -1,0 +1,171 @@
+unjudged rows: 0 []
+
+-- divs by class filter and gate, format
+format file     div           every                n= 43 files= 16 R= 4 W= 5 O=16 K= 18 strict=  9% lenient= 21% anyRafters= 58%
+format file     div           anyClass             n= 40 files= 16 R= 4 W= 5 O=16 K= 15 strict= 10% lenient= 23% anyRafters= 63%
+format file     div           layout               n= 15 files=  9 R= 3 W= 3 O= 2 K=  7 strict= 20% lenient= 40% anyRafters= 53%
+format file     div           visual               n= 23 files= 10 R= 0 W= 2 O=13 K=  8 strict=  0% lenient=  9% anyRafters= 65%
+format file     div           visualNoLayout       n= 16 files=  6 R= 0 W= 0 O=11 K=  5 strict=  0% lenient=  0% anyRafters= 69%
+format file     div           noClass              n=  3 files=  2 R= 0 W= 0 O= 0 K=  3 strict=  0% lenient=  0% anyRafters=  0%
+format file     div           wrapsOne             n=  9 files=  8 R= 1 W= 1 O= 4 K=  3 strict= 11% lenient= 22% anyRafters= 67%
+format file     div           noClassOrWraps       n= 12 files=  9 R= 1 W= 1 O= 4 K=  6 strict=  8% lenient= 17% anyRafters= 50%
+format file     div           gridLike             n=  0 files=  0 R= 0 W= 0 O= 0 K=  0 strict=   - lenient=   - anyRafters=   -
+format file     div           shellLike            n=  3 files=  3 R= 1 W= 1 O= 0 K=  1 strict= 33% lenient= 67% anyRafters= 67%
+format file     div           flexCol              n=  7 files=  5 R= 3 W= 3 O= 0 K=  1 strict= 43% lenient= 86% anyRafters= 86%
+format file     div           flexRow              n=  8 files=  6 R= 0 W= 0 O= 2 K=  6 strict=  0% lenient=  0% anyRafters= 25%
+format file     div           gridShellOrFlexCol   n= 10 files=  7 R= 4 W= 4 O= 0 K=  2 strict= 40% lenient= 80% anyRafters= 80%
+format file     div           textHolding          n= 10 files=  3 R= 0 W= 0 O= 8 K=  2 strict=  0% lenient=  0% anyRafters= 80%
+format parent   div           every                n=  7 files=  6 R= 2 W= 1 O= 1 K=  3 strict= 29% lenient= 43% anyRafters= 57%
+format parent   div           anyClass             n=  7 files=  6 R= 2 W= 1 O= 1 K=  3 strict= 29% lenient= 43% anyRafters= 57%
+format parent   div           layout               n=  3 files=  3 R= 2 W= 0 O= 1 K=  0 strict= 67% lenient= 67% anyRafters=100%
+format parent   div           visual               n=  3 files=  3 R= 0 W= 0 O= 1 K=  2 strict=  0% lenient=  0% anyRafters= 33%
+format parent   div           visualNoLayout       n=  2 files=  2 R= 0 W= 0 O= 0 K=  2 strict=  0% lenient=  0% anyRafters=  0%
+format parent   div           noClass              n=  0 files=  0 R= 0 W= 0 O= 0 K=  0 strict=   - lenient=   - anyRafters=   -
+format parent   div           wrapsOne             n=  3 files=  3 R= 0 W= 0 O= 1 K=  2 strict=  0% lenient=  0% anyRafters= 33%
+format parent   div           noClassOrWraps       n=  3 files=  3 R= 0 W= 0 O= 1 K=  2 strict=  0% lenient=  0% anyRafters= 33%
+format parent   div           gridLike             n=  0 files=  0 R= 0 W= 0 O= 0 K=  0 strict=   - lenient=   - anyRafters=   -
+format parent   div           shellLike            n=  1 files=  1 R= 0 W= 0 O= 0 K=  1 strict=  0% lenient=  0% anyRafters=  0%
+format parent   div           flexCol              n=  2 files=  2 R= 2 W= 0 O= 0 K=  0 strict=100% lenient=100% anyRafters=100%
+format parent   div           flexRow              n=  1 files=  1 R= 0 W= 0 O= 1 K=  0 strict=  0% lenient=  0% anyRafters=100%
+format parent   div           gridShellOrFlexCol   n=  3 files=  2 R= 2 W= 0 O= 0 K=  1 strict= 67% lenient= 67% anyRafters= 67%
+format parent   div           textHolding          n=  0 files=  0 R= 0 W= 0 O= 0 K=  0 strict=   - lenient=   - anyRafters=   -
+format ancestor div           every                n=  9 files=  6 R= 3 W= 2 O= 1 K=  3 strict= 33% lenient= 56% anyRafters= 67%
+format ancestor div           anyClass             n=  9 files=  6 R= 3 W= 2 O= 1 K=  3 strict= 33% lenient= 56% anyRafters= 67%
+format ancestor div           layout               n=  5 files=  4 R= 3 W= 1 O= 1 K=  0 strict= 60% lenient= 80% anyRafters=100%
+format ancestor div           visual               n=  4 files=  4 R= 0 W= 1 O= 1 K=  2 strict=  0% lenient= 25% anyRafters= 50%
+format ancestor div           visualNoLayout       n=  2 files=  2 R= 0 W= 0 O= 0 K=  2 strict=  0% lenient=  0% anyRafters=  0%
+format ancestor div           noClass              n=  0 files=  0 R= 0 W= 0 O= 0 K=  0 strict=   - lenient=   - anyRafters=   -
+format ancestor div           wrapsOne             n=  3 files=  3 R= 0 W= 0 O= 1 K=  2 strict=  0% lenient=  0% anyRafters= 33%
+format ancestor div           noClassOrWraps       n=  3 files=  3 R= 0 W= 0 O= 1 K=  2 strict=  0% lenient=  0% anyRafters= 33%
+format ancestor div           gridLike             n=  0 files=  0 R= 0 W= 0 O= 0 K=  0 strict=   - lenient=   - anyRafters=   -
+format ancestor div           shellLike            n=  1 files=  1 R= 0 W= 0 O= 0 K=  1 strict=  0% lenient=  0% anyRafters=  0%
+format ancestor div           flexCol              n=  4 files=  3 R= 3 W= 1 O= 0 K=  0 strict= 75% lenient=100% anyRafters=100%
+format ancestor div           flexRow              n=  1 files=  1 R= 0 W= 0 O= 1 K=  0 strict=  0% lenient=  0% anyRafters=100%
+format ancestor div           gridShellOrFlexCol   n=  5 files=  3 R= 3 W= 1 O= 0 K=  1 strict= 60% lenient= 80% anyRafters= 80%
+format ancestor div           textHolding          n=  0 files=  0 R= 0 W= 0 O= 0 K=  0 strict=   - lenient=   - anyRafters=   -
+format every    div           every                n= 94 files= 38 R= 4 W= 8 O=41 K= 41 strict=  4% lenient= 13% anyRafters= 56%
+format every    div           anyClass             n= 90 files= 38 R= 4 W= 8 O=41 K= 37 strict=  4% lenient= 13% anyRafters= 59%
+format every    div           layout               n= 23 files= 13 R= 3 W= 4 O= 3 K= 13 strict= 13% lenient= 30% anyRafters= 43%
+format every    div           visual               n= 38 files= 22 R= 0 W= 2 O=24 K= 12 strict=  0% lenient=  5% anyRafters= 68%
+format every    div           visualNoLayout       n= 27 files= 17 R= 0 W= 0 O=21 K=  6 strict=  0% lenient=  0% anyRafters= 78%
+format every    div           noClass              n=  4 files=  3 R= 0 W= 0 O= 0 K=  4 strict=  0% lenient=  0% anyRafters=  0%
+format every    div           wrapsOne             n= 17 files= 15 R= 1 W= 2 O= 4 K= 10 strict=  6% lenient= 18% anyRafters= 41%
+format every    div           noClassOrWraps       n= 21 files= 16 R= 1 W= 2 O= 4 K= 14 strict=  5% lenient= 14% anyRafters= 33%
+format every    div           gridLike             n=  0 files=  0 R= 0 W= 0 O= 0 K=  0 strict=   - lenient=   - anyRafters=   -
+format every    div           shellLike            n=  4 files=  4 R= 1 W= 1 O= 0 K=  2 strict= 25% lenient= 50% anyRafters= 50%
+format every    div           flexCol              n=  9 files=  7 R= 3 W= 4 O= 1 K=  1 strict= 33% lenient= 78% anyRafters= 89%
+format every    div           flexRow              n= 14 files=  9 R= 0 W= 0 O= 2 K= 12 strict=  0% lenient=  0% anyRafters= 14%
+format every    div           gridShellOrFlexCol   n= 13 files= 10 R= 4 W= 5 O= 1 K=  3 strict= 31% lenient= 69% anyRafters= 77%
+format every    div           textHolding          n= 34 files= 14 R= 0 W= 0 O=31 K=  3 strict=  0% lenient=  0% anyRafters= 91%
+
+-- scan, div every
+system file     div           every                n= 43 files= 16 R= 4 W= 5 O=16 K= 18 strict=  9% lenient= 21% anyRafters= 58%
+system parent   div           every                n=  7 files=  6 R= 2 W= 1 O= 1 K=  3 strict= 29% lenient= 43% anyRafters= 57%
+system ancestor div           every                n=  9 files=  6 R= 3 W= 2 O= 1 K=  3 strict= 33% lenient= 56% anyRafters= 67%
+system every    div           every                n= 94 files= 38 R= 4 W= 8 O=41 K= 41 strict=  4% lenient= 13% anyRafters= 56%
+format file     div           every                n= 43 files= 16 R= 4 W= 5 O=16 K= 18 strict=  9% lenient= 21% anyRafters= 58%
+format parent   div           every                n=  7 files=  6 R= 2 W= 1 O= 1 K=  3 strict= 29% lenient= 43% anyRafters= 57%
+format ancestor div           every                n=  9 files=  6 R= 3 W= 2 O= 1 K=  3 strict= 33% lenient= 56% anyRafters= 67%
+format every    div           every                n= 94 files= 38 R= 4 W= 8 O=41 K= 41 strict=  4% lenient= 13% anyRafters= 56%
+all    file     div           every                n= 46 files= 17 R= 4 W= 6 O=16 K= 20 strict=  9% lenient= 22% anyRafters= 57%
+all    parent   div           every                n= 11 files=  9 R= 3 W= 2 O= 1 K=  5 strict= 27% lenient= 45% anyRafters= 55%
+all    ancestor div           every                n= 13 files=  9 R= 4 W= 3 O= 1 K=  5 strict= 31% lenient= 54% anyRafters= 62%
+all    every    div           every                n= 94 files= 38 R= 4 W= 8 O=41 K= 41 strict=  4% lenient= 13% anyRafters= 56%
+
+-- sectioning
+format file     sectioning    every                n= 46 files= 26 R= 3 W=17 O= 0 K= 26 strict=  7% lenient= 43% anyRafters= 43%
+format file     sectioning    noClass              n= 22 files=  9 R= 3 W=17 O= 0 K=  2 strict= 14% lenient= 91% anyRafters= 91%
+format file     sectioning    layout               n=  2 files=  2 R= 0 W= 0 O= 0 K=  2 strict=  0% lenient=  0% anyRafters=  0%
+format file     sectioning    visual               n= 16 files= 16 R= 0 W= 0 O= 0 K= 16 strict=  0% lenient=  0% anyRafters=  0%
+format file     sectioning    wrapsOne             n= 25 files= 22 R= 3 W= 2 O= 0 K= 20 strict= 12% lenient= 20% anyRafters= 20%
+format parent   sectioning    every                n= 33 files= 25 R= 3 W= 9 O= 0 K= 21 strict=  9% lenient= 36% anyRafters= 36%
+format parent   sectioning    noClass              n= 14 files=  7 R= 3 W= 9 O= 0 K=  2 strict= 21% lenient= 86% anyRafters= 86%
+format parent   sectioning    layout               n=  1 files=  1 R= 0 W= 0 O= 0 K=  1 strict=  0% lenient=  0% anyRafters=  0%
+format parent   sectioning    visual               n= 16 files= 16 R= 0 W= 0 O= 0 K= 16 strict=  0% lenient=  0% anyRafters=  0%
+format parent   sectioning    wrapsOne             n= 20 files= 20 R= 3 W= 0 O= 0 K= 17 strict= 15% lenient= 15% anyRafters= 15%
+format ancestor sectioning    every                n= 36 files= 26 R= 3 W=10 O= 0 K= 23 strict=  8% lenient= 36% anyRafters= 36%
+format ancestor sectioning    noClass              n= 15 files=  7 R= 3 W=10 O= 0 K=  2 strict= 20% lenient= 87% anyRafters= 87%
+format ancestor sectioning    layout               n=  1 files=  1 R= 0 W= 0 O= 0 K=  1 strict=  0% lenient=  0% anyRafters=  0%
+format ancestor sectioning    visual               n= 16 files= 16 R= 0 W= 0 O= 0 K= 16 strict=  0% lenient=  0% anyRafters=  0%
+format ancestor sectioning    wrapsOne             n= 21 files= 21 R= 3 W= 0 O= 0 K= 18 strict= 14% lenient= 14% anyRafters= 14%
+format every    sectioning    every                n= 59 files= 33 R= 3 W=23 O= 0 K= 33 strict=  5% lenient= 44% anyRafters= 44%
+format every    sectioning    noClass              n= 27 files= 14 R= 3 W=20 O= 0 K=  4 strict= 11% lenient= 85% anyRafters= 85%
+format every    sectioning    layout               n=  4 files=  3 R= 0 W= 0 O= 0 K=  4 strict=  0% lenient=  0% anyRafters=  0%
+format every    sectioning    visual               n= 18 files= 17 R= 0 W= 0 O= 0 K= 18 strict=  0% lenient=  0% anyRafters=  0%
+format every    sectioning    wrapsOne             n= 30 files= 25 R= 3 W= 7 O= 0 K= 20 strict= 10% lenient= 33% anyRafters= 33%
+
+-- raw equivalents
+format file     rawEquivalent every                n= 98 files= 36 R= 0 W= 0 O= 0 K= 98 strict=  0% lenient=  0% anyRafters=  0%
+format every    rawEquivalent every                n=206 files= 49 R= 6 W= 2 O= 0 K=198 strict=  3% lenient=  4% anyRafters=  4%
+
+-- raw by tag, every gate (R/W/K of n)
+{"h1":{"n":12,"R":0,"W":0,"O":0,"K":12},"p":{"n":29,"R":2,"W":1,"O":0,"K":26},"a":{"n":131,"R":0,"W":0,"O":0,"K":131},"h3":{"n":5,"R":0,"W":0,"O":0,"K":5},"img":{"n":8,"R":0,"W":0,"O":0,"K":8},"h2":{"n":13,"R":1,"W":0,"O":0,"K":12},"button":{"n":7,"R":2,"W":1,"O":0,"K":4},"table":{"n":1,"R":1,"W":0,"O":0,"K":0}}
+
+-- verdict reasons for div, format, every gate
+ 25 O text in a div: Typography
+ 13 K flex row: no Flex component, Container stacks and Grid is columns
+  9 O placeholder panel: Card
+  6 K custom-CSS scene, no layout decision to replace
+  5 O chrome: Card or a Card part
+  5 K terminal line inside code panel
+  3 R flex-col gap: Container gap
+  3 K canvas or SVG host
+  2 K script hook
+  2 O image frame: AspectRatio, not installed here
+  1 W bg and padding, Container padding and fill could carry it
+  1 K data-part root of a component that nearly qualifies
+  1 K hairline around a list
+  1 W label and value stack, nesting a Container here is what its doc warns of
+  1 W stack with responsive alignment overrides
+  1 K inline label root
+  1 K max-w-prose on slotted text, not a page shell
+  1 W stack that turns into a row at lg, needs overrides
+  1 K responsive measure on a paragraph
+  1 W CSS flex column shell, read in the style block
+  1 K CSS flex row with a 240px sidebar, no Grid preset
+  1 K nav group
+  1 K SVG-backed custom card
+  1 K margin wrapper for MDX
+  1 W prose wrapper: Container as=article has typography, but not the same typography
+  1 W p-6 inside a Card: Container padding, or a Card part
+  1 W stack, but gap-2.5 is off Container's scale
+  1 K accent rule callout
+  1 K dt and dd group: HTML wants a div in a dl
+  1 K full-bleed paint around a sized Container: merging insets the paint
+  1 R w-full max-w-xl: Container size=xl
+
+-- the gate's blind side, divs in non-exempt files using no system or qualified component
+huttspawn 2 {"src/components/Shape.astro":1,"src/components/hs-panel.astro":1}
+rafters.studio 8 {"src/components/mail/ArchitectureDiagram.astro":3,"src/components/mail/composites/EyebrowLabel.astro":1,"src/components/mail/composites/FAQItem.astro":1,"src/layouts/MailDocs.astro":3}
+runlegion.dev 24 {"src/components/ArchitectureCanvas.astro":1,"src/components/HexCard.astro":2,"src/components/LegionHero.astro":21}
+sean.silvius.me 10 {"src/components/content-section.tsx":1,"src/components/conversation-view.tsx":1,"src/components/dashboard-comparison.tsx":1,"src/components/flowchart-view.tsx":1,"src/components/intervention-results.tsx":1,"src/components/onboarding-analytics-dashboard.tsx":1,"src/components/onboarding-success-metrics.tsx":1,"src/components/technical-onboarding-flow.tsx":1,"src/components/user-centered-onboarding-flow.tsx":1,"src/components/user-centered-toolkit.tsx":1}
+smugglr.dev 7 {"src/components/HeroInstallCTA.astro":1,"src/components/HeroTopology.astro":5,"src/components/SiteHeader.astro":1}
+
+-- any intrinsic element with a grid or container utility, outside exempt files
+gitpress.app sectioning 0 any tag 
+huttspawn sectioning 0 any tag 
+rafters.studio sectioning 0 any tag 
+runlegion.dev sectioning 0 any tag 
+sean.silvius.me sectioning 0 any tag 
+smugglr.dev sectioning 0 any tag src/components/MrsBlock.astro:137 dl
+
+-- what format's exemption does: divs in qualified own files, and whether they use a system component
+huttspawn qualified 11, divs 44, files using a system component 6 src/components/hs-header.astro src/components/hs-card.astro src/components/site-logo.astro src/components/hs-milestone.astro src/components/hs-portrait-grid.astro src/components/hs-timeline.astro src/components/hs-topbar.astro src/components/hs-hero.astro src/components/hs-facts.astro src/components/hs-mirror-card.astro src/components/hs-wire.astro
+ own, used, not strict: src/components/nav/SiteFooter.astro b=0 c=0 tags=0 | src/layouts/Base.astro b=0 c=0 tags=0 | src/components/hs-panel.astro b=0 c=1 tags=6 | src/layouts/Guide.astro b=0 c=0 tags=0 | src/components/Shape.astro b=0 c=0 tags=2
+ system files strict 63 of 101; missing behavior file 31; six tags 69
+
+-- #158: existing rules by the kind of component they land on
+gitpress.app raw {} retiredFill {} uses {"own-unqualified":1} baseline 0
+huttspawn raw {"error none":2,"error system":2} retiredFill {"intrinsic":15} uses {"own-qualified":90,"system":133,"own-unqualified":27} baseline 2
+rafters.studio raw {"hint none":2} retiredFill {} uses {"system":151,"own-unqualified":50} baseline 0
+runlegion.dev raw {"hint none":4,"hint system":1} retiredFill {"intrinsic":5} uses {"system":64,"own-unqualified":5} baseline 1
+sean.silvius.me raw {"hint none":2} retiredFill {"intrinsic":1} uses {"system":166,"own-unqualified":12} baseline 0
+smugglr.dev raw {"hint none":2} retiredFill {"intrinsic":45} uses {"system":105,"own-unqualified":32} baseline 0
+
+-- timing
+gitpress.app 2 {"openMs":1048,"rawDiagnosticsMs":71,"lintMs":1,"walkMs":4} elements 14
+huttspawn 134 {"openMs":2020,"rawDiagnosticsMs":956,"lintMs":37,"walkMs":37} elements 974
+rafters.studio 75 {"openMs":944,"rawDiagnosticsMs":328,"lintMs":19,"walkMs":24} elements 720
+runlegion.dev 49 {"openMs":871,"rawDiagnosticsMs":268,"lintMs":17,"walkMs":12} elements 295
+sean.silvius.me 30 {"openMs":806,"rawDiagnosticsMs":185,"lintMs":8,"walkMs":13} elements 313
+smugglr.dev 55 {"openMs":939,"rawDiagnosticsMs":293,"lintMs":24,"walkMs":25} elements 503

@@ -119,6 +119,8 @@ export const CLASSES = {
   shellLike: (r) => has(r, (t) => /^(container|mx-auto)$/.test(t) || /^max-w-/.test(t)),
   flexCol: (r) => has(r, (t) => /^(flex|inline-flex)$/.test(t)) && has(r, (t) => t === "flex-col"),
   flexRow: (r) => has(r, (t) => /^(flex|inline-flex)$/.test(t)) && !has(r, (t) => t === "flex-col"),
+  // Added after reading the census: a div that directly holds text.
+  textHolding: (r) => r.text || (r.expressions > 0 && r.children.length === 0),
   gridOrShell: (r) => CLASSES.gridLike(r) || CLASSES.shellLike(r),
   gridShellOrFlexCol: (r) => CLASSES.gridLike(r) || CLASSES.shellLike(r) || CLASSES.flexCol(r),
 };
