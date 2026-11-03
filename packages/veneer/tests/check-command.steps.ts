@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { cpSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { Given, Then, When } from "@cucumber/cucumber";
@@ -13,6 +13,9 @@ import {
 } from "./support/docs-fixture.ts";
 
 const RUN_MS = 60 * 1000;
+const BRACKET_VALUE = '<div class="p-[1px]">a</div>\n';
+const CLEAN = "<div>a</div>\n";
+const FINDING_LINE = /^(\S+):\d+:\d+ (?:error|warning|info|hint) \S+ .+$/;
 const INDEX = join(pkg, "dist/index.mjs");
 const VP = join(pkg, "node_modules/.bin/vp");
 const manifest: { bin: { "rafters-check": string } } = JSON.parse(
@@ -43,11 +46,18 @@ function commandOf(world: CommandWorld): NonNullable<CommandWorld["command"]> {
   return world.command;
 }
 
-function run(world: CommandWorld, program: string, args: string[], cwd: string): void {
+function run(
+  world: CommandWorld,
+  program: string,
+  args: string[],
+  cwd: string,
+  input?: string,
+): void {
   const { status, stdout, stderr } = spawnSync(program, args, {
     cwd,
     encoding: "utf8",
     timeout: RUN_MS,
+    input,
   });
   world.command = { status, stdout, stderr };
 }
@@ -131,6 +141,98 @@ When(
   { timeout: RUN_MS },
   function (this: CommandWorld) {
     run(this, VP, ["exec", "rafters-check"], rootOf(this));
+  },
+);
+
+When(
+  /^rafters-check runs with (none|--nope)$/,
+  { timeout: RUN_MS },
+  function (this: CommandWorld, args: string) {
+    run(this, BIN, args === "none" ? [] : [args], rootOf(this));
+  },
+);
+
+function runStdin(world: CommandWorld, file: string, input: string): void {
+  const root = rootOf(world);
+  world.before = snapshot(root);
+  run(world, BIN, ["--stdin", file], root, input);
+}
+
+When(
+  /^rafters-check runs with --stdin (\S+) and a bracket value on stdin$/,
+  { timeout: RUN_MS },
+  function (this: CommandWorld, file: string) {
+    runStdin(this, file, BRACKET_VALUE);
+  },
+);
+
+When(
+  /^rafters-check runs with --stdin on a file with a finding, and clean content on stdin$/,
+  { timeout: RUN_MS },
+  function (this: CommandWorld) {
+    runStdin(this, "src/pages/brackets.astro", CLEAN);
+  },
+);
+
+When(
+  /^rafters-check runs with --stdin (\.\.\/\S+)$/,
+  { timeout: RUN_MS },
+  function (this: CommandWorld, file: string) {
+    runStdin(this, file, CLEAN);
+  },
+);
+
+When(
+  /^rafters-check runs with --stdin on a \.ts path the tsconfig takes$/,
+  { timeout: RUN_MS },
+  function (this: CommandWorld) {
+    runStdin(this, "src/new.ts", "export const a = 1;\n");
+  },
+);
+
+When(
+  /^rafters-check runs elsewhere with its root and --stdin on the absolute path of (\S+)$/,
+  { timeout: RUN_MS },
+  function (this: CommandWorld, file: string) {
+    const root = rootOf(this);
+    run(this, BIN, [root, "--stdin", join(root, file)], tempFolder(this), BRACKET_VALUE);
+  },
+);
+
+When(
+  /^rafters-check runs in (\S+) with its root and --stdin (\S+)$/,
+  { timeout: RUN_MS },
+  function (this: CommandWorld, folder: string, file: string) {
+    const root = rootOf(this);
+    run(this, BIN, [root, "--stdin", file], join(root, folder), BRACKET_VALUE);
+  },
+);
+
+const reportedFiles = (world: CommandWorld): string[] =>
+  commandOf(world)
+    .stdout.split("\n")
+    .flatMap((line) => FINDING_LINE.exec(line)?.[1] ?? []);
+
+Then(/^the report names (\S+\/\S+)$/, function (this: CommandWorld, file: string) {
+  assert.ok(reportedFiles(this).includes(file), commandOf(this).stdout);
+});
+
+Then(/^the report names no other file$/, function (this: CommandWorld) {
+  assert.equal(new Set(reportedFiles(this)).size, 1, commandOf(this).stdout);
+});
+
+Then(/^the report names no file$/, function (this: CommandWorld) {
+  assert.deepEqual(reportedFiles(this), [], commandOf(this).stdout);
+});
+
+Then(/^(src\/\S+) does not exist$/, function (this: CommandWorld, file: string) {
+  assert.equal(existsSync(join(rootOf(this), file)), false);
+});
+
+Then(
+  /^a line of stdout matches file:line:column severity code message for (\S+)$/,
+  function (this: CommandWorld, file: string) {
+    assert.ok(reportedFiles(this).includes(file), commandOf(this).stdout);
   },
 );
 

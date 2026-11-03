@@ -14,7 +14,7 @@ The intent is legion document `01a058f3`. The requirements are `FR-VEN-061` to `
 
 ## What exists
 
-- `packages/veneer`: `@rafters/veneer`, an ES module compiled by `vp pack`. It holds no native binary. Its entry exports `check`, the one call for `rafters check`, and the pieces behind it: `openProject`, `writeDocs`, `lint` and `report`. Its `rafters-check` bin, `packages/veneer/src/bin.ts`, runs `check` from a terminal, a git hook or CI. Opening a project never runs its code.
+- `packages/veneer`: `@rafters/veneer`, an ES module compiled by `vp pack`. It holds no native binary. Its entry exports `check`, the one call for `rafters check`, and the pieces behind it: `openProject`, `writeDocs`, `lint` and `report`. Its `rafters-check` bin, `packages/veneer/src/bin.ts`, runs `check` from a terminal, a git hook or CI: exit 1 only for an error diagnostic, exit 2 when the check could not run, and `--stdin <path>` checks one proposed file from stdin. Opening a project never runs its code.
 - `packages/veneer/tests`: each requirement's scenarios, in a feature file generated from the requirement.
 - `crates/veneer-lsp`: the language server (`FR-VEN-072`). It relays LSP to one Node worker, `packages/veneer/src/worker.ts`, which does the checking.
 - `crates/veneer-check`: a scaffold with no dependents.
