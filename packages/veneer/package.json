@@ -4,6 +4,9 @@
   "description": "Docs, rafters check and the composite compile for rafters projects",
   "license": "MIT",
   "repository": "https://github.com/rafters-studio/veneer",
+  "bin": {
+    "rafters-check": "./dist/bin.mjs"
+  },
   "files": [
     "dist"
   ],
