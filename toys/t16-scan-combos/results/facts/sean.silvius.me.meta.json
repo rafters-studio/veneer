@@ -1,0 +1,648 @@
+{
+ "site": "sean.silvius.me",
+ "timing": {
+  "openMs": 806,
+  "rawDiagnosticsMs": 185,
+  "lintMs": 8,
+  "walkMs": 13
+ },
+ "rootFiles": 30,
+ "componentFolders": [
+  "src/components/ui"
+ ],
+ "files": [
+  {
+   "file": "src/components/content-section.tsx",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/content-section.tsx",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/conversation-view.tsx",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/conversation-view.tsx",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/dashboard-comparison.tsx",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/dashboard-comparison.tsx",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/flowchart-view.tsx",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/flowchart-view.tsx",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/intervention-results.tsx",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/intervention-results.tsx",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/onboarding-analytics-dashboard.tsx",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/onboarding-analytics-dashboard.tsx",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/onboarding-success-metrics.tsx",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/onboarding-success-metrics.tsx",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/technical-onboarding-flow.tsx",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/technical-onboarding-flow.tsx",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/user-centered-onboarding-flow.tsx",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/user-centered-onboarding-flow.tsx",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/user-centered-toolkit.tsx",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/user-centered-toolkit.tsx",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/Topbar.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/Topbar.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 11
+  },
+  {
+   "file": "src/components/ui/badge.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/badge.astro",
+    "behavior": false,
+    "classes": true,
+    "bestBlock": 2,
+    "union": [
+     "cognitive-load",
+     "accessibility"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/button.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/button.astro",
+    "behavior": false,
+    "classes": true,
+    "bestBlock": 2,
+    "union": [
+     "cognitive-load",
+     "accessibility"
+    ]
+   },
+   "elements": 3
+  },
+  {
+   "file": "src/components/ui/card.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/card.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 2,
+    "union": [
+     "cognitive-load",
+     "accessibility"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/container.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/container.astro",
+    "behavior": false,
+    "classes": true,
+    "bestBlock": 2,
+    "union": [
+     "cognitive-load",
+     "accessibility"
+    ]
+   },
+   "elements": 10
+  },
+  {
+   "file": "src/components/ui/grid.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/grid.astro",
+    "behavior": false,
+    "classes": true,
+    "bestBlock": 2,
+    "union": [
+     "cognitive-load",
+     "accessibility"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/separator.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/separator.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 2,
+    "union": [
+     "cognitive-load",
+     "accessibility"
+    ]
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/ui/typography.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/typography.astro",
+    "behavior": false,
+    "classes": true,
+    "bestBlock": 1,
+    "union": [
+     "cognitive-load"
+    ]
+   },
+   "elements": 24
+  },
+  {
+   "file": "src/layouts/Base.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/layouts/Base.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 39
+  },
+  {
+   "file": "src/pages/connect.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/connect.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 15
+  },
+  {
+   "file": "src/pages/index.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/index.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 25
+  },
+  {
+   "file": "src/pages/privacy.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/privacy.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 21
+  },
+  {
+   "file": "src/pages/terms.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/terms.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 26
+  },
+  {
+   "file": "src/pages/night-shift/[...slug].astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/night-shift/[...slug].astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 16
+  },
+  {
+   "file": "src/pages/night-shift/index.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/night-shift/index.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 18
+  },
+  {
+   "file": "src/pages/posts/[...slug].astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/posts/[...slug].astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 17
+  },
+  {
+   "file": "src/pages/posts/index.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/posts/index.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 21
+  },
+  {
+   "file": "src/pages/software/index.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/software/index.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 21
+  },
+  {
+   "file": "src/pages/stories/[...slug].astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/stories/[...slug].astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 14
+  },
+  {
+   "file": "src/pages/stories/index.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/stories/index.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 15
+  }
+ ],
+ "shapes": [
+  {
+   "file": "src/components/ui/typography.astro",
+   "behavior": false,
+   "classes": true,
+   "bestBlock": 1,
+   "union": [
+    "cognitive-load"
+   ]
+  },
+  {
+   "file": "src/components/ui/button.astro",
+   "behavior": false,
+   "classes": true,
+   "bestBlock": 2,
+   "union": [
+    "cognitive-load",
+    "accessibility"
+   ]
+  },
+  {
+   "file": "src/components/ui/card.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 2,
+   "union": [
+    "cognitive-load",
+    "accessibility"
+   ]
+  },
+  {
+   "file": "src/components/Topbar.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/container.astro",
+   "behavior": false,
+   "classes": true,
+   "bestBlock": 2,
+   "union": [
+    "cognitive-load",
+    "accessibility"
+   ]
+  },
+  {
+   "file": "src/components/ui/grid.astro",
+   "behavior": false,
+   "classes": true,
+   "bestBlock": 2,
+   "union": [
+    "cognitive-load",
+    "accessibility"
+   ]
+  },
+  {
+   "file": "src/components/ui/separator.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 2,
+   "union": [
+    "cognitive-load",
+    "accessibility"
+   ]
+  },
+  {
+   "file": "src/layouts/Base.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/badge.astro",
+   "behavior": false,
+   "classes": true,
+   "bestBlock": 2,
+   "union": [
+    "cognitive-load",
+    "accessibility"
+   ]
+  },
+  {
+   "file": "src/components/content-section.tsx",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/conversation-view.tsx",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/dashboard-comparison.tsx",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/flowchart-view.tsx",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/intervention-results.tsx",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/onboarding-analytics-dashboard.tsx",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/onboarding-success-metrics.tsx",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/technical-onboarding-flow.tsx",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/user-centered-onboarding-flow.tsx",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/user-centered-toolkit.tsx",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/connect.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/index.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/privacy.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/terms.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/night-shift/[...slug].astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/night-shift/index.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/posts/[...slug].astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/posts/index.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/software/index.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/stories/[...slug].astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/stories/index.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  }
+ ],
+ "baseline": [],
+ "raw": [
+  {
+   "file": "src/components/Topbar.astro",
+   "line": 3,
+   "column": 1,
+   "code": "ts(6133)",
+   "severity": "hint",
+   "message": "'Grid' is declared but its value is never read.",
+   "kind": "none"
+  },
+  {
+   "file": "src/components/Topbar.astro",
+   "line": 2,
+   "column": 1,
+   "code": "ts(6133)",
+   "severity": "hint",
+   "message": "'Container' is declared but its value is never read.",
+   "kind": "none"
+  }
+ ]
+}

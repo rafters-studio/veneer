@@ -1,0 +1,376 @@
+#huttspawn:src/components/Shape.astro:27:1 div gate=- [wrapsOne] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: ROOT
+  kids(1): slot
+  src: <div class={classy("bg-muted text-muted-foreground p-6", shape && shapeClasses[shape])}> // <slot />
+#huttspawn:src/components/hs-panel.astro:20:1 div gate=- [wrapsOne] attrs=data-part txt=0 expr=0 map=0 sysBelow=0
+  up: ROOT
+  kids(1): slot
+  src: <div data-part="root" class={classy(c.root)}> // <slot />
+#rafters.studio:src/components/mail/ArchitectureDiagram.astro:6:1 div gate=- [visual] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: ROOT
+  kids(3): div svg div
+  src: <div class="border border-border bg-background overflow-hidden rounded-md"> // <div class="flex items-center justify-between border-b border-border px-4 py-2 font-mono te
+#rafters.studio:src/components/mail/ArchitectureDiagram.astro:7:3 div gate=- [layout,visual,flexRow] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: div.border.border-border.bg-background
+  kids(2): span span
+  src: <div class="flex items-center justify-between border-b border-border px-4 py-2 font-mono text-label-small text-muted-foreground"> // <span>rafters-mail · runtime topology
+#rafters.studio:src/components/mail/ArchitectureDiagram.astro:123:3 div gate=- [layout,visual,flexRow] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: div.border.border-border.bg-background
+  kids(3): span span span
+  src: <div class="flex flex-wrap gap-6 border-t border-border px-4 py-3 font-mono text-label-small uppercase tracking-wide text-muted-foreground"> // <span class="inline-flex i
+#rafters.studio:src/components/mail/FaqSection.astro:13:5 div gate=S [visual] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: Container < section.border-b.border-border
+  kids(6): FAQItem*o FAQItem*o FAQItem*o FAQItem*o FAQItem*o FAQItem*o
+  src: <div class="border-t border-border"> // <FAQItem question="Wait, IMAP on a Durable Object? Really?" open>
+#rafters.studio:src/components/mail/Hero.astro:59:11 div gate=S [layout,visual,flexCol] attrs=- txt=0 expr=0 map=1 sysBelow=0
+  up: GridItem < Grid < Container < section.border-b.border-border
+  kids(2): span span
+  src: <div class="flex flex-col gap-1 font-mono text-label-small uppercase tracking-wide text-muted-foreground"> // <span>{label}</span>
+#rafters.studio:src/components/mail/OssCallout.astro:19:11 div gate=S [layout,flexCol] attrs=- txt=0 expr=0 map=0 sysBelow=3
+  up: GridItem < Grid.lg:items-center < Card.p-8 < Container
+  kids(2): H3*s P*s
+  src: <div class="flex flex-col gap-3"> // <H3 size="title-large" tracking="tight" class="m-0">
+#rafters.studio:src/components/mail/OssCallout.astro:32:11 div gate=S [layout,flexCol] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: GridItem < Grid.lg:items-center < Card.p-8 < Container
+  kids(2): LinkButton*o LinkButton*o
+  src: <div class="flex flex-col items-start gap-3 lg:items-end"> // <LinkButton href={repo} variant="outline" external>
+#rafters.studio:src/components/mail/SiteHeader.astro:19:5 div gate=S [layout,flexRow] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: Container < header.sticky.top-0.z-50
+  kids(2): Brand*o nav
+  src: <div class="flex items-center justify-between gap-6"> // <Brand href="#" />
+#rafters.studio:src/components/mail/composites/EyebrowLabel.astro:18:1 div gate=- [] attrs=- txt=0 expr=2 map=0 sysBelow=0
+  up: ROOT
+  kids(3): span slot span
+  src: <div class={cls}> // {dot && <span class="inline-block h-1.5 w-1.5 rounded-full bg-foreground" aria-hidden="true" />}
+#rafters.studio:src/components/mail/composites/FAQItem.astro:26:3 div gate=- [visual,wrapsOne,shellLike] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: details.group.border-b.border-border
+  kids(1): slot
+  src: <div class="mt-4 max-w-prose text-body-medium text-muted-foreground leading-relaxed"> // <slot />
+#rafters.studio:src/components/mail/composites/InstallCard.astro:27:5 div gate=S [layout,visual,wrapsOne,flexRow] attrs=- txt=0 expr=0 map=0 sysBelow=2
+  up: Tabs < Card.overflow-hidden.p-0
+  kids(1): TabsList*s
+  src: <div class="flex items-center border-b border-border bg-card px-3 py-2"> // <TabsList>
+#rafters.studio:src/components/mail/composites/InstallCard.astro:50:11 div gate=S [visual] attrs=- txt=1 expr=0 map=1 sysBelow=0
+  up: TabsContent.relative.bg-neutral-950.text-neutral-100 < Tabs < Card.overflow-hidden.p-0
+  kids(0): -
+  src: <div class="text-neutral-500"># one package, drop into any Workers project</div> // <div>
+#rafters.studio:src/components/mail/composites/InstallCard.astro:51:11 div gate=S [noClass] attrs=- txt=0 expr=0 map=1 sysBelow=0
+  up: TabsContent.relative.bg-neutral-950.text-neutral-100 < Tabs < Card.overflow-hidden.p-0
+  kids(2): span span
+  src: <div> // <span class="text-foreground mr-2">$</span>
+#rafters.studio:src/components/mail/composites/InstallCard.astro:57:13 div gate=S [] attrs=- txt=0 expr=0 map=1 sysBelow=0
+  up: TabsContent.relative.bg-neutral-950.text-neutral-100 < Tabs < Card.overflow-hidden.p-0
+  kids(2): div div
+  src: <div class="mt-4"> // <div class="text-neutral-500">
+#rafters.studio:src/components/mail/composites/InstallCard.astro:58:15 div gate=S [visual] attrs=- txt=0 expr=1 map=1 sysBelow=0
+  up: div.mt-4 < TabsContent.relative.bg-neutral-950.text-neutral-100 < Tabs < Card.overflow-hidden.p-0
+  kids(0): -
+  src: <div class="text-neutral-500"> // {i === 0 ? '# wire it up' : '# receive your first email'}
+#rafters.studio:src/components/mail/composites/InstallCard.astro:61:15 div gate=S [noClass] attrs=- txt=0 expr=0 map=1 sysBelow=0
+  up: div.mt-4 < TabsContent.relative.bg-neutral-950.text-neutral-100 < Tabs < Card.overflow-hidden.p-0
+  kids(2): span span
+  src: <div> // <span class="text-foreground mr-2">$</span>
+#rafters.studio:src/components/mail/composites/InstallCard.astro:73:5 div gate=S [layout,visual,flexRow] attrs=- txt=0 expr=1 map=0 sysBelow=0
+  up: Card.overflow-hidden.p-0
+  kids(1): span
+  src: <div class="flex flex-wrap gap-6 border-t border-border bg-card px-6 py-3 font-mono text-label-small uppercase tracking-wide text-muted-foreground"> // {footline.map(({ l
+#rafters.studio:src/components/mail/composites/ModuleCell.astro:15:3 div gate=S [visual] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: Card.flex.flex-col.gap-4
+  kids(2): span span
+  src: <div class="font-mono text-label-small uppercase tracking-wide text-muted-foreground"> // <span class="text-foreground">{pathHead}</span>
+#rafters.studio:src/components/mail/composites/ModuleCell.astro:20:3 div gate=S [visual,wrapsOne] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: Card.flex.flex-col.gap-4
+  kids(1): slot
+  src: <div class="text-body-small text-muted-foreground"> // <slot name="description" />
+#rafters.studio:src/components/mail/composites/ModuleCell.astro:23:3 div gate=S [layout,wrapsOne,flexRow] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: Card.flex.flex-col.gap-4
+  kids(1): slot
+  src: <div class="flex flex-wrap gap-2 mt-auto"> // <slot name="intel" />
+#rafters.studio:src/components/mail/composites/SectionHead.astro:13:1 div gate=S [layout,visual,flexCol] attrs=- txt=0 expr=0 map=0 sysBelow=2
+  up: ROOT
+  kids(2): div div
+  src: <div class="flex flex-col gap-6 border-b border-border pb-8 mb-12 lg:flex-row lg:justify-between lg:items-end lg:gap-12"> // <div class="flex flex-col gap-3">
+#rafters.studio:src/components/mail/composites/SectionHead.astro:14:3 div gate=S [layout,flexCol] attrs=- txt=0 expr=0 map=0 sysBelow=1
+  up: div.flex.flex-col.gap-6
+  kids(2): span H2*s
+  src: <div class="flex flex-col gap-3"> // <span class="font-mono text-label-small uppercase tracking-wide text-muted-foreground">{no}</span>
+#rafters.studio:src/components/mail/composites/SectionHead.astro:18:3 div gate=S [wrapsOne,shellLike] attrs=- txt=0 expr=0 map=0 sysBelow=1
+  up: div.flex.flex-col.gap-6
+  kids(1): P*s
+  src: <div class="lg:max-w-md lg:text-right"> // <P size="body-medium" color="muted-foreground" class="m-0"><slot /></P>
+#rafters.studio:src/components/mail/composites/StatCell.astro:16:3 div gate=S [visual] attrs=- txt=0 expr=2 map=0 sysBelow=0
+  up: Card.flex.flex-col.gap-4
+  kids(1): span
+  src: <div class="font-mono text-display-medium tracking-tight text-foreground leading-none"> // {value}{unit && <span class="text-body-large text-muted-foreground ml-1">{unit}
+#rafters.studio:src/layouts/MailDocs.astro:71:3 div gate=o [] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: Base
+  kids(2): header div
+  src: <div class="docs-shell"> // <header class="docs-header">
+#rafters.studio:src/layouts/MailDocs.astro:80:5 div gate=o [] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: div.docs-shell < Base
+  kids(2): aside main
+  src: <div class="docs-body"> // <aside class="docs-sidebar">
+#rafters.studio:src/layouts/MailDocs.astro:84:13 div gate=o [] attrs=- txt=0 expr=0 map=1 sysBelow=0
+  up: nav < aside.docs-sidebar < div.docs-body < div.docs-shell
+  kids(2): p ul
+  src: <div class="docs-nav-group"> // <p class="docs-nav-heading">{group.heading}</p>
+#runlegion.dev:src/components/ArchitectureCanvas.astro:6:1 div gate=- [wrapsOne] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: ROOT
+  kids(1): canvas
+  src: <div class="arch-wrap"> // <canvas id="arch-canvas" width="860" height="500"></canvas>
+#runlegion.dev:src/components/HexCard.astro:18:1 div gate=- [] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: ROOT
+  kids(2): svg div
+  src: <div class="hex-accent-card"> // <svg
+#runlegion.dev:src/components/HexCard.astro:33:3 div gate=- [wrapsOne] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: div.hex-accent-card
+  kids(1): slot
+  src: <div class="hex-accent-content"> // <slot />
+#runlegion.dev:src/components/LegionHero.astro:7:1 div gate=- [wrapsOne] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: ROOT
+  kids(1): div
+  src: <div class="legion-hero"> // <div class="lh-scene">
+#runlegion.dev:src/components/LegionHero.astro:8:3 div gate=- [] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: div.legion-hero
+  kids(5): header div div div div
+  src: <div class="lh-scene"> // <header class="lh-header">
+#runlegion.dev:src/components/LegionHero.astro:10:7 div gate=- [] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: header.lh-header < div.lh-scene < div.legion-hero
+  kids(0): -
+  src: <div class="lh-eyebrow">Self-Hosted Agent Orchestrator</div> // <h2 class="lh-title">Memory &middot; Coordination &middot; Autonomy</h2>
+#runlegion.dev:src/components/LegionHero.astro:17:5 div gate=- [wrapsOne] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: div.lh-scene < div.legion-hero
+  kids(1): canvas
+  src: <div class="lh-canvas-wrap"> // <canvas id="legion-network" width="860" height="480"></canvas>
+#runlegion.dev:src/components/LegionHero.astro:21:5 div gate=- [] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: div.lh-scene < div.legion-hero
+  kids(3): button button button
+  src: <div class="lh-phases"> // <button class="lh-phase active" data-phase="memory">
+#runlegion.dev:src/components/LegionHero.astro:23:9 div gate=- [] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: button.lh-phase.active < div.lh-phases < div.lh-scene < div.legion-hero
+  kids(0): -
+  src: <div class="lh-phase-num">MEMORY</div> // <div class="lh-phase-title">REFLECT &middot; RECALL &middot; CONSULT</div>
+#runlegion.dev:src/components/LegionHero.astro:24:9 div gate=- [] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: button.lh-phase.active < div.lh-phases < div.lh-scene < div.legion-hero
+  kids(0): -
+  src: <div class="lh-phase-title">REFLECT &middot; RECALL &middot; CONSULT</div> // <div class="lh-phase-desc">
+#runlegion.dev:src/components/LegionHero.astro:25:9 div gate=- [] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: button.lh-phase.active < div.lh-phases < div.lh-scene < div.legion-hero
+  kids(0): -
+  src: <div class="lh-phase-desc"> // Agents reflect after every session. On cold start, relevant reflections
+#runlegion.dev:src/components/LegionHero.astro:30:9 div gate=- [] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: button.lh-phase.active < div.lh-phases < div.lh-scene < div.legion-hero
+  kids(0): -
+  src: <div class="lh-phase-cmd">legion reflect --repo myapp --transcript ./session.jsonl</div> // </button>
+#runlegion.dev:src/components/LegionHero.astro:33:9 div gate=- [] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: button.lh-phase < div.lh-phases < div.lh-scene < div.legion-hero
+  kids(0): -
+  src: <div class="lh-phase-num">COORDINATE</div> // <div class="lh-phase-title">BULLPEN &middot; SIGNALS &middot; KANBAN</div>
+#runlegion.dev:src/components/LegionHero.astro:34:9 div gate=- [] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: button.lh-phase < div.lh-phases < div.lh-scene < div.legion-hero
+  kids(0): -
+  src: <div class="lh-phase-title">BULLPEN &middot; SIGNALS &middot; KANBAN</div> // <div class="lh-phase-desc">
+#runlegion.dev:src/components/LegionHero.astro:35:9 div gate=- [] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: button.lh-phase < div.lh-phases < div.lh-scene < div.legion-hero
+  kids(0): -
+  src: <div class="lh-phase-desc"> // Agents post to the bullpen, send structured signals for reviews and
+#runlegion.dev:src/components/LegionHero.astro:40:9 div gate=- [] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: button.lh-phase < div.lh-phases < div.lh-scene < div.legion-hero
+  kids(0): -
+  src: <div class="lh-phase-cmd">legion signal --to backend --verb review --status approved</div> // </button>
+#runlegion.dev:src/components/LegionHero.astro:43:9 div gate=- [] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: button.lh-phase < div.lh-phases < div.lh-scene < div.legion-hero
+  kids(0): -
+  src: <div class="lh-phase-num">ORCHESTRATE</div> // <div class="lh-phase-title">WATCH &middot; SURFACE &middot; AUTO-WAKE</div>
+#runlegion.dev:src/components/LegionHero.astro:44:9 div gate=- [] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: button.lh-phase < div.lh-phases < div.lh-scene < div.legion-hero
+  kids(0): -
+  src: <div class="lh-phase-title">WATCH &middot; SURFACE &middot; AUTO-WAKE</div> // <div class="lh-phase-desc">
+#runlegion.dev:src/components/LegionHero.astro:45:9 div gate=- [] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: button.lh-phase < div.lh-phases < div.lh-scene < div.legion-hero
+  kids(0): -
+  src: <div class="lh-phase-desc"> // The watch daemon monitors the bullpen. When a signal arrives for an
+#runlegion.dev:src/components/LegionHero.astro:50:9 div gate=- [] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: button.lh-phase < div.lh-phases < div.lh-scene < div.legion-hero
+  kids(0): -
+  src: <div class="lh-phase-cmd">legion watch</div> // </button>
+#runlegion.dev:src/components/LegionHero.astro:54:5 div gate=- [] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: div.lh-scene < div.legion-hero
+  kids(2): div div
+  src: <div class="lh-trace"> // <div class="lh-trace-label">// Execution Trace</div>
+#runlegion.dev:src/components/LegionHero.astro:55:7 div gate=- [] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: div.lh-trace < div.lh-scene < div.legion-hero
+  kids(0): -
+  src: <div class="lh-trace-label">// Execution Trace</div> // <div id="legion-trace-lines"></div>
+#runlegion.dev:src/components/LegionHero.astro:56:7 div gate=- [noClass] attrs=id txt=0 expr=0 map=0 sysBelow=0
+  up: div.lh-trace < div.lh-scene < div.legion-hero
+  kids(0): -
+  src: <div id="legion-trace-lines"></div> // </div>
+#runlegion.dev:src/components/LegionHero.astro:59:5 div gate=- [] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: div.lh-scene < div.legion-hero
+  kids(2): button button
+  src: <div class="lh-controls"> // <button class="lh-btn lh-btn-primary" id="legion-restart">RESTART SEQUENCE</button>
+#sean.silvius.me:src/components/content-section.tsx:2:10 div gate=- [] attrs=className txt=0 expr=1 map=0 sysBelow=0
+  up: ROOT
+  kids(0): -
+  src: return <div className="my-6">{children}</div>; // }
+#sean.silvius.me:src/components/conversation-view.tsx:2:10 div gate=- [visual] attrs=className txt=1 expr=0 map=0 sysBelow=0
+  up: ROOT
+  kids(0): -
+  src: return <div className="my-6 rounded-lg border border-muted bg-muted/20 p-6 text-center text-sm text-muted-foreground">[Interactive component: Conversation View]</div>; //
+#sean.silvius.me:src/components/dashboard-comparison.tsx:2:10 div gate=- [visual] attrs=className txt=1 expr=0 map=0 sysBelow=0
+  up: ROOT
+  kids(0): -
+  src: return <div className="my-6 rounded-lg border border-muted bg-muted/20 p-6 text-center text-sm text-muted-foreground">[Interactive component: Dashboard Comparison]</div>;
+#sean.silvius.me:src/components/flowchart-view.tsx:2:10 div gate=- [visual] attrs=className txt=1 expr=0 map=0 sysBelow=0
+  up: ROOT
+  kids(0): -
+  src: return <div className="my-6 rounded-lg border border-muted bg-muted/20 p-6 text-center text-sm text-muted-foreground">[Interactive component: Flowchart View]</div>; // }
+#sean.silvius.me:src/components/intervention-results.tsx:2:10 div gate=- [visual] attrs=className txt=1 expr=0 map=0 sysBelow=0
+  up: ROOT
+  kids(0): -
+  src: return <div className="my-6 rounded-lg border border-muted bg-muted/20 p-6 text-center text-sm text-muted-foreground">[Interactive component: Intervention Results]</div>;
+#sean.silvius.me:src/components/onboarding-analytics-dashboard.tsx:2:10 div gate=- [visual] attrs=className txt=1 expr=0 map=0 sysBelow=0
+  up: ROOT
+  kids(0): -
+  src: return <div className="my-6 rounded-lg border border-muted bg-muted/20 p-6 text-center text-sm text-muted-foreground">[Interactive component: Onboarding Analytics Dashboa
+#sean.silvius.me:src/components/onboarding-success-metrics.tsx:2:10 div gate=- [visual] attrs=className txt=1 expr=0 map=0 sysBelow=0
+  up: ROOT
+  kids(0): -
+  src: return <div className="my-6 rounded-lg border border-muted bg-muted/20 p-6 text-center text-sm text-muted-foreground">[Interactive component: Onboarding Success Metrics]<
+#sean.silvius.me:src/components/technical-onboarding-flow.tsx:2:10 div gate=- [visual] attrs=className txt=1 expr=0 map=0 sysBelow=0
+  up: ROOT
+  kids(0): -
+  src: return <div className="my-6 rounded-lg border border-muted bg-muted/20 p-6 text-center text-sm text-muted-foreground">[Interactive component: Technical Onboarding Flow]</
+#sean.silvius.me:src/components/user-centered-onboarding-flow.tsx:2:10 div gate=- [visual] attrs=className txt=1 expr=0 map=0 sysBelow=0
+  up: ROOT
+  kids(0): -
+  src: return <div className="my-6 rounded-lg border border-muted bg-muted/20 p-6 text-center text-sm text-muted-foreground">[Interactive component: User-Centered Onboarding Flo
+#sean.silvius.me:src/components/user-centered-toolkit.tsx:2:10 div gate=- [visual] attrs=className txt=1 expr=0 map=0 sysBelow=0
+  up: ROOT
+  kids(0): -
+  src: return <div className="my-6 rounded-lg border border-muted bg-muted/20 p-6 text-center text-sm text-muted-foreground">[Interactive component: User-Centered Toolkit]</div>
+#sean.silvius.me:src/components/Topbar.astro:21:5 div gate=S [] attrs=- txt=0 expr=1 map=0 sysBelow=0
+  up: nav.topbar-nav < header.topbar
+  kids(1): a
+  src: <div class="topbar-links"> // {navLinks.map((link) => {
+#sean.silvius.me:src/components/Topbar.astro:43:1 div gate=S [noClass] attrs=id|aria-hidden txt=0 expr=0 map=0 sysBelow=0
+  up: ROOT
+  kids(0): -
+  src: <div id="scroll-sentinel" aria-hidden="true"></div> // 
+#sean.silvius.me:src/pages/index.astro:46:17 div gate=S [wrapsOne] attrs=- txt=0 expr=0 map=1 sysBelow=0
+  up: a.no-underline.group < Card.overflow-hidden.h-full.transition-all < Grid < Container
+  kids(1): img
+  src: <div class="aspect-video overflow-hidden"> // <img
+#sean.silvius.me:src/pages/posts/index.astro:49:17 div gate=S [wrapsOne] attrs=- txt=0 expr=0 map=1 sysBelow=0
+  up: a.no-underline.group < Card.overflow-hidden.h-full.transition-all < Grid < Container
+  kids(1): img
+  src: <div class="aspect-video overflow-hidden"> // <img
+#sean.silvius.me:src/pages/stories/[...slug].astro:31:7 div gate=S [layout,visual,flexRow] attrs=- txt=0 expr=2 map=0 sysBelow=0
+  up: header.mb-10 < Container < Base
+  kids(4): time span span span
+  src: <div class="mt-4 flex flex-wrap items-center gap-3 text-sm text-muted-foreground"> // <time datetime={story.data.date.toISOString()}>
+#sean.silvius.me:src/pages/stories/[...slug].astro:48:7 div gate=S [wrapsOne,shellLike] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: Container < Container < Base
+  kids(1): Content*d
+  src: <div class="prose prose-neutral max-w-none"> // <Content />
+#sean.silvius.me:src/pages/stories/index.astro:20:5 div gate=S [layout,flexCol] attrs=- txt=0 expr=1 map=0 sysBelow=3
+  up: Container < Base
+  kids(1): a
+  src: <div class="mt-12 flex flex-col gap-6"> // {stories.map((story) => (
+#sean.silvius.me:src/pages/stories/index.astro:24:13 div gate=S [] attrs=- txt=0 expr=0 map=1 sysBelow=2
+  up: Card < a.no-underline < div.mt-12.flex.flex-col < Container
+  kids(3): div Typography*s Typography*s
+  src: <div class="p-6"> // <div class="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+#sean.silvius.me:src/pages/stories/index.astro:25:15 div gate=S [layout,visual,flexRow] attrs=- txt=0 expr=2 map=1 sysBelow=0
+  up: div.p-6 < Card < a.no-underline < div.mt-12.flex.flex-col
+  kids(4): time span span span
+  src: <div class="flex flex-wrap items-center gap-2 text-sm text-muted-foreground"> // <time datetime={story.data.date.toISOString()}>
+#smugglr.dev:src/components/HeroInstallCTA.astro:17:1 div gate=- [layout,flexCol] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: ROOT
+  kids(3): button p span
+  src: <div class="flex flex-col items-center gap-2.5 w-full"> // <button
+#smugglr.dev:src/components/HeroTopology.astro:21:1 div gate=- [layout,visual,flexCol] attrs=data-topology txt=0 expr=0 map=0 sysBelow=0
+  up: ROOT
+  kids(3): div div div
+  src: <div // data-topology
+#smugglr.dev:src/components/HeroTopology.astro:25:5 div gate=- [layout,visual,flexRow] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: div.w-full.border.border-border
+  kids(2): div span
+  src: <div class="flex items-baseline justify-between gap-4 pb-2.5 border-b border-border"> // <div class="flex items-baseline gap-3.5 min-w-0">
+#smugglr.dev:src/components/HeroTopology.astro:26:9 div gate=- [layout,flexRow] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: div.flex.items-baseline.justify-between < div.w-full.border.border-border
+  kids(3): span span span
+  src: <div class="flex items-baseline gap-3.5 min-w-0"> // <span data-topology-idx class="font-mono text-xs text-primary">01 / 05</span>
+#smugglr.dev:src/components/HeroTopology.astro:34:5 div gate=- [] attrs=- txt=0 expr=1 map=0 sysBelow=0
+  up: div.w-full.border.border-border
+  kids(1): svg
+  src: <div class="relative w-full h-64"> // {SHAPES.map((s, i) => (
+#smugglr.dev:src/components/HeroTopology.astro:141:5 div gate=- [layout,flexRow] attrs=- txt=0 expr=1 map=0 sysBelow=0
+  up: div.w-full.border.border-border
+  kids(1): button
+  src: <div class="flex gap-1.5 justify-center items-center"> // {SHAPES.map((s, i) => (
+#smugglr.dev:src/components/MrsBlock.astro:101:5 div gate=S [layout,visual,flexRow] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: Container < section.bg-foreground.text-background
+  kids(2): div a
+  src: <div class="flex items-center justify-between gap-4 pb-3 border-b border-border/50"> // <div class="flex items-center gap-3">
+#smugglr.dev:src/components/MrsBlock.astro:102:9 div gate=S [layout,flexRow] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: div.flex.items-center.justify-between < Container < section.bg-foreground.text-background
+  kids(4): span span span span
+  src: <div class="flex items-center gap-3"> // <span class="font-mono text-sm text-primary">»</span>
+#smugglr.dev:src/components/MrsBlock.astro:130:9 div gate=S [visual] attrs=- txt=0 expr=0 map=0 sysBelow=1
+  up: section < Container < section.bg-foreground.text-background
+  kids(3): header P*s dl
+  src: <div class="mt-8 border-l-2 border-primary pl-5"> // <header class="mb-4">
+#smugglr.dev:src/components/MrsBlock.astro:139:21 div gate=S [layout,flexCol] attrs=- txt=0 expr=0 map=1 sysBelow=0
+  up: dl.grid.gap-3 < div.mt-8.border-l-2.border-primary < section < Container
+  kids(2): dt dd
+  src: <div class="flex flex-col gap-0.5 md:flex-row md:gap-3"> // <dt class="font-mono font-medium text-sm md:w-64 md:shrink-0">{term}</dt>
+#smugglr.dev:src/components/MrsBlock.astro:169:17 div gate=S [visual] attrs=- txt=0 expr=0 map=1 sysBelow=0
+  up: Grid < section < Container < section.bg-foreground.text-background
+  kids(2): div div
+  src: <div class="py-3.5 px-5 border-b border-border/40"> // <div class="font-heading font-medium text-sm uppercase tracking-wide mb-1">&times; {rule}</div>
+#smugglr.dev:src/components/MrsBlock.astro:170:21 div gate=S [] attrs=- txt=1 expr=1 map=1 sysBelow=0
+  up: div.py-3.5.px-5.border-b < Grid < section < Container
+  kids(0): -
+  src: <div class="font-heading font-medium text-sm uppercase tracking-wide mb-1">&times; {rule}</div> // <div class="font-sans font-light text-sm leading-relaxed text-muted-for
+#smugglr.dev:src/components/MrsBlock.astro:171:21 div gate=S [visual] attrs=- txt=0 expr=1 map=1 sysBelow=0
+  up: div.py-3.5.px-5.border-b < Grid < section < Container
+  kids(0): -
+  src: <div class="font-sans font-light text-sm leading-relaxed text-muted-foreground">{detail}</div> // </div>
+#smugglr.dev:src/components/NarrativeSections.astro:22:1 div gate=S [visual,wrapsOne] attrs=- txt=0 expr=0 map=0 sysBelow=54
+  up: ROOT
+  kids(1): Container*s
+  src: <div class="bg-background"> // <Container size="5xl" padding="20" gap="20">
+#smugglr.dev:src/components/NarrativeSections.astro:26:13 div gate=S [visual] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: section < Container < div.bg-background
+  kids(0): -
+  src: <div class="font-heading font-medium text-sm uppercase tracking-widest text-muted-foreground mb-3.5 pt-3.5 border-t border-foreground">01 &middot; show it running</div> /
+#smugglr.dev:src/components/NarrativeSections.astro:55:13 div gate=S [visual] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: section < Container < div.bg-background
+  kids(0): -
+  src: <div class="font-heading font-medium text-sm uppercase tracking-widest text-muted-foreground mb-3.5 pt-3.5 border-t border-foreground">02 &middot; one plugin, any LIKE ba
+#smugglr.dev:src/components/NarrativeSections.astro:89:13 div gate=S [visual] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: section < Container < div.bg-background
+  kids(0): -
+  src: <div class="font-heading font-medium text-sm uppercase tracking-widest text-muted-foreground mb-3.5 pt-3.5 border-t border-foreground">03 &middot; how it ships</div> // <
+#smugglr.dev:src/components/NarrativeSections.astro:95:13 div gate=S [visual] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: section < Container < div.bg-background
+  kids(0): -
+  src: <div class="font-heading font-medium text-sm uppercase tracking-widest text-muted-foreground mb-3.5 pt-3.5 border-t border-foreground">04 &middot; learn</div> // <H2>Four
+#smugglr.dev:src/components/NarrativeSections.astro:134:13 div gate=S [visual] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: section < Container < div.bg-background
+  kids(0): -
+  src: <div class="font-heading font-medium text-sm uppercase tracking-widest text-muted-foreground mb-3.5 pt-3.5 border-t border-foreground">05 &middot; compare</div> // <H2>Tw
+#smugglr.dev:src/components/NarrativeSections.astro:158:13 div gate=S [visual] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: section < Container < div.bg-background
+  kids(0): -
+  src: <div class="font-heading font-medium text-sm uppercase tracking-widest text-muted-foreground mb-3.5 pt-3.5 border-t border-foreground">06 &middot; open source</div> // <H
+#smugglr.dev:src/components/SiteHeader.astro:10:5 div gate=- [layout,wrapsOne,flexRow] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: header.flex.items-center.justify-between
+  kids(1): span
+  src: <div class="flex items-baseline gap-3"> // <span class="font-heading font-semibold text-xl tracking-tight text-foreground">smugglr</span>
+#smugglr.dev:src/components/VoiceHero.astro:37:9 div gate=S [wrapsOne,shellLike] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: Container.items-center.text-center < section.border-b.border-border
+  kids(1): HeroInstallCTA*o
+  src: <div class="w-full max-w-xl"> // <HeroInstallCTA

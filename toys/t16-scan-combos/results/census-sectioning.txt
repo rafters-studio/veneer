@@ -1,0 +1,236 @@
+#gitpress.app:src/pages/index.astro:6:3 main gate=o [noClass] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: Base
+  kids(2): h1 p
+  src: <main> // <h1>GitPress</h1>
+#huttspawn:src/components/nav/SiteFooter.astro:70:11 nav gate=S [noClass] attrs=aria-label txt=0 expr=0 map=1 sysBelow=3
+  up: Container < Grid < Container < Container
+  kids(2): Label*s Ul*s
+  src: <nav aria-label={section.heading}> // <Label variant="secondary">{section.heading}</Label>
+#rafters.studio:src/components/Hero.astro:9:1 section gate=S [noClass,wrapsOne,wrapsOneNoClass] attrs=- txt=0 expr=0 map=0 sysBelow=1
+  up: ROOT
+  kids(1): Container*s
+  src: <section> // <Container size="4xl" padding="16" gap="10">
+#rafters.studio:src/components/Section.astro:14:1 section gate=S [wrapsOne] attrs=id|class:list txt=0 expr=0 map=0 sysBelow=2
+  up: ROOT
+  kids(1): Container*s
+  src: <section id={id} class:list={[tint && "bg-muted"]}> // <Container size="4xl" padding="16" gap="12">
+#rafters.studio:src/components/TopBar.astro:6:1 header gate=S [visual,wrapsOne] attrs=id|style txt=0 expr=0 map=0 sysBelow=3
+  up: ROOT
+  kids(1): Container*s
+  src: <header // id="site-topbar"
+#rafters.studio:src/components/mail/ArchitectureSection.astro:7:1 section gate=S [visual,wrapsOne] attrs=id txt=0 expr=0 map=0 sysBelow=1
+  up: ROOT
+  kids(1): Container*s
+  src: <section id="architecture" class="border-b border-border"> // <Container size="6xl" padding="20">
+#rafters.studio:src/components/mail/ComparisonSection.astro:14:1 section gate=S [visual,wrapsOne] attrs=id txt=0 expr=0 map=0 sysBelow=39
+  up: ROOT
+  kids(1): Container*s
+  src: <section id="compare" class="border-b border-border bg-muted"> // <Container size="6xl" padding="20">
+#rafters.studio:src/components/mail/FaqSection.astro:7:1 section gate=S [visual,wrapsOne] attrs=id txt=0 expr=0 map=0 sysBelow=1
+  up: ROOT
+  kids(1): Container*s
+  src: <section id="faq" class="border-b border-border"> // <Container size="6xl" padding="20">
+#rafters.studio:src/components/mail/Hero.astro:34:1 section gate=S [visual,wrapsOne] attrs=- txt=0 expr=0 map=0 sysBelow=6
+  up: ROOT
+  kids(1): Container*s
+  src: <section class="border-b border-border"> // <Container size="6xl" padding="16" gap="10">
+#rafters.studio:src/components/mail/ModulesSection.astro:11:1 section gate=S [visual,wrapsOne] attrs=id txt=0 expr=0 map=0 sysBelow=41
+  up: ROOT
+  kids(1): Container*s
+  src: <section id="modules" class="border-b border-border bg-muted"> // <Container size="6xl" padding="20">
+#rafters.studio:src/components/mail/OssCallout.astro:14:1 section gate=S [visual,wrapsOne] attrs=id txt=0 expr=0 map=0 sysBelow=8
+  up: ROOT
+  kids(1): Container*s
+  src: <section id="oss" class="border-b border-border"> // <Container size="6xl" padding="20">
+#rafters.studio:src/components/mail/SiteHeader.astro:17:1 header gate=S [visual,wrapsOne] attrs=- txt=0 expr=0 map=0 sysBelow=1
+  up: ROOT
+  kids(1): Container*s
+  src: <header class="sticky top-0 z-50 border-b border-border bg-background"> // <Container size="6xl" padding="4">
+#rafters.studio:src/components/mail/SiteHeader.astro:22:7 nav gate=S [layout,flexRow] attrs=- txt=0 expr=1 map=0 sysBelow=0
+  up: div.flex.items-center.justify-between < Container < header.sticky.top-0.z-50
+  kids(2): a LinkButton*o
+  src: <nav class="flex items-center gap-6"> // {navLinks.map(({ href, label }) => (
+#rafters.studio:src/components/mail/WhyEdgeSection.astro:9:1 section gate=S [visual,wrapsOne] attrs=id txt=0 expr=0 map=0 sysBelow=5
+  up: ROOT
+  kids(1): Container*s
+  src: <section id="why" class="border-b border-border"> // <Container size="6xl" padding="20">
+#rafters.studio:src/layouts/Base.astro:109:9 main gate=o [noClass,wrapsOne,wrapsOneNoClass] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: body.bg-background.text-foreground < html.scroll-smooth
+  kids(1): slot
+  src: <main> // <slot />
+#rafters.studio:src/layouts/MailDocs.astro:72:5 header gate=o [] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: div.docs-shell < Base
+  kids(2): a nav
+  src: <header class="docs-header"> // <a href={base} class="docs-wordmark">Rafters Mail</a>
+#rafters.studio:src/layouts/MailDocs.astro:74:7 nav gate=o [] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: header.docs-header < div.docs-shell < Base
+  kids(2): a a
+  src: <nav class="docs-header-nav"> // <a href={`${base}docs/`}>Docs</a>
+#rafters.studio:src/layouts/MailDocs.astro:81:7 aside gate=o [wrapsOne] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: div.docs-body < div.docs-shell < Base
+  kids(1): nav
+  src: <aside class="docs-sidebar"> // <nav>
+#rafters.studio:src/layouts/MailDocs.astro:82:9 nav gate=o [noClass] attrs=- txt=0 expr=1 map=0 sysBelow=0
+  up: aside.docs-sidebar < div.docs-body < div.docs-shell < Base
+  kids(1): div
+  src: <nav> // {nav.map((group) => (
+#rafters.studio:src/layouts/MailDocs.astro:103:7 main gate=o [wrapsOne] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: div.docs-body < div.docs-shell < Base
+  kids(1): article
+  src: <main class="docs-content"> // <article class="docs-article">
+#rafters.studio:src/layouts/MailDocs.astro:104:9 article gate=o [wrapsOne] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: main.docs-content < div.docs-body < div.docs-shell < Base
+  kids(1): slot
+  src: <article class="docs-article"> // <slot />
+#rafters.studio:src/pages/mail/index.astro:15:3 main gate=o [noClass] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: Base
+  kids(7): Hero*o ArchitectureSection*o ModulesSection*o WhyEdgeSection*o ComparisonSection*o FaqSection*o OssCallout*o
+  src: <main> // <Hero />
+#runlegion.dev:src/components/Hero.astro:9:1 section gate=S [noClass,wrapsOne,wrapsOneNoClass] attrs=- txt=0 expr=0 map=0 sysBelow=1
+  up: ROOT
+  kids(1): Container*s
+  src: <section> // <Container size="4xl" padding="16" gap="10">
+#runlegion.dev:src/components/LegionHero.astro:9:5 header gate=- [] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: div.lh-scene < div.legion-hero
+  kids(3): div h2 p
+  src: <header class="lh-header"> // <div class="lh-eyebrow">Self-Hosted Agent Orchestrator</div>
+#runlegion.dev:src/layouts/Base.astro:126:9 header gate=S [visual,wrapsOne] attrs=id|style txt=0 expr=0 map=0 sysBelow=4
+  up: body.bg-background.text-foreground < html.scroll-smooth
+  kids(1): Container*s
+  src: <header // id="site-header"
+#runlegion.dev:src/layouts/Base.astro:182:9 main gate=S [noClass,wrapsOne,wrapsOneNoClass] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: body.bg-background.text-foreground < html.scroll-smooth
+  kids(1): slot
+  src: <main> // <slot />
+#sean.silvius.me:src/components/Topbar.astro:16:1 header gate=S [wrapsOne] attrs=id|transition:persist txt=0 expr=0 map=0 sysBelow=2
+  up: ROOT
+  kids(1): nav
+  src: <header id="topbar" class="topbar" transition:persist> // <nav class="topbar-nav">
+#sean.silvius.me:src/components/Topbar.astro:17:3 nav gate=S [] attrs=- txt=0 expr=0 map=0 sysBelow=2
+  up: header.topbar
+  kids(3): a div a
+  src: <nav class="topbar-nav"> // <a href="/" class="no-underline topbar-name">
+#sean.silvius.me:src/layouts/Base.astro:74:5 main gate=S [noClass,wrapsOne,wrapsOneNoClass] attrs=transition:animate txt=0 expr=0 map=0 sysBelow=0
+  up: body.bg-background.text-foreground < html
+  kids(1): slot
+  src: <main transition:animate={fade({ duration: '0.15s' })}> // <slot />
+#sean.silvius.me:src/layouts/Base.astro:78:5 footer gate=S [visual,wrapsOne] attrs=- txt=0 expr=0 map=0 sysBelow=9
+  up: body.bg-background.text-foreground < html
+  kids(1): Container*s
+  src: <footer class="bg-primary text-primary-foreground border-t border-border"> // <Container size="7xl">
+#sean.silvius.me:src/pages/index.astro:34:3 section gate=S [visual,wrapsOne] attrs=- txt=0 expr=0 map=0 sysBelow=14
+  up: Base
+  kids(1): Container*s
+  src: <section class="bg-muted"> // <Container size="5xl">
+#sean.silvius.me:src/pages/software/index.astro:64:5 section gate=S [noClass] attrs=- txt=0 expr=1 map=1 sysBelow=12
+  up: Base
+  kids(2): Container*s Separator*s
+  src: <section> // <Container size="5xl">
+#sean.silvius.me:src/pages/stories/[...slug].astro:23:5 nav gate=S [wrapsOne] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: Container < Base
+  kids(1): a
+  src: <nav class="mb-8"> // <a href="/stories/" class="text-sm text-muted-foreground hover:text-foreground transition-colors">
+#sean.silvius.me:src/pages/stories/[...slug].astro:29:5 header gate=S [] attrs=- txt=0 expr=0 map=0 sysBelow=1
+  up: Container < Base
+  kids(2): Typography*s div
+  src: <header class="mb-10"> // <Typography as="h1" variant="h1">{story.data.title}</Typography>
+#smugglr.dev:src/components/Hero.astro:9:1 section gate=S [noClass,wrapsOne,wrapsOneNoClass] attrs=- txt=0 expr=0 map=0 sysBelow=1
+  up: ROOT
+  kids(1): Container*s
+  src: <section> // <Container size="4xl" padding="16" gap="10">
+#smugglr.dev:src/components/MrsBlock.astro:99:1 section gate=S [visual,wrapsOne] attrs=- txt=0 expr=0 map=0 sysBelow=6
+  up: ROOT
+  kids(1): Container*s
+  src: <section class="bg-foreground text-background"> // <Container size="5xl" padding="20" gap="12">
+#smugglr.dev:src/components/MrsBlock.astro:111:5 section gate=S [noClass] attrs=- txt=0 expr=0 map=0 sysBelow=1
+  up: Container < section.bg-foreground.text-background
+  kids(2): MrsSectionHeader*o P*s
+  src: <section> // <MrsSectionHeader hash="## 01" label="scope" syn="one paragraph" />
+#smugglr.dev:src/components/MrsBlock.astro:116:5 section gate=S [noClass] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: Container < section.bg-foreground.text-background
+  kids(2): MrsSectionHeader*o MrsTable*o
+  src: <section> // <MrsSectionHeader hash="## 02" label="install" syn="same algorithm · same adapters · same verbs" />
+#smugglr.dev:src/components/MrsBlock.astro:121:5 section gate=S [noClass] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: Container < section.bg-foreground.text-background
+  kids(2): MrsSectionHeader*o MrsTable*o
+  src: <section> // <MrsSectionHeader hash="## 03" label="targets" syn="one HTTP SQL plugin · per-target profiles" />
+#smugglr.dev:src/components/MrsBlock.astro:126:5 section gate=S [noClass] attrs=id txt=0 expr=0 map=0 sysBelow=1
+  up: Container < section.bg-foreground.text-background
+  kids(3): MrsSectionHeader*o MrsTable*o div
+  src: <section id="shapes"> // <MrsSectionHeader hash="## 04" label="shapes" syn="one engine · five topologies" />
+#smugglr.dev:src/components/MrsBlock.astro:131:13 header gate=S [wrapsOne] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: div.mt-8.border-l-2.border-primary < section < Container < section.bg-foreground.text-background
+  kids(1): span
+  src: <header class="mb-4"> // <span class="font-heading font-medium text-xs uppercase tracking-wider">LAN broadcast semantics</span>
+#smugglr.dev:src/components/MrsBlock.astro:148:5 section gate=S [noClass] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: Container < section.bg-foreground.text-background
+  kids(2): MrsSectionHeader*o MrsTable*o
+  src: <section> // <MrsSectionHeader hash="## 05" label="commands" syn="typed exit codes on every command" />
+#smugglr.dev:src/components/MrsBlock.astro:154:9 section gate=S [noClass] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: Grid < Container < section.bg-foreground.text-background
+  kids(2): MrsSectionHeader*o MrsTable*o
+  src: <section> // <MrsSectionHeader hash="## 06" label="exit codes" />
+#smugglr.dev:src/components/MrsBlock.astro:159:9 section gate=S [noClass] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: Grid < Container < section.bg-foreground.text-background
+  kids(2): MrsSectionHeader*o MrsTable*o
+  src: <section> // <MrsSectionHeader hash="## 07" label="output contract" />
+#smugglr.dev:src/components/MrsBlock.astro:165:5 section gate=S [noClass] attrs=- txt=0 expr=0 map=0 sysBelow=1
+  up: Container < section.bg-foreground.text-background
+  kids(2): MrsSectionHeader*o Grid*s
+  src: <section> // <MrsSectionHeader hash="## 08" label="constraints" syn="what smugglr refuses to do" />
+#smugglr.dev:src/components/MrsBlock.astro:177:5 section gate=S [noClass] attrs=- txt=0 expr=0 map=0 sysBelow=1
+  up: Container < section.bg-foreground.text-background
+  kids(3): MrsSectionHeader*o MrsTable*o P*s
+  src: <section> // <MrsSectionHeader hash="## 09" label="vs alternatives" syn="specific, falsifiable comparisons" />
+#smugglr.dev:src/components/MrsSectionHeader.astro:16:1 header gate=S [layout,visual,flexRow] attrs=- txt=0 expr=1 map=0 sysBelow=1
+  up: ROOT
+  kids(3): span H2*s span
+  src: <header class="flex items-baseline gap-4 pb-2.5 mb-4 border-b border-border/50"> // <span class="font-mono text-sm font-medium text-primary">{hash}</span>
+#smugglr.dev:src/components/NarrativeSections.astro:25:9 section gate=S [noClass] attrs=- txt=0 expr=0 map=0 sysBelow=6
+  up: Container < div.bg-background
+  kids(7): div H2*s P*s Codeblock*s Codeblock*s Codeblock*s P*s
+  src: <section> // <div class="font-heading font-medium text-sm uppercase tracking-widest text-muted-foreground mb-3.5 pt-3.5 border-t border-foreground">01 &middot; show it ru
+#smugglr.dev:src/components/NarrativeSections.astro:54:9 section gate=S [noClass] attrs=id txt=0 expr=0 map=0 sysBelow=11
+  up: Container < div.bg-background
+  kids(10): div H2*s P*s Codeblock*s P*s Codeblock*s P*s Codeblock*s
+  src: <section id="targets"> // <div class="font-heading font-medium text-sm uppercase tracking-widest text-muted-foreground mb-3.5 pt-3.5 border-t border-foreground">02 &middo
+#smugglr.dev:src/components/NarrativeSections.astro:88:9 section gate=S [noClass] attrs=- txt=0 expr=0 map=0 sysBelow=5
+  up: Container < div.bg-background
+  kids(3): div H2*s P*s
+  src: <section> // <div class="font-heading font-medium text-sm uppercase tracking-widest text-muted-foreground mb-3.5 pt-3.5 border-t border-foreground">03 &middot; how it shi
+#smugglr.dev:src/components/NarrativeSections.astro:94:9 section gate=S [noClass] attrs=- txt=0 expr=0 map=0 sysBelow=18
+  up: Container < div.bg-background
+  kids(3): div H2*s Grid*s
+  src: <section> // <div class="font-heading font-medium text-sm uppercase tracking-widest text-muted-foreground mb-3.5 pt-3.5 border-t border-foreground">04 &middot; learn</div
+#smugglr.dev:src/components/NarrativeSections.astro:133:9 section gate=S [noClass] attrs=- txt=0 expr=0 map=0 sysBelow=11
+  up: Container < div.bg-background
+  kids(4): div H2*s P*s Grid*s
+  src: <section> // <div class="font-heading font-medium text-sm uppercase tracking-widest text-muted-foreground mb-3.5 pt-3.5 border-t border-foreground">05 &middot; compare</d
+#smugglr.dev:src/components/NarrativeSections.astro:157:9 section gate=S [noClass] attrs=- txt=0 expr=0 map=0 sysBelow=2
+  up: Container < div.bg-background
+  kids(3): div H2*s P*s
+  src: <section> // <div class="font-heading font-medium text-sm uppercase tracking-widest text-muted-foreground mb-3.5 pt-3.5 border-t border-foreground">06 &middot; open sourc
+#smugglr.dev:src/components/Section.astro:14:1 section gate=S [wrapsOne] attrs=id|class:list txt=0 expr=0 map=0 sysBelow=2
+  up: ROOT
+  kids(1): Container*s
+  src: <section id={id} class:list={[tint && "bg-muted"]}> // <Container size="4xl" padding="16" gap="12">
+#smugglr.dev:src/components/SiteHeader.astro:9:1 header gate=- [layout,visual,flexRow] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: ROOT
+  kids(2): div nav
+  src: <header class="flex items-center justify-between border-b border-border px-10 py-5 font-heading"> // <div class="flex items-baseline gap-3">
+#smugglr.dev:src/components/SiteHeader.astro:13:5 nav gate=- [layout,visual,flexRow] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: header.flex.items-center.justify-between
+  kids(7): a a a a a a a
+  src: <nav class="flex items-center gap-7 font-sans text-sm text-muted-foreground"> // <a href="/docs/" class="hover:text-foreground transition-colors">docs</a>
+#smugglr.dev:src/components/TopBar.astro:6:1 header gate=S [visual,wrapsOne] attrs=id|style txt=0 expr=0 map=0 sysBelow=3
+  up: ROOT
+  kids(1): Container*s
+  src: <header // id="site-topbar"
+#smugglr.dev:src/components/VoiceHero.astro:17:1 section gate=S [visual,wrapsOne] attrs=- txt=0 expr=0 map=0 sysBelow=5
+  up: ROOT
+  kids(1): Container*s
+  src: <section class="border-b border-border"> // <Container size="5xl" padding="20" gap="10" class="items-center text-center">
+#smugglr.dev:src/layouts/Base.astro:158:9 main gate=o [noClass,wrapsOne,wrapsOneNoClass] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: body.bg-background.text-foreground < html.scroll-smooth
+  kids(1): slot
+  src: <main> // <slot />

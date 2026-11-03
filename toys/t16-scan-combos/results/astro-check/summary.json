@@ -1,0 +1,114 @@
+{
+ "gitpress.app": {
+  "exit": 0,
+  "ms": 1710,
+  "astro": {
+   "files": 4,
+   "errors": 0,
+   "warnings": 0,
+   "hints": 0
+  },
+  "astroErrorsParsed": [],
+  "astroAstroTsx": 0,
+  "veneerRaw": 0,
+  "veneerRawErrors": [],
+  "veneerRafters": [],
+  "onlyAstro": [],
+  "onlyVeneer": []
+ },
+ "huttspawn": {
+  "exit": 1,
+  "ms": 2106,
+  "astro": "no result line",
+  "astroErrorsParsed": [],
+  "astroAstroTsx": 0,
+  "veneerRaw": 4,
+  "veneerRawErrors": [
+   "src/components/ui/context-menu-sub.astro:20:ts(2307)",
+   "src/components/ui/context-menu.astro:49:ts(2307)",
+   "src/pages/lab/surfaces.astro:37:ts(2322)",
+   "src/pages/lab/surfaces.astro:36:ts(2322)"
+  ],
+  "veneerRafters": [
+   "src/pages/lab/surfaces.astro:36:ts(2322)",
+   "src/pages/lab/surfaces.astro:37:ts(2322)"
+  ],
+  "onlyAstro": [],
+  "onlyVeneer": [
+   "src/components/ui/context-menu-sub.astro:20:ts(2307)",
+   "src/components/ui/context-menu.astro:49:ts(2307)",
+   "src/pages/lab/surfaces.astro:37:ts(2322)",
+   "src/pages/lab/surfaces.astro:36:ts(2322)"
+  ]
+ },
+ "rafters.studio": {
+  "exit": 0,
+  "ms": 3063,
+  "astro": {
+   "files": 89,
+   "errors": 0,
+   "warnings": 0,
+   "hints": 2
+  },
+  "astroErrorsParsed": [],
+  "astroAstroTsx": 2,
+  "veneerRaw": 2,
+  "veneerRawErrors": [],
+  "veneerRafters": [],
+  "onlyAstro": [],
+  "onlyVeneer": []
+ },
+ "runlegion.dev": {
+  "exit": 0,
+  "ms": 2608,
+  "astro": {
+   "files": 61,
+   "errors": 0,
+   "warnings": 0,
+   "hints": 5
+  },
+  "astroErrorsParsed": [],
+  "astroAstroTsx": 5,
+  "veneerRaw": 5,
+  "veneerRawErrors": [],
+  "veneerRafters": [
+   "src/components/Section.astro:14:ts(6385)"
+  ],
+  "onlyAstro": [],
+  "onlyVeneer": []
+ },
+ "sean.silvius.me": {
+  "exit": 0,
+  "ms": 4461,
+  "astro": {
+   "files": 48,
+   "errors": 0,
+   "warnings": 0,
+   "hints": 39
+  },
+  "astroErrorsParsed": [],
+  "astroAstroTsx": 2,
+  "veneerRaw": 2,
+  "veneerRawErrors": [],
+  "veneerRafters": [],
+  "onlyAstro": [],
+  "onlyVeneer": []
+ },
+ "smugglr.dev": {
+  "exit": 0,
+  "ms": 2946,
+  "astro": {
+   "files": 80,
+   "errors": 0,
+   "warnings": 0,
+   "hints": 15
+  },
+  "astroErrorsParsed": [],
+  "astroAstroTsx": 2,
+  "veneerRaw": 2,
+  "veneerRawErrors": [],
+  "veneerRafters": [],
+  "onlyAstro": [],
+  "onlyVeneer": []
+ }
+}

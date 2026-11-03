@@ -1,0 +1,3777 @@
+{
+ "site": "huttspawn",
+ "timing": {
+  "openMs": 2020,
+  "rawDiagnosticsMs": 956,
+  "lintMs": 37,
+  "walkMs": 37
+ },
+ "rootFiles": 134,
+ "componentFolders": [
+  "src/components/ui"
+ ],
+ "files": [
+  {
+   "file": "src/components/Shape.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/Shape.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 2,
+    "union": [
+     "cognitive-load",
+     "accessibility"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/hs-card.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/hs-card.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 18
+  },
+  {
+   "file": "src/components/hs-facts.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/hs-facts.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 3
+  },
+  {
+   "file": "src/components/hs-header.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/hs-header.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 30
+  },
+  {
+   "file": "src/components/hs-hero.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/hs-hero.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 9
+  },
+  {
+   "file": "src/components/hs-milestone.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/hs-milestone.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 16
+  },
+  {
+   "file": "src/components/hs-mirror-card.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/hs-mirror-card.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 18
+  },
+  {
+   "file": "src/components/hs-panel.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/hs-panel.astro",
+    "behavior": false,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/hs-portrait-grid.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/hs-portrait-grid.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 7
+  },
+  {
+   "file": "src/components/hs-timeline.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/hs-timeline.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 3
+  },
+  {
+   "file": "src/components/hs-topbar.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/hs-topbar.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 11
+  },
+  {
+   "file": "src/components/hs-wire.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/hs-wire.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 11
+  },
+  {
+   "file": "src/components/site-logo.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/site-logo.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 4
+  },
+  {
+   "file": "src/components/mdx/Pending.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/mdx/Pending.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/nav/SiteFooter.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/nav/SiteFooter.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 16
+  },
+  {
+   "file": "src/components/timeline/Milestone.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/timeline/Milestone.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 5
+  },
+  {
+   "file": "src/components/timeline/OriginPortraitGrid.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/timeline/OriginPortraitGrid.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/timeline/Timeline.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/timeline/Timeline.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/accordion.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/accordion.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 9
+  },
+  {
+   "file": "src/components/ui/alert-action.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/alert-action.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/alert-description.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/alert-description.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/alert-dialog.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/alert-dialog.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 16
+  },
+  {
+   "file": "src/components/ui/alert-title.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/alert-title.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/alert.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/alert.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 8
+  },
+  {
+   "file": "src/components/ui/area-chart.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/area-chart.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 12
+  },
+  {
+   "file": "src/components/ui/area.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/area.astro",
+    "behavior": true,
+    "classes": false,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/ui/aspect-ratio.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/aspect-ratio.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/avatar.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/avatar.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 4
+  },
+  {
+   "file": "src/components/ui/badge.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/badge.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 6
+  },
+  {
+   "file": "src/components/ui/bar-chart.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/bar-chart.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 12
+  },
+  {
+   "file": "src/components/ui/bar.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/bar.astro",
+    "behavior": true,
+    "classes": false,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/ui/breadcrumb-link.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/breadcrumb-link.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 6
+  },
+  {
+   "file": "src/components/ui/breadcrumb-page.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/breadcrumb-page.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 6
+  },
+  {
+   "file": "src/components/ui/breadcrumb.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/breadcrumb.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/button-group.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/button-group.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/button.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/button.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 10
+  },
+  {
+   "file": "src/components/ui/calendar.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/calendar.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 16
+  },
+  {
+   "file": "src/components/ui/card-action.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/card-action.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/card-content.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/card-content.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/card-footer.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/card-footer.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/card-header.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/card-header.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/card-title.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/card-title.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/card.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/card.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 14
+  },
+  {
+   "file": "src/components/ui/carousel.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/carousel.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 13
+  },
+  {
+   "file": "src/components/ui/cartesian-grid.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/cartesian-grid.astro",
+    "behavior": true,
+    "classes": false,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/ui/chart-legend.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/chart-legend.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 6
+  },
+  {
+   "file": "src/components/ui/chart-tooltip.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/chart-tooltip.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 3
+  },
+  {
+   "file": "src/components/ui/chart.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/chart.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 4
+  },
+  {
+   "file": "src/components/ui/checkbox.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/checkbox.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 8
+  },
+  {
+   "file": "src/components/ui/collapsible.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/collapsible.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 6
+  },
+  {
+   "file": "src/components/ui/color-picker.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/color-picker.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 15
+  },
+  {
+   "file": "src/components/ui/combobox.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/combobox.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 15
+  },
+  {
+   "file": "src/components/ui/command.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/command.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 13
+  },
+  {
+   "file": "src/components/ui/container.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/container.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/context-menu-sub.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/context-menu-sub.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 11
+  },
+  {
+   "file": "src/components/ui/context-menu.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/context-menu.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 11
+  },
+  {
+   "file": "src/components/ui/date-picker.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/date-picker.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 16
+  },
+  {
+   "file": "src/components/ui/dialog.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/dialog.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 12
+  },
+  {
+   "file": "src/components/ui/drawer.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/drawer.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 12
+  },
+  {
+   "file": "src/components/ui/dropdown-menu.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/dropdown-menu.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 7
+  },
+  {
+   "file": "src/components/ui/embed.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/embed.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 5
+  },
+  {
+   "file": "src/components/ui/empty.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/empty.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 10
+  },
+  {
+   "file": "src/components/ui/field.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/field.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 7
+  },
+  {
+   "file": "src/components/ui/grid.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/grid.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 5
+  },
+  {
+   "file": "src/components/ui/hover-card.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/hover-card.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 6
+  },
+  {
+   "file": "src/components/ui/image.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/image.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 6
+  },
+  {
+   "file": "src/components/ui/input-group.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/input-group.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 7
+  },
+  {
+   "file": "src/components/ui/input-otp.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/input-otp.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 9
+  },
+  {
+   "file": "src/components/ui/input.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/input.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 10
+  },
+  {
+   "file": "src/components/ui/item.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/item.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 7
+  },
+  {
+   "file": "src/components/ui/kbd.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/kbd.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/label.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/label.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/line-chart.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/line-chart.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 12
+  },
+  {
+   "file": "src/components/ui/line.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/line.astro",
+    "behavior": true,
+    "classes": false,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/ui/menubar.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/menubar.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 9
+  },
+  {
+   "file": "src/components/ui/navigation-menu.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/navigation-menu.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 11
+  },
+  {
+   "file": "src/components/ui/pagination.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/pagination.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/popover.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/popover.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 8
+  },
+  {
+   "file": "src/components/ui/progress.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/progress.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 3
+  },
+  {
+   "file": "src/components/ui/radio-group.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/radio-group.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 4
+  },
+  {
+   "file": "src/components/ui/resizable.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/resizable.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 10
+  },
+  {
+   "file": "src/components/ui/scroll-area.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/scroll-area.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/select.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/select.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 18
+  },
+  {
+   "file": "src/components/ui/separator.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/separator.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/ui/sheet.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/sheet.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 11
+  },
+  {
+   "file": "src/components/ui/sidebar-content.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/sidebar-content.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/sidebar-footer.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/sidebar-footer.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/sidebar-group-action.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/sidebar-group-action.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/sidebar-group-content.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/sidebar-group-content.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/sidebar-group-label.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/sidebar-group-label.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/sidebar-group.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/sidebar-group.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/sidebar-header.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/sidebar-header.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/sidebar-inset.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/sidebar-inset.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/sidebar-menu-action.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/sidebar-menu-action.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/sidebar-menu-badge.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/sidebar-menu-badge.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/sidebar-menu-button.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/sidebar-menu-button.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/ui/sidebar-menu-item.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/sidebar-menu-item.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/sidebar-menu-skeleton.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/sidebar-menu-skeleton.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 3
+  },
+  {
+   "file": "src/components/ui/sidebar-menu-sub-button.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/sidebar-menu-sub-button.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/ui/sidebar-menu-sub-item.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/sidebar-menu-sub-item.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/sidebar-menu-sub.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/sidebar-menu-sub.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/sidebar-menu.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/sidebar-menu.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/sidebar-rail.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/sidebar-rail.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/ui/sidebar-separator.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/sidebar-separator.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/ui/sidebar-trigger.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/sidebar-trigger.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 6
+  },
+  {
+   "file": "src/components/ui/sidebar.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/sidebar.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 8
+  },
+  {
+   "file": "src/components/ui/skeleton.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/skeleton.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/ui/slider.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/slider.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 6
+  },
+  {
+   "file": "src/components/ui/spinner.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/spinner.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/ui/switch.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/switch.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 3
+  },
+  {
+   "file": "src/components/ui/table.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/table.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 3
+  },
+  {
+   "file": "src/components/ui/tabs.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/tabs.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 7
+  },
+  {
+   "file": "src/components/ui/textarea.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/textarea.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 3
+  },
+  {
+   "file": "src/components/ui/toggle-group.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/toggle-group.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 5
+  },
+  {
+   "file": "src/components/ui/toggle.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/toggle.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 8
+  },
+  {
+   "file": "src/components/ui/tooltip.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/tooltip.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 5
+  },
+  {
+   "file": "src/components/ui/typography.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/typography.astro",
+    "behavior": true,
+    "classes": true,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/x-axis.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/x-axis.astro",
+    "behavior": true,
+    "classes": false,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/ui/y-axis.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/y-axis.astro",
+    "behavior": true,
+    "classes": false,
+    "bestBlock": 6,
+    "union": [
+     "cognitive-load",
+     "attention-economics",
+     "trust-building",
+     "accessibility",
+     "semantic-meaning",
+     "usage-patterns"
+    ]
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/layouts/Base.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/layouts/Base.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 13
+  },
+  {
+   "file": "src/layouts/Guide.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/layouts/Guide.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 5
+  },
+  {
+   "file": "src/pages/index.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/index.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 6
+  },
+  {
+   "file": "src/pages/[collection]/[...slug].astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/[collection]/[...slug].astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/pages/companions/index.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/companions/index.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 25
+  },
+  {
+   "file": "src/pages/disciplines/index.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/disciplines/index.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 18
+  },
+  {
+   "file": "src/pages/explainers/index.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/explainers/index.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 15
+  },
+  {
+   "file": "src/pages/lab/cards.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/lab/cards.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 42
+  },
+  {
+   "file": "src/pages/lab/headers.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/lab/headers.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 26
+  },
+  {
+   "file": "src/pages/lab/mirror-card.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/lab/mirror-card.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 6
+  },
+  {
+   "file": "src/pages/lab/shapes.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/lab/shapes.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 10
+  },
+  {
+   "file": "src/pages/lab/surfaces.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/lab/surfaces.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 15
+  },
+  {
+   "file": "src/pages/lab/timeline.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/lab/timeline.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 28
+  },
+  {
+   "file": "src/pages/news/index.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/news/index.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 19
+  },
+  {
+   "file": "src/pages/origins/index.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/origins/index.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 24
+  }
+ ],
+ "shapes": [
+  {
+   "file": "src/components/hs-header.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/typography.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/hs-card.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/badge.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/site-logo.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/sheet.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/container.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/grid.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/label.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/separator.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/hs-milestone.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/hs-portrait-grid.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/hs-timeline.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/card-title.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/card.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/calendar.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/input.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/hs-topbar.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/nav/SiteFooter.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/layouts/Base.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/hs-panel.astro",
+   "behavior": false,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/hs-hero.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/layouts/Guide.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/toggle-group.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/hs-facts.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/hs-mirror-card.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/Shape.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 2,
+   "union": [
+    "cognitive-load",
+    "accessibility"
+   ]
+  },
+  {
+   "file": "src/components/ui/card-header.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/card-content.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/button.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/hs-wire.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/mdx/Pending.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/timeline/Milestone.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/timeline/OriginPortraitGrid.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/timeline/Timeline.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/accordion.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/alert-action.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/alert-description.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/alert-dialog.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/alert-title.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/alert.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/area-chart.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/area.astro",
+   "behavior": true,
+   "classes": false,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/aspect-ratio.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/avatar.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/bar-chart.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/bar.astro",
+   "behavior": true,
+   "classes": false,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/breadcrumb-link.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/breadcrumb-page.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/breadcrumb.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/button-group.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/card-action.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/card-footer.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/carousel.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/cartesian-grid.astro",
+   "behavior": true,
+   "classes": false,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/chart-legend.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/chart-tooltip.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/chart.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/checkbox.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/collapsible.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/color-picker.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/combobox.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/command.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/context-menu-sub.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/context-menu.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/date-picker.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/dialog.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/drawer.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/dropdown-menu.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/embed.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/empty.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/field.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/hover-card.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/image.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/input-group.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/input-otp.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/item.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/kbd.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/line-chart.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/line.astro",
+   "behavior": true,
+   "classes": false,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/menubar.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/navigation-menu.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/pagination.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/popover.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/progress.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/radio-group.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/resizable.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/scroll-area.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/select.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/sidebar-content.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/sidebar-footer.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/sidebar-group-action.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/sidebar-group-content.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/sidebar-group-label.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/sidebar-group.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/sidebar-header.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/sidebar-inset.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/sidebar-menu-action.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/sidebar-menu-badge.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/sidebar-menu-button.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/sidebar-menu-item.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/sidebar-menu-skeleton.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/sidebar-menu-sub-button.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/sidebar-menu-sub-item.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/sidebar-menu-sub.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/sidebar-menu.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/sidebar-rail.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/sidebar-separator.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/sidebar-trigger.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/sidebar.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/skeleton.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/slider.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/spinner.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/switch.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/table.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/tabs.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/textarea.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/toggle.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/tooltip.astro",
+   "behavior": true,
+   "classes": true,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/x-axis.astro",
+   "behavior": true,
+   "classes": false,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/components/ui/y-axis.astro",
+   "behavior": true,
+   "classes": false,
+   "bestBlock": 6,
+   "union": [
+    "cognitive-load",
+    "attention-economics",
+    "trust-building",
+    "accessibility",
+    "semantic-meaning",
+    "usage-patterns"
+   ]
+  },
+  {
+   "file": "src/pages/index.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/[collection]/[...slug].astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/companions/index.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/disciplines/index.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/explainers/index.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/lab/cards.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/lab/headers.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/lab/mirror-card.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/lab/shapes.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/lab/surfaces.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/lab/timeline.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/news/index.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/origins/index.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  }
+ ],
+ "baseline": [
+  {
+   "file": "src/pages/lab/surfaces.astro",
+   "line": 36,
+   "column": 12,
+   "code": "ts(2322)",
+   "severity": "error",
+   "message": "Type '{ children: string; }' is not assignable to type 'IntrinsicAttributes & Props'.\n  Property 'id' is missing in type '{ children: string; }' but required in type 'Props'.",
+   "help": "id, variant, fill, surface, size, type, toggle, defaultPressed, disabled, softDisabled, loading, loadingAnnouncement, label, aria-label"
+  },
+  {
+   "file": "src/pages/lab/surfaces.astro",
+   "line": 37,
+   "column": 12,
+   "code": "ts(2322)",
+   "severity": "error",
+   "message": "Type '{ children: string; variant: \"outline\"; }' is not assignable to type 'IntrinsicAttributes & Props'.\n  Property 'id' is missing in type '{ children: string; variant: \"outline\"; }' but required in type 'Props'.",
+   "help": "id, variant, fill, surface, size, type, toggle, defaultPressed, disabled, softDisabled, loading, loadingAnnouncement, label, aria-label"
+  }
+ ],
+ "raw": [
+  {
+   "file": "src/components/ui/context-menu-sub.astro",
+   "line": 20,
+   "column": 28,
+   "code": "ts(2307)",
+   "severity": "error",
+   "message": "Cannot find module '@/components/ui/context-menu-sub/context-menu-sub.astro' or its corresponding type declarations.",
+   "kind": "none"
+  },
+  {
+   "file": "src/components/ui/context-menu.astro",
+   "line": 49,
+   "column": 28,
+   "code": "ts(2307)",
+   "severity": "error",
+   "message": "Cannot find module '@/components/ui/context-menu/context-menu-sub.astro' or its corresponding type declarations.",
+   "kind": "none"
+  },
+  {
+   "file": "src/pages/lab/surfaces.astro",
+   "line": 37,
+   "column": 12,
+   "code": "ts(2322)",
+   "severity": "error",
+   "message": "Type '{ children: string; variant: \"outline\"; }' is not assignable to type 'IntrinsicAttributes & Props'.",
+   "kind": "system",
+   "declaredIn": "src/components/ui/button.astro"
+  },
+  {
+   "file": "src/pages/lab/surfaces.astro",
+   "line": 36,
+   "column": 12,
+   "code": "ts(2322)",
+   "severity": "error",
+   "message": "Type '{ children: string; }' is not assignable to type 'IntrinsicAttributes & Props'.",
+   "kind": "system",
+   "declaredIn": "src/components/ui/button.astro"
+  }
+ ]
+}

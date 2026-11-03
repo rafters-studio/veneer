@@ -1,0 +1,55 @@
+{
+ "site": "gitpress.app",
+ "timing": {
+  "openMs": 1048,
+  "rawDiagnosticsMs": 71,
+  "lintMs": 1,
+  "walkMs": 4
+ },
+ "rootFiles": 2,
+ "componentFolders": [],
+ "files": [
+  {
+   "file": "src/layouts/Base.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/layouts/Base.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 10
+  },
+  {
+   "file": "src/pages/index.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/index.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 4
+  }
+ ],
+ "shapes": [
+  {
+   "file": "src/layouts/Base.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/index.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  }
+ ],
+ "baseline": [],
+ "raw": []
+}

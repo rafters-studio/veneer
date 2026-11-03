@@ -1,0 +1,1192 @@
+{
+ "site": "smugglr.dev",
+ "timing": {
+  "openMs": 939,
+  "rawDiagnosticsMs": 293,
+  "lintMs": 24,
+  "walkMs": 25
+ },
+ "rootFiles": 55,
+ "componentFolders": [
+  "src/components/ui"
+ ],
+ "files": [
+  {
+   "file": "src/components/FeatureBlock.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/FeatureBlock.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 3
+  },
+  {
+   "file": "src/components/Hero.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/Hero.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 8
+  },
+  {
+   "file": "src/components/HeroInstallCTA.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/HeroInstallCTA.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 8
+  },
+  {
+   "file": "src/components/HeroTopology.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/HeroTopology.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 88
+  },
+  {
+   "file": "src/components/InkBlock.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/InkBlock.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/MegaFooter.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/MegaFooter.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/MrsBlock.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/MrsBlock.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 52
+  },
+  {
+   "file": "src/components/MrsSectionHeader.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/MrsSectionHeader.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 4
+  },
+  {
+   "file": "src/components/MrsTable.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/MrsTable.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 7
+  },
+  {
+   "file": "src/components/NarrativeSections.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/NarrativeSections.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 81
+  },
+  {
+   "file": "src/components/Section.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/Section.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 4
+  },
+  {
+   "file": "src/components/SiteHeader.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/SiteHeader.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 11
+  },
+  {
+   "file": "src/components/TopBar.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/TopBar.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 9
+  },
+  {
+   "file": "src/components/VoiceHero.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/components/VoiceHero.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 10
+  },
+  {
+   "file": "src/components/ui/button.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/button.astro",
+    "behavior": false,
+    "classes": true,
+    "bestBlock": 2,
+    "union": [
+     "cognitive-load",
+     "accessibility"
+    ]
+   },
+   "elements": 3
+  },
+  {
+   "file": "src/components/ui/card-action.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/card-action.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/card-content.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/card-content.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/card-description.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/card-description.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/card-footer.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/card-footer.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/card-header.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/card-header.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/card-title.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/card-title.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/card.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/card.astro",
+    "behavior": false,
+    "classes": true,
+    "bestBlock": 2,
+    "union": [
+     "cognitive-load",
+     "accessibility"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/container.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/container.astro",
+    "behavior": false,
+    "classes": true,
+    "bestBlock": 2,
+    "union": [
+     "cognitive-load",
+     "accessibility"
+    ]
+   },
+   "elements": 10
+  },
+  {
+   "file": "src/components/ui/grid-item.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/grid-item.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/grid.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/grid.astro",
+    "behavior": false,
+    "classes": true,
+    "bestBlock": 2,
+    "union": [
+     "cognitive-load",
+     "accessibility"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/input.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/input.astro",
+    "behavior": false,
+    "classes": true,
+    "bestBlock": 1,
+    "union": [
+     "cognitive-load"
+    ]
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/ui/item.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/item.astro",
+    "behavior": false,
+    "classes": true,
+    "bestBlock": 2,
+    "union": [
+     "cognitive-load",
+     "accessibility"
+    ]
+   },
+   "elements": 7
+  },
+  {
+   "file": "src/components/ui/separator.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/separator.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 2,
+    "union": [
+     "cognitive-load",
+     "accessibility"
+    ]
+   },
+   "elements": 1
+  },
+  {
+   "file": "src/components/ui/table-body.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/table-body.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/table-caption.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/table-caption.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/table-cell.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/table-cell.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/table-footer.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/table-footer.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/table-head.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/table-head.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/table-header.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/table-header.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/table-row.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/table-row.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/table.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/table.astro",
+    "behavior": false,
+    "classes": true,
+    "bestBlock": 2,
+    "union": [
+     "cognitive-load",
+     "accessibility"
+    ]
+   },
+   "elements": 3
+  },
+  {
+   "file": "src/components/ui/typography-abbr.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/typography-abbr.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 1,
+    "union": [
+     "cognitive-load"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/typography-blockquote.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/typography-blockquote.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 1,
+    "union": [
+     "cognitive-load"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/typography-code.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/typography-code.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 1,
+    "union": [
+     "cognitive-load"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/typography-codeblock.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/typography-codeblock.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 1,
+    "union": [
+     "cognitive-load"
+    ]
+   },
+   "elements": 3
+  },
+  {
+   "file": "src/components/ui/typography-h1.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/typography-h1.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 1,
+    "union": [
+     "cognitive-load"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/typography-h2.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/typography-h2.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 1,
+    "union": [
+     "cognitive-load"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/typography-h3.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/typography-h3.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 1,
+    "union": [
+     "cognitive-load"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/typography-h4.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/typography-h4.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 1,
+    "union": [
+     "cognitive-load"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/typography-h5.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/typography-h5.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 1,
+    "union": [
+     "cognitive-load"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/typography-h6.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/typography-h6.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 1,
+    "union": [
+     "cognitive-load"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/typography-mark.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/typography-mark.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 1,
+    "union": [
+     "cognitive-load"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/typography-p.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/typography-p.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 1,
+    "union": [
+     "cognitive-load"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/typography-small.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/typography-small.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 1,
+    "union": [
+     "cognitive-load"
+    ]
+   },
+   "elements": 2
+  },
+  {
+   "file": "src/components/ui/typography.astro",
+   "underSystem": true,
+   "shape": {
+    "file": "src/components/ui/typography.astro",
+    "behavior": false,
+    "classes": true,
+    "bestBlock": 1,
+    "union": [
+     "cognitive-load"
+    ]
+   },
+   "elements": 24
+  },
+  {
+   "file": "src/layouts/Base.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/layouts/Base.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 35
+  },
+  {
+   "file": "src/layouts/Docs.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/layouts/Docs.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 17
+  },
+  {
+   "file": "src/pages/agent/[...slug].astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/agent/[...slug].astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 10
+  },
+  {
+   "file": "src/pages/agent/index.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/agent/index.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 20
+  },
+  {
+   "file": "src/pages/docs/index.astro",
+   "underSystem": false,
+   "shape": {
+    "file": "src/pages/docs/index.astro",
+    "behavior": false,
+    "classes": false,
+    "bestBlock": 0,
+    "union": []
+   },
+   "elements": 25
+  }
+ ],
+ "shapes": [
+  {
+   "file": "src/components/ui/container.astro",
+   "behavior": false,
+   "classes": true,
+   "bestBlock": 2,
+   "union": [
+    "cognitive-load",
+    "accessibility"
+   ]
+  },
+  {
+   "file": "src/components/ui/typography-h3.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 1,
+   "union": [
+    "cognitive-load"
+   ]
+  },
+  {
+   "file": "../../../../../../../projects/rafters-studio/shingle/packages/shared/src/MegaFooter.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/MrsSectionHeader.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/typography-p.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 1,
+   "union": [
+    "cognitive-load"
+   ]
+  },
+  {
+   "file": "src/components/MrsTable.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/InkBlock.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/grid.astro",
+   "behavior": false,
+   "classes": true,
+   "bestBlock": 2,
+   "union": [
+    "cognitive-load",
+    "accessibility"
+   ]
+  },
+  {
+   "file": "src/components/ui/typography-h2.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 1,
+   "union": [
+    "cognitive-load"
+   ]
+  },
+  {
+   "file": "src/components/ui/typography-codeblock.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 1,
+   "union": [
+    "cognitive-load"
+   ]
+  },
+  {
+   "file": "src/components/ui/typography-code.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 1,
+   "union": [
+    "cognitive-load"
+   ]
+  },
+  {
+   "file": "src/components/ui/card.astro",
+   "behavior": false,
+   "classes": true,
+   "bestBlock": 2,
+   "union": [
+    "cognitive-load",
+    "accessibility"
+   ]
+  },
+  {
+   "file": "src/components/ui/card-header.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/card-title.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/card-description.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/typography-small.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 1,
+   "union": [
+    "cognitive-load"
+   ]
+  },
+  {
+   "file": "src/components/ui/typography-h1.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 1,
+   "union": [
+    "cognitive-load"
+   ]
+  },
+  {
+   "file": "src/components/HeroTopology.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/HeroInstallCTA.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/TopBar.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/MegaFooter.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/layouts/Base.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/grid-item.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/Hero.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/Section.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/FeatureBlock.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/layouts/Docs.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/MrsBlock.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/NarrativeSections.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/SiteHeader.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/VoiceHero.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/button.astro",
+   "behavior": false,
+   "classes": true,
+   "bestBlock": 2,
+   "union": [
+    "cognitive-load",
+    "accessibility"
+   ]
+  },
+  {
+   "file": "src/components/ui/card-action.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/card-content.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/card-footer.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/input.astro",
+   "behavior": false,
+   "classes": true,
+   "bestBlock": 1,
+   "union": [
+    "cognitive-load"
+   ]
+  },
+  {
+   "file": "src/components/ui/item.astro",
+   "behavior": false,
+   "classes": true,
+   "bestBlock": 2,
+   "union": [
+    "cognitive-load",
+    "accessibility"
+   ]
+  },
+  {
+   "file": "src/components/ui/separator.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 2,
+   "union": [
+    "cognitive-load",
+    "accessibility"
+   ]
+  },
+  {
+   "file": "src/components/ui/table-body.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/table-caption.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/table-cell.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/table-footer.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/table-head.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/table-header.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/table-row.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/components/ui/table.astro",
+   "behavior": false,
+   "classes": true,
+   "bestBlock": 2,
+   "union": [
+    "cognitive-load",
+    "accessibility"
+   ]
+  },
+  {
+   "file": "src/components/ui/typography-abbr.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 1,
+   "union": [
+    "cognitive-load"
+   ]
+  },
+  {
+   "file": "src/components/ui/typography-blockquote.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 1,
+   "union": [
+    "cognitive-load"
+   ]
+  },
+  {
+   "file": "src/components/ui/typography-h4.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 1,
+   "union": [
+    "cognitive-load"
+   ]
+  },
+  {
+   "file": "src/components/ui/typography-h5.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 1,
+   "union": [
+    "cognitive-load"
+   ]
+  },
+  {
+   "file": "src/components/ui/typography-h6.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 1,
+   "union": [
+    "cognitive-load"
+   ]
+  },
+  {
+   "file": "src/components/ui/typography-mark.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 1,
+   "union": [
+    "cognitive-load"
+   ]
+  },
+  {
+   "file": "src/components/ui/typography.astro",
+   "behavior": false,
+   "classes": true,
+   "bestBlock": 1,
+   "union": [
+    "cognitive-load"
+   ]
+  },
+  {
+   "file": "src/pages/agent/[...slug].astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/agent/index.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  },
+  {
+   "file": "src/pages/docs/index.astro",
+   "behavior": false,
+   "classes": false,
+   "bestBlock": 0,
+   "union": []
+  }
+ ],
+ "baseline": [],
+ "raw": [
+  {
+   "file": "src/components/ui/card.astro",
+   "line": 41,
+   "column": 3,
+   "code": "ts(6385)",
+   "severity": "hint",
+   "message": "'background' is deprecated.",
+   "kind": "none"
+  },
+  {
+   "file": "src/components/ui/container.astro",
+   "line": 48,
+   "column": 3,
+   "code": "ts(6385)",
+   "severity": "hint",
+   "message": "'background' is deprecated.",
+   "kind": "none"
+  }
+ ]
+}

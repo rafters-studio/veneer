@@ -1,0 +1,18 @@
+00:22:08 [check] Getting diagnostics for Astro files in /Volumes/store/tmp/claude-501/-Volumes-store-projects-rafters-studio-veneer/2f3b20d4-a74e-4b0b-afc4-d92de7b630dd/scratchpad/sites/gitpress.app...
+Result (4 files): 
+- 0 errors
+- 0 warnings
+- 0 hints
+
+
+[WARN] The store at /Users/seansilvius/Library/pnpm/store/v11 is not used because packages cannot be hard linked from it into this project. Using the store at /Volumes/store/.pnpm-store/v11 instead. Set storeDir to choose the store.
+Error:   × installing dependencies
+  ├─▶ Failed to resolve dependency tree: Failed to resolve dependency: Cannot
+  │   resolve package from workspace because workspace packages were not
+  │   loaded into the resolver
+  │   
+  │   Failed to resolve @shingle/shared@workspace:*
+  ╰─▶ Failed to resolve dependency: Cannot resolve package from workspace
+      because workspace packages were not loaded into the resolver
+
+[WARN] The install that runs before scripts failed, so your node_modules may be out of sync with your lockfile. Set "verifyDepsBeforeRun: false" to skip this install.

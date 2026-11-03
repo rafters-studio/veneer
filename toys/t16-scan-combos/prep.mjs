@@ -16,7 +16,8 @@ for (const pair of pairs) {
   mkdirSync(to, { recursive: true });
   let linked = 0;
   for (const entry of readdirSync(from)) {
-    if (entry === ".astro" || entry === ".vite" || entry === ".cache") continue;
+    // .bin and .pnpm stay out: a package manager run in the copy writes through those links.
+    if ([".astro", ".vite", ".cache", ".bin", ".pnpm"].includes(entry)) continue;
     const source = join(from, entry);
     if (entry.startsWith("@") && statSync(source).isDirectory()) {
       mkdirSync(join(to, entry), { recursive: true });

@@ -1,0 +1,42 @@
+00:22:15 [check] Getting diagnostics for Astro files in /Volumes/store/tmp/claude-501/-Volumes-store-projects-rafters-studio-veneer/2f3b20d4-a74e-4b0b-afc4-d92de7b630dd/scratchpad/sites/runlegion.dev...
+src/components/ArchitectureCanvas.astro:204:34 - warning ts(6133): 'isRemote' is declared but its value is never read.
+
+204     function drawNode(node: any, isRemote = false) {
+                                     ~~~~~~~~
+src/components/ArchitectureCanvas.astro:75:14 - warning ts(6133): 'drawAgent' is declared but its value is never read.
+
+75     function drawAgent(x: number, y: number, label: string, color: string) {
+                ~~~~~~~~~
+
+src/components/Section.astro:14:45 - warning ts(6385): 'background' is deprecated.
+
+14 <Container as="section" id={id} size="full" background={tint ? "muted" : "none"}>
+                                               ~~~~~~~~~~
+
+src/components/ui/card.astro:41:3 - warning ts(6385): 'background' is deprecated.
+
+41   background,
+     ~~~~~~~~~~
+
+src/components/ui/container.astro:48:3 - warning ts(6385): 'background' is deprecated.
+
+48   background,
+     ~~~~~~~~~~
+
+Result (61 files): 
+- 0 errors
+- 0 warnings
+- 5 hints
+
+
+[WARN] The store at /Users/seansilvius/Library/pnpm/store/v11 is not used because packages cannot be hard linked from it into this project. Using the store at /Volumes/store/.pnpm-store/v11 instead. Set storeDir to choose the store.
+Error:   × installing dependencies
+  ├─▶ Failed to resolve dependency tree: Failed to resolve dependency: Cannot
+  │   resolve package from workspace because workspace packages were not
+  │   loaded into the resolver
+  │   
+  │   Failed to resolve @shingle/shared@workspace:*
+  ╰─▶ Failed to resolve dependency: Cannot resolve package from workspace
+      because workspace packages were not loaded into the resolver
+
+[WARN] The install that runs before scripts failed, so your node_modules may be out of sync with your lockfile. Set "verifyDepsBeforeRun: false" to skip this install.

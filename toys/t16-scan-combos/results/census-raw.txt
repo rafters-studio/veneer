@@ -1,0 +1,824 @@
+#gitpress.app:src/pages/index.astro:7:5 h1 gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: main < Base
+  kids(0): -
+  src: <h1>GitPress</h1> // <p>Coming soon.</p>
+#gitpress.app:src/pages/index.astro:8:5 p gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: main < Base
+  kids(0): -
+  src: <p>Coming soon.</p> // </main>
+#huttspawn:src/components/nav/SiteFooter.astro:75:19 a gate=S [noClass] attrs=href txt=0 expr=1 map=1 sysBelow=0
+  up: Li < Ul < nav < Container
+  kids(0): -
+  src: <a href={link.href}>{link.label}</a> // </Li>
+#huttspawn:src/layouts/Guide.astro:17:7 h1 gate=S [noClass] attrs=- txt=0 expr=1 map=0 sysBelow=0
+  up: Container < HsPanel < Base
+  kids(0): -
+  src: <h1>{title}</h1> // <slot />
+#huttspawn:src/pages/index.astro:16:7 p gate=S [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Container < HsPanel < Base
+  kids(0): -
+  src: <p>Published from the game files and from the players who actually play it. Everyone else publishes what they overheard.</p> // <p>Guides here get to the point and tell y
+#huttspawn:src/pages/index.astro:17:7 p gate=S [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Container < HsPanel < Base
+  kids(0): -
+  src: <p>Guides here get to the point and tell you what works. Not every option, not every opinion: the one that holds up in the game and in the theorycrafting.</p> // </Contai
+#huttspawn:src/pages/companions/index.astro:61:9 h1 gate=S [noClass] attrs=- txt=0 expr=1 map=0 sysBelow=0
+  up: Container < Container < HsPanel < Base
+  kids(0): -
+  src: <h1>{headline}</h1> // <p>{intro}</p>
+#huttspawn:src/pages/companions/index.astro:62:9 p gate=S [noClass] attrs=- txt=0 expr=1 map=0 sysBelow=0
+  up: Container < Container < HsPanel < Base
+  kids(0): -
+  src: <p>{intro}</p> // </Container>
+#huttspawn:src/pages/companions/index.astro:112:38 a gate=S [noClass] attrs=href txt=0 expr=1 map=1 sysBelow=0
+  up: li < ul < Container < Container
+  kids(0): -
+  src: {shared.map((entry) => <li><a href={`/companions/${entry.id}`}>{entry.data.name}</a></li>)} // </ul>
+#huttspawn:src/pages/disciplines/index.astro:80:9 h1 gate=S [noClass] attrs=- txt=0 expr=1 map=0 sysBelow=0
+  up: Container < Container < HsPanel < Base
+  kids(0): -
+  src: <h1>{headline}</h1> // <p>{intro}</p>
+#huttspawn:src/pages/disciplines/index.astro:81:9 p gate=S [noClass] attrs=- txt=0 expr=1 map=0 sysBelow=0
+  up: Container < Container < HsPanel < Base
+  kids(0): -
+  src: <p>{intro}</p> // </Container>
+#huttspawn:src/pages/disciplines/index.astro:87:39 a gate=S [noClass] attrs=href txt=0 expr=1 map=1 sysBelow=0
+  up: li < ul < HsCard < Container
+  kids(0): -
+  src: <li>{roleLabels[role]}: <a href={`/disciplines/${pick.id}`}>{pick.data.title}</a></li> // ))}
+#huttspawn:src/pages/explainers/index.astro:35:7 h1 gate=S [noClass] attrs=- txt=0 expr=1 map=0 sysBelow=0
+  up: Container < HsPanel < Base
+  kids(0): -
+  src: <h1>{headline}</h1> // <p>{intro}</p>
+#huttspawn:src/pages/explainers/index.astro:36:7 p gate=S [noClass] attrs=- txt=0 expr=1 map=0 sysBelow=0
+  up: Container < HsPanel < Base
+  kids(0): -
+  src: <p>{intro}</p> // </Container>
+#huttspawn:src/pages/lab/shapes.astro:9:5 h1 gate=S [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Container < Base
+  kids(0): -
+  src: <h1>Shape lab</h1> // <p>Each block is one shape atom on a muted host. No colour, border or glow yet.</p>
+#huttspawn:src/pages/lab/shapes.astro:10:5 p gate=S [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Container < Base
+  kids(0): -
+  src: <p>Each block is one shape atom on a muted host. No colour, border or glow yet.</p> // </Container>
+#huttspawn:src/pages/news/index.astro:38:7 h1 gate=S [noClass] attrs=- txt=0 expr=1 map=0 sysBelow=0
+  up: Container < HsPanel < Base
+  kids(0): -
+  src: <h1>{headline}</h1> // <p>{intro}</p>
+#huttspawn:src/pages/news/index.astro:39:7 p gate=S [noClass] attrs=- txt=0 expr=1 map=0 sysBelow=0
+  up: Container < HsPanel < Base
+  kids(0): -
+  src: <p>{intro}</p> // </Container>
+#huttspawn:src/pages/origins/index.astro:25:7 h1 gate=S [noClass] attrs=- txt=0 expr=1 map=0 sysBelow=0
+  up: Container < HsPanel < Base
+  kids(0): -
+  src: <h1>{headline}</h1> // <p>{sub}</p>
+#huttspawn:src/pages/origins/index.astro:26:7 p gate=S [noClass] attrs=- txt=0 expr=1 map=0 sysBelow=0
+  up: Container < HsPanel < Base
+  kids(0): -
+  src: <p>{sub}</p> // <p>{intro}</p>
+#huttspawn:src/pages/origins/index.astro:27:7 p gate=S [noClass] attrs=- txt=0 expr=1 map=0 sysBelow=0
+  up: Container < HsPanel < Base
+  kids(0): -
+  src: <p>{intro}</p> // </Container>
+#huttspawn:src/pages/origins/index.astro:46:17 p gate=S [noClass] attrs=- txt=1 expr=2 map=1 sysBelow=0
+  up: Container < HsCard < Container < Container
+  kids(0): -
+  src: <p>{faction} | {storyQualities[entry.origin]}</p> // <blockquote>"{entry.summary}"</blockquote>
+#huttspawn:src/pages/origins/index.astro:48:17 p gate=S [noClass] attrs=- txt=0 expr=1 map=1 sysBelow=0
+  up: Container < HsCard < Container < Container
+  kids(0): -
+  src: <p>{storyBlurbs[entry.origin]}</p> // <h3>What works</h3>
+#huttspawn:src/pages/origins/index.astro:49:17 h3 gate=S [noClass] attrs=- txt=1 expr=0 map=1 sysBelow=0
+  up: Container < HsCard < Container < Container
+  kids(0): -
+  src: <h3>What works</h3> // <ul>{entry.praise.map((line) => <li>{line}</li>)}</ul>
+#huttspawn:src/pages/origins/index.astro:51:17 h3 gate=S [noClass] attrs=- txt=1 expr=0 map=1 sysBelow=0
+  up: Container < HsCard < Container < Container
+  kids(0): -
+  src: <h3>What doesn't</h3> // <ul>{entry.criticism.map((line) => <li>{line}</li>)}</ul>
+#huttspawn:src/pages/origins/index.astro:53:17 p gate=S [noClass,wrapsOne,wrapsOneNoClass] attrs=- txt=0 expr=0 map=1 sysBelow=0
+  up: Container < HsCard < Container < Container
+  kids(1): a
+  src: <p><a href={`/origins/${entry.origin}`}>Read the full {title} guide</a></p> // </Container>
+#huttspawn:src/pages/origins/index.astro:53:20 a gate=S [noClass] attrs=href txt=1 expr=1 map=1 sysBelow=0
+  up: p < Container < HsCard < Container
+  kids(0): -
+  src: <p><a href={`/origins/${entry.origin}`}>Read the full {title} guide</a></p> // </Container>
+#huttspawn:src/pages/origins/index.astro:63:9 p gate=S [noClass] attrs=- txt=0 expr=1 map=0 sysBelow=0
+  up: Container < Container < HsPanel < Base
+  kids(0): -
+  src: <p>{methodology}</p> // </Container>
+#rafters.studio:src/components/TopBar.astro:13:7 a gate=S [noClass,wrapsOne,wrapsOneNoClass] attrs=href txt=0 expr=0 map=0 sysBelow=0
+  up: Grid < Container < header.bg-background
+  kids(1): img
+  src: <a href="/"> // <img src="/logo.svg" alt="Rafters" class="w-24 h-auto fill-current" />
+#rafters.studio:src/components/TopBar.astro:14:9 img gate=S [] attrs=src|alt txt=0 expr=0 map=0 sysBelow=0
+  up: a < Grid < Container < header.bg-background
+  kids(0): -
+  src: <img src="/logo.svg" alt="Rafters" class="w-24 h-auto fill-current" /> // </a>
+#rafters.studio:src/components/TopBar.astro:17:9 a gate=S [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: Grid.justify-self-end.w-fit < Grid < Container < header.bg-background
+  kids(0): -
+  src: <a href="/docs/">Docs</a> // <a href="https://github.com/rafters-studio/rafters">GitHub</a>
+#rafters.studio:src/components/TopBar.astro:18:9 a gate=S [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: Grid.justify-self-end.w-fit < Grid < Container < header.bg-background
+  kids(0): -
+  src: <a href="https://github.com/rafters-studio/rafters">GitHub</a> // </Grid>
+#rafters.studio:src/components/mail/SiteHeader.astro:24:11 a gate=S [visual] attrs=href txt=0 expr=1 map=1 sysBelow=0
+  up: nav.flex.items-center.gap-6 < div.flex.items-center.justify-between < Container < header.sticky.top-0.z-50
+  kids(0): -
+  src: <a // href={href}
+#rafters.studio:src/components/mail/composites/Brand.astro:10:1 a gate=- [] attrs=href txt=0 expr=0 map=0 sysBelow=0
+  up: ROOT
+  kids(2): svg span
+  src: <a href={href} class={`inline-flex items-center gap-3 text-foreground no-underline ${className ?? ''}`}> // <svg
+#rafters.studio:src/components/mail/composites/LinkButton.astro:27:1 a gate=- [wrapsOne] attrs=href|rel|target txt=0 expr=0 map=0 sysBelow=0
+  up: ROOT
+  kids(1): slot
+  src: <a href={href} class={cls} rel={rel} target={target}><slot /></a> // 
+#rafters.studio:src/layouts/Docs.astro:51:7 a gate=S [noClass,wrapsOne,wrapsOneNoClass] attrs=href txt=0 expr=0 map=0 sysBelow=0
+  up: Grid.@sm:mb-8.@md:mb-16.@lg:mb-32 < Container < Base
+  kids(1): img
+  src: <a href="/"> // <img src="/logo.svg" alt="Rafters" class="w-24 h-auto fill-current" />
+#rafters.studio:src/layouts/Docs.astro:52:9 img gate=S [] attrs=src|alt txt=0 expr=0 map=0 sysBelow=0
+  up: a < Grid.@sm:mb-8.@md:mb-16.@lg:mb-32 < Container < Base
+  kids(0): -
+  src: <img src="/logo.svg" alt="Rafters" class="w-24 h-auto fill-current" /> // </a>
+#rafters.studio:src/layouts/Docs.astro:55:9 a gate=S [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: Grid.justify-self-end.w-fit < Grid.@sm:mb-8.@md:mb-16.@lg:mb-32 < Container < Base
+  kids(0): -
+  src: <a href="/docs/">Docs</a> // <a href="https://github.com/rafters-studio/rafters">GitHub</a>
+#rafters.studio:src/layouts/Docs.astro:56:9 a gate=S [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: Grid.justify-self-end.w-fit < Grid.@sm:mb-8.@md:mb-16.@lg:mb-32 < Container < Base
+  kids(0): -
+  src: <a href="https://github.com/rafters-studio/rafters">GitHub</a> // </Grid>
+#rafters.studio:src/layouts/Docs.astro:67:17 a gate=S [noClass] attrs=href|aria-current txt=0 expr=1 map=1 sysBelow=0
+  up: Container < Container < GridItem < Grid
+  kids(0): -
+  src: <a // href={item.href + '/'}
+#rafters.studio:src/layouts/KelexDocs.astro:44:7 a gate=S [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: Grid < Container < Base
+  kids(0): -
+  src: <a href={base}>Kelex</a> // <Grid columns={2} gap="8">
+#rafters.studio:src/layouts/KelexDocs.astro:46:9 a gate=S [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: Grid < Grid < Container < Base
+  kids(0): -
+  src: <a href={`${base}docs/`}>Docs</a> // <a href="https://github.com/rafters-studio/kelex">GitHub</a>
+#rafters.studio:src/layouts/KelexDocs.astro:47:9 a gate=S [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: Grid < Grid < Container < Base
+  kids(0): -
+  src: <a href="https://github.com/rafters-studio/kelex">GitHub</a> // </Grid>
+#rafters.studio:src/layouts/KelexDocs.astro:58:17 a gate=S [noClass] attrs=href|aria-current txt=0 expr=1 map=1 sysBelow=0
+  up: Container < Container < GridItem < Grid
+  kids(0): -
+  src: <a // href={item.href + '/'}
+#rafters.studio:src/layouts/MailDocs.astro:73:7 a gate=o [] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: header.docs-header < div.docs-shell < Base
+  kids(0): -
+  src: <a href={base} class="docs-wordmark">Rafters Mail</a> // <nav class="docs-header-nav">
+#rafters.studio:src/layouts/MailDocs.astro:75:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: nav.docs-header-nav < header.docs-header < div.docs-shell < Base
+  kids(0): -
+  src: <a href={`${base}docs/`}>Docs</a> // <a href="https://github.com/rafters-studio/mail">GitHub</a>
+#rafters.studio:src/layouts/MailDocs.astro:76:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: nav.docs-header-nav < header.docs-header < div.docs-shell < Base
+  kids(0): -
+  src: <a href="https://github.com/rafters-studio/mail">GitHub</a> // </nav>
+#rafters.studio:src/layouts/MailDocs.astro:85:15 p gate=o [] attrs=- txt=0 expr=1 map=1 sysBelow=0
+  up: div.docs-nav-group < nav < aside.docs-sidebar < div.docs-body
+  kids(0): -
+  src: <p class="docs-nav-heading">{group.heading}</p> // <ul>
+#rafters.studio:src/layouts/MailDocs.astro:89:21 a gate=o [] attrs=href|class:list txt=0 expr=1 map=1 sysBelow=0
+  up: li < ul < div.docs-nav-group < nav
+  kids(0): -
+  src: <a // href={item.href + '/'}
+#rafters.studio:src/pages/docs/index.astro:6:3 h1 gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <h1>Docs</h1> // <p>
+#rafters.studio:src/pages/docs/index.astro:7:3 p gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <p> // Reference material for the Rafters design system. Each page covers one primitive
+#rafters.studio:src/pages/docs/index.astro:12:3 h2 gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <h2>Start here</h2> // <ul>
+#rafters.studio:src/pages/docs/index.astro:14:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/design-philosophy/">Design Philosophy</a>. The three pillars behind every decision.</li> // <li><a href="/docs/cognitive-load-scoring/">Cognitive Load 
+#rafters.studio:src/pages/docs/index.astro:15:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/cognitive-load-scoring/">Cognitive Load Scoring</a>. The model that assigns every component a 0 to 10 score.</li> // </ul>
+#rafters.studio:src/pages/docs/index.astro:18:3 h2 gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <h2>Foundations</h2> // <ul>
+#rafters.studio:src/pages/docs/index.astro:20:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/spacing/">Spacing</a>. Rhythm before values.</li> // <li><a href="/docs/typography/">Typography</a>. Semantic roles, not utility strings.</li>
+#rafters.studio:src/pages/docs/index.astro:21:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/typography/">Typography</a>. Semantic roles, not utility strings.</li> // <li><a href="/docs/color/">Color</a>. OKLCH, harmony, decisions with reasons 
+#rafters.studio:src/pages/docs/index.astro:22:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/color/">Color</a>. OKLCH, harmony, decisions with reasons attached.</li> // <li><a href="/docs/radius/">Radius</a>. Corners as brand personality.</li>
+#rafters.studio:src/pages/docs/index.astro:23:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/radius/">Radius</a>. Corners as brand personality.</li> // <li><a href="/docs/shadow/">Shadow</a>. Three tiers, each with a meaning.</li>
+#rafters.studio:src/pages/docs/index.astro:24:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/shadow/">Shadow</a>. Three tiers, each with a meaning.</li> // <li><a href="/docs/depth/">Depth</a>. A fixed stack. No z-index wars.</li>
+#rafters.studio:src/pages/docs/index.astro:25:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/depth/">Depth</a>. A fixed stack. No z-index wars.</li> // <li><a href="/docs/motion/">Motion</a>. Respond, don't perform.</li>
+#rafters.studio:src/pages/docs/index.astro:26:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/motion/">Motion</a>. Respond, don't perform.</li> // </ul>
+#rafters.studio:src/pages/docs/index.astro:29:3 h2 gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <h2>Editor</h2> // <ul>
+#rafters.studio:src/pages/docs/index.astro:31:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/editor/">Editor</a>. The block-tree page builder. Start here.</li> // <li><a href="/docs/editor-architecture/">Architecture</a>. Leaf and composition p
+#rafters.studio:src/pages/docs/index.astro:32:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/editor-architecture/">Architecture</a>. Leaf and composition primitives. The self-contained rule.</li> // <li><a href="/docs/editor-data-model/">Data M
+#rafters.studio:src/pages/docs/index.astro:33:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/editor-data-model/">Data Model</a>. Every type, every shape, every field.</li> // <li><a href="/docs/editor-component/">Component</a>. The React surfac
+#rafters.studio:src/pages/docs/index.astro:34:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/editor-component/">Component</a>. The React surface. Props, controls ref, what's wired.</li> // <li><a href="/docs/editor-render-path/">Render Path</a>
+#rafters.studio:src/pages/docs/index.astro:35:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/editor-render-path/">Render Path</a>. How a block becomes JSX. Mark order. The data-block-id contract.</li> // </ul>
+#rafters.studio:src/pages/docs/index.astro:38:3 h3 gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <h3>Editor primitives</h3> // <ul>
+#rafters.studio:src/pages/docs/index.astro:40:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/editor-primitives-canvas/">Canvas</a>. Selection, focus, CRUD. The core.</li> // <li><a href="/docs/editor-primitives-input/">Input</a>. Keyboard routi
+#rafters.studio:src/pages/docs/index.astro:41:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/editor-primitives-input/">Input</a>. Keyboard routing, focus trap, roving tabindex.</li> // <li><a href="/docs/editor-primitives-formatting/">Formattin
+#rafters.studio:src/pages/docs/index.astro:42:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/editor-primitives-formatting/">Formatting</a>. Inline marks, slash commands, the format toolbar.</li> // <li><a href="/docs/editor-primitives-palettes/
+#rafters.studio:src/pages/docs/index.astro:43:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/editor-primitives-palettes/">Palettes</a>. Block library, rule library, fuzzy typeahead.</li> // <li><a href="/docs/editor-primitives-overlays/">Overla
+#rafters.studio:src/pages/docs/index.astro:44:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/editor-primitives-overlays/">Overlays</a>. Context menus, dismissable layers, collision-aware positioning.</li> // <li><a href="/docs/editor-primitives
+#rafters.studio:src/pages/docs/index.astro:45:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/editor-primitives-dnd-state/">Drag and State</a>. Drag-drop, drop zones, clipboard, history.</li> // </ul>
+#rafters.studio:src/pages/docs/index.astro:48:3 h3 gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <h3>Editor data and rules</h3> // <ul>
+#rafters.studio:src/pages/docs/index.astro:50:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/editor-serialization/">Serialization</a>. The EditorSerializer interface. MDX, JSON, composite, blueprint.</li> // <li><a href="/docs/editor-composites
+#rafters.studio:src/pages/docs/index.astro:51:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/editor-composites/">Composites</a>. Manifest, bridge, registry. Pre-built block assemblies.</li> // <li><a href="/docs/editor-rules/">Rules</a>. Applie
+#rafters.studio:src/pages/docs/index.astro:52:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/editor-rules/">Rules</a>. AppliedRule, matching, the runtime gap.</li> // </ul>
+#rafters.studio:src/pages/docs/index.astro:55:3 h3 gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <h3>Editor reference</h3> // <ul>
+#rafters.studio:src/pages/docs/index.astro:57:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/editor-behavior-matrix/">Behavior Matrix</a>. Per primitive: guarantees, non-guarantees, edge cases, test coverage.</li> // <li><a href="/docs/editor-k
+#rafters.studio:src/pages/docs/index.astro:58:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/editor-known-gaps/">Known Gaps</a>. The honest list. Where the surface drifts and what the fix looks like.</li> // </ul>
+#rafters.studio:src/pages/kelex/index.astro:14:7 a gate=S [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: Grid < Container < Base
+  kids(0): -
+  src: <a href="/kelex/">Kelex</a> // <Grid columns={2} gap="8">
+#rafters.studio:src/pages/kelex/index.astro:16:9 a gate=S [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: Grid < Grid < Container < Base
+  kids(0): -
+  src: <a href="/kelex/docs/">Docs</a> // <a href={githubUrl}>GitHub</a>
+#rafters.studio:src/pages/kelex/index.astro:17:9 a gate=S [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: Grid < Grid < Container < Base
+  kids(0): -
+  src: <a href={githubUrl}>GitHub</a> // </Grid>
+#rafters.studio:src/pages/kelex/index.astro:33:9 a gate=S [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: P < Container < Container < Base
+  kids(0): -
+  src: <a href="/kelex/docs/">docs</a> as the surface fills in. // </P>
+#rafters.studio:src/pages/kelex/docs/index.astro:8:3 h1 gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: KelexDocs
+  kids(0): -
+  src: <h1>Kelex</h1> // <p>
+#rafters.studio:src/pages/kelex/docs/index.astro:9:3 p gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: KelexDocs
+  kids(0): -
+  src: <p> // Kelex is a schema-first code generator in the Rafters Studio ecosystem. It
+#rafters.studio:src/pages/kelex/docs/index.astro:15:3 p gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: KelexDocs
+  kids(0): -
+  src: <p> // This documentation is a scaffold. The pages below are placeholders that fill
+#rafters.studio:src/pages/kelex/docs/index.astro:22:3 h2 gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: KelexDocs
+  kids(0): -
+  src: <h2>Getting started</h2> // <p>Start here to install Kelex and generate from your first schema.</p>
+#rafters.studio:src/pages/kelex/docs/index.astro:23:3 p gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: KelexDocs
+  kids(0): -
+  src: <p>Start here to install Kelex and generate from your first schema.</p> // <ul>
+#rafters.studio:src/pages/kelex/docs/index.astro:25:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < KelexDocs
+  kids(0): -
+  src: <li><a href={`${base}docs/getting-started/`}>Getting Started</a> -- install and generate your first output</li> // </ul>
+#rafters.studio:src/pages/mail/docs/index.astro:8:3 h1 gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <h1>Rafters Mail</h1> // <p>
+#rafters.studio:src/pages/mail/docs/index.astro:9:3 p gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <p> // Rafters Mail is a full-stack email framework for Cloudflare Workers. It handles
+#rafters.studio:src/pages/mail/docs/index.astro:15:3 p gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <p> // The framework is built around a set of composable adapters. You bring your own
+#rafters.studio:src/pages/mail/docs/index.astro:23:3 h2 gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <h2>Getting started</h2> // <p>
+#rafters.studio:src/pages/mail/docs/index.astro:24:3 p gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <p> // If you are new to Rafters Mail, start here. These two pages get you from zero
+#rafters.studio:src/pages/mail/docs/index.astro:29:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href={`${base}docs/getting-started/`}>Getting Started</a> -- install, configure, and receive your first email</li> // <li><a href={`${base}docs/quickstart-cloudfla
+#rafters.studio:src/pages/mail/docs/index.astro:30:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href={`${base}docs/quickstart-cloudflare/`}>Quickstart: Cloudflare</a> -- a faster path if you already know Workers</li> // </ul>
+#rafters.studio:src/pages/mail/docs/index.astro:33:3 h2 gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <h2>Architecture</h2> // <p>
+#rafters.studio:src/pages/mail/docs/index.astro:34:3 p gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <p> // Understand how the framework is assembled before building on top of it.
+#rafters.studio:src/pages/mail/docs/index.astro:38:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href={`${base}docs/architecture/`}>Architecture</a> -- the full internal design reference</li> // <li><a href={`${base}docs/adapters/`}>Adapters Guide</a> -- how a
+#rafters.studio:src/pages/mail/docs/index.astro:39:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href={`${base}docs/adapters/`}>Adapters Guide</a> -- how adapters connect the core to vendors</li> // </ul>
+#rafters.studio:src/pages/mail/docs/index.astro:42:3 h2 gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <h2>Core</h2> // <p>
+#rafters.studio:src/pages/mail/docs/index.astro:43:3 p gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <p> // The schema, API surface, threading model, and database migration system.
+#rafters.studio:src/pages/mail/docs/index.astro:47:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href={`${base}docs/core-reference/`}>Core Reference</a> -- the complete schema and API reference</li> // <li><a href={`${base}docs/threading/`}>Threading</a> -- RF
+#rafters.studio:src/pages/mail/docs/index.astro:48:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href={`${base}docs/threading/`}>Threading</a> -- RFC 5322 conversation grouping</li> // <li><a href={`${base}docs/migrations/`}>Migrations</a> -- the inbox and new
+#rafters.studio:src/pages/mail/docs/index.astro:49:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href={`${base}docs/migrations/`}>Migrations</a> -- the inbox and newsletter table schema</li> // </ul>
+#rafters.studio:src/pages/mail/docs/index.astro:52:3 h2 gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <h2>Inbound and outbound</h2> // <p>
+#rafters.studio:src/pages/mail/docs/index.astro:53:3 p gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <p> // The full email processing pipeline: receiving, sending, storage, and classification.
+#rafters.studio:src/pages/mail/docs/index.astro:57:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href={`${base}docs/inbound/`}>Inbound Email</a> -- flow, InboundAdapter, and parsing</li> // <li><a href={`${base}docs/outbound/`}>Outbound Email</a> -- compose, r
+#rafters.studio:src/pages/mail/docs/index.astro:58:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href={`${base}docs/outbound/`}>Outbound Email</a> -- compose, reply, EmailProvider, and webhooks</li> // <li><a href={`${base}docs/blob-storage/`}>Blob Storage</a>
+#rafters.studio:src/pages/mail/docs/index.astro:59:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href={`${base}docs/blob-storage/`}>Blob Storage</a> -- BlobStorage interface and R2 implementation</li> // <li><a href={`${base}docs/classification/`}>Email Classi
+#rafters.studio:src/pages/mail/docs/index.astro:60:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href={`${base}docs/classification/`}>Email Classification</a> -- Workers AI and DeBERTa-v3</li> // <li><a href={`${base}docs/newsletters/`}>Newsletters and Broadca
+#rafters.studio:src/pages/mail/docs/index.astro:61:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href={`${base}docs/newsletters/`}>Newsletters and Broadcasts</a> -- mailing lists and platform mirror tables</li> // </ul>
+#rafters.studio:src/pages/mail/docs/index.astro:64:3 h2 gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <h2>IMAP</h2> // <p>
+#rafters.studio:src/pages/mail/docs/index.astro:65:3 p gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <p> // Native IMAP support for connecting mail clients directly to your Worker.
+#rafters.studio:src/pages/mail/docs/index.astro:69:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href={`${base}docs/imap-quickstart/`}>IMAP Quickstart</a> -- pick a runtime, deploy, connect a client</li> // <li><a href={`${base}docs/imap-commands/`}>IMAP Comma
+#rafters.studio:src/pages/mail/docs/index.astro:70:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href={`${base}docs/imap-commands/`}>IMAP Command Reference</a> -- full RFC-cited command list</li> // <li><a href={`${base}docs/app-passwords/`}>IMAP Authenticatio
+#rafters.studio:src/pages/mail/docs/index.astro:71:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href={`${base}docs/app-passwords/`}>IMAP Authentication</a> -- the AuthAdapter contract</li> // <li><a href={`${base}docs/imap-deployment/`}>IMAP Deployment Guide<
+#rafters.studio:src/pages/mail/docs/index.astro:72:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href={`${base}docs/imap-deployment/`}>IMAP Deployment Guide</a> -- Fly, Railway, Fargate, Docker, VPS</li> // </ul>
+#runlegion.dev:src/components/LegionHero.astro:11:7 h2 gate=- [] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: header.lh-header < div.lh-scene < div.legion-hero
+  kids(0): -
+  src: <h2 class="lh-title">Memory &middot; Coordination &middot; Autonomy</h2> // <p class="lh-subtitle">
+#runlegion.dev:src/components/LegionHero.astro:12:7 p gate=- [] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: header.lh-header < div.lh-scene < div.legion-hero
+  kids(0): -
+  src: <p class="lh-subtitle"> // Your machines. Your agents. Your rules. Free forever. No cloud required.
+#runlegion.dev:src/components/LegionHero.astro:22:7 button gate=- [] attrs=data-phase txt=0 expr=0 map=0 sysBelow=0
+  up: div.lh-phases < div.lh-scene < div.legion-hero
+  kids(4): div div div div
+  src: <button class="lh-phase active" data-phase="memory"> // <div class="lh-phase-num">MEMORY</div>
+#runlegion.dev:src/components/LegionHero.astro:32:7 button gate=- [] attrs=data-phase txt=0 expr=0 map=0 sysBelow=0
+  up: div.lh-phases < div.lh-scene < div.legion-hero
+  kids(4): div div div div
+  src: <button class="lh-phase" data-phase="coordinate"> // <div class="lh-phase-num">COORDINATE</div>
+#runlegion.dev:src/components/LegionHero.astro:42:7 button gate=- [] attrs=data-phase txt=0 expr=0 map=0 sysBelow=0
+  up: div.lh-phases < div.lh-scene < div.legion-hero
+  kids(4): div div div div
+  src: <button class="lh-phase" data-phase="orchestrate"> // <div class="lh-phase-num">ORCHESTRATE</div>
+#runlegion.dev:src/components/LegionHero.astro:60:7 button gate=- [] attrs=id txt=1 expr=0 map=0 sysBelow=0
+  up: div.lh-controls < div.lh-scene < div.legion-hero
+  kids(0): -
+  src: <button class="lh-btn lh-btn-primary" id="legion-restart">RESTART SEQUENCE</button> // <button class="lh-btn lh-btn-secondary" id="legion-pause">PAUSE / RESUME</button>
+#runlegion.dev:src/components/LegionHero.astro:61:7 button gate=- [] attrs=id txt=1 expr=0 map=0 sysBelow=0
+  up: div.lh-controls < div.lh-scene < div.legion-hero
+  kids(0): -
+  src: <button class="lh-btn lh-btn-secondary" id="legion-pause">PAUSE / RESUME</button> // </div>
+#runlegion.dev:src/layouts/Base.astro:133:21 a gate=S [wrapsOne] attrs=href|aria-label txt=0 expr=0 map=0 sysBelow=0
+  up: Grid < Container < header.border-b.border-border.bg-background < body.bg-background.text-foreground
+  kids(1): img
+  src: <a href="/" aria-label="Legion home" class="no-underline"> // <img
+#runlegion.dev:src/layouts/Base.astro:134:25 img gate=S [noClass] attrs=src|alt|width|height txt=0 expr=0 map=0 sysBelow=0
+  up: a.no-underline < Grid < Container < header.border-b.border-border.bg-background
+  kids(0): -
+  src: <img // src="/logo.svg"
+#runlegion.dev:src/layouts/Base.astro:149:33 a gate=S [wrapsOne] attrs=href txt=0 expr=0 map=1 sysBelow=1
+  up: Grid.text-end < Grid < Container < header.border-b.border-border.bg-background
+  kids(1): Small*s
+  src: <a href={link.href} class={linkClass}> // <Small>{link.label}</Small>
+#runlegion.dev:src/layouts/Base.astro:154:25 a gate=S [wrapsOne] attrs=href|target|rel|aria-label txt=0 expr=0 map=0 sysBelow=0
+  up: Grid.text-end < Grid < Container < header.border-b.border-border.bg-background
+  kids(1): svg
+  src: <a // href="https://github.com/runlegion/legion"
+#runlegion.dev:src/layouts/Docs.astro:119:19 a gate=S [wrapsOne] attrs=href|aria-current txt=0 expr=0 map=1 sysBelow=1
+  up: Container < Container < Container.sticky.top-0 < Grid
+  kids(1): Small*s
+  src: <a // href={link.href}
+#runlegion.dev:src/pages/docs/index.astro:19:7 a gate=S [wrapsOne] attrs=href txt=0 expr=0 map=0 sysBelow=4
+  up: Grid < Container < Docs
+  kids(1): Card*s
+  src: <a href="/docs/getting-started/" class="no-underline"> // <Card class="hover:bg-card-hover">
+#runlegion.dev:src/pages/docs/index.astro:27:7 a gate=S [wrapsOne] attrs=href txt=0 expr=0 map=0 sysBelow=4
+  up: Grid < Container < Docs
+  kids(1): Card*s
+  src: <a href="/docs/cli-reference/" class="no-underline"> // <Card class="hover:bg-card-hover">
+#runlegion.dev:src/pages/docs/index.astro:35:7 a gate=S [wrapsOne] attrs=href txt=0 expr=0 map=0 sysBelow=4
+  up: Grid < Container < Docs
+  kids(1): Card*s
+  src: <a href="/docs/plugin-guide/" class="no-underline"> // <Card class="hover:bg-card-hover">
+#runlegion.dev:src/pages/docs/index.astro:43:7 a gate=S [wrapsOne] attrs=href txt=0 expr=0 map=0 sysBelow=4
+  up: Grid < Container < Docs
+  kids(1): Card*s
+  src: <a href="/docs/architecture/" class="no-underline"> // <Card class="hover:bg-card-hover">
+#runlegion.dev:src/pages/docs/index.astro:51:7 a gate=S [wrapsOne] attrs=href txt=0 expr=0 map=0 sysBelow=4
+  up: Grid < Container < Docs
+  kids(1): Card*s
+  src: <a href="/docs/concepts/" class="no-underline"> // <Card class="hover:bg-card-hover">
+#sean.silvius.me:src/components/Topbar.astro:18:5 a gate=S [wrapsOne] attrs=href txt=0 expr=0 map=0 sysBelow=1
+  up: nav.topbar-nav < header.topbar
+  kids(1): Typography*s
+  src: <a href="/" class="no-underline topbar-name"> // <Typography as="span" variant="large" class="uppercase tracking-tight font-bold text-foreground">sean.silvius.me</Typogra
+#sean.silvius.me:src/components/Topbar.astro:25:11 a gate=S [] attrs=href|class:list|aria-current txt=0 expr=1 map=1 sysBelow=0
+  up: div.topbar-links < nav.topbar-nav < header.topbar
+  kids(0): -
+  src: <a // href={link.href}
+#sean.silvius.me:src/components/Topbar.astro:38:5 a gate=S [wrapsOne] attrs=href txt=0 expr=0 map=0 sysBelow=1
+  up: nav.topbar-nav < header.topbar
+  kids(1): Button*s
+  src: <a href="/connect/" class="no-underline"> // <Button class="uppercase font-bold tracking-tight">Connect</Button>
+#sean.silvius.me:src/layouts/Base.astro:86:19 a gate=S [visual] attrs=href SPREAD txt=0 expr=1 map=1 sysBelow=0
+  up: Container < Container < Grid < Container
+  kids(0): -
+  src: <a // href={link.href}
+#sean.silvius.me:src/pages/connect.astro:22:40 a gate=S [visual] attrs=href|target|rel txt=1 expr=0 map=0 sysBelow=0
+  up: Typography < Container < Grid < Container
+  kids(0): -
+  src: <Typography as="p" variant="p"><a href="https://github.com/ssilvius" target="_blank" rel="noopener noreferrer" class="text-primary underline underline-offset-4">github.co
+#sean.silvius.me:src/pages/connect.astro:26:40 a gate=S [visual] attrs=href|target|rel txt=1 expr=0 map=0 sysBelow=0
+  up: Typography < Container < Grid < Container
+  kids(0): -
+  src: <Typography as="p" variant="p"><a href="https://www.linkedin.com/in/seansilvius/" target="_blank" rel="noopener noreferrer" class="text-primary underline underline-offset
+#sean.silvius.me:src/pages/index.astro:45:15 a gate=S [] attrs=href txt=0 expr=0 map=1 sysBelow=5
+  up: Card.overflow-hidden.h-full.transition-all < Grid < Container < section.bg-muted
+  kids(3): div Container*s Container*s
+  src: <a href={`/posts/${slug}/`} class="no-underline group"> // <div class="aspect-video overflow-hidden">
+#sean.silvius.me:src/pages/index.astro:47:19 img gate=S [] attrs=src|alt|loading txt=0 expr=0 map=1 sysBelow=0
+  up: div.aspect-video.overflow-hidden < a.no-underline.group < Card.overflow-hidden.h-full.transition-all < Grid
+  kids(0): -
+  src: <img // src={`/images/${slug}.png`}
+#sean.silvius.me:src/pages/index.astro:63:17 a gate=S [wrapsOne] attrs=href txt=0 expr=0 map=1 sysBelow=1
+  up: Container.mt-auto.@sm:p-2.@lg:p-4 < Card.overflow-hidden.h-full.transition-all < Grid < Container
+  kids(1): Button*s
+  src: <a href={`/posts/${slug}/`} class="no-underline"> // <Button class="uppercase font-bold tracking-tight">Read More</Button>
+#sean.silvius.me:src/pages/index.astro:72:9 a gate=S [wrapsOne] attrs=href txt=0 expr=0 map=0 sysBelow=1
+  up: Container.text-end < Container < section.bg-muted < Base
+  kids(1): Button*s
+  src: <a href="/posts/" class="no-underline"> // <Button variant="outline" class="uppercase font-bold tracking-tight transition-all duration-normal hover:bg-secondary hover:tex
+#sean.silvius.me:src/pages/privacy.astro:29:119 a gate=S [visual] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: Typography < Container < Base
+  kids(0): -
+  src: <Typography as="p" variant="p">If you have any questions about this Privacy Policy, please contact me through the <a href="/connect/" class="text-primary underline underl
+#sean.silvius.me:src/pages/terms.astro:43:122 a gate=S [visual] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: Typography < Container < Base
+  kids(0): -
+  src: <Typography as="p" variant="p">If you have any questions about these Terms of Service, please contact me through the <a href="/connect/" class="text-primary underline und
+#sean.silvius.me:src/pages/night-shift/[...slug].astro:29:7 a gate=S [visual,wrapsOne] attrs=href txt=0 expr=0 map=0 sysBelow=1
+  up: Grid < Container < Base
+  kids(1): Typography*s
+  src: <a href="/night-shift/" class="no-underline text-muted-foreground hover:text-foreground"> // <Typography as="span" variant="muted">&larr; Night Shift</Typography>
+#sean.silvius.me:src/pages/night-shift/index.astro:40:13 a gate=S [visual,wrapsOne] attrs=href txt=0 expr=0 map=1 sysBelow=7
+  up: Container < Container < Container < Base
+  kids(1): Container*s
+  src: <a href={`/night-shift/${entry.id}/`} class="no-underline block border-b border-border"> // <Container gap="1">
+#sean.silvius.me:src/pages/posts/[...slug].astro:35:5 a gate=S [visual,wrapsOne] attrs=href txt=0 expr=0 map=0 sysBelow=1
+  up: Container < Base
+  kids(1): Typography*s
+  src: <a href="/posts/" class="no-underline text-muted-foreground hover:text-foreground transition-colors duration-fast"> // <Typography as="span" variant="muted">&larr; All po
+#sean.silvius.me:src/pages/posts/[...slug].astro:61:5 img gate=S [visual] attrs=src|alt|loading txt=0 expr=0 map=0 sysBelow=0
+  up: Container < Base
+  kids(0): -
+  src: <img // src={`/images/${post.id}.png`}
+#sean.silvius.me:src/pages/posts/index.astro:48:15 a gate=S [] attrs=href txt=0 expr=0 map=1 sysBelow=5
+  up: Card.overflow-hidden.h-full.transition-all < Grid < Container < Base
+  kids(3): div Container*s Container*s
+  src: <a href={`/posts/${slug}/`} class="no-underline group"> // <div class="aspect-video overflow-hidden">
+#sean.silvius.me:src/pages/posts/index.astro:50:19 img gate=S [] attrs=src|alt|loading txt=0 expr=0 map=1 sysBelow=0
+  up: div.aspect-video.overflow-hidden < a.no-underline.group < Card.overflow-hidden.h-full.transition-all < Grid
+  kids(0): -
+  src: <img // src={`/images/${slug}.png`}
+#sean.silvius.me:src/pages/posts/index.astro:66:17 a gate=S [wrapsOne] attrs=href txt=0 expr=0 map=1 sysBelow=1
+  up: Container.mt-auto.@sm:p-2.@lg:p-4 < Card.overflow-hidden.h-full.transition-all < Grid < Container
+  kids(1): Button*s
+  src: <a href={`/posts/${slug}/`} class="no-underline"> // <Button class="uppercase font-bold tracking-tight">Read More</Button>
+#sean.silvius.me:src/pages/software/index.astro:78:15 a gate=S [visual] attrs=href|target|rel txt=1 expr=1 map=1 sysBelow=0
+  up: Container.self-end.text-end < Grid < Container < section
+  kids(0): -
+  src: <a href={project.url} target="_blank" rel="noopener noreferrer" class="text-primary font-semibold underline underline-offset-4 hover:text-secondary"> // {project.url.repl
+#sean.silvius.me:src/pages/stories/[...slug].astro:24:7 a gate=S [visual] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: nav.mb-8 < Container < Base
+  kids(0): -
+  src: <a href="/stories/" class="text-sm text-muted-foreground hover:text-foreground transition-colors"> // &larr; Stories
+#sean.silvius.me:src/pages/stories/index.astro:22:9 a gate=S [wrapsOne] attrs=href txt=0 expr=0 map=1 sysBelow=3
+  up: div.mt-12.flex.flex-col < Container < Base
+  kids(1): Card*s
+  src: <a href={`/stories/${story.id}/`} class="no-underline"> // <Card as="article" interactive>
+#smugglr.dev:src/components/HeroInstallCTA.astro:18:5 button gate=- [layout,visual,shellLike,flexRow] attrs=type|data-install-copy txt=0 expr=0 map=0 sysBelow=0
+  up: div.flex.flex-col.items-center
+  kids(3): span span span
+  src: <button // type="button"
+#smugglr.dev:src/components/HeroInstallCTA.astro:30:5 p gate=- [visual] attrs=- txt=0 expr=1 map=0 sysBelow=0
+  up: div.flex.flex-col.items-center
+  kids(0): -
+  src: <p class="font-sans font-light text-sm text-muted-foreground text-center">{subline}</p> // <span data-install-copy-live class="sr-only" aria-live="polite"></span>
+#smugglr.dev:src/components/HeroTopology.astro:143:13 button gate=- [visual,wrapsOne] attrs=type|data-topology-tick|aria-label txt=0 expr=0 map=1 sysBelow=0
+  up: div.flex.gap-1.5.justify-center < div.w-full.border.border-border
+  kids(1): span
+  src: <button // type="button"
+#smugglr.dev:src/components/MrsBlock.astro:108:9 a gate=S [visual] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: div.flex.items-center.justify-between < Container < section.bg-foreground.text-background
+  kids(0): -
+  src: <a href="/llms.txt" class="font-mono text-xs text-muted-foreground hover:opacity-80 transition-opacity">GET /llms.txt &#8599;</a> // </div>
+#smugglr.dev:src/components/MrsBlock.astro:181:32 a gate=S [] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: P.mt-6.max-w-prose < section < Container < section.bg-foreground.text-background
+  kids(0): -
+  src: Full comparison at <a href="/compare/" class="underline decoration-border underline-offset-4 hover:decoration-foreground transition-colors">/compare/</a>. Building a mult
+#smugglr.dev:src/components/MrsBlock.astro:181:197 a gate=S [] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: P.mt-6.max-w-prose < section < Container < section.bg-foreground.text-background
+  kids(0): -
+  src: Full comparison at <a href="/compare/" class="underline decoration-border underline-offset-4 hover:decoration-foreground transition-colors">/compare/</a>. Building a mult
+#smugglr.dev:src/components/MrsTable.astro:19:1 table gate=- [visual] attrs=- txt=0 expr=0 map=0 sysBelow=0
+  up: ROOT
+  kids(2): thead tbody
+  src: <table class="w-full border-collapse font-mono text-sm"> // <thead>
+#smugglr.dev:src/components/NarrativeSections.astro:98:17 a gate=S [visual,wrapsOne] attrs=href txt=0 expr=0 map=0 sysBelow=4
+  up: Grid < section < Container < div.bg-background
+  kids(1): Card*s
+  src: <a href="/get-started/" class="group hover:bg-muted transition-colors"> // <Card>
+#smugglr.dev:src/components/NarrativeSections.astro:106:17 a gate=S [visual,wrapsOne] attrs=href txt=0 expr=0 map=0 sysBelow=4
+  up: Grid < section < Container < div.bg-background
+  kids(1): Card*s
+  src: <a href="/docs/cli-reference/" class="group hover:bg-muted transition-colors"> // <Card>
+#smugglr.dev:src/components/NarrativeSections.astro:114:17 a gate=S [visual,wrapsOne] attrs=href txt=0 expr=0 map=0 sysBelow=4
+  up: Grid < section < Container < div.bg-background
+  kids(1): Card*s
+  src: <a href="/docs/configuration/" class="group hover:bg-muted transition-colors"> // <Card>
+#smugglr.dev:src/components/NarrativeSections.astro:122:17 a gate=S [visual,wrapsOne] attrs=href txt=0 expr=0 map=0 sysBelow=4
+  up: Grid < section < Container < div.bg-background
+  kids(1): Card*s
+  src: <a href="/docs/how-it-works/" class="group hover:bg-muted transition-colors"> // <Card>
+#smugglr.dev:src/components/NarrativeSections.astro:138:17 a gate=S [visual,wrapsOne] attrs=href txt=0 expr=0 map=0 sysBelow=4
+  up: Grid < section < Container < div.bg-background
+  kids(1): Card*s
+  src: <a href="/compare/" class="group hover:bg-muted transition-colors"> // <Card>
+#smugglr.dev:src/components/NarrativeSections.astro:146:17 a gate=S [visual,wrapsOne] attrs=href txt=0 expr=0 map=0 sysBelow=4
+  up: Grid < section < Container < div.bg-background
+  kids(1): Card*s
+  src: <a href="/compare/games/" class="group hover:bg-muted transition-colors"> // <Card>
+#smugglr.dev:src/components/NarrativeSections.astro:160:85 a gate=S [] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: P < section < Container < div.bg-background
+  kids(0): -
+  src: <P size="display-small">The CLI, the core engine, the plugin system. On <a href="https://github.com/rafters-studio/smugglr" class="underline decoration-border underline-o
+#smugglr.dev:src/components/SiteHeader.astro:14:9 a gate=- [visual] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: nav.flex.items-center.gap-7 < header.flex.items-center.justify-between
+  kids(0): -
+  src: <a href="/docs/" class="hover:text-foreground transition-colors">docs</a> // <a href="/docs/cli-reference/" class="hover:text-foreground transition-colors">cli</a>
+#smugglr.dev:src/components/SiteHeader.astro:15:9 a gate=- [visual] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: nav.flex.items-center.gap-7 < header.flex.items-center.justify-between
+  kids(0): -
+  src: <a href="/docs/cli-reference/" class="hover:text-foreground transition-colors">cli</a> // <a href="/#targets" class="hover:text-foreground transition-colors">targets</a>
+#smugglr.dev:src/components/SiteHeader.astro:16:9 a gate=- [visual] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: nav.flex.items-center.gap-7 < header.flex.items-center.justify-between
+  kids(0): -
+  src: <a href="/#targets" class="hover:text-foreground transition-colors">targets</a> // <a href="/#shapes" class="hover:text-foreground transition-colors">shapes</a>
+#smugglr.dev:src/components/SiteHeader.astro:17:9 a gate=- [visual] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: nav.flex.items-center.gap-7 < header.flex.items-center.justify-between
+  kids(0): -
+  src: <a href="/#shapes" class="hover:text-foreground transition-colors">shapes</a> // <a href="/compare/" class="hover:text-foreground transition-colors">compare</a>
+#smugglr.dev:src/components/SiteHeader.astro:18:9 a gate=- [visual] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: nav.flex.items-center.gap-7 < header.flex.items-center.justify-between
+  kids(0): -
+  src: <a href="/compare/" class="hover:text-foreground transition-colors">compare</a> // <a href="/compare/games/" class="hover:text-foreground transition-colors">games</a>
+#smugglr.dev:src/components/SiteHeader.astro:19:9 a gate=- [visual] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: nav.flex.items-center.gap-7 < header.flex.items-center.justify-between
+  kids(0): -
+  src: <a href="/compare/games/" class="hover:text-foreground transition-colors">games</a> // <a href="https://github.com/rafters-studio/smugglr" class="hover:text-foreground tr
+#smugglr.dev:src/components/SiteHeader.astro:20:9 a gate=- [visual] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: nav.flex.items-center.gap-7 < header.flex.items-center.justify-between
+  kids(0): -
+  src: <a href="https://github.com/rafters-studio/smugglr" class="hover:text-foreground transition-colors">github</a> // </nav>
+#smugglr.dev:src/components/TopBar.astro:13:7 a gate=S [noClass,wrapsOne,wrapsOneNoClass] attrs=href txt=0 expr=0 map=0 sysBelow=0
+  up: Grid < Container < header.bg-background
+  kids(1): img
+  src: <a href="/"> // <img src="/logo.webp" alt="smugglr" class="w-24 h-auto" />
+#smugglr.dev:src/components/TopBar.astro:14:9 img gate=S [] attrs=src|alt txt=0 expr=0 map=0 sysBelow=0
+  up: a < Grid < Container < header.bg-background
+  kids(0): -
+  src: <img src="/logo.webp" alt="smugglr" class="w-24 h-auto" /> // </a>
+#smugglr.dev:src/components/TopBar.astro:17:9 a gate=S [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: Grid.justify-self-end.w-fit < Grid < Container < header.bg-background
+  kids(0): -
+  src: <a href="/docs/">Docs</a> // <a href="https://github.com/rafters-studio/smugglr">GitHub</a>
+#smugglr.dev:src/components/TopBar.astro:18:9 a gate=S [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: Grid.justify-self-end.w-fit < Grid < Container < header.bg-background
+  kids(0): -
+  src: <a href="https://github.com/rafters-studio/smugglr">GitHub</a> // </Grid>
+#smugglr.dev:src/layouts/Docs.astro:55:7 a gate=S [noClass,wrapsOne,wrapsOneNoClass] attrs=href txt=0 expr=0 map=0 sysBelow=0
+  up: Grid.@sm:mb-8.@md:mb-16.@lg:mb-32 < Container < Base
+  kids(1): img
+  src: <a href="/"> // <img src="/logo.webp" alt="smugglr" class="w-24 h-auto" />
+#smugglr.dev:src/layouts/Docs.astro:56:9 img gate=S [] attrs=src|alt txt=0 expr=0 map=0 sysBelow=0
+  up: a < Grid.@sm:mb-8.@md:mb-16.@lg:mb-32 < Container < Base
+  kids(0): -
+  src: <img src="/logo.webp" alt="smugglr" class="w-24 h-auto" /> // </a>
+#smugglr.dev:src/layouts/Docs.astro:59:9 a gate=S [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: Grid.justify-self-end.w-fit < Grid.@sm:mb-8.@md:mb-16.@lg:mb-32 < Container < Base
+  kids(0): -
+  src: <a href="/docs/">Docs</a> // <a href="https://github.com/rafters-studio/smugglr">GitHub</a>
+#smugglr.dev:src/layouts/Docs.astro:60:9 a gate=S [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: Grid.justify-self-end.w-fit < Grid.@sm:mb-8.@md:mb-16.@lg:mb-32 < Container < Base
+  kids(0): -
+  src: <a href="https://github.com/rafters-studio/smugglr">GitHub</a> // </Grid>
+#smugglr.dev:src/layouts/Docs.astro:71:17 a gate=S [noClass] attrs=href|aria-current txt=0 expr=1 map=1 sysBelow=0
+  up: Container < Container < GridItem < Grid
+  kids(0): -
+  src: <a // href={item.href + '/'}
+#smugglr.dev:src/pages/agent/[...slug].astro:29:7 a gate=S [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: Container < Container < Base
+  kids(0): -
+  src: <a href="/agent/">&larr; /agent</a> // <Small>{kindLabel[entry.data.kind] ?? "Dispatch"}</Small>
+#smugglr.dev:src/pages/agent/[...slug].astro:39:7 a gate=S [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: Container < Container < Base
+  kids(0): -
+  src: <a href="/agent/">&larr; back to /agent</a> // </Container>
+#smugglr.dev:src/pages/agent/index.astro:56:15 a gate=S [noClass] attrs=href txt=1 expr=0 map=1 sysBelow=0
+  up: P < FeatureBlock < Grid < Section
+  kids(0): -
+  src: <a href={`/agent/${d.id}/`}>read &rarr;</a> // </P>
+#smugglr.dev:src/pages/docs/index.astro:6:3 h1 gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <h1>Docs</h1> // <p>
+#smugglr.dev:src/pages/docs/index.astro:7:3 p gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <p> // Reference material for the smugglr sync engine. The sidebar groups pages
+#smugglr.dev:src/pages/docs/index.astro:12:3 h2 gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <h2>Start</h2> // <ul>
+#smugglr.dev:src/pages/docs/index.astro:14:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/get-started/">Get Started</a>. Five minutes to your first push.</li> // <li><a href="/docs/cli-reference/">CLI Reference</a>. Every command, every flag, eve
+#smugglr.dev:src/pages/docs/index.astro:15:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/cli-reference/">CLI Reference</a>. Every command, every flag, every exit code.</li> // <li><a href="/docs/configuration/">Configuration</a>. The comple
+#smugglr.dev:src/pages/docs/index.astro:16:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/configuration/">Configuration</a>. The complete config file.</li> // </ul>
+#smugglr.dev:src/pages/docs/index.astro:19:3 h2 gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <h2>Internals</h2> // <ul>
+#smugglr.dev:src/pages/docs/index.astro:21:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/how-it-works/">How It Works</a>. Content hashing, the sync algorithm, plugins, the relay, LAN broadcast.</li> // <li><a href="/docs/patterns/">Usage Pa
+#smugglr.dev:src/pages/docs/index.astro:22:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/patterns/">Usage Patterns</a>. Cookbook scenarios with full config and CLI examples.</li> // <li><a href="/docs/plugin-guide/">Plugin Guide</a>. The ht
+#smugglr.dev:src/pages/docs/index.astro:23:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/plugin-guide/">Plugin Guide</a>. The http-sql plugin, shipped profiles, adding a custom target.</li> // <li><a href="/docs/concepts/">Concepts</a>. Con
+#smugglr.dev:src/pages/docs/index.astro:24:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/concepts/">Concepts</a>. Content is truth. Encryption as membership. Agent-first design.</li> // </ul>
+#smugglr.dev:src/pages/docs/index.astro:27:3 h2 gate=o [noClass] attrs=- txt=1 expr=0 map=0 sysBelow=0
+  up: Docs
+  kids(0): -
+  src: <h2>Browser</h2> // <ul>
+#smugglr.dev:src/pages/docs/index.astro:29:9 a gate=o [noClass] attrs=href txt=1 expr=0 map=0 sysBelow=0
+  up: li < ul < Docs
+  kids(0): -
+  src: <li><a href="/docs/browser-client/">Browser Client</a>. The npm package: init, push/pull/sync/diff, the table-changed event, autoSync, OPFS/wa-sqlite, and the zustand/nan

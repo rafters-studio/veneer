@@ -1,0 +1,82 @@
+00:22:22 [check] Getting diagnostics for Astro files in /Volumes/store/tmp/claude-501/-Volumes-store-projects-rafters-studio-veneer/2f3b20d4-a74e-4b0b-afc4-d92de7b630dd/scratchpad/sites/smugglr.dev...
+src/content.config.ts:38:15 - warning ts(6385): 'z' is deprecated.
+
+38     founding: z.boolean().default(false),
+                 ~
+src/content.config.ts:36:14 - warning ts(6385): 'z' is deprecated.
+
+36     crossed: z.string().optional(),
+                ~
+src/content.config.ts:34:11 - warning ts(6385): 'z' is deprecated.
+
+34     sign: z.string(),
+             ~
+src/content.config.ts:32:11 - warning ts(6385): 'z' is deprecated.
+
+32     mark: z.string(),
+             ~
+src/content.config.ts:30:11 - warning ts(6385): 'z' is deprecated.
+
+30   schema: z.object({
+             ~
+src/content.config.ts:24:11 - warning ts(6385): 'z' is deprecated.
+
+24     date: z.coerce.date().optional(),
+             ~
+src/content.config.ts:23:12 - warning ts(6385): 'z' is deprecated.
+
+23     order: z.number().default(100),
+              ~
+src/content.config.ts:22:14 - warning ts(6385): 'z' is deprecated.
+
+22     summary: z.string(),
+                ~
+src/content.config.ts:21:11 - warning ts(6385): 'z' is deprecated.
+
+21     kind: z.enum(['dispatch', 'field-note', 'manual']).default('dispatch'),
+             ~
+src/content.config.ts:20:12 - warning ts(6385): 'z' is deprecated.
+
+20     title: z.string(),
+              ~
+src/content.config.ts:19:11 - warning ts(6385): 'z' is deprecated.
+
+19   schema: z.object({
+             ~
+src/content.config.ts:1:28 - warning ts(6385): 'z' is deprecated.
+
+1 import { defineCollection, z } from 'astro:content';
+                             ~
+
+src/lib/primitives/document-editor.ts:408:20 - warning ts(6387): The signature '(commandId: string, showUI?: boolean | undefined, value?: string | undefined): boolean' of 'document.execCommand' is deprecated.
+
+408           document.execCommand('insertText', false, pastedText);
+                       ~~~~~~~~~~~
+
+src/components/ui/card.astro:41:3 - warning ts(6385): 'background' is deprecated.
+
+41   background,
+     ~~~~~~~~~~
+
+src/components/ui/container.astro:48:3 - warning ts(6385): 'background' is deprecated.
+
+48   background,
+     ~~~~~~~~~~
+
+Result (80 files): 
+- 0 errors
+- 0 warnings
+- 15 hints
+
+
+[WARN] The store at /Users/seansilvius/Library/pnpm/store/v11 is not used because packages cannot be hard linked from it into this project. Using the store at /Volumes/store/.pnpm-store/v11 instead. Set storeDir to choose the store.
+Error:   × installing dependencies
+  ├─▶ Failed to resolve dependency tree: Failed to resolve dependency: Cannot
+  │   resolve package from workspace because workspace packages were not
+  │   loaded into the resolver
+  │   
+  │   Failed to resolve @shingle/install@workspace:*
+  ╰─▶ Failed to resolve dependency: Cannot resolve package from workspace
+      because workspace packages were not loaded into the resolver
+
+[WARN] The install that runs before scripts failed, so your node_modules may be out of sync with your lockfile. Set "verifyDepsBeforeRun: false" to skip this install.
