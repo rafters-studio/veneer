@@ -43,6 +43,7 @@ export async function check(
     const asked = options.paths ?? (unsavedFiles.length > 0 ? unsavedFiles : undefined);
     const diagnostics = await lint(project, {
       componentFolders: config.componentFolders,
+      scan: config.scan,
       files: isSave ? undefined : asked?.filter((file) => !outside.includes(file)),
     });
     const written = isSave ? await writeDocsFrom(project, config) : undefined;

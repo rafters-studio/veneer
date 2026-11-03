@@ -16,7 +16,7 @@ const ASTRO_PAGE = "src/pages/fill.astro";
 const PAGES = [TSX_PAGE, ASTRO_PAGE];
 
 // FR-VEN-064's After removes the folders.
-interface PropsWorld extends DocsWorld {
+export interface PropsWorld extends DocsWorld {
   propsCopy?: string;
   pagesBefore?: Buffer[];
   propsChecked?: LintDiagnostic[];
@@ -26,18 +26,18 @@ interface PropsWorld extends DocsWorld {
   assertion?: { status: number | null; stderr: string };
 }
 
-function copyOf(world: PropsWorld): string {
+export function copyOf(world: PropsWorld): string {
   assert.ok(world.propsCopy, "the project is not set up in this scenario");
   return world.propsCopy;
 }
 
-const place = (world: PropsWorld, file: string, text: string): void => {
+export const place = (world: PropsWorld, file: string, text: string): void => {
   const at = join(copyOf(world), file);
   mkdirSync(dirname(at), { recursive: true });
   writeFileSync(at, text);
 };
 
-function project(world: PropsWorld, tsxPage: string, astroPage: string): void {
+export function project(world: PropsWorld, tsxPage: string, astroPage: string): void {
   const folder = mkdtempSync(join(tmpdir(), "veneer-props-"));
   (world.folders ??= []).push(folder);
   cpSync(join(pkg, "test/fixtures/lint"), folder, { recursive: true });
@@ -149,7 +149,7 @@ Then(/^the tokens code (was|was not) loaded$/, function (this: PropsWorld, answe
   assert.equal(tokens.length > 0, answer === "was", JSON.stringify(tokens));
 });
 
-function checked(world: PropsWorld): LintDiagnostic[] {
+export function checked(world: PropsWorld): LintDiagnostic[] {
   assert.ok(world.propsChecked, "check has not run");
   return world.propsChecked;
 }

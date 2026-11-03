@@ -686,10 +686,19 @@ export function ownPropNames(
 
 // ---- Intelligence.
 
-function intelligenceBlock(
+const INTELLIGENCE_TAGS = [
+  "cognitive-load",
+  "attention-economics",
+  "trust-building",
+  "accessibility",
+  "semantic-meaning",
+  "usage-patterns",
+];
+
+function placedBlocks(
   reader: Reader,
   sourceFile: TypeScript.SourceFile,
-): TypeScript.JSDoc | undefined {
+): { block: TypeScript.JSDoc; at: number }[] {
   const { ts } = reader;
   const blocks: TypeScript.JSDoc[] = [];
   const visit = (node: TypeScript.Node): void => {
@@ -697,14 +706,30 @@ function intelligenceBlock(
     ts.forEachChild(node, visit);
   };
   visit(sourceFile);
-  const placed = blocks.flatMap((block) => {
+  return blocks.flatMap((block) => {
     const start = block.getStart();
     const at = sourceFile.fileName.endsWith(".astro")
       ? sourceOffset(reader, sourceFile.fileName, start)
       : start;
     return at === undefined ? [] : [{ block, at }];
   });
-  return placed.sort((a, b) => a.at - b.at)[0]?.block;
+}
+
+function intelligenceBlock(
+  reader: Reader,
+  sourceFile: TypeScript.SourceFile,
+): TypeScript.JSDoc | undefined {
+  return placedBlocks(reader, sourceFile).sort((a, b) => a.at - b.at)[0]?.block;
+}
+
+export function holdsAllIntelligenceTags(
+  reader: Reader,
+  sourceFile: TypeScript.SourceFile,
+): boolean {
+  return placedBlocks(reader, sourceFile).some(({ block }) => {
+    const names = new Set(block.tags?.map((tag) => tag.tagName.text));
+    return INTELLIGENCE_TAGS.every((tag) => names.has(tag));
+  });
 }
 
 function intelligence(

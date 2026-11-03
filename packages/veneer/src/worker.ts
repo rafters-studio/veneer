@@ -44,7 +44,7 @@ process.stdout.write(JSON.stringify(await check(${JSON.stringify(root)}, { save:
 async function serve(root: string): Promise<void> {
   const config = await readConfig(root);
   if (!config.ok) throw new Error(messages(config.errors));
-  const { componentFolders } = config;
+  const { componentFolders, scan } = config;
   let project = await openProject(root);
   const unsaved = new Map<string, string>();
   // Files the tsconfig does not take. Remembered, so typing in one does not reopen the project.
@@ -76,7 +76,7 @@ async function serve(root: string): Promise<void> {
         return [];
       }
     }
-    return lint(project, { componentFolders, files: [file] });
+    return lint(project, { componentFolders, scan, files: [file] });
   };
 
   write({ ready: true });
