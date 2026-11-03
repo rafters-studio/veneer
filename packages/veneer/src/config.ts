@@ -3,6 +3,11 @@ import path from "node:path";
 
 const CONFIG_FILE = ".rafters/config.rafters.json";
 
+const SCANS = ["system", "format", "all"] as const;
+export type Scan = (typeof SCANS)[number];
+
+const isScan = (value: unknown): value is Scan => SCANS.some((scan) => scan === value);
+
 export interface Notice {
   code: string;
   message: string;
@@ -19,6 +24,8 @@ export interface DocsConfig {
   intent: string | null;
   // The entries that exist, each a path as the config wrote it.
   componentFolders: string[];
+  // Which uses the check covers.
+  scan: Scan;
   notices: Notice[];
 }
 
@@ -144,8 +151,13 @@ export async function readConfig(root: string): Promise<ConfigResult> {
 
   if (veneer !== undefined && !isObject(veneer)) {
     errors.push(fieldError("veneer", "expected an object", veneer));
-  } else if (veneer?.mdxPath !== undefined && typeof veneer.mdxPath !== "string") {
-    errors.push(fieldError("veneer.mdxPath", "expected a string", veneer.mdxPath));
+  } else {
+    if (veneer?.mdxPath !== undefined && typeof veneer.mdxPath !== "string") {
+      errors.push(fieldError("veneer.mdxPath", "expected a string", veneer.mdxPath));
+    }
+    if (veneer?.scan !== undefined && !isScan(veneer.scan)) {
+      errors.push(fieldError("veneer.scan", `expected one of ${SCANS.join(", ")}`, veneer.scan));
+    }
   }
 
   if (errors.length > 0) return { ok: false, errors };
@@ -153,6 +165,7 @@ export async function readConfig(root: string): Promise<ConfigResult> {
     ok: true,
     intent: typeof intent === "string" ? intent : null,
     componentFolders,
+    scan: isObject(veneer) && isScan(veneer.scan) ? veneer.scan : "format",
     notices,
   };
 }

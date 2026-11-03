@@ -1,10 +1,12 @@
 import { existsSync, realpathSync } from "node:fs";
 import path from "node:path";
 import type * as TypeScript from "typescript";
+import type { Scan } from "./config.ts";
 import type { Diagnostic, Project } from "./read.ts";
 import {
   compareCodePoints,
   generatedOffset,
+  holdsAllIntelligenceTags,
   ownPropNames,
   positionOf,
   relativeFile,
@@ -22,6 +24,21 @@ const CLASS_ATTRIBUTES = new Set(["class", "className", "class:list"]);
 const MAX_RESOLVE_STEPS = 8;
 
 const realPath = (file: string): string => (existsSync(file) ? realpathSync(file) : file);
+
+// ---- Which components are rafters.
+
+// The rafters shape, read from the file's text and the folder's names; nothing here runs.
+function qualifies(reader: Reader, sourceFile: TypeScript.SourceFile): boolean {
+  const { fileName } = sourceFile;
+  const stem = fileName.replace(/\.(tsx|astro)$/, "");
+  const { sys } = reader.ts;
+  return (
+    stem !== fileName &&
+    sys.fileExists(`${stem}.behavior.ts`) &&
+    sys.fileExists(`${stem}.classes.ts`) &&
+    holdsAllIntelligenceTags(reader, sourceFile)
+  );
+}
 
 // ---- Rule one: a use of a rafters component.
 
@@ -254,7 +271,7 @@ function fillAttributes(
 
 export async function lint(
   project: Project,
-  options: { componentFolders: string[]; files?: string[] },
+  options: { componentFolders: string[]; scan?: Scan; files?: string[] },
 ): Promise<LintDiagnostic[]> {
   const files =
     options.files ??
@@ -277,6 +294,18 @@ export async function lint(
     const real = realPath(file);
     return folders.some((folder) => real.startsWith(folder));
   };
+  const scan = options.scan ?? "format";
+  const projectRoot = realPath(project.root);
+  const isOwnSource = (file: string): boolean => {
+    const [first, ...rest] = path.relative(projectRoot, realPath(file)).split(path.sep);
+    return first !== ".." && first !== "node_modules" && !rest.includes("node_modules");
+  };
+  const isExempt = (sourceFile: TypeScript.SourceFile): boolean =>
+    isUnderFolder(sourceFile.fileName) || qualifies(reader, sourceFile);
+  const isCheckedUse = (declaredIn: TypeScript.SourceFile): boolean => {
+    if (scan === "system") return isUnderFolder(declaredIn.fileName);
+    return isExempt(declaredIn) || (scan === "all" && isOwnSource(declaredIn.fileName));
+  };
   const propsHelp = new Map<TypeScript.Symbol, string>();
 
   const reportedUse = (
@@ -291,7 +320,7 @@ export async function lint(
     const declaration = component?.valueDeclaration ?? component?.declarations?.[0];
     if (!element || !component || !declaration) return undefined;
     const declaredIn = declaration.getSourceFile();
-    if (!isUnderFolder(declaredIn.fileName)) return undefined;
+    if (!isCheckedUse(declaredIn)) return undefined;
 
     let help: string | undefined;
     if (diagnostic.code === "ts(6385)") {
@@ -328,7 +357,7 @@ export async function lint(
       if (!literal || !form) continue;
       const component = resolveTag(reader, attribute.parent.parent);
       const declaration = component?.valueDeclaration ?? component?.declarations?.[0];
-      if (!declaration || !isUnderFolder(declaration.getSourceFile().fileName)) continue;
+      if (!declaration || !isCheckedUse(declaration.getSourceFile())) continue;
       const start = positionOf(reader, sourceFile, attribute.getStart(sourceFile));
       const end = positionOf(reader, sourceFile, attribute.end);
       if (!start || !end) continue;
@@ -356,7 +385,7 @@ export async function lint(
       const reported = reportedUse(sourceFile, diagnostic);
       if (reported) found.push(reported);
     }
-    if (!isUnderFolder(absolute)) {
+    if (!isExempt(sourceFile)) {
       found.push(...bracketValues(reader, file, sourceFile));
       found.push(...(await retiredFills(file, sourceFile)));
     }
