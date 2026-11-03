@@ -17,6 +17,19 @@ Feature: What classy guarded is an error in the check
       | const box = "p-[3px]" used in class={box}    |
 
   @criterion-1
+  Scenario: a const imported from the project's own source is reported where it is used
+    Given a page with const box imported from the own source, used in class={box}
+    When veneer's check runs
+    Then it reports rafters(arbitrary-value) at severity error
+    And each finding sits on box in class={box}
+
+  @criterion-1
+  Scenario: a const imported from a dependency is not the project's own source
+    Given a page with const box imported from a dependency, used in class={box}
+    When veneer's check runs
+    Then it reports nothing
+
+  @criterion-1
   Scenario: a bracket in a modifier is not a bracket value
     Given a page with class="data-[state=open]:p-2"
     When veneer's check runs
@@ -47,6 +60,7 @@ Feature: What classy guarded is an error in the check
       | value  | code                     |
       | card   | nothing                  |
       | nosuch | rafters(unknown-surface) |
+      |        | nothing                  |
 
   @criterion-3
   Scenario: tokens that cannot be loaded are said, and no surface is named
@@ -61,6 +75,13 @@ Feature: What classy guarded is an error in the check
     Given a project whose source has fill="bg-fill-glass extra" on a rafters component
     When veneer's check runs
     Then it reports rafters(invalid-fill)
+    And the tokens code was not loaded
+
+  @criterion-4
+  Scenario: an empty surface does not load the tokens
+    Given a project whose source has surface="" on a rafters component
+    When veneer's check runs
+    Then it reports nothing
     And the tokens code was not loaded
 
   @criterion-4

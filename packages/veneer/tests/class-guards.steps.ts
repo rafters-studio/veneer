@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { Given, Then } from "@cucumber/cucumber";
 import { INSTALL_TIMEOUT_MS, pkg } from "./support/docs-fixture.ts";
-import { checked, project, type PropsWorld } from "./rafters-props.steps.ts";
+import { checked, copyOf, place, project, type PropsWorld } from "./rafters-props.steps.ts";
 
 const PAGE_FILES = ["src/pages/fill.tsx", "src/pages/fill.astro"];
 const CLASSY = "const classy = (...inputs: unknown[]) => inputs.join(' ');\n";
@@ -16,6 +16,8 @@ interface Page {
   tsx: string;
   astro: string;
   brackets: string[];
+  // Other files the page reads, by path.
+  files?: Record<string, string>;
 }
 
 const element = (attribute: string, script = ""): Pick<Page, "tsx" | "astro"> => ({
@@ -40,6 +42,16 @@ const PAGES: Record<string, Page> = {
     ...element("class={box}", 'const box = "p-[3px]";\n'),
     brackets: ["p-[3px]"],
   },
+  "const box imported from the own source, used in class={box}": {
+    ...element("class={box}", "import { box } from '../lib/box';\n"),
+    brackets: ["p-[3px]"],
+    files: { "src/lib/box.ts": 'export const box = "p-[3px]";\n' },
+  },
+  "const box imported from a dependency, used in class={box}": {
+    ...element("class={box}", "import { box } from 'outside-const';\n"),
+    brackets: [],
+    files: { "node_modules/outside-const/index.d.ts": 'export declare const box = "p-[3px]";\n' },
+  },
   'class="data-[state=open]:p-2"': {
     ...element('class="data-[state=open]:p-2"'),
     brackets: [],
@@ -61,6 +73,7 @@ Given(
     const page = PAGES[written];
     assert.ok(page, written);
     project(this, page.tsx, page.astro);
+    for (const [file, text] of Object.entries(page.files ?? {})) place(this, file, text);
     this.expectedBrackets = page.brackets;
   },
 );
@@ -105,6 +118,14 @@ Then(
     }
   },
 );
+
+Then(/^each finding sits on box in class=\{box\}$/, function (this: PropsWorld) {
+  for (const { file, line, column, endColumn } of checked(this)) {
+    const lines = readFileSync(join(copyOf(this), file), "utf8").split("\n");
+    const start = String(lines[line - 1]).indexOf("class={box}") + "class={".length;
+    assert.deepEqual([column, endColumn], [start + 1, start + 1 + "box".length], file);
+  }
+});
 
 Then(
   /^each finding says the tokens could not be loaded and names no surface$/,

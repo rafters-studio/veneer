@@ -147,17 +147,15 @@ function utilityOf(className: string): string {
   return className.slice(start);
 }
 
-// The string a const in this file holds. An imported const is written in another file.
+// The string a const holds, wherever the identifier's symbol leads.
 function constString(
   reader: Reader,
-  sourceFile: TypeScript.SourceFile,
   identifier: TypeScript.Identifier,
 ): TypeScript.StringLiteralLike | undefined {
   const { ts, tc } = reader;
   const declaration = resolveSymbol(reader, tc.getSymbolAtLocation(identifier))?.valueDeclaration;
   if (
     !declaration ||
-    declaration.getSourceFile() !== sourceFile ||
     !ts.isVariableDeclaration(declaration) ||
     !(ts.getCombinedNodeFlags(declaration) & ts.NodeFlags.Const) ||
     !declaration.initializer
@@ -167,22 +165,30 @@ function constString(
   return ts.isStringLiteralLike(declaration.initializer) ? declaration.initializer : undefined;
 }
 
-// A set, because a literal can be reached twice: a classy call in a class attribute, a const used twice.
+// Each literal by the node a finding on it sits at: itself, or the use of a const written in
+// another file, since a file's answer holds only that file. A map, because a node can be reached
+// twice: a classy call in a class attribute, a const used twice.
+type ClassStrings = Map<TypeScript.Node, TypeScript.StringLiteralLike>;
+
 function collectClassStrings(
   reader: Reader,
   sourceFile: TypeScript.SourceFile,
+  isOwnSource: (file: string) => boolean,
   node: TypeScript.Node,
-  found: Set<TypeScript.StringLiteralLike>,
+  found: ClassStrings,
 ): void {
   const { ts } = reader;
   if (ts.isStringLiteralLike(node)) {
-    found.add(node);
+    found.set(node, node);
   } else if (ts.isIdentifier(node)) {
-    const literal = constString(reader, sourceFile, node);
-    if (literal) found.add(literal);
+    const literal = constString(reader, node);
+    const declaredIn = literal?.getSourceFile();
+    if (!literal || !declaredIn) return;
+    if (declaredIn === sourceFile) found.set(literal, literal);
+    else if (isOwnSource(declaredIn.fileName)) found.set(node, literal);
   } else {
     ts.forEachChild(node, (child) => {
-      collectClassStrings(reader, sourceFile, child, found);
+      collectClassStrings(reader, sourceFile, isOwnSource, child, found);
     });
   }
 }
@@ -191,14 +197,20 @@ function bracketsInLiteral(
   reader: Reader,
   file: string,
   sourceFile: TypeScript.SourceFile,
+  at: TypeScript.Node,
   literal: TypeScript.StringLiteralLike,
 ): LintDiagnostic[] {
   // The literal as written, so an offset in it is an offset in the file.
-  const written = literal.getText(sourceFile).slice(1, -1);
+  const written = literal.getText(literal.getSourceFile()).slice(1, -1);
   return [...written.matchAll(/\S+/g)].flatMap((match): LintDiagnostic[] => {
     const [className] = match;
     if (!utilityOf(className).includes("[")) return [];
-    const position = positionOf(reader, sourceFile, literal.getStart(sourceFile) + 1 + match.index);
+    const inLiteral = at === literal;
+    const position = positionOf(
+      reader,
+      sourceFile,
+      at.getStart(sourceFile) + (inLiteral ? 1 + match.index : 0),
+    );
     if (!position) return [];
     return [
       {
@@ -206,7 +218,7 @@ function bracketsInLiteral(
         line: position.line,
         column: position.column,
         endLine: position.line,
-        endColumn: position.column + className.length,
+        endColumn: position.column + (inLiteral ? className.length : at.getWidth(sourceFile)),
         severity: "error",
         code: "rafters(arbitrary-value)",
         message: `${className} is an arbitrary value`,
@@ -219,9 +231,10 @@ function bracketValues(
   reader: Reader,
   file: string,
   sourceFile: TypeScript.SourceFile,
+  isOwnSource: (file: string) => boolean,
 ): LintDiagnostic[] {
   const { ts } = reader;
-  const literals = new Set<TypeScript.StringLiteralLike>();
+  const strings: ClassStrings = new Map();
   const visit = (node: TypeScript.Node): void => {
     if (ts.isJsxAttribute(node) && node.initializer) {
       const { name } = node;
@@ -229,7 +242,7 @@ function bracketValues(
         ? `${name.namespace.text}:${name.name.text}`
         : name.text;
       if (CLASS_ATTRIBUTES.has(attribute)) {
-        collectClassStrings(reader, sourceFile, node.initializer, literals);
+        collectClassStrings(reader, sourceFile, isOwnSource, node.initializer, strings);
       }
     } else if (
       ts.isCallExpression(node) &&
@@ -237,13 +250,15 @@ function bracketValues(
       node.expression.text === "classy"
     ) {
       for (const argument of node.arguments) {
-        collectClassStrings(reader, sourceFile, argument, literals);
+        collectClassStrings(reader, sourceFile, isOwnSource, argument, strings);
       }
     }
     ts.forEachChild(node, visit);
   };
   visit(sourceFile);
-  return [...literals].flatMap((literal) => bracketsInLiteral(reader, file, sourceFile, literal));
+  return [...strings].flatMap(([at, literal]) =>
+    bracketsInLiteral(reader, file, sourceFile, at, literal),
+  );
 }
 
 // ---- Rule three: a fill or surface value.
@@ -409,6 +424,7 @@ export async function lint(
   };
 
   const surfaceFinding = async (value: string): Promise<ValueFinding | undefined> => {
+    if (value === "") return undefined;
     surfaces ??= loadSurfaces(project.root);
     const loaded = await surfaces;
     if ("failure" in loaded) {
@@ -466,7 +482,7 @@ export async function lint(
       if (reported) found.push(reported);
     }
     if (!isExempt(sourceFile)) {
-      found.push(...bracketValues(reader, file, sourceFile));
+      found.push(...bracketValues(reader, file, sourceFile, isOwnSource));
       found.push(...(await badValues(file, sourceFile)));
     }
   }
