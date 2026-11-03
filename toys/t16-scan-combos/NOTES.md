@@ -60,7 +60,7 @@ The recorded `results/astro-check` came from the `pnpm exec` run; the changed sc
 - Facts: `facts.ts` opens each site with veneer's `openProject`, runs veneer's `lint`, and writes a row
   per JSX element from the same program. Helpers lint.ts does not export are copied verbatim and marked.
 - Combinations: `combos.mjs` queries the rows offline. 10 scan definitions x 4 gates x 4 element sets x
-  15 class filters per site and in total: `results/combos.csv`.
+  16 class filters per site and in total: `results/combos.csv`.
 - Precision: I read every element of each family in non-exempt files, so it is a census of this corpus and
   not a sample: 94 divs, 59 sectioning elements, 206 raw elements (`results/census-*.txt`). Divs and
   sectioning have one verdict per line in `verdicts.mjs`. Raw elements were read, then given verdicts by
@@ -132,7 +132,7 @@ file gate. At the every-file gate they give 92 to 94, because a looser definitio
 
 - The strict definition matches: 11 custom components on huttspawn, 0 elsewhere.
 - Control: 63 of huttspawn's 101 system files pass strict. 31 lack a behavior file, mostly sub-parts such as
-  `card-title.astro`. Copies on the shingle sites pass 0, which is the older version Sean ruled out.
+  `card-title.astro`. The older copies on the shingle sites pass 0: Container there carries two tags and no behavior file.
 
 Check time, ms: open 806 to 2020, first full diagnostics 71 to 956, lint after that 1 to 37 (cached), the
 walk 4 to 37. The walk ran across all element rows, so one rule would cost no more.
@@ -143,7 +143,7 @@ walk 4 to 37. The walk ran across all element rows, so one rule would cost no mo
 |---|---|
 | P1 | **Held.** 11 on huttspawn, 0 elsewhere. |
 | P2 | **Held.** 0 on shingle, 63 of 101 on huttspawn. |
-| P3 | **Mostly held.** Files-only adds 0. Classes-only adds `hs-panel`. Dropping files also adds only `hs-panel` among own components: six tags without files is that one component. |
+| P3 | **Mostly held.** Files-only adds 0. Classes-only adds `hs-panel`. Dropping files adds 2 files, but only `hs-panel` is used, so "nobody writes six tags without the files" nearly holds. |
 | P4 | **Half failed.** `system` and `format` differ on huttspawn only, as predicted, but give the same div counts at the file gate. `all` reaches 17 of 38 div files, not 90%. Layouts sit on pages, and pages hold few divs. |
 | P5 | **Failed, lower.** 9% strict, 21% lenient; predicted 15 to 25%. |
 | P6 | **Failed.** Layout 20%/40%, against 40 to 50%. Grid had no findings at all. Shell 33% on n=3, not 90%. Flex row 0%, under 20% as predicted. Flex-col 43% strict, 86% lenient, either side of 60%. |
@@ -212,7 +212,7 @@ raw equivalents in this rule (0 of 98 at the file gate).
 
 **Worth a separate issue, not this rule:** a div directly holding text pointing at Typography. 34 findings
 at every file, 22 Typography, 9 Card, 3 K. It finds more real work than the layout rule on this corpus,
-though 16 of them are in one custom hero and 9 are stubs. One reader's judgement, and nobody has asked for it.
+though 14 of them are in one custom hero and 9 are stubs. One reader's judgement, and nobody has asked for it.
 
 ## Surprises
 
@@ -224,7 +224,7 @@ though 16 of them are in one custom hero and 9 are stubs. One reader's judgement
    exempt files is one `dl`. Migration has already done that work.
 3. **#159's gate rewards the wrong files.** Adopt one component and every div in the file warns. Adopt none
    and nothing does: 51 of 94 divs sit in files that escape.
-4. **`system` and `format` give identical div counts in every combination measured.** `format`'s effect here
+4. **`system` and `format` give identical totals in every gate, element and class combination in `combos.csv`.** `format`'s effect here
    is on uses: 90 more are checked, with 0 errors today.
 5. **Twelve `div`s sit inside `button` in `LegionHero.astro`**, which is invalid HTML. No rule asked covers it.
 
