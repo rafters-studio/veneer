@@ -251,6 +251,20 @@ Then(
   },
 );
 
+Then(
+  /^a line under the finding at (\S+) names ('\w+')$/,
+  function (this: CommandWorld, at: string, prop: string) {
+    const lines = commandOf(this).stdout.split("\n");
+    const finding = lines.findIndex((line) => line.startsWith(`${at} `));
+    assert.notEqual(finding, -1, commandOf(this).stdout);
+    const next = lines.findIndex((line, index) => index > finding && !line.startsWith("  "));
+    assert.ok(
+      lines.slice(finding + 1, next).some((line) => line.includes(prop)),
+      commandOf(this).stdout,
+    );
+  },
+);
+
 Then(/^the report is on stdout$/, { timeout: RUN_MS }, function (this: CommandWorld) {
   const script = `import { check } from ${JSON.stringify(INDEX)};
 const result = await check(${JSON.stringify(rootOf(this))});

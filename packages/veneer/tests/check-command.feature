@@ -148,3 +148,9 @@ Feature: The rafters-check bin
     Given a project with no findings
     When rafters-check runs with --stdin src/pages/new.astro and a bracket value on stdin
     Then a line of stdout matches file:line:column severity code message for src/pages/new.astro
+
+  @criterion-FR-VEN-066-c4
+  Scenario: the report of a missing required prop names that prop
+    Given the lint fixture
+    When rafters-check runs in its root
+    Then a line under the finding at src/pages/astro-cases.astro:22:2 names 'title'

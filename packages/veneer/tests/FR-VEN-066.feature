@@ -1,4 +1,4 @@
-# Generated from legion requirement FR-VEN-066, revision 2026-11-02T08:05:49.695854+00:00.
+# Generated from legion requirement FR-VEN-066, revision 2026-11-04T04:22:20.064876+00:00.
 # Do not edit: regenerate with scripts/features.mjs.
 
 Feature: Lint: report only the rafters components
@@ -24,12 +24,10 @@ Feature: Lint: report only the rafters components
     And when lint runs with componentFolders ["src/widgets"] and the same files it reports one diagnostic of code "rafters(arbitrary-value)"
 
   @criterion-FR-VEN-066-c4 @module:packages/veneer
-  Scenario: The report has a line per diagnostic, its help and a count
+  Scenario: The report has a finding line per diagnostic, the later lines of its message, its help and a count
     Given two diagnostics, the first with help "a, b" and the message "bad\nmore"
     When report runs on them
-    Then each is one line with the first line of its message
-    And the first is followed by the line "  help: a, b"
-    And the last line is "2 problems"
+    Then its lines are "a.astro:1:2 error ts(2322) bad", "  more", "  help: a, b", "b.astro:1:2 error ts(2741) worse" and "2 problems"
 
   @criterion-FR-VEN-066-c5 @module:packages/veneer
   Scenario: A retired prop names its replacement from its own source
