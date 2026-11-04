@@ -170,3 +170,26 @@ Feature: What classy guarded is an error in the check
     When rafters-check runs
     And the language server's worker reads src/components/x.classes.ts
     Then the worker's answer on the classes file is the report's
+
+  @criterion-6
+  Scenario: a proposed classes file is checked
+    Given a project with no findings
+    And its componentsPath is src/components/ui
+    When rafters-check runs with --stdin src/components/x.classes.ts and a bracket value on stdin
+    Then the report names src/components/x.classes.ts
+    And the exit code is 1
+
+  @criterion-6
+  Scenario: a proposed classes file under componentsPath is not checked
+    Given a project with no findings
+    When rafters-check runs with --stdin src/components/x.classes.ts and a bracket value on stdin
+    Then the report names no file
+    And the exit code is 0
+
+  @criterion-6
+  Scenario: every other .ts path still passes
+    Given a project with no findings
+    And its componentsPath is src/components/ui
+    When rafters-check runs with --stdin src/components/x.ts and a bracket value on stdin
+    Then the report names no file
+    And the exit code is 0
