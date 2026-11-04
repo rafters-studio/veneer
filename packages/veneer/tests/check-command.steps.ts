@@ -14,6 +14,13 @@ import {
 
 const RUN_MS = 60 * 1000;
 const BRACKET_VALUE = '<div class="p-[1px]">a</div>\n';
+const CLASSES_BRACKET_VALUE = 'export const box = "p-[1px]";\n';
+const TS_BRACKET_VALUE =
+  'declare const classy: (name: string) => string;\nexport const box = classy("p-[1px]");\n';
+const bracketValueFor = (file: string): string => {
+  if (file.endsWith(".classes.ts")) return CLASSES_BRACKET_VALUE;
+  return file.endsWith(".ts") ? TS_BRACKET_VALUE : BRACKET_VALUE;
+};
 const CLEAN = "<div>a</div>\n";
 const FINDING_LINE = /^(\S+):\d+:\d+ (?:error|warning|info|hint) \S+ .+$/;
 const INDEX = join(pkg, "dist/index.mjs");
@@ -21,9 +28,9 @@ const VP = join(pkg, "node_modules/.bin/vp");
 const manifest: { bin: { "rafters-check": string } } = JSON.parse(
   readFileSync(join(pkg, "package.json"), "utf8"),
 );
-const BIN = join(pkg, manifest.bin["rafters-check"]);
+export const BIN = join(pkg, manifest.bin["rafters-check"]);
 
-interface CommandWorld extends DocsWorld {
+export interface CommandWorld extends DocsWorld {
   // The lint fixture's Given sets this; the other Givens here do too.
   checkCopy?: string;
   before?: Map<string, string>;
@@ -41,12 +48,12 @@ function rootOf(world: CommandWorld): string {
   return world.checkCopy;
 }
 
-function commandOf(world: CommandWorld): NonNullable<CommandWorld["command"]> {
+export function commandOf(world: CommandWorld): NonNullable<CommandWorld["command"]> {
   assert.ok(world.command, "the command has not run");
   return world.command;
 }
 
-function run(
+export function run(
   world: CommandWorld,
   program: string,
   args: string[],
@@ -60,6 +67,12 @@ function run(
     input,
   });
   world.command = { status, stdout, stderr };
+}
+
+function setComponentsPath(world: CommandWorld, folder: string): void {
+  const file = join(rootOf(world), CONFIG);
+  const config: object = JSON.parse(readFileSync(file, "utf8"));
+  writeFileSync(file, JSON.stringify({ ...config, componentsPath: folder }));
 }
 
 // Every file outside node_modules, with its bytes.
@@ -82,14 +95,16 @@ Given(
   },
 );
 
+Given(/^its componentsPath is (\S+)$/, function (this: CommandWorld, folder: string) {
+  setComponentsPath(this, folder);
+});
+
 Given(/^a folder with no rafters config$/, function (this: CommandWorld) {
   this.checkCopy = tempFolder(this);
 });
 
 Given(/^its componentsPath names a folder that does not exist$/, function (this: CommandWorld) {
-  const file = join(rootOf(this), CONFIG);
-  const config: object = JSON.parse(readFileSync(file, "utf8"));
-  writeFileSync(file, JSON.stringify({ ...config, componentsPath: "src/nowhere" }));
+  setComponentsPath(this, "src/nowhere");
 });
 
 Given(
@@ -162,7 +177,7 @@ When(
   /^rafters-check runs with --stdin (\S+) and a bracket value on stdin$/,
   { timeout: RUN_MS },
   function (this: CommandWorld, file: string) {
-    runStdin(this, file, BRACKET_VALUE);
+    runStdin(this, file, bracketValueFor(file));
   },
 );
 

@@ -15,6 +15,8 @@ Feature: What classy guarded is an error in the check
       | class={classy("p-[3px]", cond && "m-[1px]")} |
       | const box = classy("p-[3px]") outside JSX    |
       | const box = "p-[3px]" used in class={box}    |
+      | const box = { text: "p-[3px]" } used in class={box.text} |
+      | const box = { text: "p-[3px]" } as const used in class={box.text} |
 
   @criterion-1
   Scenario: a const imported from the project's own source is reported where it is used
@@ -108,3 +110,86 @@ Feature: What classy guarded is an error in the check
       | use                        |
       | surface="nosuch"           |
       | fill="bg-fill-glass extra" |
+
+  # The scenarios below carry the criterion numbers of issue #166.
+
+  @criterion-1
+  Scenario: a project's own classes file is checked
+    Given a project with src/components/x.classes.ts holding text-[0.625rem] and aria-[current=page]:text-primary
+    When rafters-check runs
+    Then the report names text-[0.625rem] at its line in src/components/x.classes.ts
+    And the report does not name aria-[current=page]:text-primary
+
+  @criterion-1
+  Scenario: a classes file in a dependency is not the project's own
+    Given a project whose tsconfig takes a .classes.ts file with a bracket value from a dependency
+    When rafters-check runs
+    Then the report does not name that file
+
+  @criterion-2
+  Scenario: an installed classes file is not
+    Given a project with a bracket value in a .classes.ts file under componentsPath
+    When rafters-check runs
+    Then the report does not name that file
+
+  @criterion-3
+  Scenario: a const object's property reaches a class
+    Given a page with const box = { text: "text-[0.625rem]" } and classy(box.text)
+    When rafters-check runs
+    Then the report names text-[0.625rem] on the page at the classy call
+
+  @criterion-3
+  Scenario: a const object from the own source is reported where it is used
+    Given a page with a const object imported from the own source, used in class={box.text}
+    When veneer's check runs
+    Then it reports rafters(arbitrary-value) at severity error
+    And each finding sits on box.text in class={box.text}
+
+  @criterion-3
+  Scenario Outline: what is not a const object's bracket value
+    Given a page with <written>
+    When veneer's check runs
+    Then it reports nothing
+
+    Examples:
+      | written                                                             |
+      | let box = { text: "p-[3px]" } used in class={box.text}              |
+      | a function returning { text: "p-[3px]" }, used in class={box.text}  |
+      | a const object imported from a dependency, used in class={box.text} |
+
+  @criterion-5
+  Scenario: the worker gives check's answer on a const object's property
+    Given a page with const box = { text: "p-[3px]" } used in class={box.text}
+    When veneer's check runs
+    And the language server's worker reads the same page
+    Then the worker's diagnostics equal check's
+
+  @criterion-5
+  Scenario: the worker gives check's answer on a classes file
+    Given a project with src/components/x.classes.ts holding text-[0.625rem] and aria-[current=page]:text-primary
+    When rafters-check runs
+    And the language server's worker reads src/components/x.classes.ts
+    Then the worker's answer on the classes file is the report's
+
+  @criterion-6
+  Scenario: a proposed classes file is checked
+    Given a project with no findings
+    And its componentsPath is src/components/ui
+    When rafters-check runs with --stdin src/components/x.classes.ts and a bracket value on stdin
+    Then the report names src/components/x.classes.ts
+    And the exit code is 1
+
+  @criterion-6
+  Scenario: a proposed classes file under componentsPath is not checked
+    Given a project with no findings
+    When rafters-check runs with --stdin src/components/x.classes.ts and a bracket value on stdin
+    Then the report names no file
+    And the exit code is 0
+
+  @criterion-6
+  Scenario: every other .ts path still passes
+    Given a project with no findings
+    And its componentsPath is src/components/ui
+    When rafters-check runs with --stdin src/components/x.ts and a bracket value on stdin
+    Then the report names no file
+    And the exit code is 0

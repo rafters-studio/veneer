@@ -194,19 +194,20 @@ Then(
 );
 
 When(
-  /^the language server's worker reads the same page$/,
+  /^the language server's worker reads (the same page|\S+)$/,
   { timeout: CHILD_MS },
-  async function (this: PropsWorld) {
+  async function (this: PropsWorld, named: string) {
+    const file = named === "the same page" ? TSX_PAGE : named;
     const worker = spawn(process.execPath, [WORKER, copyOf(this)], {
       stdio: ["pipe", "pipe", "inherit"],
     });
     try {
-      const text = readFileSync(join(copyOf(this), TSX_PAGE), "utf8");
+      const text = readFileSync(join(copyOf(this), file), "utf8");
       for await (const raw of createInterface({ input: worker.stdout })) {
         const line: { ready?: boolean; seq?: number; diagnostics?: LintDiagnostic[] } =
           JSON.parse(raw);
         if (line.ready === true) {
-          worker.stdin.write(`${JSON.stringify({ seq: 1, file: TSX_PAGE, text })}\n`);
+          worker.stdin.write(`${JSON.stringify({ seq: 1, file, text })}\n`);
         } else {
           assert.equal(line.seq, 1, raw);
           this.workerAnswer = line.diagnostics;
