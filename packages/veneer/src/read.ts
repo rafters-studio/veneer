@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
@@ -79,8 +80,30 @@ function prepareLanguageServer(): void {
   setIsTrusted(false);
   const kit: typeof CreateChecker = serverRequire("@volar/kit/lib/createChecker.js");
   const original = kit.createTypeScriptChecker;
-  kit.createTypeScriptChecker = (languages, services, ...rest) =>
-    original(languages, [...services, capturePlugin], ...rest);
+  kit.createTypeScriptChecker = (languages, services, tsconfig, references, setup) =>
+    original(languages, [...services, capturePlugin], tsconfig, references, (args) => {
+      setup?.(args);
+      versionByContent(args.project.typescript.languageServiceHost);
+    });
+}
+
+// Every language service shares one TypeScript DocumentRegistry, which reuses a stored file when
+// the version string matches and never compares text. Each open restarts its per-file counters
+// at "0", so a later open would answer from the first text the process saw (#164).
+const contentVersions = new WeakMap<TypeScript.IScriptSnapshot, string>();
+function versionByContent(host: TypeScript.LanguageServiceHost): void {
+  const versionOf = host.getScriptVersion.bind(host);
+  host.getScriptVersion = (file) => {
+    const version = versionOf(file);
+    const snapshot = version === "" ? undefined : host.getScriptSnapshot(file);
+    if (!snapshot) return version;
+    let hash = contentVersions.get(snapshot);
+    if (hash === undefined) {
+      hash = createHash("sha1").update(snapshot.getText(0, snapshot.getLength())).digest("base64");
+      contentVersions.set(snapshot, hash);
+    }
+    return hash;
+  };
 }
 
 function constructAstroCheck(root: string): AstroCheck {
