@@ -24,6 +24,8 @@ export interface PropsWorld extends DocsWorld {
   found?: LintDiagnostic[];
   modulesLoaded?: string[];
   workerAnswer?: LintDiagnostic[];
+  // The files veneer's check runs on, when a scenario names others than the two pages.
+  checkPaths?: string[];
   dist?: string;
   assertion?: { status: number | null; stderr: string };
 }
@@ -130,7 +132,7 @@ registerHooks({
   },
 });
 const { check } = await import(${JSON.stringify(INDEX)});
-const result = await check(${JSON.stringify(copyOf(this))}, { paths: ${JSON.stringify(PAGES)} });
+const result = await check(${JSON.stringify(copyOf(this))}, { paths: ${JSON.stringify(this.checkPaths ?? PAGES)} });
 process.stdout.write(JSON.stringify({ result, loaded }));
 `;
   const { status, stdout, stderr } = spawnSync(

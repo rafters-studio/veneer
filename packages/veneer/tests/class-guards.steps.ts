@@ -32,6 +32,12 @@ const element = (attribute: string, script = ""): Pick<Page, "tsx" | "astro"> =>
 });
 
 const PAGES: Record<string, Page> = {
+  "a div holding a rafters component": {
+    tsx: "import { Surface } from '@/components/ui/surface';\nexport const Page = () => <div><Surface /></div>;\n",
+    astro:
+      "---\nimport Surface from '@/components/ui/surface-astro.astro';\n---\n<div><Surface /></div>\n",
+    brackets: [],
+  },
   'class="p-[3px]"': { ...element('class="p-[3px]"'), brackets: ["p-[3px]"] },
   'class={classy("p-[3px]", cond && "m-[1px]")}': {
     ...element(
