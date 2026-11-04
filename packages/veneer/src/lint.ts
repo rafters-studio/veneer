@@ -24,6 +24,7 @@ const CLASS_ATTRIBUTES = new Set(["class", "className", "class:list"]);
 const MAX_RESOLVE_STEPS = 8;
 
 const realPath = (file: string): string => (existsSync(file) ? realpathSync(file) : file);
+const isClassesFile = (file: string): boolean => file.endsWith(".classes.ts");
 
 // ---- Which components are rafters.
 
@@ -147,22 +148,49 @@ function utilityOf(className: string): string {
   return className.slice(start);
 }
 
-// The string a const holds, wherever the identifier's symbol leads.
+// What a const is initialized with, wherever the identifier's symbol leads.
+function constInitializer(
+  reader: Reader,
+  identifier: TypeScript.Identifier,
+): TypeScript.Expression | undefined {
+  const { ts, tc } = reader;
+  const declaration = resolveSymbol(reader, tc.getSymbolAtLocation(identifier))?.valueDeclaration;
+  return declaration &&
+    ts.isVariableDeclaration(declaration) &&
+    ts.getCombinedNodeFlags(declaration) & ts.NodeFlags.Const
+    ? declaration.initializer
+    : undefined;
+}
+
 function constString(
   reader: Reader,
   identifier: TypeScript.Identifier,
 ): TypeScript.StringLiteralLike | undefined {
-  const { ts, tc } = reader;
-  const declaration = resolveSymbol(reader, tc.getSymbolAtLocation(identifier))?.valueDeclaration;
-  if (
-    !declaration ||
-    !ts.isVariableDeclaration(declaration) ||
-    !(ts.getCombinedNodeFlags(declaration) & ts.NodeFlags.Const) ||
-    !declaration.initializer
-  ) {
-    return undefined;
+  const initializer = constInitializer(reader, identifier);
+  return initializer && reader.ts.isStringLiteralLike(initializer) ? initializer : undefined;
+}
+
+// The string box.text holds, for a const box = { text: "..." }.
+function constProperty(
+  reader: Reader,
+  { expression, name }: TypeScript.PropertyAccessExpression,
+): TypeScript.StringLiteralLike | undefined {
+  const { ts } = reader;
+  let object = ts.isIdentifier(expression) ? constInitializer(reader, expression) : undefined;
+  while (object && (ts.isAsExpression(object) || ts.isSatisfiesExpression(object))) {
+    object = object.expression;
   }
-  return ts.isStringLiteralLike(declaration.initializer) ? declaration.initializer : undefined;
+  if (!object || !ts.isObjectLiteralExpression(object)) return undefined;
+  for (const property of object.properties) {
+    if (
+      ts.isPropertyAssignment(property) &&
+      ts.isIdentifier(property.name) &&
+      property.name.text === name.text
+    ) {
+      return ts.isStringLiteralLike(property.initializer) ? property.initializer : undefined;
+    }
+  }
+  return undefined;
 }
 
 // Each literal by the node a finding on it sits at: itself, or the use of a const written in
@@ -187,6 +215,12 @@ function collectClassStrings(
     if (declaredIn === sourceFile) found.set(literal, literal);
     else if (isOwnSource(declaredIn.fileName)) found.set(node, literal);
   } else {
+    const literal = ts.isPropertyAccessExpression(node) ? constProperty(reader, node) : undefined;
+    const declaredIn = literal?.getSourceFile();
+    if (literal && declaredIn && (declaredIn === sourceFile || isOwnSource(declaredIn.fileName))) {
+      found.set(node, literal);
+      return;
+    }
     ts.forEachChild(node, (child) => {
       collectClassStrings(reader, sourceFile, isOwnSource, child, found);
     });
@@ -235,8 +269,12 @@ function bracketValues(
 ): LintDiagnostic[] {
   const { ts } = reader;
   const strings: ClassStrings = new Map();
+  const everyLiteral = isClassesFile(sourceFile.fileName);
+  if (everyLiteral && !isOwnSource(sourceFile.fileName)) return [];
   const visit = (node: TypeScript.Node): void => {
-    if (ts.isJsxAttribute(node) && node.initializer) {
+    if (everyLiteral) {
+      if (ts.isStringLiteralLike(node)) strings.set(node, node);
+    } else if (ts.isJsxAttribute(node) && node.initializer) {
       const { name } = node;
       const attribute = ts.isJsxNamespacedName(name)
         ? `${name.namespace.text}:${name.name.text}`
@@ -335,10 +373,10 @@ export async function lint(
   options: { componentFolders: string[]; scan?: Scan; files?: string[] },
 ): Promise<LintDiagnostic[]> {
   const files =
-    options.files ??
+    options.files?.filter((file) => !file.endsWith(".ts") || isClassesFile(file)) ??
     project.checker
       .getRootFileNames()
-      .filter((file) => file.endsWith(".tsx") || file.endsWith(".astro"))
+      .filter((file) => file.endsWith(".tsx") || file.endsWith(".astro") || isClassesFile(file))
       .map((file) => relativeFile(project.root, file));
 
   // diagnostics() replaces the program, so nothing reads it until they have all run.

@@ -1,15 +1,21 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { Given, Then } from "@cucumber/cucumber";
+import { Given, Then, When } from "@cucumber/cucumber";
+import { BIN, commandOf, run, type CommandWorld } from "./check-command.steps.ts";
 import { INSTALL_TIMEOUT_MS, pkg } from "./support/docs-fixture.ts";
 import { checked, copyOf, place, project, type PropsWorld } from "./rafters-props.steps.ts";
 
 const PAGE_FILES = ["src/pages/fill.tsx", "src/pages/fill.astro"];
 const CLASSY = "const classy = (...inputs: unknown[]) => inputs.join(' ');\n";
 
-interface GuardsWorld extends PropsWorld {
+const RUN_MS = 60 * 1000;
+const CLASSES_TEXT =
+  'export const box = {\n  text: "text-[0.625rem]",\n  current: "aria-[current=page]:text-primary",\n};\n';
+
+interface GuardsWorld extends PropsWorld, CommandWorld {
   expectedBrackets?: string[];
+  classesFile?: string;
 }
 
 interface Page {
@@ -51,6 +57,41 @@ const PAGES: Record<string, Page> = {
     ...element("class={box}", "import { box } from 'outside-const';\n"),
     brackets: [],
     files: { "node_modules/outside-const/index.d.ts": 'export declare const box = "p-[3px]";\n' },
+  },
+  'const box = { text: "text-[0.625rem]" } and classy(box.text)': {
+    ...element("class={classy(box.text)}", `${CLASSY}const box = { text: "text-[0.625rem]" };\n`),
+    brackets: ["text-[0.625rem]"],
+  },
+  'const box = { text: "p-[3px]" } used in class={box.text}': {
+    ...element("class={box.text}", 'const box = { text: "p-[3px]" };\n'),
+    brackets: ["p-[3px]"],
+  },
+  'const box = { text: "p-[3px]" } as const used in class={box.text}': {
+    ...element("class={box.text}", 'const box = { text: "p-[3px]" } as const;\n'),
+    brackets: ["p-[3px]"],
+  },
+  "a const object imported from the own source, used in class={box.text}": {
+    ...element("class={box.text}", "import { box } from '../lib/box';\n"),
+    brackets: ["p-[3px]"],
+    files: { "src/lib/box.ts": 'export const box = { text: "p-[3px]" };\n' },
+  },
+  "a const object imported from a dependency, used in class={box.text}": {
+    ...element("class={box.text}", "import { box } from 'outside-object';\n"),
+    brackets: [],
+    files: {
+      "node_modules/outside-object/index.ts": 'export const box = { text: "p-[3px]" };\n',
+    },
+  },
+  'let box = { text: "p-[3px]" } used in class={box.text}': {
+    ...element("class={box.text}", 'let box = { text: "p-[3px]" };\n'),
+    brackets: [],
+  },
+  'a function returning { text: "p-[3px]" }, used in class={box.text}': {
+    ...element(
+      "class={box.text}",
+      'const make = () => ({ text: "p-[3px]" });\nconst box = make();\n',
+    ),
+    brackets: [],
   },
   'class="data-[state=open]:p-2"': {
     ...element('class="data-[state=open]:p-2"'),
@@ -119,12 +160,106 @@ Then(
   },
 );
 
-Then(/^each finding sits on box in class=\{box\}$/, function (this: PropsWorld) {
+Then(/^each finding sits on (\S+) in class=\{\1\}$/, function (this: PropsWorld, use: string) {
   for (const { file, line, column, endColumn } of checked(this)) {
     const lines = readFileSync(join(copyOf(this), file), "utf8").split("\n");
-    const start = String(lines[line - 1]).indexOf("class={box}") + "class={".length;
-    assert.deepEqual([column, endColumn], [start + 1, start + 1 + "box".length], file);
+    const start = String(lines[line - 1]).indexOf(`class={${use}}`) + "class={".length;
+    assert.deepEqual([column, endColumn], [start + 1, start + 1 + use.length], file);
   }
+});
+
+const classesProject = (world: GuardsWorld, file: string): void => {
+  project(world, "export {};\n", "<div />\n");
+  place(world, file, CLASSES_TEXT);
+  world.classesFile = file;
+};
+
+Given(
+  /^a project with (\S+\.classes\.ts) holding text-\[0\.625rem\] and aria-\[current=page\]:text-primary$/,
+  { timeout: INSTALL_TIMEOUT_MS },
+  function (this: GuardsWorld, file: string) {
+    classesProject(this, file);
+  },
+);
+
+Given(
+  /^a project with a bracket value in a \.classes\.ts file under componentsPath$/,
+  { timeout: INSTALL_TIMEOUT_MS },
+  function (this: GuardsWorld) {
+    classesProject(this, "src/components/ui/x.classes.ts");
+  },
+);
+
+Given(
+  /^a project whose tsconfig takes a \.classes\.ts file with a bracket value from a dependency$/,
+  { timeout: INSTALL_TIMEOUT_MS },
+  function (this: GuardsWorld) {
+    const file = "node_modules/outside-object/x.classes.ts";
+    classesProject(this, file);
+    const tsconfig: { include: string[] } = JSON.parse(
+      readFileSync(join(copyOf(this), "tsconfig.json"), "utf8"),
+    );
+    place(
+      this,
+      "tsconfig.json",
+      JSON.stringify({ ...tsconfig, include: [...tsconfig.include, file] }),
+    );
+  },
+);
+
+When(/^rafters-check runs$/, { timeout: RUN_MS }, function (this: GuardsWorld) {
+  run(this, BIN, [], copyOf(this));
+});
+
+Then(
+  /^the report names (\S+) at its line in (\S+)$/,
+  function (this: GuardsWorld, value: string, file: string) {
+    const lines = readFileSync(join(copyOf(this), file), "utf8").split("\n");
+    const line = lines.findIndex((text) => text.includes(value)) + 1;
+    const { stdout } = commandOf(this);
+    const finding = stdout
+      .split("\n")
+      .find((entry) => entry.startsWith(`${file}:${line}:`) && entry.includes(value));
+    assert.ok(line > 0 && finding, stdout);
+    assert.match(finding, / error rafters\(arbitrary-value\) /);
+  },
+);
+
+Then(/^the report does not name (\S+\[\S+)$/, function (this: GuardsWorld, value: string) {
+  assert.ok(!commandOf(this).stdout.includes(value), commandOf(this).stdout);
+});
+
+Then(/^the report does not name that file$/, function (this: GuardsWorld) {
+  assert.ok(this.classesFile, "no classes file in this scenario");
+  assert.ok(!commandOf(this).stdout.includes(this.classesFile), commandOf(this).stdout);
+});
+
+Then(
+  /^the report names (\S+) on the page at the classy call$/,
+  function (this: GuardsWorld, value: string) {
+    const { stdout } = commandOf(this);
+    for (const page of PAGE_FILES) {
+      const lines = readFileSync(join(copyOf(this), page), "utf8").split("\n");
+      const line = lines.findIndex((text) => text.includes("classy(box.text)"));
+      const column = String(lines[line]).indexOf("box.text") + 1;
+      const entry = `${page}:${line + 1}:${column} error rafters(arbitrary-value) ${value} is an arbitrary value`;
+      assert.ok(stdout.includes(entry), `${entry}\n${stdout}`);
+    }
+  },
+);
+
+Then(/^the worker's answer on the classes file is the report's$/, function (this: GuardsWorld) {
+  const reported = commandOf(this)
+    .stdout.split("\n")
+    .filter((entry) => entry.startsWith(`${this.classesFile}:`));
+  assert.equal(reported.length, 1, commandOf(this).stdout);
+  assert.deepEqual(
+    this.workerAnswer?.map(
+      ({ file, line, column, severity, code, message }) =>
+        `${file}:${line}:${column} ${severity} ${code} ${message}`,
+    ),
+    reported,
+  );
 });
 
 Then(
