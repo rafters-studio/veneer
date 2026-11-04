@@ -150,18 +150,9 @@ Then(
   },
 );
 
-Then(/^each is one line with the first line of its message$/, function (this: LintWorld) {
-  const lines = reportLines(this);
-  assert.equal(lines[0], "a.astro:1:2 error ts(2322) bad");
-  assert.equal(lines[2], "b.astro:1:2 error ts(2741) worse");
-});
-
-Then(/^the first is followed by the line "(.+)"$/, function (this: LintWorld, line: string) {
-  assert.equal(reportLines(this)[1], line);
-});
-
-Then(/^the last line is "(.+)"$/, function (this: LintWorld, line: string) {
-  assert.equal(reportLines(this).at(-1), line);
+Then(/^its lines are (.+)$/, function (this: LintWorld, lines: string) {
+  const expected = [...lines.matchAll(/"([^"]+)"/g)].map(([, line]) => line);
+  assert.deepEqual(reportLines(this), expected);
 });
 
 Then(

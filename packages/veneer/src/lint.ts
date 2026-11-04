@@ -529,15 +529,17 @@ export async function lint(
   );
 }
 
-function firstLine(message: Diagnostic["message"]): string {
+function messageLines(message: Diagnostic["message"]): string[] {
   const text: string = typeof message === "string" ? message : message.value;
-  return text.split(/\r\n|\r|\n/, 1)[0] ?? "";
+  return text.split(/\r\n|\r|\n/);
 }
 
 export function report(diagnostics: LintDiagnostic[]): string {
   const lines = diagnostics.flatMap(({ file, line, column, severity, code, message, help }) => {
-    const entry = `${file}:${line}:${column} ${severity} ${code} ${firstLine(message)}`;
-    return help === undefined ? [entry] : [entry, `  help: ${help}`];
+    const entry = messageLines(message).map((text, index) =>
+      index === 0 ? `${file}:${line}:${column} ${severity} ${code} ${text}` : `  ${text}`,
+    );
+    return help === undefined ? entry : [...entry, `  help: ${help}`];
   });
   const count = diagnostics.length;
   lines.push(count === 1 ? "1 problem" : `${count} problems`);
