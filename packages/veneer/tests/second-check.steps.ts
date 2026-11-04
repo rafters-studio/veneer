@@ -197,32 +197,36 @@ const importer = (from: string): string =>
 const USES_TEXT = importer("../lib/box.ts");
 const USES_TSX_TEXT = importer("../lib/boxx.tsx");
 
-const SEQUENCES: Record<string, { before?: Step[]; steps: Step[]; fresh: Step[] }> = {
-  "a new file typed, closed, and typed again with a bracket": {
-    steps: [type(NEW, NEW_CLEAN), close(NEW), type(NEW, NEW_BRACKET)],
-    fresh: [type(NEW, NEW_BRACKET)],
-  },
-  "an imported const changed on disk and a new file opened": {
-    steps: [
-      type(USES, USES_TEXT),
-      disk(BOX, boxText("p-[3px]")),
-      type(NEW, NEW_CLEAN),
-      type(USES, `${USES_TEXT}\n`),
-    ],
-    fresh: [type(NEW, NEW_CLEAN), type(USES, `${USES_TEXT}\n`)],
-  },
-  "a tsx const typed, closed, and a reopen before its importer is typed": {
-    before: [disk(BOX_TSX, boxText("p-4")), disk(USES, USES_TSX_TEXT)],
-    steps: [
-      type(BOX_TSX, boxText("p-[3px]")),
-      type(NEW, NEW_CLEAN),
-      close(BOX_TSX),
-      type(NEW2, NEW_CLEAN),
-      type(USES, `${USES_TSX_TEXT}\n`),
-    ],
-    fresh: [type(USES, `${USES_TSX_TEXT}\n`)],
-  },
-};
+const SEQUENCES: Record<string, { before?: Step[]; steps: Step[]; fresh: Step[]; finds: boolean }> =
+  {
+    "a new file typed, closed, and typed again with a bracket": {
+      steps: [type(NEW, NEW_CLEAN), close(NEW), type(NEW, NEW_BRACKET)],
+      fresh: [type(NEW, NEW_BRACKET)],
+      finds: true,
+    },
+    "an imported const changed on disk and a new file opened": {
+      steps: [
+        type(USES, USES_TEXT),
+        disk(BOX, boxText("p-[3px]")),
+        type(NEW, NEW_CLEAN),
+        type(USES, `${USES_TEXT}\n`),
+      ],
+      fresh: [type(NEW, NEW_CLEAN), type(USES, `${USES_TEXT}\n`)],
+      finds: true,
+    },
+    "a tsx const typed, closed, and a reopen before its importer is typed": {
+      before: [disk(BOX_TSX, boxText("p-4")), disk(USES, USES_TSX_TEXT)],
+      steps: [
+        type(BOX_TSX, boxText("p-[3px]")),
+        type(NEW, NEW_CLEAN),
+        close(BOX_TSX),
+        type(NEW2, NEW_CLEAN),
+        type(USES, `${USES_TSX_TEXT}\n`),
+      ],
+      fresh: [type(USES, `${USES_TSX_TEXT}\n`)],
+      finds: false,
+    },
+  };
 
 // The worker's answer for the last file it was sent, over its JSON lines.
 async function drive(root: string, steps: Step[]): Promise<unknown> {
@@ -273,12 +277,19 @@ When(
   /^the worker is driven through (.+)$/,
   { timeout: INSTALL_TIMEOUT_MS },
   async function (this: SecondWorld, name: string) {
-    const { before = [], steps, fresh } = SEQUENCES[name] ?? assert.fail(`no sequence ${name}`);
+    const {
+      before = [],
+      steps,
+      fresh,
+      finds,
+    } = SEQUENCES[name] ?? assert.fail(`no sequence ${name}`);
     const root = project(this);
     for (const step of before) if ("disk" in step) place(root, { [step.disk]: step.text });
     this.lastAnswer = await drive(root, steps);
     // The disk now holds the sequence's writes, so a fresh worker sees the same state.
     this.freshAnswer = await drive(root, fresh);
+    // A sequence that expects a finding must not pass by both answers being empty.
+    if (finds) assert.notDeepEqual(this.freshAnswer, [], "a fresh worker reports nothing");
   },
 );
 
