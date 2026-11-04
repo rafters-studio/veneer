@@ -366,6 +366,26 @@ function valueAttributes(
   return found;
 }
 
+// ---- Rule four: a freehand div.
+
+const FREEHAND_HELP = "use Container or Grid for layout";
+
+function openingElements(
+  { ts }: Reader,
+  sourceFile: TypeScript.SourceFile,
+): TypeScript.JsxOpeningLikeElement[] {
+  const found: TypeScript.JsxOpeningLikeElement[] = [];
+  const visit = (node: TypeScript.Node): void => {
+    if (ts.isJsxOpeningLikeElement(node)) found.push(node);
+    ts.forEachChild(node, visit);
+  };
+  visit(sourceFile);
+  return found;
+}
+
+const isDiv = (ts: Ts, { tagName }: TypeScript.JsxOpeningLikeElement): boolean =>
+  ts.isIdentifier(tagName) && tagName.text === "div";
+
 // ---- The call.
 
 export async function lint(
@@ -510,6 +530,37 @@ export async function lint(
     return flagged;
   };
 
+  const isComponentUse = (element: TypeScript.JsxOpeningLikeElement): boolean => {
+    if (isDiv(ts, element)) return false;
+    const component = resolveTag(reader, element);
+    const declaration = component?.valueDeclaration ?? component?.declarations?.[0];
+    return declaration !== undefined && isCheckedUse(declaration.getSourceFile());
+  };
+
+  const freehandDivs = (file: string, sourceFile: TypeScript.SourceFile): LintDiagnostic[] => {
+    const elements = openingElements(reader, sourceFile);
+    const divs = elements.filter((element) => isDiv(ts, element));
+    if (divs.length === 0 || !elements.some(isComponentUse)) return [];
+    return divs.flatMap(({ tagName }): LintDiagnostic[] => {
+      const start = positionOf(reader, sourceFile, tagName.getStart(sourceFile));
+      const end = positionOf(reader, sourceFile, tagName.end);
+      if (!start || !end) return [];
+      return [
+        {
+          file,
+          line: start.line,
+          column: start.column,
+          endLine: end.line,
+          endColumn: end.column,
+          severity: "warning",
+          code: "rafters(freehand-div)",
+          message: "a div laid by hand around rafters components",
+          help: FREEHAND_HELP,
+        },
+      ];
+    });
+  };
+
   const found: LintDiagnostic[] = [];
   for (const [file, diagnostics] of perFile) {
     const absolute = path.join(project.root, file);
@@ -522,6 +573,7 @@ export async function lint(
     if (!isExempt(sourceFile)) {
       found.push(...bracketValues(reader, file, sourceFile, isOwnSource));
       found.push(...(await badValues(file, sourceFile)));
+      found.push(...freehandDivs(file, sourceFile));
     }
   }
   return found.sort(

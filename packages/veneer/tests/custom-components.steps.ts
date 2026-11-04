@@ -26,7 +26,7 @@ interface CustomWorld extends PropsWorld {
 
 const block = (tags: string[]): string => `/**\n${tags.map((tag) => ` * @${tag}\n`).join("")} */\n`;
 
-function jsDoc(missing?: string): string {
+export function jsDoc(missing?: string): string {
   if (missing === "the @usage-patterns tag") return block(TAGS.slice(0, -1));
   if (missing === "one block holding the tags") {
     return block(TAGS.slice(0, 3)) + block(TAGS.slice(3));
