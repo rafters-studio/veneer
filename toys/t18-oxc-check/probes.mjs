@@ -33,6 +33,8 @@ const probes = [
   ["modifier bracket", page, front("", `<p class="data-[state=open]:p-2 aria-[current=page]:text-primary">a</p>`)],
   ["class:list", page, front("", `<p class:list={["p-[1px]", { "m-[2px]": true }]}>a</p>`)],
   ["multi-line, unicode before", page, front("", `<p title="é\u{1F600}" class="flex\n  w-[10px]">a</p>`)],
+  ["unicode before on the same line", page, front("", `<p title="é\u{1F600}" class="flex w-[10px]">a</p>`)],
+  ["unicode before in a classes file", header, `${read(header)}\nexport const probe2 = "é\u{1F600} p-[7px]";\n`],
   ["template literal", page, front("const n = 1;", `<p class={\`h-[3px] \${n}\`}>a</p>\n<p class={\`w-[2px]\`}>b</p>`)],
   ["freehand div", page, front("", `<div class="flex"><Button>a</Button></div>`)],
   ["retired fill", page, front("", `<Container fill="background">a</Container>`)],

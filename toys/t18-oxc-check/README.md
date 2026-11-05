@@ -123,7 +123,7 @@ imports and parsing what they reach, and none of rule one.
    endLine, endColumn, severity, code and message or help. Nothing is missing and nothing is
    extra (`out/fixture.txt`). Both freehand-div lines depend on resolving tags through
    `@/components/ui/...` paths, and they came out right.
-7. `--stdin` probes: **held, 30 of 30 agree** (`out/probes.txt`). The probes cover:
+7. `--stdin` probes: **held, 32 of 32 agree** (`out/probes.txt`). The probes cover:
    - unchanged page, classes file and component
    - a class attribute
    - `classy` in a class, and `classy` outside JSX
@@ -133,8 +133,9 @@ imports and parsing what they reach, and none of rule one.
    - a dependency const and object (nothing)
    - modifier brackets (nothing)
    - `class:list` with an object key
-   - a multi-line attribute after a combining mark and an astral character, to check UTF-16
-     columns
+   - a multi-line attribute after a combining mark and an astral character
+   - a combining mark and an astral character before the bracket class on the same line, in a
+     page (10:29) and in a classes file (333:28): UTF-16 columns agree with 0.0.6's source map
    - a template literal with and without substitutions
    - a freehand div
    - retired bare and composed fills, invalid fills, good and empty fills
