@@ -1,0 +1,21 @@
+---
+import Base from "@/layouts/Base.astro";
+import Container from "@/components/ui/container.astro";
+import HsPanel from "@/components/hs-panel.astro";
+import HsHero from "@/components/hs-hero.astro";
+import classy from "@/lib/primitives/classy";
+import { heroImages, heroLines, pick } from "@/lib/site";
+
+const line = pick(heroLines);
+const image = pick(heroImages);
+const lead = { text: "text-[1.1rem]" } as const;
+---
+
+<Base>
+  <HsPanel>
+    <HsHero image={image} watermark="huttspawn" {...line} />
+    <Container as="article" padding="10">
+      <p class={classy(lead.text, "p-[3px]")}>Published from the game files and from the players who actually play it.</p>
+    </Container>
+  </HsPanel>
+</Base>

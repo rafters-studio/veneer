@@ -1,0 +1,2 @@
+src/components/hs-header.classes.ts:264:24 error rafters(arbitrary-value) text-[0.625rem] is an arbitrary value
+1 problem

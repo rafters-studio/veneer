@@ -1,0 +1,8 @@
+src/components/hs-header.classes.ts:264:24 error rafters(arbitrary-value) text-[0.625rem] is an arbitrary value
+src/pages/lab/surfaces.astro:36:12 error ts(2322) Type '{ children: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+    Property 'id' is missing in type '{ children: string; }' but required in type 'Props'.
+  help: id, variant, fill, surface, size, type, toggle, defaultPressed, disabled, softDisabled, loading, loadingAnnouncement, label, aria-label
+src/pages/lab/surfaces.astro:37:12 error ts(2322) Type '{ children: string; variant: "outline"; }' is not assignable to type 'IntrinsicAttributes & Props'.
+    Property 'id' is missing in type '{ children: string; variant: "outline"; }' but required in type 'Props'.
+  help: id, variant, fill, surface, size, type, toggle, defaultPressed, disabled, softDisabled, loading, loadingAnnouncement, label, aria-label
+3 problems

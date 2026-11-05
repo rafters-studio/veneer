@@ -1,0 +1,24 @@
+[package]
+name = "t18-oxc-check"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[workspace]
+
+# The Astro compiler's oxc fork, at the rev withastro/compiler-rs pins. It is upstream oxc plus an
+# `astro` parser feature, so one oxc serves .astro, .tsx and .ts.
+[dependencies]
+oxc_allocator = { git = "https://github.com/withastro/oxc", rev = "e5e100abf1afb9a79ae22f97de32befe4b925d5d" }
+oxc_ast = { git = "https://github.com/withastro/oxc", rev = "e5e100abf1afb9a79ae22f97de32befe4b925d5d" }
+oxc_ast_visit = { git = "https://github.com/withastro/oxc", rev = "e5e100abf1afb9a79ae22f97de32befe4b925d5d" }
+oxc_parser = { git = "https://github.com/withastro/oxc", rev = "e5e100abf1afb9a79ae22f97de32befe4b925d5d", features = ["astro"] }
+oxc_semantic = { git = "https://github.com/withastro/oxc", rev = "e5e100abf1afb9a79ae22f97de32befe4b925d5d" }
+oxc_span = { git = "https://github.com/withastro/oxc", rev = "e5e100abf1afb9a79ae22f97de32befe4b925d5d" }
+oxc_resolver = "11"
+serde_json = "1"
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1

@@ -1,0 +1,61 @@
+## unchanged page (src/pages/index.astro): same  ts 1578 ms exit 0, rust 3.0 ms exit 0
+## unchanged classes file (src/components/hs-header.classes.ts): same  ts 1460 ms exit 1, rust 2.7 ms exit 1
+  ts   src/components/hs-header.classes.ts:264:24 error rafters(arbitrary-value) text-[0.625rem] is an arbitrary value
+## unchanged component (src/components/hs-panel.astro): same  ts 1522 ms exit 0, rust 3.4 ms exit 0
+## class attribute (src/pages/index.astro): same  ts 1556 ms exit 1, rust 3.0 ms exit 1
+  ts   src/pages/index.astro:10:11 error rafters(arbitrary-value) p-[3px] is an arbitrary value
+## classy in a class (src/pages/index.astro): same  ts 1547 ms exit 1, rust 3.1 ms exit 1
+  ts   src/pages/index.astro:10:19 error rafters(arbitrary-value) p-[3px] is an arbitrary value
+  ts   src/pages/index.astro:10:38 error rafters(arbitrary-value) m-[1px] is an arbitrary value
+## classy outside JSX (src/pages/index.astro): same  ts 1495 ms exit 1, rust 2.9 ms exit 1
+  ts   src/pages/index.astro:6:21 error rafters(arbitrary-value) p-[3px] is an arbitrary value
+## const string (src/pages/index.astro): same  ts 1521 ms exit 1, rust 2.9 ms exit 1
+  ts   src/pages/index.astro:6:14 error rafters(arbitrary-value) p-[3px] is an arbitrary value
+## const object (src/pages/index.astro): same  ts 1508 ms exit 1, rust 2.9 ms exit 1
+  ts   src/pages/index.astro:10:11 error rafters(arbitrary-value) p-[3px] is an arbitrary value
+## const object as const (src/pages/index.astro): same  ts 1559 ms exit 1, rust 2.7 ms exit 1
+  ts   src/pages/index.astro:10:11 error rafters(arbitrary-value) p-[3px] is an arbitrary value
+## const object in classy (src/pages/index.astro): same  ts 1542 ms exit 1, rust 3.1 ms exit 1
+  ts   src/pages/index.astro:10:18 error rafters(arbitrary-value) text-[0.625rem] is an arbitrary value
+## let object (src/pages/index.astro): same  ts 1542 ms exit 0, rust 4.1 ms exit 0
+## function object (src/pages/index.astro): same  ts 1564 ms exit 0, rust 3.5 ms exit 0
+## own-source const (src/pages/index.astro): same  ts 1508 ms exit 1, rust 3.4 ms exit 1
+  ts   src/pages/index.astro:10:11 error rafters(arbitrary-value) p-[3px] is an arbitrary value
+## own-source object (src/pages/index.astro): same  ts 1501 ms exit 1, rust 3.3 ms exit 1
+  ts   src/pages/index.astro:10:11 error rafters(arbitrary-value) m-[4px] is an arbitrary value
+## dependency const (src/pages/index.astro): same  ts 1552 ms exit 0, rust 3.1 ms exit 0
+## modifier bracket (src/pages/index.astro): same  ts 1621 ms exit 0, rust 3.3 ms exit 0
+## class:list (src/pages/index.astro): same  ts 1528 ms exit 1, rust 2.9 ms exit 1
+  ts   src/pages/index.astro:10:18 error rafters(arbitrary-value) p-[1px] is an arbitrary value
+  ts   src/pages/index.astro:10:31 error rafters(arbitrary-value) m-[2px] is an arbitrary value
+## multi-line, unicode before (src/pages/index.astro): same  ts 1515 ms exit 1, rust 3.1 ms exit 1
+  ts   src/pages/index.astro:11:3 error rafters(arbitrary-value) w-[10px] is an arbitrary value
+## template literal (src/pages/index.astro): same  ts 1543 ms exit 1, rust 2.9 ms exit 1
+  ts   src/pages/index.astro:11:12 error rafters(arbitrary-value) w-[2px] is an arbitrary value
+## freehand div (src/pages/index.astro): same  ts 1504 ms exit 1, rust 3.0 ms exit 0
+  ts   src/pages/index.astro:10:2 warning rafters(freehand-div) a div laid by hand around rafters components
+  ts     help: use Container or Grid for layout
+  ts, not ported: src/pages/index.astro:10:20 error ts(2322)
+## retired fill (src/pages/index.astro): same  ts 3352 ms exit 1, rust 7.8 ms exit 1
+  ts   src/pages/index.astro:10:12 error rafters(retired-fill) fill="background" is a retired fill value
+  ts     help: surface="background"
+## composed fill (src/pages/index.astro): same  ts 1521 ms exit 1, rust 3.1 ms exit 1
+  ts   src/pages/index.astro:10:12 error rafters(retired-fill) fill="primary-to-accent/50" is a retired fill value
+  ts     help: a fill the designer authors, fill="bg-fill-<name>"
+## invalid fill (src/pages/index.astro): same  ts 1479 ms exit 1, rust 2.9 ms exit 1
+  ts   src/pages/index.astro:10:12 error rafters(invalid-fill) fill="bg-fill-glass extra" is not exactly one bg-fill-* token
+  ts   src/pages/index.astro:11:12 error rafters(invalid-fill) fill="BG-FILL-X" is not exactly one bg-fill-* token
+## good fill (src/pages/index.astro): same  ts 1506 ms exit 0, rust 2.9 ms exit 0
+## surfaces (src/pages/index.astro): same  ts 3366 ms exit 1, rust 8.2 ms exit 1
+  ts   src/pages/index.astro:11:12 error rafters(unknown-surface) surface="nosuch" is not a surface in the project's tokens
+## classes file with a new bracket (src/components/hs-header.classes.ts): same  ts 1474 ms exit 1, rust 2.5 ms exit 1
+  ts   src/components/hs-header.classes.ts:264:24 error rafters(arbitrary-value) text-[0.625rem] is an arbitrary value
+  ts   src/components/hs-header.classes.ts:333:23 error rafters(arbitrary-value) p-[7px] is an arbitrary value
+## component with a bracket (src/components/hs-panel.astro): same  ts 1562 ms exit 1, rust 3.1 ms exit 1
+  ts   src/components/hs-panel.astro:20:46 error rafters(arbitrary-value) p-[8px] is an arbitrary value
+## file outside the program (dist/x.astro): same  ts 1459 ms exit 0, rust 2.4 ms exit 0
+  ts stderr: dist/x.astro is not in the tsconfig's files, so it was not checked
+  rust stderr: dist/x.astro is not in the tsconfig's files, so it was not checked
+## a plain .ts file (src/lib/x.ts): same  ts 1481 ms exit 0, rust 2.2 ms exit 0
+## a classes file under componentsPath (src/components/ui/x.classes.ts): same  ts 1453 ms exit 0, rust 2.5 ms exit 0
+30 of 30 probes agree

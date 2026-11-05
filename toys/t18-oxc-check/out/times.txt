@@ -1,0 +1,18 @@
+# 1. one file, cold process, --stdin with the file's own text
+rust site src/pages/index.astro: median 2.8 ms, min 2.3, max 3.1, first 15.7 (n=10)
+rust clone src/pages/index.astro: median 2.3 ms, min 2.1, max 2.6, first 4.9 (n=10)
+ts clone src/pages/index.astro: median 2280 ms, min 1579, max 3158, first 2663 (n=10)
+rust site src/components/hs-header.classes.ts: median 2.2 ms, min 2.0, max 2.8, first 28.1 (n=10)
+rust clone src/components/hs-header.classes.ts: median 2.1 ms, min 1.8, max 2.8, first 3.8 (n=10)
+ts clone src/components/hs-header.classes.ts: median 1667 ms, min 1634, max 1711, first 1641 (n=10)
+rust site src/components/hs-panel.astro: median 2.3 ms, min 2.0, max 2.5, first 15.9 (n=10)
+rust clone src/components/hs-panel.astro: median 2.4 ms, min 2.2, max 2.6, first 3.3 (n=10)
+ts clone src/components/hs-panel.astro: median 1704 ms, min 1659, max 1800, first 1756 (n=10)
+# 2. the whole project
+rust site whole: median 32.2 ms, min 28.7, max 34.3, first 186 (n=10)
+rust clone whole: median 33.0 ms, min 29.2, max 36.5, first 47.4 (n=10)
+ts clone whole: median 4195 ms, min 4121, max 4419, first 4481 (n=10)
+# 4. --stdin with a proposed text that differs from disk
+rust site proposed index.astro: median 2.3 ms, min 2.2, max 2.6, first 3.2 (n=10)
+rust clone proposed index.astro: median 2.6 ms, min 2.5, max 2.8, first 3.4 (n=10)
+ts clone proposed index.astro: median 1536 ms, min 1494, max 1562, first 1535 (n=10)
