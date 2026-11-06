@@ -1,0 +1,274 @@
+Outlook keys in caniemail: windows: 2003 2007 2010 2013 2016 2019 2021 2022 2022-08 2023-12 2024 2024-05 | windows-mail: 16005.13426.20316.0 2019-02 2019-09 2019-10 2020-01 2020-02 2020-03 2020-04 2020-05 2020-10 2020-12 2021-01 2021-02 2021-05 2021-07 2021-09 2021-10 2021-11 2021-12 2022-02 2022-03 2022-05 2022-07 2022-08 2022-12 2023-01 2023-02 2023-04 2023-06 2023-08 2023-09 2023-12 2024-01 2024-02 2024-03 2024-04 2024-05 2024-06 2024-08 2024-09 2024-11 2025-05 2025-07 2026-02 2026-04 2026-07 | macos: 13.1 16.103 16.105.2 16.46 16.47 16.50 16.54 16.55 16.56 16.57 16.59 16.60 16.62 16.68 16.70 16.73 16.78 16.80 16.88 16.98 2011 2016 2019 2019-02 2019-10 2020-01 2020-12 2021 2021-01 2021-02 2021-05 2021-09 2021-10 2021-11 2022-07 2022-08 2022-12 2023 2023-01 2023-04 2023-09 2023-12 2024-01 2024-02 2024-03 2024-04 2024-05 2024-06 2024-08 2024-09 2024-10 2024-11 2026-04 2026-07 | outlook-com: 2019-02 2019-05 2019-06 2019-07 2019-08 2019-09 2019-10 2020-01 2020-02 2020-03 2020-04 2020-05 2020-10 2020-12 2021-01 2021-02 2021-05 2021-07 2021-08 2021-09 2021-10 2021-11 2021-12 2022-02 2022-03 2022-05 2022-07 2022-08 2022-12 2023-01 2023-02 2023-04 2023-08 2023-09 2023-12 2024-01 2024-02 2024-03 2024-04 2024-05 2024-06 2024-08 2024-09 2024-10 2024-11 2025-05 2025-07 2025-11 2026-02 2026-04 2026-07 | ios: 10 11 12 13 14 15 2.51.1 2019-02 2019-05 2019-06 2019-07 2019-08 2019-09 2019-10 2020-01 2020-02 2020-03 2020-04 2020-05 2020-10 2020-11 2020-12 2021-01 2021-02 2021-05 2021-07 2021-09 2021-10 2021-11 2021-12 2022-02 2022-03 2022-05 2022-07 2022-08 2022-12 2023-01 2023-02 2023-04 2023-08 2023-09 2023-12 2024-01 2024-02 2024-03 2024-04 2024-05 2024-06 2024-08 2024-09 2024-10 2024-11 2025-04 2025-05 2025-07 2026-02 2026-03 2026-04 2026-05 2026-07 3.29.0 4.2148.2 4.2352.0 4.3.1 4.38.0 4.7.1 | android: 2019-02 2019-05 2019-06 2019-07 2019-08 2019-09 2019-10 2020-01 2020-02 2020-03 2020-04 2020-05 2020-10 2020-11 2020-12 2021-01 2021-05 2021-07 2021-09 2021-10 2021-11 2021-12 2022-02 2022-03 2022-05 2022-07 2022-08 2022-12 2023-01 2023-03 2023-04 2023-05 2023-09 2023-12 2024-01 2024-02 2024-03 2024-04 2024-05 2024-06 2024-08 2024-09 2024-11 2025-04 2025-05 2025-07 2026-02 2026-03 2026-04 2026-05 2026-07 4.2048.4 4.2101.0 4.2101.1 4.2116.0 4.2147.4 5.2543.1
+
+## newsletter.react-email.html
+
+| feature | Gmail web | Gmail iOS | Gmail Android | Outlook Windows (Word) | Outlook.com / new Outlook | Apple Mail macOS | Apple Mail iOS |
+|---|---|---|---|---|---|---|---|
+| align-items | n | n | n | n | y | y | y |
+| background-color | y | y | y | y | y | y | y |
+| border | y | y | y | a* | y | y | y |
+| border-radius | y | y | y | n* | y | y | y |
+| box-shadow | n | a* | a* | n | y | y | y |
+| cursor | n* | n* | n* | u | n | a* | n* |
+| display | y | a* | a* | a* | y | y | y |
+| font-size | y | y | y | a* | y | y | y |
+| font-weight | y | y | y | a* | y | y | y |
+| gap, column-gap, row-gap | a* | a* | a* | n | a* | y | y |
+| height property | y | y | y | a* | y | y | y |
+| !important keyword | a* | a* | a* | a* | y | y | y |
+| justify-content | n | n | n | n | y | y | y |
+| letter-spacing | y | y | y | a* | y | y | y |
+| line-height | y | y | y | a* | y | y | y |
+| margin | a* | a* | a* | a* | a* | y | y |
+| max-width | y | y | y | a* | y | y | y |
+| opacity | y | y | y | n | y | y | y |
+| outline | y | y | y | n | y | y | y |
+| padding | y | y | y | a* | y | y | y |
+| :hover | y | n | a* | n | a* | y | y |
+| rgb() | a* | a* | a* | a* | y | y | y |
+| system-ui, ui-serif, ui-sans-serif, ui-rounded, ui-monospace | y* | y | a* | n | y* | y | y |
+| text-decoration | y | a* | a* | a* | y | y | y |
+| em unit | y | y | y | y | y | y | y |
+| % unit | y | y | y | y | y | y | y |
+| px unit | y | y | y | y | y | y | y |
+| vertical-align | y | y | y | y | y | y | y |
+| width property | y | y | y | a* | y | y | y |
+| align attribute | y | y | y | y | y | y | y |
+| <body> element | a* | a* | a* | y | a* | y | y |
+| HTML comments | y | y | y | y | y | y | y |
+| HTML5 doctype | y | y | y | n* | y | y | y |
+| <h1> to <h6> elements | y | y | y | y | y | y | y |
+| <img> element | y | y | y | y | y | y | y |
+| lang attribute | y | y | y | y | y | y | y |
+| <p> element | y | y | y | y | y | y | y |
+| role attribute | y | y | y | y* | y | y | y |
+| <style> element | a* | a* | a* | a* | y | y | y |
+| <table> element | y | y | y | y | y | y | y |
+| target attribute | n* | n* | n* | a* | n* | a* | a* |
+| width attribute | y | y | y | a* | y | y* | y |
+| PNG image format | y | y | y | y | y | y | y |
+
+Not fully supported (n = no, a = partial, u = unknown):
+- align-items in Gmail web [n, 2020-12]: no note  -- used as: align-items: center (inline)
+- align-items in Gmail iOS [n, 2020-12]: no note  -- used as: align-items: center (inline)
+- align-items in Gmail Android [n, 2020-12]: no note  -- used as: align-items: center (inline)
+- align-items in Outlook Windows (Word) [n, 2019]: no note  -- used as: align-items: center (inline)
+- border in Outlook Windows (Word) [a, 2019]: Partial. A border can not be bigger than 8px. Buggy. Unreliable if used on a `<p>` or a `<div>`.  -- used as: border: none (inline)
+- border-radius in Outlook Windows (Word) [n, 2019]: Round corners can be used in VML with the `RoundRect` element. See [buttons.cm](https://buttons.cm/) and [VML documentation](https://docs.microsoft.com/en-us/windows/win32/vml/msdn-online-vml-roundrect-element).  -- used as: border-radius: .2304px (inline); border-radius: .192px (inline)
+- box-shadow in Gmail web [n, 2023-01]: no note  -- used as: box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor),var(--tw-shadow)!important (style)
+- box-shadow in Gmail iOS [a, 2023-01]: Partial. Only supported with non Google accounts.  -- used as: box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor),var(--tw-shadow)!important (style)
+- box-shadow in Gmail Android [a, 2023-01]: Partial. Only supported with non Google accounts.  -- used as: box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor),var(--tw-shadow)!important (style)
+- box-shadow in Outlook Windows (Word) [n, 2019]: no note  -- used as: box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor),var(--tw-shadow)!important (style)
+- cursor in Gmail web [n, 2025-07]: Cursor property is removed.  -- used as: cursor: progress (inline); cursor: not-allowed!important (style)
+- cursor in Gmail iOS [n, 2025-07]: Cursor property is removed.  -- used as: cursor: progress (inline); cursor: not-allowed!important (style)
+- cursor in Gmail Android [n, 2025-07]: Cursor property is removed.  -- used as: cursor: progress (inline); cursor: not-allowed!important (style)
+- cursor in Outlook Windows (Word) [u, 2019]: no note  -- used as: cursor: progress (inline); cursor: not-allowed!important (style)
+- cursor in Outlook.com / new Outlook [n, 2025-07]: no note  -- used as: cursor: progress (inline); cursor: not-allowed!important (style)
+- cursor in Apple Mail macOS [a, 15]: Partial. URL is not supported.  -- used as: cursor: progress (inline); cursor: not-allowed!important (style)
+- cursor in Apple Mail iOS [n, 15]: iOS assistive touch does not respond to cursor.  -- used as: cursor: progress (inline); cursor: not-allowed!important (style)
+- display in Gmail iOS [a, 2021-12]: Partial. `flex`, `grid`, `flow-root`, `contents`, `inline flow-root`, `inline flex`, `inline grid`, `initial`, `revert`, `unset` are not supported with non Google accounts.  -- used as: display: block (inline); display: inline-grid (inline)
+- display in Gmail Android [a, 2021-12]: Partial. `flex`, `grid`, `flow-root`, `contents`, `inline flow-root`, `inline flex`, `inline grid`, `initial`, `revert`, `unset` are not supported with non Google accounts.  -- used as: display: block (inline); display: inline-grid (inline)
+- display in Outlook Windows (Word) [a, 2019]: Buggy. `display:none` does not inherit to inner tables. Partial. Only supports `display:none` (but not on `<img>`).  -- used as: display: block (inline); display: inline-grid (inline)
+- font-size in Outlook Windows (Word) [a, 2021]: Partial support. `rem` values are not supported.  -- used as: font-size: 3rem (inline); font-size: 14px (inline)
+- font-weight in Outlook Windows (Word) [a, 2019]: Partial support. `<number>` values between 0 and 599 are set as normal font weight. `<number>` values between 600 and 1000 are set as bold font weight.  -- used as: font-weight: 700 (inline); font-weight: 500 (inline)
+- gap, column-gap, row-gap in Gmail web [a, 2022-12]: Partial. Supports column-gap for flexbox.  -- used as: gap: 0.5rem (inline)
+- gap, column-gap, row-gap in Gmail iOS [a, 2022-12]: Partial. Supports column-gap for flexbox.  -- used as: gap: 0.5rem (inline)
+- gap, column-gap, row-gap in Gmail Android [a, 2022-12]: Partial. Supports column-gap for flexbox.  -- used as: gap: 0.5rem (inline)
+- gap, column-gap, row-gap in Outlook Windows (Word) [n, 2019]: no note  -- used as: gap: 0.5rem (inline)
+- gap, column-gap, row-gap in Outlook.com / new Outlook [a, 2023-12]: Partial. Supports column-gap for flexbox.  -- used as: gap: 0.5rem (inline)
+- height property in Outlook Windows (Word) [a, 2019]: Partial. Not supported on `<body>`, `<span>`, `<div>` or `<p>` elements.  -- used as: height: auto (inline); height: 2.5rem (inline)
+- !important keyword in Gmail web [a, 2021-11]: Partial. Only supported in lowercase. (See [email-bugs#13](https://github.com/hteumeuleu/email-bugs/issues/13))  -- used as: background-color: rgb(61,92,92)!important (style); --tw-ring-shadow: var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor)!important (style)
+- !important keyword in Gmail iOS [a, 2021-11]: Partial. Only supported in lowercase. (See [email-bugs#13](https://github.com/hteumeuleu/email-bugs/issues/13)) Partial. Only supported inline when using a Non Gmail Account due to the lack of `<style>` support.  -- used as: background-color: rgb(61,92,92)!important (style); --tw-ring-shadow: var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor)!important (style)
+- !important keyword in Gmail Android [a, 2021-11]: Partial. Only supported in lowercase. (See [email-bugs#13](https://github.com/hteumeuleu/email-bugs/issues/13)) Partial. Only supported inline when using a Non Gmail Account due to the lack of `<style>` support.  -- used as: background-color: rgb(61,92,92)!important (style); --tw-ring-shadow: var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor)!important (style)
+- !important keyword in Outlook Windows (Word) [a, 2019]: Partial. Only supported with a space before. Partial. Not supported inline. (See [email-bugs#31](https://github.com/hteumeuleu/email-bugs/issues/31))  -- used as: background-color: rgb(61,92,92)!important (style); --tw-ring-shadow: var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor)!important (style)
+- justify-content in Gmail web [n, 2020-12]: no note  -- used as: justify-content: center (inline)
+- justify-content in Gmail iOS [n, 2020-12]: no note  -- used as: justify-content: center (inline)
+- justify-content in Gmail Android [n, 2020-12]: no note  -- used as: justify-content: center (inline)
+- justify-content in Outlook Windows (Word) [n, 2019]: no note  -- used as: justify-content: center (inline)
+- letter-spacing in Outlook Windows (Word) [a, 2019]: Partial. Big negative values are rendered differently from CSS standards. Buggy. Values set in `em` are smaller than the expected render in CSS. See [#192](https://github.com/hteumeuleu/caniemail/issues/192).  -- used as: letter-spacing: -0.025em (inline)
+- line-height in Outlook Windows (Word) [a, 2019]: Buggy. `em` and `px` units behave weirdly. Use `mso-line-height-rule:exactly`.  -- used as: line-height: 1 (inline); line-height: 1.75rem (inline)
+- margin in Gmail web [a, 2019-10]: Partial. Negative values are not supported.  -- used as: margin-right: auto (inline); margin-left: auto (inline)
+- margin in Gmail iOS [a, 2019-10]: Partial. Negative values are not supported.  -- used as: margin-right: auto (inline); margin-left: auto (inline)
+- margin in Gmail Android [a, 2019-10]: Partial. Negative values are not supported.  -- used as: margin-right: auto (inline); margin-left: auto (inline)
+- margin in Outlook Windows (Word) [a, 2019]: Partial. Negative values are not supported. Partial. Not supported on `<span>` and `<body>` elements. Buggy. `background-color` is included inside the `margin`. Partial. `auto` value is not supported.  -- used as: margin-right: auto (inline); margin-left: auto (inline)
+- margin in Outlook.com / new Outlook [a, 2023-12]: Partial. Negative values are not supported.  -- used as: margin-right: auto (inline); margin-left: auto (inline)
+- max-width in Outlook Windows (Word) [a, 2019]: Partial. Only works on `<table>` elements.  -- used as: max-width: 42rem (inline); max-width: 100% (inline)
+- opacity in Outlook Windows (Word) [n, 2019]: no note  -- used as: opacity: 50% (inline); opacity: 50%!important (style)
+- outline in Outlook Windows (Word) [n, 2019]: no note  -- used as: outline: none (inline)
+- padding in Outlook Windows (Word) [a, 2019]: Partial. Only supported on table cells. Buggy. Vertical padding will be the same for all cells of a same row, adopting the biggest value.  -- used as: padding-right: 1rem (inline); padding-left: 1rem (inline)
+- :hover in Gmail iOS [n, 2019-10]: no note  -- used as: :hover
+- :hover in Gmail Android [a, 2019-10]: Partial. Not supported with non Google accounts.  -- used as: :hover
+- :hover in Outlook Windows (Word) [n, 2019]: no note  -- used as: :hover
+- :hover in Outlook.com / new Outlook [a, 2024-01]: Partial. Only supported on type selectors.  -- used as: :hover
+- rgb() in Gmail web [a, 2021-08]: Whitespace syntax is not supported (`rgb(0 128 0 / 1)`). whitespace syntax (`rgb(0 128 0)`): when used in the `style` attribute of an element, the whole attribute is stripped. When used inside `<style>`, the whole `<style>` block is stripped.  -- used as: background-color: rgb(231,241,241) (inline); color: rgb(0,1,1) (inline)
+- rgb() in Gmail iOS [a, 2021-08]: Whitespace syntax is not supported (`rgb(0 128 0 / 1)`). whitespace syntax (`rgb(0 128 0)`): when used in the `style` attribute of an element, the whole attribute is stripped. When used inside `<style>`, the whole `<style>` block is stripped.  -- used as: background-color: rgb(231,241,241) (inline); color: rgb(0,1,1) (inline)
+- rgb() in Gmail Android [a, 2021-08]: Whitespace syntax is not supported (`rgb(0 128 0 / 1)`). whitespace syntax (`rgb(0 128 0)`): when used in the `style` attribute of an element, the whole attribute is stripped. When used inside `<style>`, the whole `<style>` block is stripped.  -- used as: background-color: rgb(231,241,241) (inline); color: rgb(0,1,1) (inline)
+- rgb() in Outlook Windows (Word) [a, 2019]: Whitespace syntax is not supported (`rgb(0 128 0 / 1)`). Alpha value is not supported (`rgb(0, 128, 0, 0.5)`).  -- used as: background-color: rgb(231,241,241) (inline); color: rgb(0,1,1) (inline)
+- system-ui, ui-serif, ui-sans-serif, ui-rounded, ui-monospace in Gmail Android [a, 2022-12]: Partial. Supports `system-ui` only.  -- used as: font-family: Inter,ui-sans-serif,system-ui,sans-serif (inline)
+- system-ui, ui-serif, ui-sans-serif, ui-rounded, ui-monospace in Outlook Windows (Word) [n, 2019]: no note  -- used as: font-family: Inter,ui-sans-serif,system-ui,sans-serif (inline)
+- text-decoration in Gmail iOS [a, 2019-02]: Partial. Not supported with non Google accounts.  -- used as: text-decoration: none (inline)
+- text-decoration in Gmail Android [a, 2019-02]: Partial. Not supported with non Google accounts.  -- used as: text-decoration: none (inline)
+- text-decoration in Outlook Windows (Word) [a, 2019]: Partial. Not supported with multiple values. Partial. `overline` is not supported.  -- used as: text-decoration: none (inline)
+- width property in Outlook Windows (Word) [a, 2019]: Partial. Not supported on `<body>`, `<span>`, `<div>`, `<p>` or `<img>` elements.  -- used as: width: 100% (inline); width: 50% (inline)
+- <body> element in Gmail web [a, 2021-11]: Partial. Replaced by a `<div>` with supported attributes.  -- used as: <body>
+- <body> element in Gmail iOS [a, 2021-11]: Partial. Replaced by a `<div>` with supported attributes.  -- used as: <body>
+- <body> element in Gmail Android [a, 2021-11]: Partial. Replaced by a `<div>` with supported attributes.  -- used as: <body>
+- <body> element in Outlook.com / new Outlook [a, 2024-01]: Partial. Replaced by a `<div>` with supported attributes.  -- used as: <body>
+- HTML5 doctype in Outlook Windows (Word) [n, 2019]: Not supported. The HTML5 doctype has no impact here.  -- used as: <!DOCTYPE html>
+- <style> element in Gmail web [a, 2023-01]: Partial. Not supported inside the `<body>`. The size of the `<style>` tag [is limited to 16 KB](https://github.com/hteumeuleu/email-bugs/issues/90)  -- used as: <style> in <head>
+- <style> element in Gmail iOS [a, 2023-01]: Partial. Not supported inside the `<body>`. Partial. Not supported with non Google accounts.  -- used as: <style> in <head>
+- <style> element in Gmail Android [a, 2019-06]: Partial. Not supported inside the `<body>`. Partial. Not supported with non Google accounts.  -- used as: <style> in <head>
+- <style> element in Outlook Windows (Word) [a, 2019]: Buggy. `<style>` elements need to be declared before their rules are used.  -- used as: <style> in <head>
+- target attribute in Gmail web [n, 2021-12]: Not supported. `target="_blank"` is forced on all links.  -- used as: target=""
+- target attribute in Gmail iOS [n, 2021-12]: Not supported. `target="_blank"` is forced on all links.  -- used as: target=""
+- target attribute in Gmail Android [n, 2021-12]: Not supported. `target="_blank"` is forced on all links.  -- used as: target=""
+- target attribute in Outlook Windows (Word) [a, 2019]: The attribute is supported but links always open in a new window anyway.  -- used as: target=""
+- target attribute in Outlook.com / new Outlook [n, 2024-01]: Not supported. `target="_blank"` is forced on all links.  -- used as: target=""
+- target attribute in Apple Mail macOS [a, 15]: The attribute is supported but links always open in a new window anyway.  -- used as: target=""
+- target attribute in Apple Mail iOS [a, 15]: The attribute is supported but links always open in a new window anyway.  -- used as: target=""
+- width attribute in Outlook Windows (Word) [a, 2019]: Buggy. Percentage width on `<img>` elements are based on the physical file's width, not on the parent element's width. Buggy. Sizes set in attributes don't scale in 120 dpi mode.  -- used as: width=""
+
+Not in caniemail's data: color, font-family, scroll-margin, mso-padding-alt, grid-auto-flow, transition-property, transition-timing-function, transition-duration, scale, mso-font-width, mso-text-raise, border-top, flex-shrink, --tw-ring-shadow, --tw-ring-color, --tw-ring-offset-width, --tw-ring-offset-shadow, --tw-outline-style, outline-style
+
+Counts on the newest entry (n = unsupported, a = partial):
+- Gmail web: n 5 (align-items; box-shadow; cursor; justify-content; target attribute), a 6
+- Gmail iOS: n 5 (align-items; cursor; justify-content; :hover; target attribute), a 9
+- Gmail Android: n 4 (align-items; cursor; justify-content; target attribute), a 11
+- Outlook Windows (Word): n 10 (align-items; border-radius; box-shadow; gap, column-gap, row-gap; justify-content; opacity; outline; :hover; system-ui, ui-serif, ui-sans-serif, ui-rounded, ui-monospace; HTML5 doctype), a 17
+- Outlook.com / new Outlook: n 2 (cursor; target attribute), a 4
+- Apple Mail macOS: n 0 (), a 2
+- Apple Mail iOS: n 1 (cursor), a 1
+
+## transactional.react-email.html
+
+| feature | Gmail web | Gmail iOS | Gmail Android | Outlook Windows (Word) | Outlook.com / new Outlook | Apple Mail macOS | Apple Mail iOS |
+|---|---|---|---|---|---|---|---|
+| align-items | n | n | n | n | y | y | y |
+| background-color | y | y | y | y | y | y | y |
+| border | y | y | y | a* | y | y | y |
+| border-radius | y | y | y | n* | y | y | y |
+| box-shadow | n | a* | a* | n | y | y | y |
+| cursor | n* | n* | n* | u | n | a* | n* |
+| display | y | a* | a* | a* | y | y | y |
+| font-size | y | y | y | a* | y | y | y |
+| font-weight | y | y | y | a* | y | y | y |
+| gap, column-gap, row-gap | a* | a* | a* | n | a* | y | y |
+| height property | y | y | y | a* | y | y | y |
+| !important keyword | a* | a* | a* | a* | y | y | y |
+| justify-content | n | n | n | n | y | y | y |
+| letter-spacing | y | y | y | a* | y | y | y |
+| line-height | y | y | y | a* | y | y | y |
+| margin | a* | a* | a* | a* | a* | y | y |
+| max-width | y | y | y | a* | y | y | y |
+| opacity | y | y | y | n | y | y | y |
+| padding | y | y | y | a* | y | y | y |
+| :hover | y | n | a* | n | a* | y | y |
+| rgb() | a* | a* | a* | a* | y | y | y |
+| system-ui, ui-serif, ui-sans-serif, ui-rounded, ui-monospace | y* | y | a* | n | y* | y | y |
+| text-decoration | y | a* | a* | a* | y | y | y |
+| em unit | y | y | y | y | y | y | y |
+| % unit | y | y | y | y | y | y | y |
+| px unit | y | y | y | y | y | y | y |
+| width property | y | y | y | a* | y | y | y |
+| align attribute | y | y | y | y | y | y | y |
+| <body> element | a* | a* | a* | y | a* | y | y |
+| HTML comments | y | y | y | y | y | y | y |
+| HTML5 doctype | y | y | y | n* | y | y | y |
+| <h1> to <h6> elements | y | y | y | y | y | y | y |
+| lang attribute | y | y | y | y | y | y | y |
+| <p> element | y | y | y | y | y | y | y |
+| role attribute | y | y | y | y* | y | y | y |
+| <style> element | a* | a* | a* | a* | y | y | y |
+| <table> element | y | y | y | y | y | y | y |
+| target attribute | n* | n* | n* | a* | n* | a* | a* |
+| width attribute | y | y | y | a* | y | y* | y |
+
+Not fully supported (n = no, a = partial, u = unknown):
+- align-items in Gmail web [n, 2020-12]: no note  -- used as: align-items: center (inline)
+- align-items in Gmail iOS [n, 2020-12]: no note  -- used as: align-items: center (inline)
+- align-items in Gmail Android [n, 2020-12]: no note  -- used as: align-items: center (inline)
+- align-items in Outlook Windows (Word) [n, 2019]: no note  -- used as: align-items: center (inline)
+- border in Outlook Windows (Word) [a, 2019]: Partial. A border can not be bigger than 8px. Buggy. Unreliable if used on a `<p>` or a `<div>`.  -- used as: border: none (inline)
+- border-radius in Outlook Windows (Word) [n, 2019]: Round corners can be used in VML with the `RoundRect` element. See [buttons.cm](https://buttons.cm/) and [VML documentation](https://docs.microsoft.com/en-us/windows/win32/vml/msdn-online-vml-roundrect-element).  -- used as: border-radius: .192px (inline)
+- box-shadow in Gmail web [n, 2023-01]: no note  -- used as: box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor),var(--tw-shadow)!important (style)
+- box-shadow in Gmail iOS [a, 2023-01]: Partial. Only supported with non Google accounts.  -- used as: box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor),var(--tw-shadow)!important (style)
+- box-shadow in Gmail Android [a, 2023-01]: Partial. Only supported with non Google accounts.  -- used as: box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor),var(--tw-shadow)!important (style)
+- box-shadow in Outlook Windows (Word) [n, 2019]: no note  -- used as: box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor),var(--tw-shadow)!important (style)
+- cursor in Gmail web [n, 2025-07]: Cursor property is removed.  -- used as: cursor: progress (inline); cursor: not-allowed!important (style)
+- cursor in Gmail iOS [n, 2025-07]: Cursor property is removed.  -- used as: cursor: progress (inline); cursor: not-allowed!important (style)
+- cursor in Gmail Android [n, 2025-07]: Cursor property is removed.  -- used as: cursor: progress (inline); cursor: not-allowed!important (style)
+- cursor in Outlook Windows (Word) [u, 2019]: no note  -- used as: cursor: progress (inline); cursor: not-allowed!important (style)
+- cursor in Outlook.com / new Outlook [n, 2025-07]: no note  -- used as: cursor: progress (inline); cursor: not-allowed!important (style)
+- cursor in Apple Mail macOS [a, 15]: Partial. URL is not supported.  -- used as: cursor: progress (inline); cursor: not-allowed!important (style)
+- cursor in Apple Mail iOS [n, 15]: iOS assistive touch does not respond to cursor.  -- used as: cursor: progress (inline); cursor: not-allowed!important (style)
+- display in Gmail iOS [a, 2021-12]: Partial. `flex`, `grid`, `flow-root`, `contents`, `inline flow-root`, `inline flex`, `inline grid`, `initial`, `revert`, `unset` are not supported with non Google accounts.  -- used as: display: inline-grid (inline); display: inline-block (inline)
+- display in Gmail Android [a, 2021-12]: Partial. `flex`, `grid`, `flow-root`, `contents`, `inline flow-root`, `inline flex`, `inline grid`, `initial`, `revert`, `unset` are not supported with non Google accounts.  -- used as: display: inline-grid (inline); display: inline-block (inline)
+- display in Outlook Windows (Word) [a, 2019]: Buggy. `display:none` does not inherit to inner tables. Partial. Only supports `display:none` (but not on `<img>`).  -- used as: display: inline-grid (inline); display: inline-block (inline)
+- font-size in Outlook Windows (Word) [a, 2021]: Partial support. `rem` values are not supported.  -- used as: font-size: 3rem (inline); font-size: 14px (inline)
+- font-weight in Outlook Windows (Word) [a, 2019]: Partial support. `<number>` values between 0 and 599 are set as normal font weight. `<number>` values between 600 and 1000 are set as bold font weight.  -- used as: font-weight: 700 (inline); font-weight: 500 (inline)
+- gap, column-gap, row-gap in Gmail web [a, 2022-12]: Partial. Supports column-gap for flexbox.  -- used as: gap: 0.5rem (inline)
+- gap, column-gap, row-gap in Gmail iOS [a, 2022-12]: Partial. Supports column-gap for flexbox.  -- used as: gap: 0.5rem (inline)
+- gap, column-gap, row-gap in Gmail Android [a, 2022-12]: Partial. Supports column-gap for flexbox.  -- used as: gap: 0.5rem (inline)
+- gap, column-gap, row-gap in Outlook Windows (Word) [n, 2019]: no note  -- used as: gap: 0.5rem (inline)
+- gap, column-gap, row-gap in Outlook.com / new Outlook [a, 2023-12]: Partial. Supports column-gap for flexbox.  -- used as: gap: 0.5rem (inline)
+- height property in Outlook Windows (Word) [a, 2019]: Partial. Not supported on `<body>`, `<span>`, `<div>` or `<p>` elements.  -- used as: height: 3rem (inline); height: 1px (inline)
+- !important keyword in Gmail web [a, 2021-11]: Partial. Only supported in lowercase. (See [email-bugs#13](https://github.com/hteumeuleu/email-bugs/issues/13))  -- used as: background-color: rgb(61,92,92)!important (style); --tw-ring-shadow: var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor)!important (style)
+- !important keyword in Gmail iOS [a, 2021-11]: Partial. Only supported in lowercase. (See [email-bugs#13](https://github.com/hteumeuleu/email-bugs/issues/13)) Partial. Only supported inline when using a Non Gmail Account due to the lack of `<style>` support.  -- used as: background-color: rgb(61,92,92)!important (style); --tw-ring-shadow: var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor)!important (style)
+- !important keyword in Gmail Android [a, 2021-11]: Partial. Only supported in lowercase. (See [email-bugs#13](https://github.com/hteumeuleu/email-bugs/issues/13)) Partial. Only supported inline when using a Non Gmail Account due to the lack of `<style>` support.  -- used as: background-color: rgb(61,92,92)!important (style); --tw-ring-shadow: var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor)!important (style)
+- !important keyword in Outlook Windows (Word) [a, 2019]: Partial. Only supported with a space before. Partial. Not supported inline. (See [email-bugs#31](https://github.com/hteumeuleu/email-bugs/issues/31))  -- used as: background-color: rgb(61,92,92)!important (style); --tw-ring-shadow: var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor)!important (style)
+- justify-content in Gmail web [n, 2020-12]: no note  -- used as: justify-content: center (inline)
+- justify-content in Gmail iOS [n, 2020-12]: no note  -- used as: justify-content: center (inline)
+- justify-content in Gmail Android [n, 2020-12]: no note  -- used as: justify-content: center (inline)
+- justify-content in Outlook Windows (Word) [n, 2019]: no note  -- used as: justify-content: center (inline)
+- letter-spacing in Outlook Windows (Word) [a, 2019]: Partial. Big negative values are rendered differently from CSS standards. Buggy. Values set in `em` are smaller than the expected render in CSS. See [#192](https://github.com/hteumeuleu/caniemail/issues/192).  -- used as: letter-spacing: -0.025em (inline); letter-spacing: .015em (inline)
+- line-height in Outlook Windows (Word) [a, 2019]: Buggy. `em` and `px` units behave weirdly. Use `mso-line-height-rule:exactly`.  -- used as: line-height: 1 (inline); line-height: 1.75rem (inline)
+- margin in Gmail web [a, 2019-10]: Partial. Negative values are not supported.  -- used as: margin-right: auto (inline); margin-left: auto (inline)
+- margin in Gmail iOS [a, 2019-10]: Partial. Negative values are not supported.  -- used as: margin-right: auto (inline); margin-left: auto (inline)
+- margin in Gmail Android [a, 2019-10]: Partial. Negative values are not supported.  -- used as: margin-right: auto (inline); margin-left: auto (inline)
+- margin in Outlook Windows (Word) [a, 2019]: Partial. Negative values are not supported. Partial. Not supported on `<span>` and `<body>` elements. Buggy. `background-color` is included inside the `margin`. Partial. `auto` value is not supported.  -- used as: margin-right: auto (inline); margin-left: auto (inline)
+- margin in Outlook.com / new Outlook [a, 2023-12]: Partial. Negative values are not supported.  -- used as: margin-right: auto (inline); margin-left: auto (inline)
+- max-width in Outlook Windows (Word) [a, 2019]: Partial. Only works on `<table>` elements.  -- used as: max-width: 42rem (inline); max-width: 100% (inline)
+- opacity in Outlook Windows (Word) [n, 2019]: no note  -- used as: opacity: 50% (inline); opacity: 50%!important (style)
+- padding in Outlook Windows (Word) [a, 2019]: Partial. Only supported on table cells. Buggy. Vertical padding will be the same for all cells of a same row, adopting the biggest value.  -- used as: padding-right: 1rem (inline); padding-left: 1rem (inline)
+- :hover in Gmail iOS [n, 2019-10]: no note  -- used as: :hover
+- :hover in Gmail Android [a, 2019-10]: Partial. Not supported with non Google accounts.  -- used as: :hover
+- :hover in Outlook Windows (Word) [n, 2019]: no note  -- used as: :hover
+- :hover in Outlook.com / new Outlook [a, 2024-01]: Partial. Only supported on type selectors.  -- used as: :hover
+- rgb() in Gmail web [a, 2021-08]: Whitespace syntax is not supported (`rgb(0 128 0 / 1)`). whitespace syntax (`rgb(0 128 0)`): when used in the `style` attribute of an element, the whole attribute is stripped. When used inside `<style>`, the whole `<style>` block is stripped.  -- used as: background-color: rgb(231,241,241) (inline); color: rgb(0,1,1) (inline)
+- rgb() in Gmail iOS [a, 2021-08]: Whitespace syntax is not supported (`rgb(0 128 0 / 1)`). whitespace syntax (`rgb(0 128 0)`): when used in the `style` attribute of an element, the whole attribute is stripped. When used inside `<style>`, the whole `<style>` block is stripped.  -- used as: background-color: rgb(231,241,241) (inline); color: rgb(0,1,1) (inline)
+- rgb() in Gmail Android [a, 2021-08]: Whitespace syntax is not supported (`rgb(0 128 0 / 1)`). whitespace syntax (`rgb(0 128 0)`): when used in the `style` attribute of an element, the whole attribute is stripped. When used inside `<style>`, the whole `<style>` block is stripped.  -- used as: background-color: rgb(231,241,241) (inline); color: rgb(0,1,1) (inline)
+- rgb() in Outlook Windows (Word) [a, 2019]: Whitespace syntax is not supported (`rgb(0 128 0 / 1)`). Alpha value is not supported (`rgb(0, 128, 0, 0.5)`).  -- used as: background-color: rgb(231,241,241) (inline); color: rgb(0,1,1) (inline)
+- system-ui, ui-serif, ui-sans-serif, ui-rounded, ui-monospace in Gmail Android [a, 2022-12]: Partial. Supports `system-ui` only.  -- used as: font-family: Inter,ui-sans-serif,system-ui,sans-serif (inline)
+- system-ui, ui-serif, ui-sans-serif, ui-rounded, ui-monospace in Outlook Windows (Word) [n, 2019]: no note  -- used as: font-family: Inter,ui-sans-serif,system-ui,sans-serif (inline)
+- text-decoration in Gmail iOS [a, 2019-02]: Partial. Not supported with non Google accounts.  -- used as: text-decoration: none (inline)
+- text-decoration in Gmail Android [a, 2019-02]: Partial. Not supported with non Google accounts.  -- used as: text-decoration: none (inline)
+- text-decoration in Outlook Windows (Word) [a, 2019]: Partial. Not supported with multiple values. Partial. `overline` is not supported.  -- used as: text-decoration: none (inline)
+- width property in Outlook Windows (Word) [a, 2019]: Partial. Not supported on `<body>`, `<span>`, `<div>`, `<p>` or `<img>` elements.  -- used as: width: 100% (inline)
+- <body> element in Gmail web [a, 2021-11]: Partial. Replaced by a `<div>` with supported attributes.  -- used as: <body>
+- <body> element in Gmail iOS [a, 2021-11]: Partial. Replaced by a `<div>` with supported attributes.  -- used as: <body>
+- <body> element in Gmail Android [a, 2021-11]: Partial. Replaced by a `<div>` with supported attributes.  -- used as: <body>
+- <body> element in Outlook.com / new Outlook [a, 2024-01]: Partial. Replaced by a `<div>` with supported attributes.  -- used as: <body>
+- HTML5 doctype in Outlook Windows (Word) [n, 2019]: Not supported. The HTML5 doctype has no impact here.  -- used as: <!DOCTYPE html>
+- <style> element in Gmail web [a, 2023-01]: Partial. Not supported inside the `<body>`. The size of the `<style>` tag [is limited to 16 KB](https://github.com/hteumeuleu/email-bugs/issues/90)  -- used as: <style> in <head>
+- <style> element in Gmail iOS [a, 2023-01]: Partial. Not supported inside the `<body>`. Partial. Not supported with non Google accounts.  -- used as: <style> in <head>
+- <style> element in Gmail Android [a, 2019-06]: Partial. Not supported inside the `<body>`. Partial. Not supported with non Google accounts.  -- used as: <style> in <head>
+- <style> element in Outlook Windows (Word) [a, 2019]: Buggy. `<style>` elements need to be declared before their rules are used.  -- used as: <style> in <head>
+- target attribute in Gmail web [n, 2021-12]: Not supported. `target="_blank"` is forced on all links.  -- used as: target=""
+- target attribute in Gmail iOS [n, 2021-12]: Not supported. `target="_blank"` is forced on all links.  -- used as: target=""
+- target attribute in Gmail Android [n, 2021-12]: Not supported. `target="_blank"` is forced on all links.  -- used as: target=""
+- target attribute in Outlook Windows (Word) [a, 2019]: The attribute is supported but links always open in a new window anyway.  -- used as: target=""
+- target attribute in Outlook.com / new Outlook [n, 2024-01]: Not supported. `target="_blank"` is forced on all links.  -- used as: target=""
+- target attribute in Apple Mail macOS [a, 15]: The attribute is supported but links always open in a new window anyway.  -- used as: target=""
+- target attribute in Apple Mail iOS [a, 15]: The attribute is supported but links always open in a new window anyway.  -- used as: target=""
+- width attribute in Outlook Windows (Word) [a, 2019]: Buggy. Percentage width on `<img>` elements are based on the physical file's width, not on the parent element's width. Buggy. Sizes set in attributes don't scale in 120 dpi mode.  -- used as: width=""
+
+Not in caniemail's data: color, font-family, scroll-margin, mso-padding-alt, grid-auto-flow, transition-property, transition-timing-function, transition-duration, scale, mso-font-width, mso-text-raise, border-top, flex-shrink, --tw-ring-shadow, --tw-ring-color, --tw-ring-offset-width, --tw-ring-offset-shadow, --tw-outline-style, outline-style
+
+Counts on the newest entry (n = unsupported, a = partial):
+- Gmail web: n 5 (align-items; box-shadow; cursor; justify-content; target attribute), a 6
+- Gmail iOS: n 5 (align-items; cursor; justify-content; :hover; target attribute), a 9
+- Gmail Android: n 4 (align-items; cursor; justify-content; target attribute), a 11
+- Outlook Windows (Word): n 9 (align-items; border-radius; box-shadow; gap, column-gap, row-gap; justify-content; opacity; :hover; system-ui, ui-serif, ui-sans-serif, ui-rounded, ui-monospace; HTML5 doctype), a 17
+- Outlook.com / new Outlook: n 2 (cursor; target attribute), a 4
+- Apple Mail macOS: n 0 (), a 2
+- Apple Mail iOS: n 1 (cursor), a 1

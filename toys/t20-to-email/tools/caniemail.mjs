@@ -60,7 +60,13 @@ function feature(slug) {
 function support(f, family, platform) {
   const versions = f.stats?.[family]?.[platform];
   if (!versions) return { v: '?', note: 'not tested' };
-  const keys = Object.keys(versions);
+  // The newest entry: versions are years, year-months or dotted numbers; compare numerically.
+  const num = (k) => k.split(/[.-]/).map(Number);
+  const keys = Object.keys(versions).sort((a, b) => {
+    const [x, y] = [num(a), num(b)];
+    for (let i = 0; i < Math.max(x.length, y.length); i++) if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) - (y[i] || 0);
+    return 0;
+  });
   const last = keys[keys.length - 1];
   const [flag, ...nums] = String(versions[last]).split(/\s+/);
   const note = nums.map((n) => f.notes[n.replace('#', '')]).filter(Boolean).join(' ');
@@ -118,6 +124,18 @@ function uses(html) {
   return { used: out, untracked: [...untracked] };
 }
 
+// Is there a separate entry for the new Outlook for Windows anywhere? List every
+// Outlook platform and version key the data holds.
+{
+  const { readdirSync } = await import('node:fs');
+  const seen = {};
+  for (const f of readdirSync(join(repo, '_features')).filter((f) => f.endsWith('.md'))) {
+    const stats = feature(f.replace(/\.md$/, ''))?.stats?.outlook || {};
+    for (const [plat, vs] of Object.entries(stats)) for (const v of Object.keys(vs)) (seen[plat] ||= new Set()).add(v);
+  }
+  console.log('Outlook keys in caniemail:', Object.entries(seen).map(([p, v]) => `${p}: ${[...v].sort().join(' ')}`).join(' | '));
+}
+
 const result = {};
 for (const file of files) {
   const html = readFileSync(file, 'utf8');
@@ -141,5 +159,12 @@ for (const file of files) {
     for (const c of r.cells)
       if (c.v !== 'y') console.log(`- ${r.title} in ${c.client} [${c.v}, ${c.version ?? ''}]: ${c.note || 'no note'}  -- used as: ${r.uses.slice(0, 2).join('; ')}`);
   console.log(`\nNot in caniemail's data: ${untracked.join(', ')}`);
+  console.log('\nCounts on the newest entry (n = unsupported, a = partial):');
+  for (const [name] of CLIENTS) {
+    const cells = rows.map((r) => ({ r, c: r.cells.find((c) => c.client === name) }));
+    const n = cells.filter((x) => x.c.v === 'n').map((x) => x.r.title);
+    const a = cells.filter((x) => x.c.v === 'a').length;
+    console.log(`- ${name}: n ${n.length} (${n.join('; ')}), a ${a}`);
+  }
 }
 writeFileSync('out/caniemail.json', JSON.stringify(result, null, 2));

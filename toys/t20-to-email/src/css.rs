@@ -78,7 +78,12 @@ pub fn parse(src: &str) -> Result<StyleSheet<'_>, String> {
 
 impl<'a, 'i> Sheet<'a, 'i> {
     pub fn index(sheet: &'a StyleSheet<'i>, defaults: &'a StyleSheet<'i>) -> Self {
-        let mut s = Sheet { by_class: HashMap::new(), light: HashMap::new(), dark: HashMap::new(), skipped: 0 };
+        let mut s = Sheet {
+            by_class: HashMap::new(),
+            light: HashMap::new(),
+            dark: HashMap::new(),
+            skipped: 0,
+        };
         let mut order = 0;
         s.walk(&defaults.rules.0, "", &[], &mut order);
         s.walk(&sheet.rules.0, "", &[], &mut order);
@@ -94,24 +99,41 @@ impl<'a, 'i> Sheet<'a, 'i> {
             match r {
                 CssRule::LayerBlock(l) => self.walk(&l.rules.0, parent, ctx, order),
                 CssRule::Media(m) => {
-                    let q = m.query.to_css_string(PrinterOptions::default()).unwrap_or_default();
+                    let q = m
+                        .query
+                        .to_css_string(PrinterOptions::default())
+                        .unwrap_or_default();
                     self.walk(&m.rules.0, parent, &push(ctx, Ctx::Media(q)), order);
                 }
                 CssRule::Container(c) => {
-                    let q = c.condition.as_ref().and_then(|c| c.to_css_string(PrinterOptions::default()).ok()).unwrap_or_default();
+                    let q = c
+                        .condition
+                        .as_ref()
+                        .and_then(|c| c.to_css_string(PrinterOptions::default()).ok())
+                        .unwrap_or_default();
                     self.walk(&c.rules.0, parent, &push(ctx, Ctx::Container(q)), order);
                 }
                 CssRule::Supports(sp) => {
-                    let q = sp.condition.to_css_string(PrinterOptions::default()).unwrap_or_default();
+                    let q = sp
+                        .condition
+                        .to_css_string(PrinterOptions::default())
+                        .unwrap_or_default();
                     self.walk(&sp.rules.0, parent, &push(ctx, Ctx::Supports(q)), order);
                 }
                 CssRule::NestedDeclarations(n) => {
                     self.add(parent, ctx, &n.declarations, order);
                 }
                 CssRule::Style(st) => {
-                    let sel = st.selectors.to_css_string(PrinterOptions::default()).unwrap_or_default();
+                    let sel = st
+                        .selectors
+                        .to_css_string(PrinterOptions::default())
+                        .unwrap_or_default();
                     for one in split_selector_list(&sel) {
-                        let full = if one.contains('&') { one.replace('&', parent) } else { one.clone() };
+                        let full = if one.contains('&') {
+                            one.replace('&', parent)
+                        } else {
+                            one.clone()
+                        };
                         self.add(&full, ctx, &st.declarations, order);
                         self.walk(&st.rules.0, &full, ctx, order);
                     }
@@ -121,7 +143,13 @@ impl<'a, 'i> Sheet<'a, 'i> {
         }
     }
 
-    fn add(&mut self, selector: &str, ctx: &[Ctx], block: &'a lightningcss::declaration::DeclarationBlock<'i>, order: &mut usize) {
+    fn add(
+        &mut self,
+        selector: &str,
+        ctx: &[Ctx],
+        block: &'a lightningcss::declaration::DeclarationBlock<'i>,
+        order: &mut usize,
+    ) {
         *order += 1;
         let decls: Vec<(&'a Property<'i>, bool)> = block
             .declarations
@@ -150,7 +178,12 @@ impl<'a, 'i> Sheet<'a, 'i> {
             }
             sel => {
                 if let Some((class, suffix)) = leading_class(sel) {
-                    self.by_class.entry(class).or_default().push(Rule { order: *order, suffix, ctx: ctx.to_vec(), decls });
+                    self.by_class.entry(class).or_default().push(Rule {
+                        order: *order,
+                        suffix,
+                        ctx: ctx.to_vec(),
+                        decls,
+                    });
                 } else {
                     self.skipped += 1;
                 }
@@ -233,7 +266,12 @@ fn leading_class(sel: &str) -> Option<(String, String)> {
                 if let Some(&(_, ' ')) = chars.peek() {
                     chars.next();
                 }
-                name.push(u32::from_str_radix(&hex, 16).ok().and_then(char::from_u32).unwrap_or('?'));
+                name.push(
+                    u32::from_str_radix(&hex, 16)
+                        .ok()
+                        .and_then(char::from_u32)
+                        .unwrap_or('?'),
+                );
             }
         } else if ch.is_alphanumeric() || ch == '-' || ch == '_' || !ch.is_ascii() {
             name.push(ch);
@@ -271,23 +309,111 @@ impl<'i> Visitor<'i> for Lower {
 pub fn printer() -> PrinterOptions<'static> {
     PrinterOptions {
         minify: true,
-        targets: Targets::from(Browsers { ie: Some(11 << 16), ..Browsers::default() }),
+        targets: Targets::from(Browsers {
+            ie: Some(11 << 16),
+            ..Browsers::default()
+        }),
         ..PrinterOptions::default()
     }
 }
 
 /// One declaration, its variables substituted from `vars`, lowered and printed.
 /// `Err` carries why it could not be (a variable that resolves to nothing).
-pub fn resolve(p: &Property, important: bool, vars: &HashMap<&str, TokenList>) -> Result<(String, String), String> {
+pub fn resolve(
+    p: &Property,
+    important: bool,
+    vars: &HashMap<&str, TokenList>,
+) -> Result<(String, String), String> {
     let mut prop: Property = match p {
         Property::Unparsed(u) => {
             let id = u.property_id.name().to_string();
-            u.clone().substitute_variables(vars).map_err(|()| format!("{id}: a variable did not resolve to a valid value"))?
+            u.clone()
+                .substitute_variables(vars)
+                .map_err(|()| format!("{id}: a variable did not resolve to a valid value"))?
         }
         other => other.clone(),
     };
     let _ = prop.visit(&mut Lower);
-    let printed = prop.to_css_string(important, printer()).map_err(|e| e.to_string())?;
+    let printed = prop
+        .to_css_string(important, printer())
+        .map_err(|e| e.to_string())?;
     let (name, value) = printed.split_once(':').ok_or("unprintable")?;
     Ok((name.trim().to_string(), value.trim().to_string()))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn one(css: &str, class: &str) -> Vec<(String, String)> {
+        let sheet = parse(css).unwrap();
+        let empty = parse(":root{}").unwrap();
+        let s = Sheet::index(&sheet, &empty);
+        s.by_class[class]
+            .iter()
+            .filter(|r| r.inlinable())
+            .flat_map(|r| r.decls.iter())
+            .filter(|(p, _)| custom(p).is_none())
+            .map(|(p, i)| resolve(p, *i, &s.light).unwrap())
+            .collect()
+    }
+
+    #[test]
+    fn escaped_class_names_come_back_as_written() {
+        assert_eq!(
+            leading_class(r".hover\:bg-primary:hover"),
+            Some(("hover:bg-primary".into(), ":hover".into()))
+        );
+        assert_eq!(
+            leading_class(r".py-2\.5"),
+            Some(("py-2.5".into(), String::new()))
+        );
+        assert_eq!(
+            leading_class(r".\@md\:px-6"),
+            Some(("@md:px-6".into(), String::new()))
+        );
+        assert_eq!(
+            leading_class(r".has-data-\[icon\=inline-end\]\:pe-3:has([data-icon=inline-end])")
+                .unwrap()
+                .0,
+            "has-data-[icon=inline-end]:pe-3"
+        );
+    }
+
+    #[test]
+    fn a_var_chain_with_calc_resolves_to_px() {
+        let css = ":root{--base:.01rem;--md:calc(var(--base) * 1.2);--radius-md:var(--md)} .rounded-md{border-radius:var(--radius-md)}";
+        assert_eq!(
+            one(css, "rounded-md"),
+            vec![("border-radius".into(), ".192px".into())]
+        );
+    }
+
+    #[test]
+    fn an_opacity_modifier_lowers_to_rgba() {
+        // Tailwind's `bg-muted/80`: a fallback, then color-mix under @supports.
+        let css = r":root{--muted:oklch(0.5 0.05 200)} .bg-muted\/80{background-color:var(--muted);@supports (color: color-mix(in lab, red, red)){background-color:color-mix(in oklab, var(--muted) 80%, transparent)}}";
+        let out = one(css, "bg-muted/80");
+        assert_eq!(out.len(), 2, "{out:?}");
+        assert!(out[1].1.starts_with("rgba("), "{out:?}");
+        assert!(!out
+            .iter()
+            .any(|(_, v)| v.contains("oklch") || v.contains("color-mix")));
+    }
+
+    #[test]
+    fn an_out_of_gamut_oklch_is_gamut_mapped_to_srgb() {
+        let out = one(".x{color:oklch(0.7 0.4 145)}", "x");
+        assert!(out[0].1.starts_with('#'), "{out:?}");
+    }
+
+    #[test]
+    fn dark_is_light_with_the_dark_overrides() {
+        let sheet = parse(":root{--a:red;--b:blue} .dark{--a:green}").unwrap();
+        let empty = parse(":root{}").unwrap();
+        let s = Sheet::index(&sheet, &empty);
+        assert_eq!(s.dark.len(), 2);
+        assert_ne!(s.dark["--a"], s.light["--a"]);
+        assert_eq!(s.dark["--b"], s.light["--b"]);
+    }
 }

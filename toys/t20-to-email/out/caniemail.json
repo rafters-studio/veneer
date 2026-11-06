@@ -112,6 +112,7 @@
           "background-color: #a8c9c9 (inline)",
           "background-color: #3d5c5c !important (style)",
           "background-color: #789999 !important (style)",
+          "background-color: #90b1b1 !important (style)",
           "background-color: #082727 !important (style)",
           "background-color: #000101 !important (style)"
         ],
@@ -318,8 +319,7 @@
         "slug": "css-display",
         "title": "display",
         "uses": [
-          "display: block (inline)",
-          "display: inline-block (inline)"
+          "display: block (inline)"
         ],
         "cells": [
           {
@@ -533,6 +533,7 @@
           "color: #e7f1f1 !important (style)",
           "background-color: #789999 !important (style)",
           "color: #000f10 !important (style)",
+          "background-color: #90b1b1 !important (style)",
           "background-color: #082727 !important (style)",
           "background-color: #000101 !important (style)"
         ],
@@ -585,8 +586,9 @@
         "slug": "css-letter-spacing",
         "title": "letter-spacing",
         "uses": [
-          "letter-spacing: -.025em (inline)",
-          "letter-spacing: 0 (inline)"
+          "letter-spacing: -1px (inline)",
+          "letter-spacing: 0 (inline)",
+          "letter-spacing: -0.83px (inline)"
         ],
         "cells": [
           {
@@ -637,11 +639,11 @@
         "slug": "css-line-height",
         "title": "line-height",
         "uses": [
-          "line-height: 1.25 (inline)",
+          "line-height: 49.76px (inline)",
           "line-height: 28px (inline)",
-          "line-height: 1.5 (inline)",
+          "line-height: 24px (inline)",
           "line-height: 1px (inline)",
-          "line-height: 1.3 (inline)"
+          "line-height: 43.14px (inline)"
         ],
         "cells": [
           {
@@ -1107,57 +1109,6 @@
         ]
       },
       {
-        "slug": "css-unit-em",
-        "title": "em unit",
-        "uses": [
-          "letter-spacing: -.025em (inline)"
-        ],
-        "cells": [
-          {
-            "client": "Gmail web",
-            "v": "y",
-            "version": "2020-02",
-            "note": ""
-          },
-          {
-            "client": "Gmail iOS",
-            "v": "y",
-            "version": "2020-02",
-            "note": ""
-          },
-          {
-            "client": "Gmail Android",
-            "v": "y",
-            "version": "2020-02",
-            "note": ""
-          },
-          {
-            "client": "Outlook Windows (Word)",
-            "v": "y",
-            "version": "2019",
-            "note": ""
-          },
-          {
-            "client": "Outlook.com / new Outlook",
-            "v": "y",
-            "version": "2024-01",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail macOS",
-            "v": "y",
-            "version": "13",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail iOS",
-            "v": "y",
-            "version": "13",
-            "note": ""
-          }
-        ]
-      },
-      {
         "slug": "css-unit-percent",
         "title": "% unit",
         "uses": [
@@ -1216,6 +1167,8 @@
           "max-width: 672px (inline)",
           "padding: 0 16px 0 16px (inline)",
           "font-size: 39.808px (inline)",
+          "line-height: 49.76px (inline)",
+          "letter-spacing: -1px (inline)",
           "padding: 24px 16px 0 16px (inline)",
           "line-height: 28px (inline)",
           "font-size: 16px (inline)",
@@ -1226,11 +1179,14 @@
           "padding-right: 16px (inline)",
           "padding-top: 10px (inline)",
           "padding-bottom: 10px (inline)",
+          "line-height: 24px (inline)",
           "height: 1px (inline)",
           "line-height: 1px (inline)",
           "font-size: 1px (inline)",
           "padding: 0px 12px 0 0px (inline)",
           "font-size: 33.184px (inline)",
+          "line-height: 43.14px (inline)",
+          "letter-spacing: -0.83px (inline)",
           "padding: 8px 0 0 0 (inline)",
           "padding: 0px 0px 0 12px (inline)"
         ],
@@ -1467,7 +1423,7 @@
           {
             "client": "Outlook.com / new Outlook",
             "v": "y",
-            "version": "2024-01",
+            "version": "2024-05",
             "note": ""
           },
           {
@@ -1518,7 +1474,7 @@
           {
             "client": "Outlook.com / new Outlook",
             "v": "y",
-            "version": "2024-01",
+            "version": "2024-05",
             "note": ""
           },
           {
@@ -1569,7 +1525,7 @@
           {
             "client": "Outlook.com / new Outlook",
             "v": "y",
-            "version": "2024-01",
+            "version": "2024-04",
             "note": ""
           },
           {
@@ -2304,6 +2260,7 @@
     "untracked": [
       "font-family",
       "color",
+      "mso-line-height-rule",
       "mso-padding-alt",
       "supported-color-schemes",
       "bgcolor attribute",
@@ -2423,6 +2380,7 @@
           "background-color: #a8c9c9 (inline)",
           "background-color: #3d5c5c !important (style)",
           "background-color: #789999 !important (style)",
+          "background-color: #90b1b1 !important (style)",
           "background-color: #082727 !important (style)",
           "background-color: #000101 !important (style)"
         ],
@@ -2577,7 +2535,7 @@
         "slug": "css-display",
         "title": "display",
         "uses": [
-          "display: inline-block (inline)"
+          "display: block (inline)"
         ],
         "cells": [
           {
@@ -2789,6 +2747,7 @@
           "color: #e7f1f1 !important (style)",
           "background-color: #789999 !important (style)",
           "color: #000f10 !important (style)",
+          "background-color: #90b1b1 !important (style)",
           "background-color: #082727 !important (style)",
           "color: #909090 !important (style)",
           "background-color: #000101 !important (style)"
@@ -2842,9 +2801,9 @@
         "slug": "css-letter-spacing",
         "title": "letter-spacing",
         "uses": [
-          "letter-spacing: -.025em (inline)",
+          "letter-spacing: -1px (inline)",
           "letter-spacing: 0 (inline)",
-          "letter-spacing: .015em (inline)"
+          "letter-spacing: 0.2px (inline)"
         ],
         "cells": [
           {
@@ -2895,10 +2854,11 @@
         "slug": "css-line-height",
         "title": "line-height",
         "uses": [
-          "line-height: 1.25 (inline)",
+          "line-height: 49.76px (inline)",
           "line-height: 28px (inline)",
-          "line-height: 1.5 (inline)",
-          "line-height: 1px (inline)"
+          "line-height: 24px (inline)",
+          "line-height: 1px (inline)",
+          "line-height: 19.99px (inline)"
         ],
         "cells": [
           {
@@ -3362,58 +3322,6 @@
         ]
       },
       {
-        "slug": "css-unit-em",
-        "title": "em unit",
-        "uses": [
-          "letter-spacing: -.025em (inline)",
-          "letter-spacing: .015em (inline)"
-        ],
-        "cells": [
-          {
-            "client": "Gmail web",
-            "v": "y",
-            "version": "2020-02",
-            "note": ""
-          },
-          {
-            "client": "Gmail iOS",
-            "v": "y",
-            "version": "2020-02",
-            "note": ""
-          },
-          {
-            "client": "Gmail Android",
-            "v": "y",
-            "version": "2020-02",
-            "note": ""
-          },
-          {
-            "client": "Outlook Windows (Word)",
-            "v": "y",
-            "version": "2019",
-            "note": ""
-          },
-          {
-            "client": "Outlook.com / new Outlook",
-            "v": "y",
-            "version": "2024-01",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail macOS",
-            "v": "y",
-            "version": "13",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail iOS",
-            "v": "y",
-            "version": "13",
-            "note": ""
-          }
-        ]
-      },
-      {
         "slug": "css-unit-percent",
         "title": "% unit",
         "uses": [
@@ -3471,6 +3379,8 @@
           "max-width: 672px (inline)",
           "padding: 0 16px 0 16px (inline)",
           "font-size: 39.808px (inline)",
+          "line-height: 49.76px (inline)",
+          "letter-spacing: -1px (inline)",
           "padding: 24px 16px 0 16px (inline)",
           "line-height: 28px (inline)",
           "font-size: 16px (inline)",
@@ -3478,12 +3388,15 @@
           "mso-padding-alt: 12px 24px 12px 24px (inline)",
           "padding-left: 24px (inline)",
           "padding-right: 24px (inline)",
+          "line-height: 24px (inline)",
           "padding-top: 12px (inline)",
           "padding-bottom: 12px (inline)",
           "height: 1px (inline)",
           "line-height: 1px (inline)",
           "font-size: 1px (inline)",
           "font-size: 13.328px (inline)",
+          "line-height: 19.99px (inline)",
+          "letter-spacing: 0.2px (inline)",
           "padding: 4px 0 0 0 (inline)"
         ],
         "cells": [
@@ -3718,7 +3631,7 @@
           {
             "client": "Outlook.com / new Outlook",
             "v": "y",
-            "version": "2024-01",
+            "version": "2024-05",
             "note": ""
           },
           {
@@ -3769,7 +3682,7 @@
           {
             "client": "Outlook.com / new Outlook",
             "v": "y",
-            "version": "2024-01",
+            "version": "2024-05",
             "note": ""
           },
           {
@@ -3820,7 +3733,7 @@
           {
             "client": "Outlook.com / new Outlook",
             "v": "y",
-            "version": "2024-01",
+            "version": "2024-04",
             "note": ""
           },
           {
@@ -4402,6 +4315,7 @@
     "untracked": [
       "font-family",
       "color",
+      "mso-line-height-rule",
       "mso-padding-alt",
       "supported-color-schemes",
       "bgcolor attribute",

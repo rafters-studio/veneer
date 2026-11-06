@@ -83,7 +83,9 @@ pub fn classes(block: &Block) -> Vec<(&'static str, String)> {
         // typography.classes.ts, resolveTypography(h1 | h2 | h3).
         "heading" => {
             let c = match m("level").as_deref() {
-                Some("1") => "scroll-m-20 text-4xl font-bold tracking-tight text-foreground @lg:text-5xl",
+                Some("1") => {
+                    "scroll-m-20 text-4xl font-bold tracking-tight text-foreground @lg:text-5xl"
+                }
                 Some("3") => "scroll-m-20 text-2xl font-semibold tracking-tight text-foreground",
                 _ => "scroll-m-20 text-3xl font-semibold tracking-tight text-foreground",
             };
@@ -103,8 +105,14 @@ pub fn classes(block: &Block) -> Vec<(&'static str, String)> {
             let radius = m("radius").unwrap_or_else(|| "lg".into());
             vec![
                 ("root", "relative mx-auto".into()),
-                ("frame", format!("relative overflow-hidden rounded-{radius}")),
-                ("img", "block w-full h-auto animate-fade-in-moderate-enter".into()),
+                (
+                    "frame",
+                    format!("relative overflow-hidden rounded-{radius}"),
+                ),
+                (
+                    "img",
+                    "block w-full h-auto animate-fade-in-moderate-enter".into(),
+                ),
             ]
         }
         // button.classes.ts, buttonVariants({ variant, size }).
@@ -141,6 +149,55 @@ fn button(variant: &str, size: &str) -> String {
         _ => "h-11 px-4 py-2.5 @md:h-10 @md:py-2 has-data-[icon=inline-start]:ps-3 has-data-[icon=inline-end]:pe-3",
     };
     format!("{base} {surface} {ring} {sizing}")
+}
+
+/// The same blocks as plain class-based HTML on the site's own stylesheet: the
+/// reference for what the designer meant, to set a screenshot beside. `dark`
+/// puts `class="dark"` on `<html>`, the way rafters switches it.
+pub fn reference(file: &RafterFile, css_href: &str, dark: bool) -> String {
+    let by_id: HashMap<&str, &Block> = file.blocks.iter().map(|b| (b.id.as_str(), b)).collect();
+    fn part(b: &Block, p: &str) -> String {
+        classes(b)
+            .into_iter()
+            .find(|(n, _)| *n == p)
+            .map(|(_, c)| c)
+            .unwrap_or_default()
+    }
+    fn walk(b: &Block, by_id: &HashMap<&str, &Block>) -> String {
+        let kids: String = b
+            .children
+            .iter()
+            .filter_map(|c| by_id.get(c.as_str()))
+            .map(|k| walk(k, by_id))
+            .collect();
+        let r = part(b, "root");
+        let t = b.text();
+        match b.kind.as_str() {
+            "heading" => {
+                let l = b.meta_str("level").unwrap_or_else(|| "2".into());
+                format!("<h{l} class=\"{r}\">{t}</h{l}>")
+            }
+            "text" => format!("<p class=\"{r}\">{t}</p>"),
+            "image" => format!(
+                "<figure class=\"{r}\"><div class=\"{}\"><img class=\"{}\" src=\"{}\" alt=\"{}\"></div></figure>",
+                part(b, "frame"),
+                part(b, "img"),
+                b.meta_str("src").unwrap_or_default(),
+                b.meta_str("alt").unwrap_or_default()
+            ),
+            "button" => format!("<a class=\"{r}\" href=\"{}\">{t}</a>", b.meta_str("href").unwrap_or_default()),
+            "separator" => format!("<div class=\"{r}\"></div>"),
+            _ => format!("<div class=\"{r}\">{kids}</div>"),
+        }
+    }
+    let body: String = file
+        .blocks
+        .iter()
+        .filter(|b| b.parent_id.is_none())
+        .map(|b| walk(b, &by_id))
+        .collect();
+    let html_class = if dark { " class=\"dark\"" } else { "" };
+    format!("<!DOCTYPE html>\n<html lang=\"en\"{html_class}>\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<link rel=\"stylesheet\" href=\"{css_href}\">\n</head>\n<body class=\"{BODY}\" style=\"margin:0\">\n{body}\n</body>\n</html>\n")
 }
 
 /// Every class the file's blocks use, plus the body wrapper's.

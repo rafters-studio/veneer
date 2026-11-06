@@ -16,7 +16,7 @@
       "element": "heading#title",
       "class": "text-4xl",
       "property": "line-height",
-      "value": "1.25"
+      "value": "49.76px"
     },
     {
       "element": "heading#title",
@@ -28,13 +28,19 @@
       "element": "heading#title",
       "class": "tracking-tight",
       "property": "letter-spacing",
-      "value": "-.025em"
+      "value": "-1px"
     },
     {
       "element": "heading#title",
       "class": "text-foreground",
       "property": "color",
       "value": "#000101"
+    },
+    {
+      "element": "heading#title",
+      "class": "(outlook)",
+      "property": "mso-line-height-rule",
+      "value": "exactly"
     },
     {
       "element": "heading#title",
@@ -68,6 +74,12 @@
     },
     {
       "element": "text#body",
+      "class": "(outlook)",
+      "property": "mso-line-height-rule",
+      "value": "exactly"
+    },
+    {
+      "element": "text#body",
       "class": "(inherited from body)",
       "property": "font-family",
       "value": "Inter,ui-sans-serif,system-ui,sans-serif"
@@ -94,7 +106,7 @@
       "element": "button#cta",
       "class": "inline-grid",
       "property": "display",
-      "value": "inline-block"
+      "value": "block"
     },
     {
       "element": "button#cta",
@@ -136,7 +148,7 @@
       "element": "button#cta",
       "class": "text-label-large",
       "property": "line-height",
-      "value": "1.5"
+      "value": "24px"
     },
     {
       "element": "button#cta",
@@ -181,6 +193,12 @@
       "value": "center"
     },
     {
+      "element": "button#cta",
+      "class": "(outlook)",
+      "property": "mso-line-height-rule",
+      "value": "exactly"
+    },
+    {
       "element": "separator#rule",
       "class": "bg-border",
       "property": "background-color",
@@ -220,19 +238,25 @@
       "element": "text#foot-1",
       "class": "text-sm",
       "property": "line-height",
-      "value": "1.5"
+      "value": "19.99px"
     },
     {
       "element": "text#foot-1",
       "class": "text-sm",
       "property": "letter-spacing",
-      "value": ".015em"
+      "value": "0.2px"
     },
     {
       "element": "text#foot-1",
       "class": "text-muted-foreground",
       "property": "color",
       "value": "#052525"
+    },
+    {
+      "element": "text#foot-1",
+      "class": "(outlook)",
+      "property": "mso-line-height-rule",
+      "value": "exactly"
     },
     {
       "element": "text#foot-1",
@@ -256,19 +280,25 @@
       "element": "text#foot-2",
       "class": "text-sm",
       "property": "line-height",
-      "value": "1.5"
+      "value": "19.99px"
     },
     {
       "element": "text#foot-2",
       "class": "text-sm",
       "property": "letter-spacing",
-      "value": ".015em"
+      "value": "0.2px"
     },
     {
       "element": "text#foot-2",
       "class": "text-muted-foreground",
       "property": "color",
       "value": "#052525"
+    },
+    {
+      "element": "text#foot-2",
+      "class": "(outlook)",
+      "property": "mso-line-height-rule",
+      "value": "exactly"
     },
     {
       "element": "text#foot-2",
@@ -685,7 +715,7 @@
       "class": "inline-grid",
       "property": "display",
       "value": "inline-grid",
-      "reason": "inline-grid became inline-block"
+      "reason": "inline-grid became block"
     },
     {
       "element": "separator#rule",

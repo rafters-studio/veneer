@@ -16,7 +16,7 @@
       "element": "heading#title",
       "class": "text-4xl",
       "property": "line-height",
-      "value": "1.25"
+      "value": "49.76px"
     },
     {
       "element": "heading#title",
@@ -28,13 +28,19 @@
       "element": "heading#title",
       "class": "tracking-tight",
       "property": "letter-spacing",
-      "value": "-.025em"
+      "value": "-1px"
     },
     {
       "element": "heading#title",
       "class": "text-foreground",
       "property": "color",
       "value": "#000101"
+    },
+    {
+      "element": "heading#title",
+      "class": "(outlook)",
+      "property": "mso-line-height-rule",
+      "value": "exactly"
     },
     {
       "element": "heading#title",
@@ -65,6 +71,12 @@
       "class": "(browser default under preflight)",
       "property": "font-size",
       "value": "16px"
+    },
+    {
+      "element": "text#intro",
+      "class": "(outlook)",
+      "property": "mso-line-height-rule",
+      "value": "exactly"
     },
     {
       "element": "text#intro",
@@ -124,7 +136,7 @@
       "element": "button#cta",
       "class": "inline-grid",
       "property": "display",
-      "value": "inline-block"
+      "value": "block"
     },
     {
       "element": "button#cta",
@@ -178,7 +190,7 @@
       "element": "button#cta",
       "class": "text-label-large",
       "property": "line-height",
-      "value": "1.5"
+      "value": "24px"
     },
     {
       "element": "button#cta",
@@ -209,6 +221,12 @@
       "class": "(email link)",
       "property": "text-align",
       "value": "center"
+    },
+    {
+      "element": "button#cta",
+      "class": "(outlook)",
+      "property": "mso-line-height-rule",
+      "value": "exactly"
     },
     {
       "element": "separator#rule",
@@ -250,7 +268,7 @@
       "element": "heading#left-h",
       "class": "text-3xl",
       "property": "line-height",
-      "value": "1.3"
+      "value": "43.14px"
     },
     {
       "element": "heading#left-h",
@@ -262,13 +280,19 @@
       "element": "heading#left-h",
       "class": "tracking-tight",
       "property": "letter-spacing",
-      "value": "-.025em"
+      "value": "-0.83px"
     },
     {
       "element": "heading#left-h",
       "class": "text-foreground",
       "property": "color",
       "value": "#000101"
+    },
+    {
+      "element": "heading#left-h",
+      "class": "(outlook)",
+      "property": "mso-line-height-rule",
+      "value": "exactly"
     },
     {
       "element": "heading#left-h",
@@ -299,6 +323,12 @@
       "class": "(browser default under preflight)",
       "property": "font-size",
       "value": "16px"
+    },
+    {
+      "element": "text#left-t",
+      "class": "(outlook)",
+      "property": "mso-line-height-rule",
+      "value": "exactly"
     },
     {
       "element": "text#left-t",
@@ -328,7 +358,7 @@
       "element": "heading#right-h",
       "class": "text-3xl",
       "property": "line-height",
-      "value": "1.3"
+      "value": "43.14px"
     },
     {
       "element": "heading#right-h",
@@ -340,13 +370,19 @@
       "element": "heading#right-h",
       "class": "tracking-tight",
       "property": "letter-spacing",
-      "value": "-.025em"
+      "value": "-0.83px"
     },
     {
       "element": "heading#right-h",
       "class": "text-foreground",
       "property": "color",
       "value": "#000101"
+    },
+    {
+      "element": "heading#right-h",
+      "class": "(outlook)",
+      "property": "mso-line-height-rule",
+      "value": "exactly"
     },
     {
       "element": "heading#right-h",
@@ -377,6 +413,12 @@
       "class": "(browser default under preflight)",
       "property": "font-size",
       "value": "16px"
+    },
+    {
+      "element": "text#right-t",
+      "class": "(outlook)",
+      "property": "mso-line-height-rule",
+      "value": "exactly"
     },
     {
       "element": "text#right-t",
@@ -863,7 +905,7 @@
       "class": "inline-grid",
       "property": "display",
       "value": "inline-grid",
-      "reason": "inline-grid became inline-block"
+      "reason": "inline-grid became block"
     },
     {
       "element": "separator#rule",
