@@ -1,0 +1,44 @@
+ Shallow Bytes │ Shallow % │ Item
+───────────────┼───────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        824853 ┊    45.62% ┊ custom section '.debug_str'
+        406115 ┊    22.46% ┊ custom section '.debug_info'
+        253122 ┊    14.00% ┊ custom section '.debug_line'
+        102216 ┊     5.65% ┊ custom section '.debug_ranges'
+         73722 ┊     4.08% ┊ "function names" subsection
+         30750 ┊     1.70% ┊ data segment ".rodata"
+          9899 ┊     0.55% ┊ t19_rafter_wasm[b90b8220677f7893]::visit
+          5102 ┊     0.28% ┊ <dlmalloc[ceec1d21c86e99f3]::dlmalloc::Dlmalloc<dlmalloc[ceec1d21c86e99f3]::sys::System>>::malloc
+          4434 ┊     0.25% ┊ custom section '.debug_abbrev'
+          2013 ┊     0.11% ┊ t19_rafter_wasm[b90b8220677f7893]::compile_with
+          1660 ┊     0.09% ┊ t19_rafter_wasm[b90b8220677f7893]::rules_to_html_attrs
+          1646 ┊     0.09% ┊ <&mut serde_json[aabd1cf1ee42376d]::de::Deserializer<serde_json[aabd1cf1ee42376d]::read::StrRead> as serde_core[512684841cf7b3af]::de::Deserializer>::deserialize_any::<<serde_json[aabd1cf1ee42376d]::value::Value as serde_core[512684841cf7b3af]::de::Deserialize>::deserialize::ValueVisitor>
+          1539 ┊     0.09% ┊ <core[f0fd674eaa06beef]::str::pattern::StrSearcher>::new
+          1496 ┊     0.08% ┊ <f64 as core[f0fd674eaa06beef]::str::traits::FromStr>::from_str
+          1437 ┊     0.08% ┊ t19_rafter_wasm[b90b8220677f7893]::element
+          1362 ┊     0.08% ┊ core[f0fd674eaa06beef]::num::imp::dec2flt::parse::parse_number
+          1340 ┊     0.07% ┊ core[f0fd674eaa06beef]::str::slice_error_fail_rt
+          1334 ┊     0.07% ┊ core[f0fd674eaa06beef]::num::imp::dec2flt::decimal_seq::parse_decimal_seq
+          1297 ┊     0.07% ┊ <core[f0fd674eaa06beef]::iter::adapters::map::Map<core[f0fd674eaa06beef]::slice::iter::Iter<alloc[ae94343a5edb5677]::string::String>, t19_rafter_wasm[b90b8220677f7893]::visit::{closure#9}> as core[f0fd674eaa06beef]::iter::traits::iterator::Iterator>::fold::<(), core[f0fd674eaa06beef]::iter::traits::iterator::Iterator::for_each::call<serde_json[aabd1cf1ee42376d]::value::Value, <alloc[ae94343a5edb5677]::vec::Vec<serde_json[aabd1cf1ee42376d]::value::Value>>::extend_trusted<core[f0fd674eaa06beef]::iter::adapters::map::Map<core[f0fd674eaa06beef]::slice::iter::Iter<alloc[ae94343a5edb5677]::string::String>, t19_rafter_wasm[b90b8220677f7893]::visit::{closure#9}>>::{closure#0}>::{closure#0}>
+          1202 ┊     0.07% ┊ alloc[ae94343a5edb5677]::str::join_generic_copy::<str, u8, alloc[ae94343a5edb5677]::string::String>
+           952 ┊     0.05% ┊ __rustc[4b1ee1ef74718a7b]::__rdl_realloc
+           906 ┊     0.05% ┊ <f64 as zmij[69df3957c6ed1af6]::private::Sealed>::write_to_zmij_buffer
+           901 ┊     0.05% ┊ <str as core[f0fd674eaa06beef]::fmt::Debug>::fmt
+           878 ┊     0.05% ┊ core[f0fd674eaa06beef]::str::count::do_count_chars
+           873 ┊     0.05% ┊ <dlmalloc[ceec1d21c86e99f3]::dlmalloc::Dlmalloc<dlmalloc[ceec1d21c86e99f3]::sys::System>>::free
+           796 ┊     0.04% ┊ <core[f0fd674eaa06beef]::fmt::Formatter>::pad_integral
+           764 ┊     0.04% ┊ <serde_json[aabd1cf1ee42376d]::read::SliceRead>::skip_to_escape
+           714 ┊     0.04% ┊ <char>::escape_debug_ext
+           706 ┊     0.04% ┊ <str>::replace::<&str>
+           699 ┊     0.04% ┊ core[f0fd674eaa06beef]::str::converts::from_utf8
+           698 ┊     0.04% ┊ t19_rafter_wasm[b90b8220677f7893]::walk
+           673 ┊     0.04% ┊ <core[f0fd674eaa06beef]::fmt::Formatter>::pad
+           631 ┊     0.03% ┊ core[f0fd674eaa06beef]::fmt::write
+           593 ┊     0.03% ┊ <core[f0fd674eaa06beef]::num::imp::dec2flt::decimal_seq::DecimalSeq>::left_shift
+           590 ┊     0.03% ┊ <core[f0fd674eaa06beef]::num::imp::dec2flt::decimal_seq::DecimalSeq>::right_shift
+           588 ┊     0.03% ┊ <core[f0fd674eaa06beef]::fmt::builders::PadAdapter as core[f0fd674eaa06beef]::fmt::Write>::write_str
+           586 ┊     0.03% ┊ <alloc[ae94343a5edb5677]::collections::btree::map::BTreeMap<_, _, _> as core[f0fd674eaa06beef]::clone::Clone>::clone::clone_subtree::<alloc[ae94343a5edb5677]::string::String, serde_json[aabd1cf1ee42376d]::value::Value, alloc[ae94343a5edb5677]::alloc::Global>
+           576 ┊     0.03% ┊ <hashbrown[b4533bff845e867b]::raw::RawTable<(alloc[ae94343a5edb5677]::string::String, ())>>::reserve_rehash::<hashbrown[b4533bff845e867b]::map::make_hasher<alloc[ae94343a5edb5677]::string::String, (), std[2b356c9112ee3216]::hash::random::RandomState>::{closure#0}>
+           576 ┊     0.03% ┊ <hashbrown[b4533bff845e867b]::raw::RawTable<(&str, &serde_json[aabd1cf1ee42376d]::value::Value)>>::reserve_rehash::<hashbrown[b4533bff845e867b]::map::make_hasher<&str, &serde_json[aabd1cf1ee42376d]::value::Value, std[2b356c9112ee3216]::hash::random::RandomState>::{closure#0}>
+           570 ┊     0.03% ┊ <core[f0fd674eaa06beef]::ops::range::Range<usize> as core[f0fd674eaa06beef]::fmt::Debug>::fmt
+         67366 ┊     3.73% ┊ ... and 579 more.
+       1808175 ┊   100.00% ┊ Σ [619 Total Rows]

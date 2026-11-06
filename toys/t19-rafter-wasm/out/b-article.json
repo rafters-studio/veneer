@@ -1,0 +1,119 @@
+{
+  "css": "@import \"@fontsource-variable/noto-sans\";@import \"tailwindcss\";@theme{--color-zinc-50: oklch(95% 0 0); --color-zinc-100: oklch(88.1% 0 0); --color-zinc-200: oklch(80.9% 0 0); --color-zinc-300: oklch(7... (146425 bytes)",
+  "email": "<!doctype html><html><head><meta charset=\"utf-8\"><title>Release notes &lt;0.7&gt;</title></head><body style=\"margin:0;padding:24px;background:#ffffff\"><div class=\"dark\" data-component=\"article\" style=\"--neutral:var(--rafters-dark-neutral);--primary:var(--rafters-dark-primary);--secondary:var(--rafters-dark-secondary);--muted:var(--rafters-dark-muted);--accent:var(--rafters-dark-accent);--destructive:var(--rafters-dark-destructive);--success:var(--rafters-dark-success);--warning:var(--rafters-dark-warning);--info:var(--rafters-dark-info);--highlight:var(--rafters-dark-highlight);--background:var(--rafters-dark-background);--foreground:var(--rafters-dark-foreground);--card:var(--rafters-dark-card);--card-foreground:var(--rafters-dark-card-foreground);--card-hover:var(--rafters-dark-card-hover);--card-border:var(--rafters-dark-card-border);--panel:var(--rafters-dark-panel);--panel-foreground:var(--rafters-dark-panel-foreground);--panel-hover:var(--rafters-dark-panel-hover);--panel-border:var(--rafters-dark-panel-border);--popover:var(--rafters-dark-popover);--popover-foreground:var(--rafters-dark-popover-foreground);--popover-border:var(--rafters-dark-popover-border);--surface:var(--rafters-dark-surface);--surface-foreground:var(--rafters-dark-surface-foreground);--surface-hover:var(--rafters-dark-surface-hover);--surface-active:var(--rafters-dark-surface-active);--surface-border:var(--rafters-dark-surface-border);--primary-foreground:var(--rafters-dark-primary-foreground);--primary-hover:var(--rafters-dark-primary-hover);--primary-hover-foreground:var(--rafters-dark-primary-hover-foreground);--primary-active:var(--rafters-dark-primary-active);--primary-active-foreground:var(--rafters-dark-primary-active-foreground);--primary-focus:var(--rafters-dark-primary-focus);--primary-border:var(--rafters-dark-primary-border);--primary-ring:var(--rafters-dark-primary-ring);--primary-subtle:var(--rafters-dark-primary-subtle);--primary-subtle-foreground:var(--rafters-dark-primary-subtle-foreground);--secondary-foreground:var(--rafters-dark-secondary-foreground);--secondary-hover:var(--rafters-dark-secondary-hover);--secondary-hover-foreground:var(--rafters-dark-secondary-hover-foreground);--secondary-active:var(--rafters-dark-secondary-active);--secondary-active-foreground:var(--rafters-dark-secondary-active-foreground);--secondary-focus:var(--rafters-dark-secondary-focus);--secondary-border:var(--rafters-dark-secondary-border);--secondary-ring:var(--rafters-dark-secondary-ring);--secondary-subtle:var(--rafters-dark-secondary-subtle);--secondary-subtle-foreground:var(--rafters-dark-secondary-subtle-foreground);--muted-foreground:var(--rafters-dark-muted-foreground);--muted-hover:var(--rafters-dark-muted-hover);--muted-hover-foreground:var(--rafters-dark-muted-hover-foreground);--muted-active:var(--rafters-dark-muted-active);--muted-border:var(--rafters-dark-muted-border);--accent-foreground:var(--rafters-dark-accent-foreground);--accent-hover:var(--rafters-dark-accent-hover);--accent-hover-foreground:var(--rafters-dark-accent-hover-foreground);--accent-active:var(--rafters-dark-accent-active);--accent-active-foreground:var(--rafters-dark-accent-active-foreground);--accent-border:var(--rafters-dark-accent-border);--accent-ring:var(--rafters-dark-accent-ring);--accent-subtle:var(--rafters-dark-accent-subtle);--accent-subtle-foreground:var(--rafters-dark-accent-subtle-foreground);--destructive-foreground:var(--rafters-dark-destructive-foreground);--destructive-hover:var(--rafters-dark-destructive-hover);--destructive-hover-foreground:var(--rafters-dark-destructive-hover-foreground);--destructive-active:var(--rafters-dark-destructive-active);--destructive-active-foreground:var(--rafters-dark-destructive-active-foreground);--destructive-focus:var(--rafters-dark-destructive-focus);--destructive-border:var(--rafters-dark-destructive-border);--destructive-ring:var(--rafters-dark-destructive-ring);--destructive-subtle:var(--rafters-dark-destructive-subtle);--destructive-subtle-foreground:var(--rafters-dark-destructive-subtle-foreground);--success-foreground:var(--rafters-dark-success-foreground);--success-hover:var(--rafters-dark-success-hover);--success-hover-foreground:var(--rafters-dark-success-hover-foreground);--success-active:var(--rafters-dark-success-active);--success-active-foreground:var(--rafters-dark-success-active-foreground);--success-focus:var(--rafters-dark-success-focus);--success-border:var(--rafters-dark-success-border);--success-ring:var(--rafters-dark-success-ring);--success-subtle:var(--rafters-dark-success-subtle);--success-subtle-foreground:var(--rafters-dark-success-subtle-foreground);--warning-foreground:var(--rafters-dark-warning-foreground);--warning-hover:var(--rafters-dark-warning-hover);--warning-hover-foreground:var(--rafters-dark-warning-hover-foreground);--warning-active:var(--rafters-dark-warning-active);--warning-active-foreground:var(--rafters-dark-warning-active-foreground);--warning-focus:var(--rafters-dark-warning-focus);--warning-border:var(--rafters-dark-warning-border);--warning-ring:var(--rafters-dark-warning-ring);--warning-subtle:var(--rafters-dark-warning-subtle);--warning-subtle-foreground:var(--rafters-dark-warning-subtle-foreground);--info-foreground:var(--rafters-dark-info-foreground);--info-hover:var(--rafters-dark-info-hover);--info-hover-foreground:var(--rafters-dark-info-hover-foreground);--info-active:var(--rafters-dark-info-active);--info-active-foreground:var(--rafters-dark-info-active-foreground);--info-focus:var(--rafters-dark-info-focus);--info-border:var(--rafters-dark-info-border);--info-ring:var(--rafters-dark-info-ring);--info-subtle:var(--rafters-dark-info-subtle);--info-subtle-foreground:var(--rafters-dark-info-subtle-foreground);--alert:var(--rafters-dark-alert);--alert-foreground:var(--rafters-dark-alert-foreground);--alert-hover:var(--rafters-dark-alert-hover);--alert-hover-foreground:var(--rafters-dark-alert-hover-foreground);--alert-active:var(--rafters-dark-alert-active);--alert-active-foreground:var(--rafters-dark-alert-active-foreground);--alert-border:var(--rafters-dark-alert-border);--alert-ring:var(--rafters-dark-alert-ring);--alert-subtle:var(--rafters-dark-alert-subtle);--alert-subtle-foreground:var(--rafters-dark-alert-subtle-foreground);--highlight-foreground:var(--rafters-dark-highlight-foreground);--highlight-hover:var(--rafters-dark-highlight-hover);--highlight-hover-foreground:var(--rafters-dark-highlight-hover-foreground);--highlight-active:var(--rafters-dark-highlight-active);--highlight-active-foreground:var(--rafters-dark-highlight-active-foreground);--border:var(--rafters-dark-border);--border-hover:var(--rafters-dark-border-hover);--border-focus:var(--rafters-dark-border-focus);--border-active:var(--rafters-dark-border-active);--input:var(--rafters-dark-input);--input-foreground:var(--rafters-dark-input-foreground);--input-hover:var(--rafters-dark-input-hover);--input-focus:var(--rafters-dark-input-focus);--input-disabled:var(--rafters-dark-input-disabled);--input-disabled-foreground:var(--rafters-dark-input-disabled-foreground);--input-placeholder:var(--rafters-dark-input-placeholder);--input-invalid:var(--rafters-dark-input-invalid);--input-invalid-foreground:var(--rafters-dark-input-invalid-foreground);--input-valid:var(--rafters-dark-input-valid);--input-valid-foreground:var(--rafters-dark-input-valid-foreground);--ring:var(--rafters-dark-ring);--ring-offset:var(--rafters-dark-ring-offset);--ring-primary:var(--rafters-dark-ring-primary);--ring-destructive:var(--rafters-dark-ring-destructive);--ring-success:var(--rafters-dark-ring-success);--ring-warning:var(--rafters-dark-ring-warning);--ring-info:var(--rafters-dark-ring-info);--link:var(--rafters-dark-link);--link-hover:var(--rafters-dark-link-hover);--link-active:var(--rafters-dark-link-active);--link-visited:var(--rafters-dark-link-visited);--link-focus:var(--rafters-dark-link-focus);--selection:var(--rafters-dark-selection);--selection-foreground:var(--rafters-dark-selection-foreground);--sidebar:var(--rafters-dark-sidebar);--sidebar-foreground:var(--rafters-dark-sidebar-foreground);--sidebar-muted:var(--rafters-dark-sidebar-muted);--sidebar-primary:var(--rafters-dark-sidebar-primary);--sidebar-primary-foreground:var(--rafters-dark-sidebar-primary-foreground);--sidebar-primary-hover:var(--rafters-dark-sidebar-primary-hover);--sidebar-primary-active:var(--rafters-dark-sidebar-primary-active);--sidebar-accent:var(--rafters-dark-sidebar-accent);--sidebar-accent-foreground:var(--rafters-dark-sidebar-accent-foreground);--sidebar-accent-hover:var(--rafters-dark-sidebar-accent-hover);--sidebar-accent-active:var(--rafters-dark-sidebar-accent-active);--sidebar-item:var(--rafters-dark-sidebar-item);--sidebar-item-foreground:var(--rafters-dark-sidebar-item-foreground);--sidebar-item-hover:var(--rafters-dark-sidebar-item-hover);--sidebar-item-hover-foreground:var(--rafters-dark-sidebar-item-hover-foreground);--sidebar-item-active:var(--rafters-dark-sidebar-item-active);--sidebar-item-active-foreground:var(--rafters-dark-sidebar-item-active-foreground);--sidebar-item-selected:var(--rafters-dark-sidebar-item-selected);--sidebar-item-selected-foreground:var(--rafters-dark-sidebar-item-selected-foreground);--sidebar-border:var(--rafters-dark-sidebar-border);--sidebar-ring:var(--rafters-dark-sidebar-ring);--nav:var(--rafters-dark-nav);--nav-foreground:var(--rafters-dark-nav-foreground);--nav-hover:var(--rafters-dark-nav-hover);--nav-hover-foreground:var(--rafters-dark-nav-hover-foreground);--nav-active:var(--rafters-dark-nav-active);--nav-active-foreground:var(--rafters-dark-nav-active-foreground);--nav-selected:var(--rafters-dark-nav-selected);--nav-selected-foreground:var(--rafters-dark-nav-selected-foreground);--nav-disabled:var(--rafters-dark-nav-disabled);--nav-disabled-foreground:var(--rafters-dark-nav-disabled-foreground);--table:var(--rafters-dark-table);--table-foreground:var(--rafters-dark-table-foreground);--table-header:var(--rafters-dark-table-header);--table-header-foreground:var(--rafters-dark-table-header-foreground);--table-row-hover:var(--rafters-dark-table-row-hover);--table-row-selected:var(--rafters-dark-table-row-selected);--table-row-selected-foreground:var(--rafters-dark-table-row-selected-foreground);--table-border:var(--rafters-dark-table-border);--tooltip:var(--rafters-dark-tooltip);--tooltip-foreground:var(--rafters-dark-tooltip-foreground);--overlay:var(--rafters-dark-overlay);--overlay-foreground:var(--rafters-dark-overlay-foreground);--skeleton:var(--rafters-dark-skeleton);--skeleton-highlight:var(--rafters-dark-skeleton-highlight);--chart-1:var(--rafters-dark-chart-1);--chart-2:var(--rafters-dark-chart-2);--chart-3:var(--rafters-dark-chart-3);--chart-4:var(--rafters-dark-chart-4);--chart-5:var(--rafters-dark-chart-5);--scrollbar:var(--rafters-dark-scrollbar);--scrollbar-hover:var(--rafters-dark-scrollbar-hover);--scrollbar-track:var(--rafters-dark-scrollbar-track);--code:var(--rafters-dark-code);--code-foreground:var(--rafters-dark-code-foreground);--code-border:var(--rafters-dark-code-border);--badge:var(--rafters-dark-badge);--badge-foreground:var(--rafters-dark-badge-foreground);--badge-border:var(--rafters-dark-badge-border);--avatar:var(--rafters-dark-avatar);--avatar-foreground:var(--rafters-dark-avatar-foreground)\"><h6 style=\"margin:0 0 8px;font-family:Arial,sans-serif;font-size:18px;line-height:24px;font-weight:700\">What changed in 0.7</h6><blockquote style=\"margin:16px 0;padding-left:16px;border-left:4px solid #d0d0d0;font-style:italic\">Smaller, and it runs where the page runs.</blockquote><table style=\"width:100%;border-collapse:collapse\"><tr><td style=\"vertical-align:top;padding:0 8px\"><p style=\"margin:0 0 16px;font-family:Arial,sans-serif;font-size:16px;line-height:24px;color:#1a1a1a\">The checker answers in one process.</p></td><td style=\"vertical-align:top;padding:0 8px\"><img alt=\"A chart of sizes\" src=\"/sizes.png\" style=\"display:block;max-width:100%;height:auto;border:0\" /></td></tr></table><ol style=\"margin:0 0 16px;padding-left:24px\"><li style=\"margin:0 0 4px\">Update</li><li style=\"margin:0 0 4px\">Run rafters-check</li><li style=\"margin:0 0 4px\">Ship</li></ol><div data-composite=\"newsletter-signup\"></div></div><p style=\"margin:0 0 16px;font-family:Arial,sans-serif;font-size:16px;line-height:24px;color:#1a1a1a\">A second root block.</p></body></html>",
+  "html": "<div class=\"dark\" data-component=\"article\"><h6>What changed in 0.7</h6><blockquote>Smaller, and it runs where the page runs.</blockquote><div data-columns=\"2\"><p>The checker answers in one process.</p><img alt=\"A chart of sizes\" src=\"/sizes.png\" /></div><ol><li>Update</li><li>Run rafters-check</li><li>Ship</li></ol><div data-composite=\"newsletter-signup\"></div></div><p>A second root block.</p>",
+  "mdast": {
+    "children": [
+      {
+        "children": [
+          {
+            "type": "text",
+            "value": "What changed in 0.7"
+          }
+        ],
+        "depth": 6,
+        "type": "heading"
+      },
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "type": "text",
+                "value": "Smaller, and it runs where the page runs."
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "blockquote"
+      },
+      {
+        "attributes": [
+          {
+            "name": "columns",
+            "type": "mdxJsxAttribute",
+            "value": 2
+          }
+        ],
+        "children": [
+          {
+            "children": [
+              {
+                "type": "text",
+                "value": "The checker answers in one process."
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "name": "Grid",
+        "type": "mdxJsxFlowElement"
+      },
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "Update"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "listItem"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "Run rafters-check"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "listItem"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "Ship"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "listItem"
+          }
+        ],
+        "ordered": true,
+        "type": "list"
+      },
+      {
+        "attributes": [],
+        "children": [],
+        "name": "NewsletterSignup",
+        "type": "mdxJsxFlowElement"
+      },
+      {
+        "children": [
+          {
+            "type": "text",
+            "value": "A second root block."
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "root"
+  }
+}

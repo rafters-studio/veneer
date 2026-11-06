@@ -1,0 +1,26 @@
+[package]
+name = "t19-rafter-wasm"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[workspace]
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+# Variant B: A plus lightningcss.
+css = ["dep:lightningcss", "dep:getrandom"]
+
+[dependencies]
+serde_json = "1"
+lightningcss = { version = "=1.0.0-alpha.72", default-features = false, optional = true }
+getrandom = { version = "0.3", optional = true }
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

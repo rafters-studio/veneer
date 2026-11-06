@@ -1,0 +1,23 @@
+{
+  "manifest": {
+    "id": "signup-form",
+    "name": "Signup form",
+    "category": "form",
+    "description": "Email and password signup with native constraint validation.",
+    "keywords": ["signup", "form", "auth"],
+    "cognitiveLoad": 4
+  },
+  "input": [],
+  "output": ["email", "password"],
+  "blocks": [
+    { "id": "root", "type": "form", "children": ["h", "lede", "email", "pw", "handle", "terms", "rule", "tips"] },
+    { "id": "h", "type": "heading", "parentId": "root", "content": "Create your account", "meta": { "level": 1 } },
+    { "id": "lede", "type": "text", "parentId": "root", "content": "It takes a minute. We never share your email & password." },
+    { "id": "email", "type": "input", "parentId": "root", "meta": { "name": "email" }, "rules": ["required", "email"], "output": ["email"] },
+    { "id": "pw", "type": "input", "parentId": "root", "meta": { "name": "password" }, "rules": ["required", "password", { "name": "minlength", "config": { "value": "12" } }], "output": ["password"] },
+    { "id": "handle", "type": "input", "parentId": "root", "meta": { "name": "handle" }, "rules": [{ "name": "pattern", "config": { "pattern": "[a-z0-9_]{3,16}" } }, { "name": "maxlength", "config": { "value": 16 } }, "credentials", "unknown-rule"] },
+    { "id": "terms", "type": "link", "parentId": "root", "content": "Read the terms", "meta": { "href": "/terms" } },
+    { "id": "rule", "type": "divider", "parentId": "root" },
+    { "id": "tips", "type": "list", "parentId": "root", "content": ["Use a password manager", "Twelve characters or more"] }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "email": "<!doctype html><html><head><meta charset=\"utf-8\"><title>Release notes &lt;0.7&gt;</title></head><body style=\"margin:0;padding:24px;background:#ffffff\"><div class=\"dark\" data-component=\"article\"><h6 style=\"margin:0 0 8px;font-family:Arial,sans-serif;font-size:18px;line-height:24px;font-weight:700\">What changed in 0.7</h6><blockquote style=\"margin:16px 0;padding-left:16px;border-left:4px solid #d0d0d0;font-style:italic\">Smaller, and it runs where the page runs.</blockquote><table style=\"width:100%;border-collapse:collapse\"><tr><td style=\"vertical-align:top;padding:0 8px\"><p style=\"margin:0 0 16px;font-family:Arial,sans-serif;font-size:16px;line-height:24px;color:#1a1a1a\">The checker answers in one process.</p></td><td style=\"vertical-align:top;padding:0 8px\"><img alt=\"A chart of sizes\" src=\"/sizes.png\" style=\"display:block;max-width:100%;height:auto;border:0\" /></td></tr></table><ol style=\"margin:0 0 16px;padding-left:24px\"><li style=\"margin:0 0 4px\">Update</li><li style=\"margin:0 0 4px\">Run rafters-check</li><li style=\"margin:0 0 4px\">Ship</li></ol><div data-composite=\"newsletter-signup\"></div></div><p style=\"margin:0 0 16px;font-family:Arial,sans-serif;font-size:16px;line-height:24px;color:#1a1a1a\">A second root block.</p></body></html>",
+  "html": "<div class=\"dark\" data-component=\"article\"><h6>What changed in 0.7</h6><blockquote>Smaller, and it runs where the page runs.</blockquote><div data-columns=\"2\"><p>The checker answers in one process.</p><img alt=\"A chart of sizes\" src=\"/sizes.png\" /></div><ol><li>Update</li><li>Run rafters-check</li><li>Ship</li></ol><div data-composite=\"newsletter-signup\"></div></div><p>A second root block.</p>",
+  "mdast": {
+    "children": [
+      {
+        "children": [
+          {
+            "type": "text",
+            "value": "What changed in 0.7"
+          }
+        ],
+        "depth": 6,
+        "type": "heading"
+      },
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "type": "text",
+                "value": "Smaller, and it runs where the page runs."
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "blockquote"
+      },
+      {
+        "attributes": [
+          {
+            "name": "columns",
+            "type": "mdxJsxAttribute",
+            "value": 2
+          }
+        ],
+        "children": [
+          {
+            "children": [
+              {
+                "type": "text",
+                "value": "The checker answers in one process."
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "name": "Grid",
+        "type": "mdxJsxFlowElement"
+      },
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "Update"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "listItem"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "Run rafters-check"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "listItem"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "Ship"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "listItem"
+          }
+        ],
+        "ordered": true,
+        "type": "list"
+      },
+      {
+        "attributes": [],
+        "children": [],
+        "name": "NewsletterSignup",
+        "type": "mdxJsxFlowElement"
+      },
+      {
+        "children": [
+          {
+            "type": "text",
+            "value": "A second root block."
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "root"
+  }
+}

@@ -1,0 +1,19 @@
+  143330  100.0%  total (code + data)
+   30762   21.5%  data (.rodata etc.)
+   23783   16.6%  core
+   22411   15.6%  alloc
+   20773   14.5%  serde_json
+   17377   12.1%  t19_rafter_wasm
+    9386    6.5%  other (tables, types, exports)
+    7861    5.5%  dlmalloc
+    4855    3.4%  hashbrown
+    2978    2.1%  std
+    1354    0.9%  __rustc
+    1102    0.8%  zmij
+     263    0.2%  itoa
+     235    0.2%  type
+     146    0.1%  elem
+      30    0.0%  serde_core
+       8    0.0%  global
+       4    0.0%  table
+       2    0.0%  memory

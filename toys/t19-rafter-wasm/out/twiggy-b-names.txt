@@ -1,0 +1,44 @@
+ Shallow Bytes │ Shallow % │ Item
+───────────────┼───────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+       1158949 ┊    20.65% ┊ "function names" subsection
+        866782 ┊    15.45% ┊ custom section '.debug_str'
+        447272 ┊     7.97% ┊ custom section '.debug_info'
+        324775 ┊     5.79% ┊ custom section '.debug_line'
+        107512 ┊     1.92% ┊ custom section '.debug_ranges'
+         89986 ┊     1.60% ┊ data segment ".rodata"
+         66608 ┊     1.19% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::properties::border::BorderHandler>::flush
+         58563 ┊     1.04% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::properties::Property>::parse
+         26808 ┊     0.48% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::compat::Feature>::is_compatible
+         20954 ┊     0.37% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::properties::Property as core[f0fd674eaa06beef]::clone::Clone>::clone
+         20602 ┊     0.37% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::rules::StyleRuleKey<lightningcss[e6ff7e4e8ecc9cc6]::parser::DefaultAtRule>>::new
+         18624 ┊     0.33% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::properties::Property as core[f0fd674eaa06beef]::clone::Clone>::clone
+         17663 ┊     0.31% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::properties::Property as core[f0fd674eaa06beef]::cmp::PartialEq>::eq
+         16326 ┊     0.29% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::properties::PropertyId>::from_name_and_prefix
+         15062 ┊     0.27% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::properties::Property as core[f0fd674eaa06beef]::cmp::PartialEq>::eq
+         14712 ┊     0.26% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::properties::size::SizeHandler>::flush
+         13279 ┊     0.24% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::properties::masking::MaskHandler as lightningcss[e6ff7e4e8ecc9cc6]::traits::PropertyHandler>::handle_property
+         12827 ┊     0.23% ┊ custom section '.debug_abbrev'
+         12425 ┊     0.22% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::properties::transform::Transform as lightningcss[e6ff7e4e8ecc9cc6]::traits::ToCss>::to_css::<alloc[ae94343a5edb5677]::string::String>
+         11962 ┊     0.21% ┊ <data_encoding[4dcd4029e52c1bb3]::Encoding>::encode_mut
+         10705 ┊     0.19% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::properties::border::BorderHandler as lightningcss[e6ff7e4e8ecc9cc6]::traits::PropertyHandler>::handle_property
+         10088 ┊     0.18% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::targets::Targets>::prefixes
+          9947 ┊     0.18% ┊ t19_rafter_wasm[6d60596acf12d6d]::visit
+          8475 ┊     0.15% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::properties::Property>::to_css::<alloc[ae94343a5edb5677]::string::String>
+          8089 ┊     0.14% ┊ cssparser[881c7c999731bcb2]::parser::parse_nested_block::<<lightningcss[e6ff7e4e8ecc9cc6]::properties::transform::Transform as lightningcss[e6ff7e4e8ecc9cc6]::traits::Parse>::parse::{closure#0}, lightningcss[e6ff7e4e8ecc9cc6]::properties::transform::Transform, lightningcss[e6ff7e4e8ecc9cc6]::error::ParserError>
+          7968 ┊     0.14% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::rules::CssRuleList>::minify
+          7309 ┊     0.13% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::properties::Property>::value_to_css::<alloc[ae94343a5edb5677]::string::String>
+          6794 ┊     0.12% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::properties::PropertyId>::name
+          6766 ┊     0.12% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::properties::masking::MaskHandler>::flush
+          6693 ┊     0.12% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::properties::animation::AnimationHandler as lightningcss[e6ff7e4e8ecc9cc6]::traits::PropertyHandler>::handle_property
+          6316 ┊     0.11% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::properties::Property>::property_id
+          6302 ┊     0.11% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::properties::PropertyId as core[f0fd674eaa06beef]::clone::Clone>::clone
+          6302 ┊     0.11% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::properties::PropertyId as core[f0fd674eaa06beef]::clone::Clone>::clone
+          6073 ┊     0.11% ┊ core[f0fd674eaa06beef]::num::imp::flt2dec::strategy::dragon::format_shortest
+          5613 ┊     0.10% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::parser::NestedRuleParser<lightningcss[e6ff7e4e8ecc9cc6]::parser::DefaultAtRuleParser> as cssparser[881c7c999731bcb2]::rules_and_declarations::AtRuleParser>::parse_block
+          5260 ┊     0.09% ┊ core[f0fd674eaa06beef]::ptr::drop_glue::<lightningcss[e6ff7e4e8ecc9cc6]::properties::Property>
+          5122 ┊     0.09% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::parser::NestedRuleParser<lightningcss[e6ff7e4e8ecc9cc6]::parser::DefaultAtRuleParser> as cssparser[881c7c999731bcb2]::rules_and_declarations::AtRuleParser>::parse_prelude
+          5102 ┊     0.09% ┊ <dlmalloc[ceec1d21c86e99f3]::dlmalloc::Dlmalloc<dlmalloc[ceec1d21c86e99f3]::sys::System>>::malloc
+          5085 ┊     0.09% ┊ <lightningcss[e6ff7e4e8ecc9cc6]::properties::transition::TransitionHandler>::flush
+          5078 ┊     0.09% ┊ core[f0fd674eaa06beef]::num::imp::flt2dec::strategy::dragon::format_exact
+       2151059 ┊    38.33% ┊ ... and 6693 more.
+       5611837 ┊   100.00% ┊ Σ [6733 Total Rows]

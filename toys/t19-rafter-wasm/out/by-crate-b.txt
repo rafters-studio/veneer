@@ -1,0 +1,35 @@
+ 2693337  100.0%  total (code + data)
+ 1746137   64.8%  lightningcss
+  352142   13.1%  cssparser
+  119321    4.4%  core
+   95797    3.6%  smallvec
+   89998    3.3%  data (.rodata etc.)
+   88770    3.3%  alloc
+   37600    1.4%  hashbrown
+   27650    1.0%  parcel_selectors
+   23726    0.9%  other (tables, types, exports)
+   22756    0.8%  data_encoding
+   20773    0.8%  serde_json
+   18389    0.7%  t19_rafter_wasm
+   14534    0.5%  compiler_builtins
+   11687    0.4%  std
+    7861    0.3%  dlmalloc
+    4537    0.2%  indexmap
+    2024    0.1%  dtoa
+    1550    0.1%  phf
+    1541    0.1%  dtoa_short
+    1354    0.1%  __rustc
+    1102    0.0%  zmij
+     691    0.0%  pathdiff
+     650    0.0%  siphasher
+     649    0.0%  ahash
+     574    0.0%  type
+     425    0.0%  itoa
+     420    0.0%  elem
+     340    0.0%  bitflags
+     158    0.0%  once_cell
+     135    0.0%  cssparser_color
+      30    0.0%  serde_core
+       8    0.0%  global
+       6    0.0%  table
+       2    0.0%  memory

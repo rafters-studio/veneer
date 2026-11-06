@@ -1,0 +1,21 @@
+{
+  "manifest": {
+    "id": "release-notes",
+    "name": "Release notes <0.7>",
+    "category": "content",
+    "description": "A release article with a feature grid and a nested composite.",
+    "keywords": ["article", "release"],
+    "cognitiveLoad": 3
+  },
+  "blocks": [
+    { "id": "a", "type": "article", "meta": { "class": "dark" }, "children": ["t", "q", "g", "steps", "cta", "a"] },
+    { "id": "t", "type": "heading", "parentId": "a", "content": "What changed in 0.7", "meta": { "level": 9 } },
+    { "id": "q", "type": "blockquote", "parentId": "a", "content": "Smaller, and it runs where the page runs." },
+    { "id": "g", "type": "grid", "parentId": "a", "meta": { "columns": 2 }, "children": ["c1", "c2"] },
+    { "id": "c1", "type": "text", "parentId": "g", "content": "The checker answers in one process." },
+    { "id": "c2", "type": "image", "parentId": "g", "content": "A chart of sizes", "meta": { "src": "/sizes.png" } },
+    { "id": "steps", "type": "list", "parentId": "a", "content": ["Update", "Run rafters-check", "Ship"], "meta": { "ordered": true } },
+    { "id": "cta", "type": "composite:newsletter-signup", "parentId": "a" },
+    { "id": "orphan", "type": "text", "content": "A second root block." }
+  ]
+}
