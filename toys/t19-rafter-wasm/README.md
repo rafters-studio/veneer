@@ -15,7 +15,7 @@ One number: how big the `.rafter` compile core is as wasm. A toy, not a feature;
 - Email HTML puts inline styles from a fixed 12-entry tag style map; a grid becomes a one-row table.
 - `src/css.rs` (feature `css`, variant B): lightningcss parses the stylesheet with error recovery, minifies it, prints it minified, and collects top-level style rules by selector. A block with `meta.class` gets that class rule's declarations inlined into its `style` in the email output.
 
-Export: **plain `extern "C"`** (`alloc`, `dealloc`, `compile_rafter`, and `compile_rafter_css` in B). The result is `[u32 LE length][utf-8 JSON]` in linear memory. No wasm-bindgen: it adds a JS glue file and a CLI step, and the toy needs neither. The wasm imports nothing.
+Export: **plain `extern "C"`** (`alloc`, `dealloc`, `compile_rafter`, and `compile_rafter_css` in B). The result is `[u32 LE length][utf-8 JSON]` in linear memory, and the wasm imports nothing. It was measured against wasm-bindgen (feature `bindgen`: one `#[wasm_bindgen] fn compile_js(&str) -> String` in place of the extern exports, wasm-bindgen-cli 0.2.130): after wasm-opt the bindgen wasm is 581 bytes larger raw (428 brotli), and it also needs a 7,647-byte JS glue file (1,955 brotli). Plain extern "C" is smaller, so A and B use it. Both forms give byte-identical output on both samples.
 
 lightningcss pulls getrandom (through ahash), which has no backend on `wasm32-unknown-unknown` without JS. `.cargo/config.toml` selects getrandom's `custom` backend and `css.rs` supplies a fixed seed: hash seeds only, and a compile core should be deterministic anyway.
 
@@ -23,10 +23,15 @@ lightningcss pulls getrandom (through ahash), which has no backend on `wasm32-un
 
 | file | raw | gzip -9 | brotli -11 |
 |---|---|---|---|
-| A, before wasm-opt | 143,330 | 63,361 | 54,805 |
-| A, after wasm-opt -Oz | 120,225 | 60,725 | 53,488 |
-| B, before wasm-opt | 2,693,335 | 570,111 | 383,402 |
-| B, after wasm-opt -Oz | 2,296,447 | 598,626 | 415,145 |
+| A, before wasm-opt | 143,330 | 63,361 | 54,854 |
+| A, after wasm-opt -Oz | 120,225 | 60,725 | 53,414 |
+| B, before wasm-opt | 2,693,335 | 570,110 | 383,465 |
+| B, after wasm-opt -Oz | 2,296,447 | 598,627 | 415,398 |
+| A with wasm-bindgen, before wasm-opt | 134,522 | 61,469 | 54,358 |
+| A with wasm-bindgen, after wasm-opt -Oz | 120,806 | 61,222 | 53,842 |
+| wasm-bindgen JS glue (`--target web`) | 7,647 | 2,203 | 1,955 |
+
+Rebuilds after a Cargo.toml change gave the same raw bytes but brotli sizes that moved by up to 0.1 percent; the table is the last run (`out/sizes.md`).
 
 wasm-opt -Oz cuts raw size by 16 percent (A) and 15 percent (B), but barely changes A's compressed size (-2 percent brotli) and makes B's compressed size **larger** (+5 percent gzip, +8 percent brotli). For B shipped compressed, the un-optimized build is smaller on the wire.
 
@@ -65,7 +70,8 @@ Each optimized wasm ran once under node on both samples (`samples/signup.rafter`
 rustup target add wasm32-unknown-unknown
 brew install binaryen          # wasm-opt 133
 cargo install twiggy --locked
-bash measure.sh                # builds A and B, wasm-opt, sizes, twiggy, by-crate, runs
+cargo install wasm-bindgen-cli --version 0.2.130 --locked
+bash measure.sh                # builds A, B and A-bindgen, wasm-opt, sizes, twiggy, by-crate, runs
 ```
 
 `measure.sh` runs, in order:
@@ -81,13 +87,16 @@ CARGO_PROFILE_RELEASE_STRIP=false cargo build ... --target-dir target-names[-b] 
 bash by-crate.sh <unstripped wasm>
 node run.mjs wasm/a.opt.wasm samples/<s>.rafter
 node run.mjs wasm/b.opt.wasm samples/<s>.rafter <sheet.css>
+cargo build --release --target wasm32-unknown-unknown --features bindgen --target-dir target-bg
+wasm-bindgen --target web|nodejs --out-dir wasm/bg-web|bg-node --out-name a_bg <wasm>
+node run-bindgen.cjs samples/<s>.rafter
 ```
 
 The wasm-opt feature flags are needed because Rust 1.98 emits bulk-memory and the other features by default, and `strip` removes the section that would tell wasm-opt so.
 
 ## Caveats
 
-- The rafters sources were read from the rafters checkout's working tree; this agent could not run git there to confirm it matched origin/main.
-- No `.rafter` files were found to use, so both samples were written for this toy in the composite shape.
+- The rafters sources were read from the rafters checkout's working tree. Its `.git/HEAD` (244dcbe) equals its local `refs/remotes/origin/main`, but git could not be run there (this agent is held to its own worktree), so neither a fresh fetch nor a clean working tree was confirmed.
+- A search for real `.rafter` files could not run (the `find` was denied), and `packages/composites` and huttspawn's `.rafters` hold none at the top level, so both samples were written for this toy in the composite shape.
 - Size is the question; the emitters cover the to-mdx cases and the rule-attrs table, not `each`/`as` binding, nested composite expansion, or component rendering.
 - Not tried, and each would move the number: a smaller allocator (for example a bump allocator, about 7 KB saved), dropping serde_json's error strings, `-Zbuild-std` with `panic_immediate_abort`, lightningcss with minify only (no `Targets`/compat tables).

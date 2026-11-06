@@ -12,11 +12,14 @@ crate-type = ["cdylib", "rlib"]
 [features]
 # Variant B: A plus lightningcss.
 css = ["dep:lightningcss", "dep:getrandom"]
+# Variant A with a wasm-bindgen export in place of the plain extern "C" one.
+bindgen = ["dep:wasm-bindgen"]
 
 [dependencies]
 serde_json = "1"
 lightningcss = { version = "=1.0.0-alpha.72", default-features = false, optional = true }
 getrandom = { version = "0.3", optional = true }
+wasm-bindgen = { version = "=0.2.130", optional = true }
 
 [profile.release]
 opt-level = "z"

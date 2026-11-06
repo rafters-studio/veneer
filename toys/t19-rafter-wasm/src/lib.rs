@@ -396,6 +396,7 @@ pub fn compile(src: &str) -> Result<Value, String> {
 // returns a pointer to [u32 LE length][utf-8 JSON]; the host frees it with
 // dealloc(ptr, 4 + length).
 
+#[cfg(not(feature = "bindgen"))]
 #[no_mangle]
 pub extern "C" fn alloc(len: usize) -> *mut u8 {
     let mut v = Vec::<u8>::with_capacity(len);
@@ -406,11 +407,13 @@ pub extern "C" fn alloc(len: usize) -> *mut u8 {
 
 /// # Safety
 /// `ptr` must come from `alloc(len)` or a result of `compile`.
+#[cfg(not(feature = "bindgen"))]
 #[no_mangle]
 pub unsafe extern "C" fn dealloc(ptr: *mut u8, len: usize) {
     drop(Vec::from_raw_parts(ptr, 0, len));
 }
 
+#[cfg_attr(feature = "bindgen", allow(dead_code))]
 pub(crate) fn emit(result: Result<Value, String>) -> *mut u8 {
     let body = match result {
         Ok(v) => v.to_string(),
@@ -424,13 +427,25 @@ pub(crate) fn emit(result: Result<Value, String>) -> *mut u8 {
     p
 }
 
+#[cfg_attr(feature = "bindgen", allow(dead_code))]
 pub(crate) unsafe fn input<'a>(ptr: *const u8, len: usize) -> &'a str {
     std::str::from_utf8(std::slice::from_raw_parts(ptr, len)).unwrap_or("")
 }
 
 /// # Safety
 /// `ptr..ptr+len` must be a live buffer from `alloc`.
+#[cfg(not(feature = "bindgen"))]
 #[no_mangle]
 pub unsafe extern "C" fn compile_rafter(ptr: *const u8, len: usize) -> *mut u8 {
     emit(compile(input(ptr, len)))
+}
+
+/// The wasm-bindgen form of the same export, measured against plain extern "C".
+#[cfg(feature = "bindgen")]
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub fn compile_js(src: &str) -> String {
+    match compile(src) {
+        Ok(v) => v.to_string(),
+        Err(e) => json!({ "error": e }).to_string(),
+    }
 }

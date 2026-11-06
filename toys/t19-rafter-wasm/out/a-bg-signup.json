@@ -1,0 +1,65 @@
+{
+  "email": "<!doctype html><html><head><meta charset=\"utf-8\"><title>Signup form</title></head><body style=\"margin:0;padding:24px;background:#ffffff\"><div data-component=\"form\"><h1 style=\"margin:0 0 16px;font-family:Arial,sans-serif;font-size:32px;line-height:40px;font-weight:700\">Create your account</h1><p style=\"margin:0 0 16px;font-family:Arial,sans-serif;font-size:16px;line-height:24px;color:#1a1a1a\">It takes a minute. We never share your email &amp; password.</p><input name=\"email\" required type=\"email\" /><input minlength=\"12\" name=\"password\" required type=\"password\" /><input maxlength=\"16\" name=\"handle\" pattern=\"[a-z0-9_]{3,16}\" /><a href=\"/terms\" style=\"color:#0b57d0;text-decoration:underline\">Read the terms</a><hr style=\"border:0;border-top:1px solid #d0d0d0;margin:24px 0\" /><ul style=\"margin:0 0 16px;padding-left:24px\"><li style=\"margin:0 0 4px\">Use a password manager</li><li style=\"margin:0 0 4px\">Twelve characters or more</li></ul></div></body></html>",
+  "html": "<div data-component=\"form\"><h1>Create your account</h1><p>It takes a minute. We never share your email &amp; password.</p><input name=\"email\" required type=\"email\" /><input minlength=\"12\" name=\"password\" required type=\"password\" /><input maxlength=\"16\" name=\"handle\" pattern=\"[a-z0-9_]{3,16}\" /><a href=\"/terms\">Read the terms</a><hr /><ul><li>Use a password manager</li><li>Twelve characters or more</li></ul></div>",
+  "mdast": {
+    "children": [
+      {
+        "children": [
+          {
+            "type": "text",
+            "value": "Create your account"
+          }
+        ],
+        "depth": 1,
+        "type": "heading"
+      },
+      {
+        "children": [
+          {
+            "type": "text",
+            "value": "It takes a minute. We never share your email & password."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "type": "thematicBreak"
+      },
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "Use a password manager"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "listItem"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "Twelve characters or more"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "listItem"
+          }
+        ],
+        "ordered": false,
+        "type": "list"
+      }
+    ],
+    "type": "root"
+  }
+}

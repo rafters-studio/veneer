@@ -1,5 +1,6 @@
 target/
 target-b/
+target-bg/
 target-names/
 target-names-b/
 wasm/
