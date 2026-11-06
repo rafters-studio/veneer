@@ -11,6 +11,8 @@ Today huttspawn sends its auth emails through `@rafters/platform-sender`, whose 
 cargo build --release
 ./target/release/t20-to-email classes samples/*.rafter > /tmp/classes.txt
 node tools/compile-css.mjs <scratch dir with tailwindcss@4.3.3 + @tailwindcss/cli@4.3.3> /tmp/classes.txt
+# 1b. OKLCH tokens to hex with rafters' own @rafters/color-utils (writes css/huttspawn.rafters-hex.css, out/color-diff.tsv)
+node <rafters>/packages/color-utils/node_modules/tsx/dist/cli.mjs tools/rafters-colors.mjs css/huttspawn.compiled.css css/huttspawn.rafters-hex.css target/release/t20-to-email
 # 2. the emails (out/*.html), their decision reports (out/*.report.json) and the class-based references
 sh tools/render.sh
 # 3. evidence
@@ -46,7 +48,8 @@ Read from the npm packages `@react-email/render` 2.2.0, `@react-email/tailwind` 
 CSS:
 1. lightningcss parses the compiled sheet. Rules are indexed by the class that leads their selector, which is unescaped back to how it is written in HTML. The suffix (`:hover`, `[aria-busy=true]`) and the at-rules around a rule (`@media`, `@container`, `@supports`) are kept with it. Nested rules (`&:hover`, nested `@supports`) are flattened onto their parent.
 2. Variables: `:root, :host` declarations are the light map, and `.dark` on top of light is the dark map (rafters switches dark by class). `@property` initial values are added as defaults. A rule's own custom properties override for that element only (Tailwind's `--tw-*`). Substitution is lightningcss's own `UnparsedProperty::substitute_variables`, and the property is then re-parsed, which reduces `calc()`.
-3. Colours: every colour goes through `CssColor::to_rgb()`. lightningcss gamut-maps out-of-gamut colours per CSS Color 4 (`SRGB::resolve` calls `map_gamut`); react-email clamps per channel instead. Printing targets IE 11, so alpha comes out as `rgba()` and never as 8-digit hex.
+3. Colours: OKLCH to hex is rafters' own code, not lightningcss's and not the toy's. A layer that presents the system runs the system's code. Before the Rust step, `tools/rafters-colors.mjs` replaces every `oklch(...)` literal in the compiled CSS (107 distinct token values) with the hex from `@rafters/color-utils`: `toGamutCeiling(c, 'srgb')` first, since `oklchToSRGB`'s contract asks for that on an out-of-gamut colour, then `oklchToSRGB`. A literal with alpha becomes `rgba()` from the same components. The package is imported from the rafters checkout, read only, and run under its own `tsx` (its source imports `./x.js` names that are `.ts` files). The step takes 0.16 s and writes `css/huttspawn.rafters-hex.css`, which the transform reads; no `oklch(` is left in it. lightningcss still runs `CssColor::to_rgb()` on whatever colour is left after substitution. For these samples that is nothing: hex stays hex, and a `color-mix()` over rafters' hex (an opacity modifier) is lightningcss's arithmetic. Printing targets IE 11, so alpha comes out as `rgba()` and never as 8-digit hex.
+   - **Where the two disagree** (`out/color-diff.tsv`, from `t20-to-email lower`, which prints lightningcss's own lowering of each literal): 6 of 107 literals, by at most 4 per channel. 4 of the 6 are outside sRGB, where rafters reduces chroma at the same lightness and hue (`toGamutCeiling`) and lightningcss uses CSS Color 4 mapping (`map_gamut`): `oklch(0.499 0.237 27)` is `#bb0113` against `#bd000f`, `oklch(0.857 0.186 53)` is `#ffc19a` against `#ffc097`, and two more differ by 1. The other 2 are in gamut and differ by rounding: `oklch(0.063 0.044 264)` is `#000009` against `#000007`, and `oklch(0.755 0.153 232)` is `#08bfff` against `#09bfff`. None of the 6 is a colour these samples use, so both emails are byte-identical either way.
 4. `rem` becomes `px` at 16px.
 5. `@supports` rules count as inlinable and win by source order. The transform has already computed the `color-mix` they guard, so the designer's colour is the one that lands.
 
@@ -73,8 +76,9 @@ Email:
 | Variant classes that cannot be inlined | `:hover` kept; focus, active, disabled, aria, `:has` and all `@container` dropped | the same |
 | Gap | became table cell padding | the same |
 | Dark mode re-emitted from `.dark` | `y` in Apple Mail and Outlook.com (where note 3 says Outlook.com also adds `data-og*` attributes for its own dark mode); `n` in Gmail and Outlook Windows | works in Apple Mail, not Gmail |
-| CSS load (parse + index, 119 KB) | median 0.94 ms, max 1.40 ms (200 runs) | under 20 ms in total |
-| Render one email after the load | newsletter median 0.26 ms, transactional 0.19 ms | under 2 ms |
+| CSS load (parse + index, 117 KB after the rafters hex step) | median 0.91 ms, max 1.34 ms (200 runs) | under 20 ms in total |
+| Render one email after the load | newsletter median 0.24 ms, transactional 0.17 ms | under 2 ms |
+| rafters colour step (Node + tsx, once per token sheet, not per email) | 0.16 s | |
 | Whole process, one email | under 10 ms (`time` reports 0.00 s) | |
 | Release binary | 4,157,216 bytes (3.96 MiB) | under 4 MB |
 | react-email cannot take the CSS-first theme | its loader serves Tailwind's own files only; the huttspawn values went in a JS config | the same |
@@ -131,7 +135,7 @@ react-email's attribute-selector variants leak because `is-rule-inlinable.ts` on
 
 ## What works, with evidence
 
-- lightningcss is the whole CSS engine. It parses, substitutes variables, reduces `calc()`, gamut-maps OKLCH to sRGB and prints `rgba()`. There is no hand-written colour maths (unit tests in `src/css.rs`; 0 `var(`/`oklch` in the output).
+- lightningcss is the CSS engine: it parses, substitutes variables, reduces `calc()` and prints. rafters' `@rafters/color-utils` turns the OKLCH tokens into hex. There is no hand-written colour maths (unit tests in `src/css.rs`; `out/color-diff.tsv`; 0 `var(`/`oklch` in the output).
 - Designer tokens survive exactly: 0 channel difference against a browser resolving the same stylesheet with the site's classes, in light and dark, over 28 compared colours (`tools/colors.mjs`).
 - `.dark` becomes `prefers-color-scheme` without the designer doing anything. caniemail marks that `y` in Apple Mail and Outlook.com; Outlook.com also adds `data-og*` attributes for its own dark mode, which this toy does not target.
 - Every dropped declaration is named, with its class and reason (`out/*.report.json`). That is the list a designer or a lint would need.

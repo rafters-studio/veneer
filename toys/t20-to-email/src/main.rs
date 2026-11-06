@@ -68,6 +68,27 @@ fn run() -> Result<(), String> {
             );
             Ok(())
         }
+        // lower: one colour per stdin line -> what lightningcss's own lowering prints, for comparison.
+        Some("lower") => {
+            let input = std::io::read_to_string(std::io::stdin()).map_err(|e| e.to_string())?;
+            for line in input.lines().filter(|l| !l.trim().is_empty()) {
+                let src = format!(".x{{color:{line}}}");
+                let sheet = css::parse(&src)?;
+                let empty = css::parse(":root{}")?;
+                let s = css::Sheet::index(&sheet, &empty);
+                let out = s
+                    .by_class
+                    .get("x")
+                    .and_then(|r| r.first())
+                    .and_then(|r| r.decls.first())
+                    .map(|(p, i)| css::resolve(p, *i, &s.light));
+                match out {
+                    Some(Ok((_, v))) => println!("{line}\t{v}"),
+                    _ => println!("{line}\t?"),
+                }
+            }
+            Ok(())
+        }
         // reference <file.rafter> --css-href <href> --out <dir>: the class-based page, light and dark.
         Some("reference") => {
             let path = args
