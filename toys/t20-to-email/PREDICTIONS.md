@@ -15,3 +15,26 @@ The shape under test: a Rust binary reads a `.rafter` file, maps each block to t
 9. The release binary is under 4 MB. Confidence 0.55.
 10. react-email's Tailwind component cannot read the rafters CSS-first `@theme` directly: its stylesheet loader serves only Tailwind's own files and its theme comes from a JS config. A fair comparison needs the huttspawn values passed in a config. Confidence 0.8.
 11. The toy's Rust comes in near 700 lines, with three dependencies: lightningcss, serde, serde_json. Confidence 0.5.
+
+## Part 2: send-ready output
+
+Written before building part 2. `@react-email/render` 2.2.0 does no CSS; I read `render.tsx`, `to-plain-text.ts` and `strip-image-preload-links.ts` from its source map. It does four things:
+- server-renders the React tree;
+- strips React's image preload links;
+- swaps the doctype for XHTML 1.0 Transitional;
+- optionally converts to plain text with html-to-text, and optionally pretty-prints.
+
+Its components add the rest:
+- `Head`: a Content-Type meta and `x-apple-disable-message-reformatting`;
+- `Html`: `lang` and `dir`;
+- `Preview`: a hidden preheader padded to 150 characters.
+
+The question: what must a send-ready email from a `.rafter` contain that T20 lacks?
+
+12. A plain-text alternative is built from the blocks in Rust, not from the HTML. It carries every heading, paragraph and link URL, and no image or preheader text. It runs in under 0.1 ms per email. Confidence 0.8.
+13. Switching to the XHTML 1.0 Transitional doctype makes no visible difference to our emails in Chromium or WebKit, so the HTML5 doctype stays. caniemail says Outlook Windows ignores any doctype. Confidence 0.7.
+14. A preheader comes from a `preview` block. It is hidden with `display:none` plus zero height, zero opacity and `overflow:hidden`, and it does not show in Chromium or WebKit. caniemail shows `display:none` failing in at least one tracked client, which is why the other properties are there. Confidence 0.7.
+15. Every line of the HTML stays under RFC 5322's 998-octet limit by construction, even for a 3,000-character paragraph. react-email's render emits the whole document on one line, so its output breaks the limit for both samples. Confidence 0.85.
+16. A relative `href` or `src` fails the render with an error that names it. Confidence 0.9.
+17. The send output takes the shape huttspawn's sender already takes from `@rafters/platform-sender`: `{ subject, text, html }`. Confidence 0.75.
+18. Part 2 adds under 250 lines of Rust and no dependency. Confidence 0.6.
