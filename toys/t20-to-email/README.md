@@ -19,7 +19,8 @@ sh tools/render.sh
 node tools/caniemail.mjs <caniemail repo clone> out/newsletter.html out/transactional.html
 node tools/shoot.mjs <dir with playwright 1.63.0>        # out/shots/*.png
 node tools/colors.mjs <dir with playwright 1.63.0>       # reference vs email colours
-node tools/react-email.mjs <dir with @react-email/components 1.0.12>
+node tools/react-email.mjs <dir with @react-email/components 1.0.12>   # html and render's plainText
+node tools/send-check.mjs <dir with playwright 1.63.0>   # part 2: plain text, line length, doctype, preheader
 ./target/release/t20-to-email bench css/huttspawn.compiled.css 200 samples/newsletter.rafter samples/transactional.rafter
 ```
 
@@ -158,6 +159,74 @@ react-email's attribute-selector variants leak because `is-rule-inlinable.ts` on
 5. **Hover that does nothing.** `--primary-hover` (primary-600) equals primary (primary-500) to three decimals in huttspawn's light tokens (`oklch(0.4507 ...)` against `oklch(0.451 ...)`), so the light hover rule is a no-op. This is a token question, not a transform one.
 6. **Interaction states.** Focus, press, disabled and busy are dropped as meaningless in email. If any must show (a disabled "already verified" button), it has to be a separate variant of the block, not a state.
 7. **Which components exist in email at all.** Only container, grid, heading, text, image, button and separator have an email rendering here; anything else is dropped and reported. The email set is a list rafters would own.
+
+## Part 2: send-ready output
+
+Predictions 12 to 18 in `PREDICTIONS.md` were committed before this part was built.
+
+### What `@react-email/render` does
+
+Read from the 2.2.0 source map (`node/render.tsx`, `shared/utils/to-plain-text.ts`, `strip-image-preload-links.ts`, `unstable-to-plain-text.ts`). It does no CSS. It does five things:
+- server-renders the React tree inside an error boundary and `Suspense`;
+- strips the `<link rel="preload" as="image">` tags React adds for every `<img>`;
+- replaces any doctype with XHTML 1.0 Transitional;
+- with `plainText`, converts the HTML to text through html-to-text (`wordwrap: false`, images and `data-skip-in-text` skipped, a link's URL after its text unless they are the same);
+- with `pretty`, formats it through Prettier.
+
+The send-ready pieces in react-email live in its components:
+- `Html`: `lang="en"` and `dir="ltr"` by default;
+- `Head`: `<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">` and `<meta name="x-apple-disable-message-reformatting">`;
+- `Preview`: a preheader `div` hidden with `display:none; overflow:hidden; line-height:1px; opacity:0; max-height:0; max-width:0` and `data-skip-in-text`, padded to 150 characters with seven invisible characters repeated;
+- `Img`: `display:block; outline:none; border:none; text-decoration:none`.
+
+### What a send from a .rafter needs, and the decision on each
+
+All of it is built in the Rust core: `src/send.rs`, with small changes in `email.rs` and `main.rs`. `render` now also writes `out/<name>.txt` and `out/<name>.send.json`.
+
+1. **A plain-text alternative. Built,** from the blocks, not from the HTML. Headings and paragraphs come out as written. A button is its label over its URL, so the URL sits alone on its line and stays whole. A separator is 40 dashes, as html-to-text writes `<hr>`. Images and the preheader are left out, as react-email does.
+   - Evidence: `tools/send-check.mjs` finds every heading, paragraph, button label and `href` in both texts, and no image alt and no preheader text. It takes 0.001 ms per email.
+   - Against react-email's `plainText` output (`out/*.react-email.txt`): the same words and order. Two differences, both choices: react-email uppercases headings (html-to-text's default) and puts the URL on the button label's line. We keep the designer's case.
+2. **The doctype. Kept as HTML5.** caniemail: the HTML5 doctype is `y` in Gmail, Outlook.com and Apple Mail, and Outlook Windows ignores any doctype ("has no impact here").
+   - Evidence: both emails, screenshotted at 600px in Chromium and WebKit with our doctype and with react-email's XHTML 1.0 Transitional one, are byte-identical in all 4 pairs. Both doctypes give `compatMode` `CSS1Compat` (`out/send-check.txt`).
+   - XHTML Transitional's almost-standards mode differs only for images inline in table cells. Ours are `display:block`, so it has nothing to change.
+3. **A preheader (the inbox preview line). Built** from a new `preview` block, whose content is the line. It is a block because the composite format has no field for it: `manifest.description` is written for designers, and the samples' descriptions say so. It is the first thing in `<body>`: react-email's hidden-`div` recipe plus `mso-hide:all`, padded to 150 characters with react-email's invisible characters.
+   - Evidence: caniemail shows `display:none` failing in Gmail's mobile webmail (`n`) and partial in Outlook Windows (not on nested tables or images; ours is neither). That is why the other properties are there. Outlook Windows has `max-height`, `opacity` and `overflow` at `n`, which leaves it on `display:none` and `mso-hide` (the latter is not in caniemail's data).
+   - In Chromium and WebKit the preheader computes to `display:none`, 0px tall, and is absent from the page's visible text.
+   - Whether each inbox shows the line as its preview was not checked, and needs real clients.
+4. **Lines under 998 octets. Built:** RFC 5322 2.1.1 caps a line at 998 octets, and a server may break a longer one wherever it likes. `wrap_lines` breaks any line past 900 octets at a space a newline cannot change: between a tag's attributes, outside quotes, or between words of text. The padding gets a plain space between groups so it can break too.
+   - Evidence: our longest lines are 914 and 911 octets, and a 3,500-character paragraph wraps with its attributes untouched (unit test `a_long_paragraph_wraps_under_998_octets_without_touching_attributes`).
+   - react-email's render writes each document as one line, 7,018 and 6,020 octets, so it depends on the sender's transfer encoding to survive.
+5. **Absolute URLs. Built:** a relative `href` or `src` fails the render, naming the block (`block cta: href "/verify?token=x" is not an absolute URL`, exit 1). caniemail: `<base>` is removed by Gmail (all `a`) and Outlook.com, so a mail client has nothing to resolve a relative URL against. `https:`, `http:` and `mailto:` pass.
+6. **Subject. Built,** in the send output: `out/<name>.send.json` is `{ subject, preview, text, html }`. That is the `{ subject, text, html }` that huttspawn's `@rafters/platform-sender` `render` already returns, plus the preview. The subject is `manifest.name`, the only reader-facing title the format has; see "What the design must decide" below.
+7. **`dir="ltr"` on `<html>`. Built.** The transform turns logical properties into left-to-right physical ones, so the document should say so. caniemail: `dir` is `y` in Gmail, Outlook.com and Apple Mail, and partial in Outlook Windows (buggy on `<a>`; ours is on `<html>`).
+8. **`x-apple-disable-message-reformatting`. Built.** It is react-email's `Head` default, and caniemail has no entry for it. It is one meta tag and harmless where it is ignored; its effect in Apple Mail was not checked here.
+9. **The Content-Type meta. Not built.** We keep `<meta charset="utf-8">`. A sent message's charset comes from its MIME part's `Content-Type` header, which the sender writes, and caniemail has no entry for either meta.
+10. **Image preload links. Not applicable.** The Rust core does not server-render React, so there are none to strip.
+11. **Pretty-printing. Not built.** The wrap above is what a send needs; formatting for people to read is not.
+12. **Not built and not the transform's to build:** the `List-Unsubscribe` header and an unsubscribe link. These are bulk-sender requirements of mailbox providers, not caniemail data, so they are not shown here. The newsletter sample has no unsubscribe block, and the header is the sender's. The MIME envelope (`multipart/alternative` of text and HTML, transfer encoding) is also the sender's, given `{ subject, text, html }`.
+
+### Part 2 results
+
+| | Measured | Predicted |
+|---|---|---|
+| Plain text from the blocks | every heading, paragraph, label and URL; no alt, no preheader; 0.001 ms | the same, under 0.1 ms |
+| XHTML doctype against HTML5 | screenshots byte-identical, 4 of 4 pairs, both `CSS1Compat` | no visible difference |
+| Preheader hidden | `display:none`, 0px, not in visible text, Chromium and WebKit; caniemail `display:none` `n` in Gmail mobile webmail | hidden; `display:none` fails in at least one client |
+| Longest line | ours 914 / 911 octets; react-email 7,018 / 6,020 | under 998 for us, over for react-email |
+| A relative link | render fails, naming the block | fails with a named error |
+| Send shape | `{ subject, preview, text, html }` | `{ subject, text, html }` |
+| Rust added | 164 lines (1,658 to 1,822, about 30 of them tests), no dependency | under 250 lines, no dependency |
+
+All seven held. Prediction 17 held with one addition, `preview`, which platform-sender's shape does not carry because its emails have no preheader.
+
+The new pieces add Outlook Windows `n` entries (`max-height`, `opacity`, `overflow`, all in the preheader), for 11 in all. They are there for other clients, and Outlook hides the preheader with `display:none` and `mso-hide`. Both emails grew by about 1,750 octets, nearly all of it the preheader padding. Release binary: 4,157,232 bytes, +16.
+
+### What the design must decide, part 2
+
+8. **The subject.** The toy uses `manifest.name`, but a composite's name is a designer's label. A send needs a reader-facing subject, maybe with data in it (`props`, as `$bind` allows elsewhere). Where does it live in the format?
+9. **The preview line.** The toy adds a `preview` block type. Is that the format's answer, or a manifest field?
+10. **Headings in plain text.** Keep the designer's case, as here, or uppercase them as html-to-text does to mark them?
+11. **Unsubscribe.** A newsletter needs an unsubscribe link in its body and its sender needs `List-Unsubscribe`. Is the link a rafters block that every bulk composite must contain?
 
 ## Limits
 

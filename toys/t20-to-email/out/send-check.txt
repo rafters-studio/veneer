@@ -1,0 +1,22 @@
+newsletter plain text: missing [], leaked []
+newsletter.html: longest line 914 octets, 7122 octets in all
+newsletter.react-email.html: longest line 7018 octets, 7018 octets in all
+transactional plain text: missing [], leaked []
+transactional.html: longest line 911 octets, 5968 octets in all
+transactional.react-email.html: longest line 6020 octets, 6020 octets in all
+chromium newsletter preheader: display none, height 0px, in visible text false
+chromium newsletter html5: compatMode CSS1Compat
+chromium newsletter xhtml: compatMode CSS1Compat
+chromium newsletter: HTML5 and XHTML screenshots byte-identical: true
+chromium transactional preheader: display none, height 0px, in visible text false
+chromium transactional html5: compatMode CSS1Compat
+chromium transactional xhtml: compatMode CSS1Compat
+chromium transactional: HTML5 and XHTML screenshots byte-identical: true
+webkit newsletter preheader: display none, height 0px, in visible text false
+webkit newsletter html5: compatMode CSS1Compat
+webkit newsletter xhtml: compatMode CSS1Compat
+webkit newsletter: HTML5 and XHTML screenshots byte-identical: true
+webkit transactional preheader: display none, height 0px, in visible text false
+webkit transactional html5: compatMode CSS1Compat
+webkit transactional xhtml: compatMode CSS1Compat
+webkit transactional: HTML5 and XHTML screenshots byte-identical: true

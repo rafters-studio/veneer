@@ -11,7 +11,7 @@ import { join, resolve } from 'node:path';
 
 const require = createRequire(join(resolve(process.argv[2]), 'package.json'));
 const React = require('react');
-const { Html, Head, Body, Container, Section, Row, Column, Heading, Text, Img, Button, Hr, Tailwind } = require('@react-email/components');
+const { Html, Head, Body, Container, Section, Row, Column, Heading, Text, Img, Button, Hr, Preview, Tailwind } = require('@react-email/components');
 const { render } = require('@react-email/render');
 const h = React.createElement;
 
@@ -49,12 +49,17 @@ const button = (size) =>
   (size === 'lg' ? 'h-12 px-6 text-label-large ts-label-large' : 'h-11 px-4 py-2.5 @md:h-10 @md:py-2');
 const SEP = 'shrink-0 bg-border h-px w-full';
 
-const shell = (...children) =>
-  h(Tailwind, { config }, h(Html, { lang: 'en' }, h(Head), h(Body, { className: 'bg-background text-foreground font-sans' },
+// The same preheader text as the samples' `preview` blocks.
+const PREVIEW = {
+  transactional: 'One click confirms your Huttspawn account. The link works for 24 hours.',
+  newsletter: 'Three new discipline guides, a GSF ladder reset, and eleven open bounties.',
+};
+const shell = (preview, ...children) =>
+  h(Tailwind, { config }, h(Html, { lang: 'en' }, h(Head), h(Body, { className: 'bg-background text-foreground font-sans' }, h(Preview, null, preview),
     h(Container, { className: 'max-w-2xl mx-auto px-4' }, ...children))));
 
 const emails = {
-  transactional: shell(
+  transactional: shell(PREVIEW.transactional,
     h(Heading, { as: 'h1', className: H1 }, 'Confirm your email'),
     h(Text, { className: P }, 'Someone, hopefully you, made a Huttspawn account with this address. Confirm it and the account is yours. The link works for 24 hours.'),
     h(Button, { href: 'https://huttspawn.com/verify?token=example', className: button('lg') }, 'Confirm email'),
@@ -62,7 +67,7 @@ const emails = {
     h(Text, { className: MUTED }, 'If you did not sign up, ignore this email and nothing happens.'),
     h(Text, { className: MUTED }, 'Huttspawn, a Star Wars: The Old Republic guild site.'),
   ),
-  newsletter: shell(
+  newsletter: shell(PREVIEW.newsletter,
     h(Heading, { as: 'h1', className: H1 }, 'The Outer Rim, this month'),
     h(Text, { className: P }, 'Three new discipline guides landed, the GSF ladder reset, and the bounty board is open again. Here is what changed and where to start.'),
     h(Img, { src: 'https://huttspawn.com/images/bounty-hunter.png', alt: 'A bounty hunter in Mandalorian armour', width: 600, className: 'block w-full h-auto rounded-lg' }),
@@ -84,6 +89,10 @@ for (const [name, el] of Object.entries(emails)) {
     continue;
   }
   writeFileSync(`out/${name}.react-email.html`, html);
+  // render's own plain-text alternative (html-to-text, its defaults), for comparison with ours.
+  writeFileSync(`out/${name}.react-email.txt`, await render(el, { plainText: true }));
+  const maxLine = Math.max(...html.split('\n').map((l) => Buffer.byteLength(l)));
+  console.log(`${name}: longest line ${maxLine} octets (RFC 5322 limit 998)`);
   const times = [];
   for (let i = 0; i < 50; i++) {
     const t = performance.now();

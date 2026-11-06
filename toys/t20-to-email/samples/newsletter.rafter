@@ -8,6 +8,7 @@
     "cognitiveLoad": 3
   },
   "blocks": [
+    { "id": "preview", "type": "preview", "content": "Three new discipline guides, a GSF ladder reset, and eleven open bounties." },
     { "id": "page", "type": "container", "meta": { "size": "2xl", "gap": "6" }, "children": ["title", "intro", "hero", "cta", "rule", "cols"] },
     { "id": "title", "type": "heading", "parentId": "page", "meta": { "level": 1 }, "content": "The Outer Rim, this month" },
     { "id": "intro", "type": "text", "parentId": "page", "content": "Three new discipline guides landed, the GSF ladder reset, and the bounty board is open again. Here is what changed and where to start." },

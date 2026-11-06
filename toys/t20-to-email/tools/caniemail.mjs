@@ -94,7 +94,7 @@ function uses(html) {
     const slug =
       prop.startsWith('padding') ? 'css-padding'
       : prop.startsWith('margin') ? 'css-margin'
-      : prop === 'display' ? 'css-display'
+      : prop === 'display' ? (value === 'none' ? 'css-display-none' : 'css-display')
       : prop === 'border' ? 'css-border'
       : `css-${prop}`;
     if (existsSync(join(repo, '_features', `${slug}.md`))) add(slug, what);
@@ -114,9 +114,11 @@ function uses(html) {
   if (/<meta name="color-scheme"/.test(html)) add('html-meta-color-scheme', '<meta name="color-scheme">');
   const tags = { table: 'html-table', 'h1|h2': 'html-h1-h6', p: 'html-p', img: 'html-img', body: 'html-body' };
   for (const [t, slug] of Object.entries(tags)) if (new RegExp(`<(${t})[\\s>]`).test(html)) add(slug, `<${t}>`);
-  const attrs = { role: 'html-role', align: 'html-align', valign: 'html-valign', width: 'html-width', height: 'html-height', cellpadding: 'html-cellpadding', cellspacing: 'html-cellspacing', target: 'html-target', lang: 'html-lang' };
+  const attrs = { role: 'html-role', align: 'html-align', valign: 'html-valign', width: 'html-width', height: 'html-height', cellpadding: 'html-cellpadding', cellspacing: 'html-cellspacing', target: 'html-target', lang: 'html-lang', dir: 'html-dir' };
   for (const [a, slug] of Object.entries(attrs)) if (new RegExp(`\\s${a}="`).test(html)) add(slug, `${a}=""`);
-  if (/<!DOCTYPE/i.test(html)) add('html-doctype', '<!DOCTYPE html>');
+  // caniemail's html-doctype is the HTML5 doctype; react-email's XHTML 1.0 one is not tracked.
+  if (/<!DOCTYPE html>/i.test(html)) add('html-doctype', '<!DOCTYPE html>');
+  else if (/<!DOCTYPE/i.test(html)) untracked.add('XHTML 1.0 Transitional doctype');
   if (/<!--\[if mso\]>/.test(html)) add('html-comments', 'conditional comments');
   if (/\.png"/.test(html)) add('image-png', 'PNG image');
   if (/\sbgcolor="/.test(html)) untracked.add('bgcolor attribute');

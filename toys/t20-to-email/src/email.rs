@@ -384,8 +384,9 @@ impl<'s, 'a, 'i> Emitter<'s, 'a, 'i> {
         let roots: Vec<&Block> = file
             .blocks
             .iter()
-            .filter(|b| b.parent_id.is_none())
+            .filter(|b| b.parent_id.is_none() && b.kind != "preview")
             .collect();
+        let preheader = crate::send::preheader(file);
         // The outer width: the first root container's max-width, else 600px.
         let width = roots
             .first()
@@ -424,7 +425,7 @@ impl<'s, 'a, 'i> Emitter<'s, 'a, 'i> {
         let mut html = String::new();
         let _ = write!(
             html,
-            "<!DOCTYPE html>\n<html lang=\"en\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<meta name=\"color-scheme\" content=\"light dark\">\n<meta name=\"supported-color-schemes\" content=\"light dark\">\n<title>{}</title>\n<!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]-->\n<style>\n:root{{color-scheme:light dark;supported-color-schemes:light dark}}\n{}\n</style>\n</head>\n<body{body_class} style=\"margin:0;padding:0;{}\">\n<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"{bgcolor}><tr><td align=\"center\"{body_attrs}>\n<!--[if mso]><table role=\"presentation\" width=\"{w}\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td><![endif]-->\n{inner}<!--[if mso]></td></tr></table><![endif]-->\n</td></tr></table>\n</body>\n</html>\n",
+            "<!DOCTYPE html>\n<html lang=\"en\" dir=\"ltr\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<meta name=\"x-apple-disable-message-reformatting\">\n<meta name=\"color-scheme\" content=\"light dark\">\n<meta name=\"supported-color-schemes\" content=\"light dark\">\n<title>{}</title>\n<!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]-->\n<style>\n:root{{color-scheme:light dark;supported-color-schemes:light dark}}\n{}\n</style>\n</head>\n<body{body_class} style=\"margin:0;padding:0;{}\">\n{preheader}<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"{bgcolor}><tr><td align=\"center\"{body_attrs}>\n<!--[if mso]><table role=\"presentation\" width=\"{w}\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td><![endif]-->\n{inner}<!--[if mso]></td></tr></table><![endif]-->\n</td></tr></table>\n</body>\n</html>\n",
             esc(&file.manifest.name),
             format!("{}\n@media (prefers-color-scheme: dark){{\n{}\n}}", self.rules.join("\n"), self.dark.join("\n")),
             bg.map(|c| format!("background-color:{c}")).unwrap_or_default(),
@@ -795,7 +796,7 @@ fn px(v: &str) -> Option<f32> {
         .or_else(|| (v == "0").then_some(0.0))
 }
 
-fn esc(s: &str) -> String {
+pub(crate) fn esc(s: &str) -> String {
     s.replace('&', "&amp;")
         .replace('<', "&lt;")
         .replace('>', "&gt;")

@@ -193,7 +193,7 @@ pub fn reference(file: &RafterFile, css_href: &str, dark: bool) -> String {
     let body: String = file
         .blocks
         .iter()
-        .filter(|b| b.parent_id.is_none())
+        .filter(|b| b.parent_id.is_none() && b.kind != "preview")
         .map(|b| walk(b, &by_id))
         .collect();
     let html_class = if dark { " class=\"dark\"" } else { "" };

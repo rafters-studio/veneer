@@ -1,0 +1,11 @@
+CONFIRM YOUR EMAIL
+
+Someone, hopefully you, made a Huttspawn account with this address. Confirm it and the account is yours. The link works for 24 hours.
+
+Confirm email https://huttspawn.com/verify?token=example
+
+----------------------------------------
+
+If you did not sign up, ignore this email and nothing happens.
+
+Huttspawn, a Star Wars: The Old Republic guild site.

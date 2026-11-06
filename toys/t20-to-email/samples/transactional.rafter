@@ -8,6 +8,7 @@
     "cognitiveLoad": 1
   },
   "blocks": [
+    { "id": "preview", "type": "preview", "content": "One click confirms your Huttspawn account. The link works for 24 hours." },
     { "id": "page", "type": "container", "meta": { "size": "2xl", "gap": "6" }, "children": ["title", "body", "cta", "rule", "footer"] },
     { "id": "title", "type": "heading", "parentId": "page", "meta": { "level": 1 }, "content": "Confirm your email" },
     { "id": "body", "type": "text", "parentId": "page", "content": "Someone, hopefully you, made a Huttspawn account with this address. Confirm it and the account is yours. The link works for 24 hours." },

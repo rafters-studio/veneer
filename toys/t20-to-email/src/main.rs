@@ -5,6 +5,7 @@
 mod css;
 mod email;
 mod rafter;
+mod send;
 
 use std::process::ExitCode;
 use std::time::Instant;
@@ -50,12 +51,22 @@ fn run() -> Result<(), String> {
             let defaults = css::parse(&defaults_src)?;
             let mut index = css::Sheet::index(&sheet, &defaults);
             let mut em = email::Emitter::new(&mut index);
-            let html = em.render(&file);
+            send::check_urls(&file)?;
+            let html = send::wrap_lines(&em.render(&file), 900);
             let stem = std::path::Path::new(path)
                 .file_stem()
                 .and_then(|s| s.to_str())
                 .unwrap_or("email");
             std::fs::write(format!("{out}/{stem}.html"), &html).map_err(|e| e.to_string())?;
+            let msg = send::Send {
+                subject: file.manifest.name.clone(),
+                preview: send::preview_text(&file),
+                text: send::plain_text(&file),
+                html: html.clone(),
+            };
+            std::fs::write(format!("{out}/{stem}.txt"), &msg.text).map_err(|e| e.to_string())?;
+            let json = serde_json::to_string_pretty(&msg).map_err(|e| e.to_string())?;
+            std::fs::write(format!("{out}/{stem}.send.json"), json).map_err(|e| e.to_string())?;
             let report = serde_json::to_string_pretty(&em.report).map_err(|e| e.to_string())?;
             std::fs::write(format!("{out}/{stem}.report.json"), report)
                 .map_err(|e| e.to_string())?;
@@ -123,6 +134,7 @@ fn run() -> Result<(), String> {
             let src = std::fs::read_to_string(css_path).map_err(|e| e.to_string())?;
             let mut load = Vec::new();
             let mut per: Vec<Vec<f64>> = vec![Vec::new(); files.len()];
+            let mut text: Vec<Vec<f64>> = vec![Vec::new(); files.len()];
             for _ in 0..n {
                 let t = Instant::now();
                 let defaults_src: String;
@@ -134,9 +146,12 @@ fn run() -> Result<(), String> {
                 for (i, f) in files.iter().enumerate() {
                     let t = Instant::now();
                     let mut em = email::Emitter::new(&mut index);
-                    let html = em.render(f);
+                    let html = send::wrap_lines(&em.render(f), 900);
                     per[i].push(t.elapsed().as_secs_f64() * 1000.0);
                     std::hint::black_box(html);
+                    let t = Instant::now();
+                    std::hint::black_box(send::plain_text(f));
+                    text[i].push(t.elapsed().as_secs_f64() * 1000.0);
                 }
             }
             let stat = |v: &mut Vec<f64>| {
@@ -151,6 +166,11 @@ fn run() -> Result<(), String> {
             for (i, f) in files.iter().enumerate() {
                 let (m, x) = stat(&mut per[i]);
                 println!("render {}: median {m:.3} ms, max {x:.3} ms", f.manifest.id);
+                let (m, x) = stat(&mut text[i]);
+                println!(
+                    "plain text {}: median {m:.4} ms, max {x:.4} ms",
+                    f.manifest.id
+                );
             }
             Ok(())
         }

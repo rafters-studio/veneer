@@ -1,80 +1,29 @@
 {
-  "newsletter.html": {
+  "newsletter.react-email.html": {
     "rows": [
       {
-        "slug": "css-at-media",
-        "title": "@media",
+        "slug": "css-align-items",
+        "title": "align-items",
         "uses": [
-          "@media"
-        ],
-        "cells": [
-          {
-            "client": "Gmail web",
-            "v": "a",
-            "version": "2020-01",
-            "note": "Partial. Does not support height based media queries."
-          },
-          {
-            "client": "Gmail iOS",
-            "v": "a",
-            "version": "2020-01",
-            "note": "Partial. Not supported with non Google accounts. Partial. Does not support height based media queries."
-          },
-          {
-            "client": "Gmail Android",
-            "v": "a",
-            "version": "2022-07",
-            "note": "Partial. Not supported with non Google accounts. Partial. Does not support height based media queries."
-          },
-          {
-            "client": "Outlook Windows (Word)",
-            "v": "n",
-            "version": "2019",
-            "note": ""
-          },
-          {
-            "client": "Outlook.com / new Outlook",
-            "v": "a",
-            "version": "2023-12",
-            "note": "Partial. Does not support nested media queries. Partial. Nested media queries are removed."
-          },
-          {
-            "client": "Apple Mail macOS",
-            "v": "y",
-            "version": "10.3",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail iOS",
-            "v": "y",
-            "version": "12.2",
-            "note": ""
-          }
-        ]
-      },
-      {
-        "slug": "css-at-media-prefers-color-scheme",
-        "title": "@media (prefers-color-scheme)",
-        "uses": [
-          "@media (prefers-color-scheme: dark)"
+          "align-items: center (inline)"
         ],
         "cells": [
           {
             "client": "Gmail web",
             "v": "n",
-            "version": "2022-12",
+            "version": "2020-12",
             "note": ""
           },
           {
             "client": "Gmail iOS",
             "v": "n",
-            "version": "2022-12",
+            "version": "2020-12",
             "note": ""
           },
           {
             "client": "Gmail Android",
             "v": "n",
-            "version": "2022-12",
+            "version": "2020-12",
             "note": ""
           },
           {
@@ -86,19 +35,19 @@
           {
             "client": "Outlook.com / new Outlook",
             "v": "y",
-            "version": "2022-12",
-            "note": "Additional custom `data` attributes (`data-ogsc`, `data-ogac`, `data-ogsb`, `data-ogab`) are added when viewing an email in dark mode. See [this article](https://www.hteumeuleu.com/2021/emails-react-outlook-com-dark-mode/) for examples."
+            "version": "2020-12",
+            "note": ""
           },
           {
             "client": "Apple Mail macOS",
             "v": "y",
-            "version": "16.0",
+            "version": "13",
             "note": ""
           },
           {
             "client": "Apple Mail iOS",
             "v": "y",
-            "version": "16.1",
+            "version": "14",
             "note": ""
           }
         ]
@@ -107,14 +56,10 @@
         "slug": "css-background-color",
         "title": "background-color",
         "uses": [
-          "background-color: #e7f1f1 (inline)",
-          "background-color: #3d5c5c (inline)",
-          "background-color: #a8c9c9 (inline)",
-          "background-color: #3d5c5c !important (style)",
-          "background-color: #789999 !important (style)",
-          "background-color: #90b1b1 !important (style)",
-          "background-color: #082727 !important (style)",
-          "background-color: #000101 !important (style)"
+          "background-color: rgb(231,241,241) (inline)",
+          "background-color: rgb(61,92,92) (inline)",
+          "background-color: rgb(168,201,201) (inline)",
+          "background-color: rgb(61,92,92)!important (style)"
         ],
         "cells": [
           {
@@ -165,7 +110,7 @@
         "slug": "css-border",
         "title": "border",
         "uses": [
-          "border: 0 (inline)"
+          "border: none (inline)"
         ],
         "cells": [
           {
@@ -265,29 +210,29 @@
         ]
       },
       {
-        "slug": "css-color-scheme",
-        "title": "color-scheme CSS property",
+        "slug": "css-box-shadow",
+        "title": "box-shadow",
         "uses": [
-          "color-scheme: light dark (style)"
+          "box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor),var(--tw-shadow)!important (style)"
         ],
         "cells": [
           {
             "client": "Gmail web",
             "v": "n",
-            "version": "2023-09",
+            "version": "2023-01",
             "note": ""
           },
           {
             "client": "Gmail iOS",
-            "v": "n",
-            "version": "2023-09",
-            "note": ""
+            "v": "a",
+            "version": "2023-01",
+            "note": "Partial. Only supported with non Google accounts."
           },
           {
             "client": "Gmail Android",
-            "v": "n",
-            "version": "2023-09",
-            "note": ""
+            "v": "a",
+            "version": "2023-01",
+            "note": "Partial. Only supported with non Google accounts."
           },
           {
             "client": "Outlook Windows (Word)",
@@ -297,21 +242,73 @@
           },
           {
             "client": "Outlook.com / new Outlook",
-            "v": "n",
-            "version": "2023-09",
+            "v": "y",
+            "version": "2023-12",
             "note": ""
           },
           {
             "client": "Apple Mail macOS",
             "v": "y",
             "version": "16.0",
-            "note": "Works only the html/root element"
+            "note": ""
           },
           {
             "client": "Apple Mail iOS",
             "v": "y",
-            "version": "16.1",
-            "note": "Works only the html/root element"
+            "version": "17.2",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-cursor",
+        "title": "cursor",
+        "uses": [
+          "cursor: progress (inline)",
+          "cursor: not-allowed!important (style)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "n",
+            "version": "2025-07",
+            "note": "Cursor property is removed."
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "n",
+            "version": "2025-07",
+            "note": "Cursor property is removed."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "n",
+            "version": "2025-07",
+            "note": "Cursor property is removed."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "u",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "n",
+            "version": "2025-07",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "a",
+            "version": "15",
+            "note": "Partial. URL is not supported."
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "n",
+            "version": "15",
+            "note": "iOS assistive touch does not respond to cursor."
           }
         ]
       },
@@ -319,7 +316,9 @@
         "slug": "css-display",
         "title": "display",
         "uses": [
-          "display: block (inline)"
+          "display: block (inline)",
+          "display: inline-grid (inline)",
+          "display: inline-block (inline)"
         ],
         "cells": [
           {
@@ -367,12 +366,63 @@
         ]
       },
       {
+        "slug": "css-display-none",
+        "title": "display:none",
+        "uses": [
+          "display: none (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial. Does not inherit onto nested `<table>` elements. Partial. Does not work when applied directly to an `<img>` element."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.1",
+            "note": ""
+          }
+        ]
+      },
+      {
         "slug": "css-font-size",
         "title": "font-size",
         "uses": [
-          "font-size: 39.808px (inline)",
+          "font-size: 3rem (inline)",
+          "font-size: 14px (inline)",
           "font-size: 16px (inline)",
-          "font-size: 1px (inline)",
           "font-size: 33.184px (inline)"
         ],
         "cells": [
@@ -474,10 +524,62 @@
         ]
       },
       {
+        "slug": "css-gap",
+        "title": "gap, column-gap, row-gap",
+        "uses": [
+          "gap: 0.5rem (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "a",
+            "version": "2022-12",
+            "note": "Partial. Supports column-gap for flexbox."
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "a",
+            "version": "2022-12",
+            "note": "Partial. Supports column-gap for flexbox."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2022-12",
+            "note": "Partial. Supports column-gap for flexbox."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "a",
+            "version": "2023-12",
+            "note": "Partial. Supports column-gap for flexbox."
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "13.1",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "16.2",
+            "note": ""
+          }
+        ]
+      },
+      {
         "slug": "css-height",
         "title": "height property",
         "uses": [
           "height: auto (inline)",
+          "height: 2.5rem (inline)",
           "height: 1px (inline)"
         ],
         "cells": [
@@ -529,13 +631,17 @@
         "slug": "css-important",
         "title": "!important keyword",
         "uses": [
-          "background-color: #3d5c5c !important (style)",
-          "color: #e7f1f1 !important (style)",
-          "background-color: #789999 !important (style)",
-          "color: #000f10 !important (style)",
-          "background-color: #90b1b1 !important (style)",
-          "background-color: #082727 !important (style)",
-          "background-color: #000101 !important (style)"
+          "background-color: rgb(61,92,92)!important (style)",
+          "--tw-ring-shadow: var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor)!important (style)",
+          "box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor),var(--tw-shadow)!important (style)",
+          "--tw-ring-color: rgb(61,92,92)!important (style)",
+          "--tw-ring-offset-width: 2px!important (style)",
+          "--tw-ring-offset-shadow: var(--tw-ring-inset, )0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color)!important (style)",
+          "--tw-outline-style: none!important (style)",
+          "outline-style: none!important (style)",
+          "scale: var(--rafters-consumed-extent)!important (style)",
+          "cursor: not-allowed!important (style)",
+          "opacity: 50%!important (style)"
         ],
         "cells": [
           {
@@ -583,12 +689,61 @@
         ]
       },
       {
+        "slug": "css-justify-content",
+        "title": "justify-content",
+        "uses": [
+          "justify-content: center (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "n",
+            "version": "2020-12",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "n",
+            "version": "2020-12",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "n",
+            "version": "2020-12",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2023-12",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "14",
+            "note": ""
+          }
+        ]
+      },
+      {
         "slug": "css-letter-spacing",
         "title": "letter-spacing",
         "uses": [
-          "letter-spacing: -1px (inline)",
-          "letter-spacing: 0 (inline)",
-          "letter-spacing: -0.83px (inline)"
+          "letter-spacing: -0.025em (inline)"
         ],
         "cells": [
           {
@@ -639,11 +794,12 @@
         "slug": "css-line-height",
         "title": "line-height",
         "uses": [
-          "line-height: 49.76px (inline)",
-          "line-height: 28px (inline)",
-          "line-height: 24px (inline)",
           "line-height: 1px (inline)",
-          "line-height: 43.14px (inline)"
+          "line-height: 1 (inline)",
+          "line-height: 1.75rem (inline)",
+          "line-height: 1.5 (inline)",
+          "line-height: 120% (inline)",
+          "line-height: 1.3 (inline)"
         ],
         "cells": [
           {
@@ -694,7 +850,10 @@
         "slug": "css-margin",
         "title": "margin",
         "uses": [
-          "margin: 0 (inline)"
+          "margin-right: auto (inline)",
+          "margin-left: auto (inline)",
+          "margin-top: 16px (inline)",
+          "margin-bottom: 16px (inline)"
         ],
         "cells": [
           {
@@ -742,10 +901,63 @@
         ]
       },
       {
+        "slug": "css-max-height",
+        "title": "max-height property",
+        "uses": [
+          "max-height: 0 (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2021-11",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2021-11",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2021-11",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          }
+        ]
+      },
+      {
         "slug": "css-max-width",
         "title": "max-width",
         "uses": [
-          "max-width: 672px (inline)"
+          "max-width: 0 (inline)",
+          "max-width: 42rem (inline)",
+          "max-width: 100% (inline)"
         ],
         "cells": [
           {
@@ -793,20 +1005,172 @@
         ]
       },
       {
+        "slug": "css-opacity",
+        "title": "opacity",
+        "uses": [
+          "opacity: 0 (inline)",
+          "opacity: 50% (inline)",
+          "opacity: 50%!important (style)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.1",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-outline",
+        "title": "outline",
+        "uses": [
+          "outline: none (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2022-03",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2022-03",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2022-03",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "16.0",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "15.4",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-overflow",
+        "title": "overflow",
+        "uses": [
+          "overflow: hidden (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "a",
+            "version": "2024-10",
+            "note": "Partial. `overflow-block` & `overflow-inline` not supported."
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "a",
+            "version": "2024-10",
+            "note": "Partial. `overflow-block` & `overflow-inline` not supported."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2025-07",
+            "note": "Buggy. Cannot scroll through to hidden content. Partial. `overflow-block` & `overflow-inline` not supported."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2024",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "a",
+            "version": "2025-05",
+            "note": "Partial. `overflow-block` & `overflow-inline` not supported."
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "a",
+            "version": "2024-10",
+            "note": "Partial. `overflow-block` & `overflow-inline` not supported."
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "a",
+            "version": "2024-10",
+            "note": "Partial. `overflow-block` & `overflow-inline` not supported."
+          }
+        ]
+      },
+      {
         "slug": "css-padding",
         "title": "padding",
         "uses": [
-          "padding: 0 (inline)",
-          "padding: 0 16px 0 16px (inline)",
-          "padding: 24px 16px 0 16px (inline)",
-          "padding-left: 16px (inline)",
+          "padding-right: 1rem (inline)",
+          "padding-left: 1rem (inline)",
           "padding-right: 16px (inline)",
-          "padding-top: 10px (inline)",
-          "padding-bottom: 10px (inline)",
-          "padding: 0px 12px 0 0px (inline)",
-          "padding: 0 0 0 0 (inline)",
-          "padding: 8px 0 0 0 (inline)",
-          "padding: 0px 0px 0 12px (inline)"
+          "padding-left: 16px (inline)",
+          "padding-bottom: 8px (inline)",
+          "padding-top: 8px (inline)",
+          "padding-right: 0.75rem (inline)",
+          "padding-left: 0.75rem (inline)"
         ],
         "cells": [
           {
@@ -905,35 +1269,41 @@
         ]
       },
       {
-        "slug": "css-selector-class",
-        "title": "Class selector",
+        "slug": "css-rgb",
+        "title": "rgb()",
         "uses": [
-          ".rN class selectors"
+          "background-color: rgb(231,241,241) (inline)",
+          "color: rgb(0,1,1) (inline)",
+          "background-color: rgb(61,92,92) (inline)",
+          "color: rgb(231,241,241) (inline)",
+          "background-color: rgb(168,201,201) (inline)",
+          "background-color: rgb(61,92,92)!important (style)",
+          "--tw-ring-color: rgb(61,92,92)!important (style)"
         ],
         "cells": [
           {
             "client": "Gmail web",
-            "v": "y",
-            "version": "2019-10",
-            "note": ""
+            "v": "a",
+            "version": "2021-08",
+            "note": "Whitespace syntax is not supported (`rgb(0 128 0 / 1)`). whitespace syntax (`rgb(0 128 0)`): when used in the `style` attribute of an element, the whole attribute is stripped. When used inside `<style>`, the whole `<style>` block is stripped."
           },
           {
             "client": "Gmail iOS",
             "v": "a",
-            "version": "2019-10",
-            "note": "Partial. Not supported with non Google accounts."
+            "version": "2021-08",
+            "note": "Whitespace syntax is not supported (`rgb(0 128 0 / 1)`). whitespace syntax (`rgb(0 128 0)`): when used in the `style` attribute of an element, the whole attribute is stripped. When used inside `<style>`, the whole `<style>` block is stripped."
           },
           {
             "client": "Gmail Android",
             "v": "a",
-            "version": "2019-10",
-            "note": "Partial. Not supported with non Google accounts."
+            "version": "2021-08",
+            "note": "Whitespace syntax is not supported (`rgb(0 128 0 / 1)`). whitespace syntax (`rgb(0 128 0)`): when used in the `style` attribute of an element, the whole attribute is stripped. When used inside `<style>`, the whole `<style>` block is stripped."
           },
           {
             "client": "Outlook Windows (Word)",
-            "v": "y",
+            "v": "a",
             "version": "2019",
-            "note": ""
+            "note": "Whitespace syntax is not supported (`rgb(0 128 0 / 1)`). Alpha value is not supported (`rgb(0, 128, 0, 0.5)`)."
           },
           {
             "client": "Outlook.com / new Outlook",
@@ -944,13 +1314,13 @@
           {
             "client": "Apple Mail macOS",
             "v": "y",
-            "version": "12.4",
+            "version": "13",
             "note": ""
           },
           {
             "client": "Apple Mail iOS",
             "v": "y",
-            "version": "13.1",
+            "version": "14",
             "note": ""
           }
         ]
@@ -1007,57 +1377,6 @@
         ]
       },
       {
-        "slug": "css-text-align",
-        "title": "text-align",
-        "uses": [
-          "text-align: center (inline)"
-        ],
-        "cells": [
-          {
-            "client": "Gmail web",
-            "v": "y",
-            "version": "2025-11",
-            "note": "Support of the `match-parent` value depends on browser support."
-          },
-          {
-            "client": "Gmail iOS",
-            "v": "y",
-            "version": "2025-11",
-            "note": ""
-          },
-          {
-            "client": "Gmail Android",
-            "v": "a",
-            "version": "2025-11",
-            "note": "Partial. Doesn't support the `match-parent` value. Supports the vendor prefixed value `-webkit-match-parent`."
-          },
-          {
-            "client": "Outlook Windows (Word)",
-            "v": "a",
-            "version": "2019",
-            "note": "Partial. Flow-relative values `start` and `end` are not supported. Partial. Doesn't support the `match-parent` value."
-          },
-          {
-            "client": "Outlook.com / new Outlook",
-            "v": "y",
-            "version": "2025-11",
-            "note": "Support of the `match-parent` value depends on browser support."
-          },
-          {
-            "client": "Apple Mail macOS",
-            "v": "y",
-            "version": "2025-11",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail iOS",
-            "v": "y",
-            "version": "17",
-            "note": ""
-          }
-        ]
-      },
-      {
         "slug": "css-text-decoration",
         "title": "text-decoration",
         "uses": [
@@ -1109,11 +1428,68 @@
         ]
       },
       {
+        "slug": "css-unit-em",
+        "title": "em unit",
+        "uses": [
+          "letter-spacing: -0.025em (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          }
+        ]
+      },
+      {
         "slug": "css-unit-percent",
         "title": "% unit",
         "uses": [
           "width: 100% (inline)",
-          "width: 50% (inline)"
+          "max-width: 100% (inline)",
+          "scale: 100% 100% (inline)",
+          "opacity: 50% (inline)",
+          "mso-font-width: 400% (inline)",
+          "line-height: 120% (inline)",
+          "width: 50% (inline)",
+          "opacity: 50%!important (style)"
         ],
         "cells": [
           {
@@ -1164,31 +1540,25 @@
         "slug": "css-unit-px",
         "title": "px unit",
         "uses": [
-          "max-width: 672px (inline)",
-          "padding: 0 16px 0 16px (inline)",
-          "font-size: 39.808px (inline)",
-          "line-height: 49.76px (inline)",
-          "letter-spacing: -1px (inline)",
-          "padding: 24px 16px 0 16px (inline)",
-          "line-height: 28px (inline)",
-          "font-size: 16px (inline)",
-          "border-radius: .2304px (inline)",
-          "border-radius: .192px (inline)",
-          "mso-padding-alt: 10px 16px 10px 16px (inline)",
-          "padding-left: 16px (inline)",
-          "padding-right: 16px (inline)",
-          "padding-top: 10px (inline)",
-          "padding-bottom: 10px (inline)",
-          "line-height: 24px (inline)",
-          "height: 1px (inline)",
           "line-height: 1px (inline)",
-          "font-size: 1px (inline)",
-          "padding: 0px 12px 0 0px (inline)",
+          "font-size: 14px (inline)",
+          "margin-top: 16px (inline)",
+          "margin-bottom: 16px (inline)",
+          "border-radius: .2304px (inline)",
+          "mso-padding-alt: 0px (inline)",
+          "border-radius: .192px (inline)",
+          "font-size: 16px (inline)",
+          "padding-right: 16px (inline)",
+          "padding-left: 16px (inline)",
+          "padding-bottom: 8px (inline)",
+          "padding-top: 8px (inline)",
+          "mso-text-raise: 6px (inline)",
+          "border-top: 1px solid #eaeaea (inline)",
+          "height: 1px (inline)",
           "font-size: 33.184px (inline)",
-          "line-height: 43.14px (inline)",
-          "letter-spacing: -0.83px (inline)",
-          "padding: 8px 0 0 0 (inline)",
-          "padding: 0px 0px 0 12px (inline)"
+          "--tw-ring-shadow: var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor)!important (style)",
+          "box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor),var(--tw-shadow)!important (style)",
+          "--tw-ring-offset-width: 2px!important (style)"
         ],
         "cells": [
           {
@@ -1207,6 +1577,57 @@
             "client": "Gmail Android",
             "v": "y",
             "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-vertical-align",
+        "title": "vertical-align",
+        "uses": [
+          "vertical-align: top (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2020-12",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2020-12",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2020-12",
             "note": ""
           },
           {
@@ -1390,108 +1811,6 @@
         ]
       },
       {
-        "slug": "html-cellpadding",
-        "title": "cellpadding attribute",
-        "uses": [
-          "cellpadding=\"\""
-        ],
-        "cells": [
-          {
-            "client": "Gmail web",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          },
-          {
-            "client": "Gmail iOS",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          },
-          {
-            "client": "Gmail Android",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          },
-          {
-            "client": "Outlook Windows (Word)",
-            "v": "y",
-            "version": "2021",
-            "note": ""
-          },
-          {
-            "client": "Outlook.com / new Outlook",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail macOS",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail iOS",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          }
-        ]
-      },
-      {
-        "slug": "html-cellspacing",
-        "title": "cellspacing attribute",
-        "uses": [
-          "cellspacing=\"\""
-        ],
-        "cells": [
-          {
-            "client": "Gmail web",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          },
-          {
-            "client": "Gmail iOS",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          },
-          {
-            "client": "Gmail Android",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          },
-          {
-            "client": "Outlook Windows (Word)",
-            "v": "y",
-            "version": "2021",
-            "note": ""
-          },
-          {
-            "client": "Outlook.com / new Outlook",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail macOS",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail iOS",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          }
-        ]
-      },
-      {
         "slug": "html-comments",
         "title": "HTML comments",
         "uses": [
@@ -1543,35 +1862,35 @@
         ]
       },
       {
-        "slug": "html-doctype",
-        "title": "HTML5 doctype",
+        "slug": "html-dir",
+        "title": "dir attribute",
         "uses": [
-          "<!DOCTYPE html>"
+          "dir=\"\""
         ],
         "cells": [
           {
             "client": "Gmail web",
             "v": "y",
-            "version": "2019-07",
+            "version": "2021-10",
             "note": ""
           },
           {
             "client": "Gmail iOS",
             "v": "y",
-            "version": "2019-07",
+            "version": "2021-10",
             "note": ""
           },
           {
             "client": "Gmail Android",
             "v": "y",
-            "version": "2019-07",
+            "version": "2021-10",
             "note": ""
           },
           {
             "client": "Outlook Windows (Word)",
-            "v": "n",
+            "v": "a",
             "version": "2019",
-            "note": "Not supported. The HTML5 doctype has no impact here."
+            "note": "Buggy on anchor `<a>` tags."
           },
           {
             "client": "Outlook.com / new Outlook",
@@ -1582,13 +1901,13 @@
           {
             "client": "Apple Mail macOS",
             "v": "y",
-            "version": "10.3",
+            "version": "14",
             "note": ""
           },
           {
             "client": "Apple Mail iOS",
             "v": "y",
-            "version": "12.2",
+            "version": "15",
             "note": ""
           }
         ]
@@ -1640,57 +1959,6 @@
             "client": "Apple Mail iOS",
             "v": "y",
             "version": "13.4",
-            "note": ""
-          }
-        ]
-      },
-      {
-        "slug": "html-height",
-        "title": "height attribute",
-        "uses": [
-          "height=\"\""
-        ],
-        "cells": [
-          {
-            "client": "Gmail web",
-            "v": "y",
-            "version": "2019-09",
-            "note": ""
-          },
-          {
-            "client": "Gmail iOS",
-            "v": "y",
-            "version": "2019-09",
-            "note": ""
-          },
-          {
-            "client": "Gmail Android",
-            "v": "y",
-            "version": "2019-09",
-            "note": ""
-          },
-          {
-            "client": "Outlook Windows (Word)",
-            "v": "a",
-            "version": "2019",
-            "note": "Buggy. Percentage width on `<img>` elements are based on the physical file's width, not on the parent element's width. Buggy. Sizes set in attributes don't scale in 120 dpi mode."
-          },
-          {
-            "client": "Outlook.com / new Outlook",
-            "v": "y",
-            "version": "2024-01",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail macOS",
-            "v": "y",
-            "version": "12.4",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail iOS",
-            "v": "y",
-            "version": "12.4",
             "note": ""
           }
         ]
@@ -1798,57 +2066,6 @@
         ]
       },
       {
-        "slug": "html-meta-color-scheme",
-        "title": "color-scheme meta tag",
-        "uses": [
-          "<meta name=\"color-scheme\">"
-        ],
-        "cells": [
-          {
-            "client": "Gmail web",
-            "v": "n",
-            "version": "2026-09",
-            "note": ""
-          },
-          {
-            "client": "Gmail iOS",
-            "v": "a",
-            "version": "2026-09",
-            "note": "Partial support. Only the value `light only` is supported (see [Google IssueTracker](https://issuetracker.google.com/issues/201441498#comment21)."
-          },
-          {
-            "client": "Gmail Android",
-            "v": "a",
-            "version": "2026-09",
-            "note": "Partial support. Only the value `light only` is supported (see [Google IssueTracker](https://issuetracker.google.com/issues/201441498#comment21)."
-          },
-          {
-            "client": "Outlook Windows (Word)",
-            "v": "n",
-            "version": "2019",
-            "note": ""
-          },
-          {
-            "client": "Outlook.com / new Outlook",
-            "v": "n",
-            "version": "2024-01",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail macOS",
-            "v": "y",
-            "version": "16",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail iOS",
-            "v": "n",
-            "version": "12.4",
-            "note": ""
-          }
-        ]
-      },
-      {
         "slug": "html-p",
         "title": "<p> element",
         "uses": [
@@ -2104,57 +2321,6 @@
         ]
       },
       {
-        "slug": "html-valign",
-        "title": "valign attribute",
-        "uses": [
-          "valign=\"\""
-        ],
-        "cells": [
-          {
-            "client": "Gmail web",
-            "v": "y",
-            "version": "2020-12",
-            "note": ""
-          },
-          {
-            "client": "Gmail iOS",
-            "v": "y",
-            "version": "2020-12",
-            "note": ""
-          },
-          {
-            "client": "Gmail Android",
-            "v": "y",
-            "version": "2020-12",
-            "note": ""
-          },
-          {
-            "client": "Outlook Windows (Word)",
-            "v": "y",
-            "version": "2019",
-            "note": ""
-          },
-          {
-            "client": "Outlook.com / new Outlook",
-            "v": "y",
-            "version": "2024-01",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail macOS",
-            "v": "y",
-            "version": "13",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail iOS",
-            "v": "y",
-            "version": "13",
-            "note": ""
-          }
-        ]
-      },
-      {
         "slug": "html-width",
         "title": "width attribute",
         "uses": [
@@ -2258,91 +2424,53 @@
       }
     ],
     "untracked": [
-      "font-family",
       "color",
-      "mso-line-height-rule",
+      "font-family",
+      "scroll-margin",
       "mso-padding-alt",
-      "supported-color-schemes",
-      "bgcolor attribute",
-      ":root selector"
+      "grid-auto-flow",
+      "transition-property",
+      "transition-timing-function",
+      "transition-duration",
+      "scale",
+      "mso-font-width",
+      "mso-text-raise",
+      "border-top",
+      "flex-shrink",
+      "--tw-ring-shadow",
+      "--tw-ring-color",
+      "--tw-ring-offset-width",
+      "--tw-ring-offset-shadow",
+      "--tw-outline-style",
+      "outline-style",
+      "XHTML 1.0 Transitional doctype"
     ]
   },
-  "transactional.html": {
+  "transactional.react-email.html": {
     "rows": [
       {
-        "slug": "css-at-media",
-        "title": "@media",
+        "slug": "css-align-items",
+        "title": "align-items",
         "uses": [
-          "@media"
-        ],
-        "cells": [
-          {
-            "client": "Gmail web",
-            "v": "a",
-            "version": "2020-01",
-            "note": "Partial. Does not support height based media queries."
-          },
-          {
-            "client": "Gmail iOS",
-            "v": "a",
-            "version": "2020-01",
-            "note": "Partial. Not supported with non Google accounts. Partial. Does not support height based media queries."
-          },
-          {
-            "client": "Gmail Android",
-            "v": "a",
-            "version": "2022-07",
-            "note": "Partial. Not supported with non Google accounts. Partial. Does not support height based media queries."
-          },
-          {
-            "client": "Outlook Windows (Word)",
-            "v": "n",
-            "version": "2019",
-            "note": ""
-          },
-          {
-            "client": "Outlook.com / new Outlook",
-            "v": "a",
-            "version": "2023-12",
-            "note": "Partial. Does not support nested media queries. Partial. Nested media queries are removed."
-          },
-          {
-            "client": "Apple Mail macOS",
-            "v": "y",
-            "version": "10.3",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail iOS",
-            "v": "y",
-            "version": "12.2",
-            "note": ""
-          }
-        ]
-      },
-      {
-        "slug": "css-at-media-prefers-color-scheme",
-        "title": "@media (prefers-color-scheme)",
-        "uses": [
-          "@media (prefers-color-scheme: dark)"
+          "align-items: center (inline)"
         ],
         "cells": [
           {
             "client": "Gmail web",
             "v": "n",
-            "version": "2022-12",
+            "version": "2020-12",
             "note": ""
           },
           {
             "client": "Gmail iOS",
             "v": "n",
-            "version": "2022-12",
+            "version": "2020-12",
             "note": ""
           },
           {
             "client": "Gmail Android",
             "v": "n",
-            "version": "2022-12",
+            "version": "2020-12",
             "note": ""
           },
           {
@@ -2354,19 +2482,19 @@
           {
             "client": "Outlook.com / new Outlook",
             "v": "y",
-            "version": "2022-12",
-            "note": "Additional custom `data` attributes (`data-ogsc`, `data-ogac`, `data-ogsb`, `data-ogab`) are added when viewing an email in dark mode. See [this article](https://www.hteumeuleu.com/2021/emails-react-outlook-com-dark-mode/) for examples."
+            "version": "2020-12",
+            "note": ""
           },
           {
             "client": "Apple Mail macOS",
             "v": "y",
-            "version": "16.0",
+            "version": "13",
             "note": ""
           },
           {
             "client": "Apple Mail iOS",
             "v": "y",
-            "version": "16.1",
+            "version": "14",
             "note": ""
           }
         ]
@@ -2375,14 +2503,10 @@
         "slug": "css-background-color",
         "title": "background-color",
         "uses": [
-          "background-color: #e7f1f1 (inline)",
-          "background-color: #3d5c5c (inline)",
-          "background-color: #a8c9c9 (inline)",
-          "background-color: #3d5c5c !important (style)",
-          "background-color: #789999 !important (style)",
-          "background-color: #90b1b1 !important (style)",
-          "background-color: #082727 !important (style)",
-          "background-color: #000101 !important (style)"
+          "background-color: rgb(231,241,241) (inline)",
+          "background-color: rgb(61,92,92) (inline)",
+          "background-color: rgb(168,201,201) (inline)",
+          "background-color: rgb(61,92,92)!important (style)"
         ],
         "cells": [
           {
@@ -2425,6 +2549,57 @@
             "client": "Apple Mail iOS",
             "v": "y",
             "version": "12.1",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-border",
+        "title": "border",
+        "uses": [
+          "border: none (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2021-07",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2021-07",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2021-07",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial. A border can not be bigger than 8px. Buggy. Unreliable if used on a `<p>` or a `<div>`."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2021-07",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13",
             "note": ""
           }
         ]
@@ -2481,29 +2656,29 @@
         ]
       },
       {
-        "slug": "css-color-scheme",
-        "title": "color-scheme CSS property",
+        "slug": "css-box-shadow",
+        "title": "box-shadow",
         "uses": [
-          "color-scheme: light dark (style)"
+          "box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor),var(--tw-shadow)!important (style)"
         ],
         "cells": [
           {
             "client": "Gmail web",
             "v": "n",
-            "version": "2023-09",
+            "version": "2023-01",
             "note": ""
           },
           {
             "client": "Gmail iOS",
-            "v": "n",
-            "version": "2023-09",
-            "note": ""
+            "v": "a",
+            "version": "2023-01",
+            "note": "Partial. Only supported with non Google accounts."
           },
           {
             "client": "Gmail Android",
-            "v": "n",
-            "version": "2023-09",
-            "note": ""
+            "v": "a",
+            "version": "2023-01",
+            "note": "Partial. Only supported with non Google accounts."
           },
           {
             "client": "Outlook Windows (Word)",
@@ -2513,21 +2688,73 @@
           },
           {
             "client": "Outlook.com / new Outlook",
-            "v": "n",
-            "version": "2023-09",
+            "v": "y",
+            "version": "2023-12",
             "note": ""
           },
           {
             "client": "Apple Mail macOS",
             "v": "y",
             "version": "16.0",
-            "note": "Works only the html/root element"
+            "note": ""
           },
           {
             "client": "Apple Mail iOS",
             "v": "y",
-            "version": "16.1",
-            "note": "Works only the html/root element"
+            "version": "17.2",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-cursor",
+        "title": "cursor",
+        "uses": [
+          "cursor: progress (inline)",
+          "cursor: not-allowed!important (style)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "n",
+            "version": "2025-07",
+            "note": "Cursor property is removed."
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "n",
+            "version": "2025-07",
+            "note": "Cursor property is removed."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "n",
+            "version": "2025-07",
+            "note": "Cursor property is removed."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "u",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "n",
+            "version": "2025-07",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "a",
+            "version": "15",
+            "note": "Partial. URL is not supported."
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "n",
+            "version": "15",
+            "note": "iOS assistive touch does not respond to cursor."
           }
         ]
       },
@@ -2535,7 +2762,8 @@
         "slug": "css-display",
         "title": "display",
         "uses": [
-          "display: block (inline)"
+          "display: inline-grid (inline)",
+          "display: inline-block (inline)"
         ],
         "cells": [
           {
@@ -2583,12 +2811,63 @@
         ]
       },
       {
+        "slug": "css-display-none",
+        "title": "display:none",
+        "uses": [
+          "display: none (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial. Does not inherit onto nested `<table>` elements. Partial. Does not work when applied directly to an `<img>` element."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.1",
+            "note": ""
+          }
+        ]
+      },
+      {
         "slug": "css-font-size",
         "title": "font-size",
         "uses": [
-          "font-size: 39.808px (inline)",
+          "font-size: 3rem (inline)",
+          "font-size: 14px (inline)",
           "font-size: 16px (inline)",
-          "font-size: 1px (inline)",
           "font-size: 13.328px (inline)"
         ],
         "cells": [
@@ -2689,9 +2968,61 @@
         ]
       },
       {
+        "slug": "css-gap",
+        "title": "gap, column-gap, row-gap",
+        "uses": [
+          "gap: 0.5rem (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "a",
+            "version": "2022-12",
+            "note": "Partial. Supports column-gap for flexbox."
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "a",
+            "version": "2022-12",
+            "note": "Partial. Supports column-gap for flexbox."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2022-12",
+            "note": "Partial. Supports column-gap for flexbox."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "a",
+            "version": "2023-12",
+            "note": "Partial. Supports column-gap for flexbox."
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "13.1",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "16.2",
+            "note": ""
+          }
+        ]
+      },
+      {
         "slug": "css-height",
         "title": "height property",
         "uses": [
+          "height: 3rem (inline)",
           "height: 1px (inline)"
         ],
         "cells": [
@@ -2743,14 +3074,17 @@
         "slug": "css-important",
         "title": "!important keyword",
         "uses": [
-          "background-color: #3d5c5c !important (style)",
-          "color: #e7f1f1 !important (style)",
-          "background-color: #789999 !important (style)",
-          "color: #000f10 !important (style)",
-          "background-color: #90b1b1 !important (style)",
-          "background-color: #082727 !important (style)",
-          "color: #909090 !important (style)",
-          "background-color: #000101 !important (style)"
+          "background-color: rgb(61,92,92)!important (style)",
+          "--tw-ring-shadow: var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor)!important (style)",
+          "box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor),var(--tw-shadow)!important (style)",
+          "--tw-ring-color: rgb(61,92,92)!important (style)",
+          "--tw-ring-offset-width: 2px!important (style)",
+          "--tw-ring-offset-shadow: var(--tw-ring-inset, )0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color)!important (style)",
+          "--tw-outline-style: none!important (style)",
+          "outline-style: none!important (style)",
+          "scale: var(--rafters-consumed-extent)!important (style)",
+          "cursor: not-allowed!important (style)",
+          "opacity: 50%!important (style)"
         ],
         "cells": [
           {
@@ -2798,12 +3132,62 @@
         ]
       },
       {
+        "slug": "css-justify-content",
+        "title": "justify-content",
+        "uses": [
+          "justify-content: center (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "n",
+            "version": "2020-12",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "n",
+            "version": "2020-12",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "n",
+            "version": "2020-12",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2023-12",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "14",
+            "note": ""
+          }
+        ]
+      },
+      {
         "slug": "css-letter-spacing",
         "title": "letter-spacing",
         "uses": [
-          "letter-spacing: -1px (inline)",
-          "letter-spacing: 0 (inline)",
-          "letter-spacing: 0.2px (inline)"
+          "letter-spacing: -0.025em (inline)",
+          "letter-spacing: .015em (inline)"
         ],
         "cells": [
           {
@@ -2854,11 +3238,11 @@
         "slug": "css-line-height",
         "title": "line-height",
         "uses": [
-          "line-height: 49.76px (inline)",
-          "line-height: 28px (inline)",
-          "line-height: 24px (inline)",
           "line-height: 1px (inline)",
-          "line-height: 19.99px (inline)"
+          "line-height: 1 (inline)",
+          "line-height: 1.75rem (inline)",
+          "line-height: 1.5 (inline)",
+          "line-height: 120% (inline)"
         ],
         "cells": [
           {
@@ -2909,7 +3293,10 @@
         "slug": "css-margin",
         "title": "margin",
         "uses": [
-          "margin: 0 (inline)"
+          "margin-right: auto (inline)",
+          "margin-left: auto (inline)",
+          "margin-top: 16px (inline)",
+          "margin-bottom: 16px (inline)"
         ],
         "cells": [
           {
@@ -2957,10 +3344,63 @@
         ]
       },
       {
+        "slug": "css-max-height",
+        "title": "max-height property",
+        "uses": [
+          "max-height: 0 (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2021-11",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2021-11",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2021-11",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          }
+        ]
+      },
+      {
         "slug": "css-max-width",
         "title": "max-width",
         "uses": [
-          "max-width: 672px (inline)"
+          "max-width: 0 (inline)",
+          "max-width: 42rem (inline)",
+          "max-width: 100% (inline)"
         ],
         "cells": [
           {
@@ -3008,18 +3448,117 @@
         ]
       },
       {
+        "slug": "css-opacity",
+        "title": "opacity",
+        "uses": [
+          "opacity: 0 (inline)",
+          "opacity: 50% (inline)",
+          "opacity: 50%!important (style)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.1",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-overflow",
+        "title": "overflow",
+        "uses": [
+          "overflow: hidden (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "a",
+            "version": "2024-10",
+            "note": "Partial. `overflow-block` & `overflow-inline` not supported."
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "a",
+            "version": "2024-10",
+            "note": "Partial. `overflow-block` & `overflow-inline` not supported."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2025-07",
+            "note": "Buggy. Cannot scroll through to hidden content. Partial. `overflow-block` & `overflow-inline` not supported."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2024",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "a",
+            "version": "2025-05",
+            "note": "Partial. `overflow-block` & `overflow-inline` not supported."
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "a",
+            "version": "2024-10",
+            "note": "Partial. `overflow-block` & `overflow-inline` not supported."
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "a",
+            "version": "2024-10",
+            "note": "Partial. `overflow-block` & `overflow-inline` not supported."
+          }
+        ]
+      },
+      {
         "slug": "css-padding",
         "title": "padding",
         "uses": [
-          "padding: 0 (inline)",
-          "padding: 0 16px 0 16px (inline)",
-          "padding: 24px 16px 0 16px (inline)",
-          "padding-left: 24px (inline)",
+          "padding-right: 1rem (inline)",
+          "padding-left: 1rem (inline)",
           "padding-right: 24px (inline)",
-          "padding-top: 12px (inline)",
-          "padding-bottom: 12px (inline)",
-          "padding: 0 0 0 0 (inline)",
-          "padding: 4px 0 0 0 (inline)"
+          "padding-left: 24px (inline)"
         ],
         "cells": [
           {
@@ -3118,35 +3657,42 @@
         ]
       },
       {
-        "slug": "css-selector-class",
-        "title": "Class selector",
+        "slug": "css-rgb",
+        "title": "rgb()",
         "uses": [
-          ".rN class selectors"
+          "background-color: rgb(231,241,241) (inline)",
+          "color: rgb(0,1,1) (inline)",
+          "background-color: rgb(61,92,92) (inline)",
+          "color: rgb(231,241,241) (inline)",
+          "background-color: rgb(168,201,201) (inline)",
+          "color: rgb(5,37,37) (inline)",
+          "background-color: rgb(61,92,92)!important (style)",
+          "--tw-ring-color: rgb(61,92,92)!important (style)"
         ],
         "cells": [
           {
             "client": "Gmail web",
-            "v": "y",
-            "version": "2019-10",
-            "note": ""
+            "v": "a",
+            "version": "2021-08",
+            "note": "Whitespace syntax is not supported (`rgb(0 128 0 / 1)`). whitespace syntax (`rgb(0 128 0)`): when used in the `style` attribute of an element, the whole attribute is stripped. When used inside `<style>`, the whole `<style>` block is stripped."
           },
           {
             "client": "Gmail iOS",
             "v": "a",
-            "version": "2019-10",
-            "note": "Partial. Not supported with non Google accounts."
+            "version": "2021-08",
+            "note": "Whitespace syntax is not supported (`rgb(0 128 0 / 1)`). whitespace syntax (`rgb(0 128 0)`): when used in the `style` attribute of an element, the whole attribute is stripped. When used inside `<style>`, the whole `<style>` block is stripped."
           },
           {
             "client": "Gmail Android",
             "v": "a",
-            "version": "2019-10",
-            "note": "Partial. Not supported with non Google accounts."
+            "version": "2021-08",
+            "note": "Whitespace syntax is not supported (`rgb(0 128 0 / 1)`). whitespace syntax (`rgb(0 128 0)`): when used in the `style` attribute of an element, the whole attribute is stripped. When used inside `<style>`, the whole `<style>` block is stripped."
           },
           {
             "client": "Outlook Windows (Word)",
-            "v": "y",
+            "v": "a",
             "version": "2019",
-            "note": ""
+            "note": "Whitespace syntax is not supported (`rgb(0 128 0 / 1)`). Alpha value is not supported (`rgb(0, 128, 0, 0.5)`)."
           },
           {
             "client": "Outlook.com / new Outlook",
@@ -3157,13 +3703,13 @@
           {
             "client": "Apple Mail macOS",
             "v": "y",
-            "version": "12.4",
+            "version": "13",
             "note": ""
           },
           {
             "client": "Apple Mail iOS",
             "v": "y",
-            "version": "13.1",
+            "version": "14",
             "note": ""
           }
         ]
@@ -3220,57 +3766,6 @@
         ]
       },
       {
-        "slug": "css-text-align",
-        "title": "text-align",
-        "uses": [
-          "text-align: center (inline)"
-        ],
-        "cells": [
-          {
-            "client": "Gmail web",
-            "v": "y",
-            "version": "2025-11",
-            "note": "Support of the `match-parent` value depends on browser support."
-          },
-          {
-            "client": "Gmail iOS",
-            "v": "y",
-            "version": "2025-11",
-            "note": ""
-          },
-          {
-            "client": "Gmail Android",
-            "v": "a",
-            "version": "2025-11",
-            "note": "Partial. Doesn't support the `match-parent` value. Supports the vendor prefixed value `-webkit-match-parent`."
-          },
-          {
-            "client": "Outlook Windows (Word)",
-            "v": "a",
-            "version": "2019",
-            "note": "Partial. Flow-relative values `start` and `end` are not supported. Partial. Doesn't support the `match-parent` value."
-          },
-          {
-            "client": "Outlook.com / new Outlook",
-            "v": "y",
-            "version": "2025-11",
-            "note": "Support of the `match-parent` value depends on browser support."
-          },
-          {
-            "client": "Apple Mail macOS",
-            "v": "y",
-            "version": "2025-11",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail iOS",
-            "v": "y",
-            "version": "17",
-            "note": ""
-          }
-        ]
-      },
-      {
         "slug": "css-text-decoration",
         "title": "text-decoration",
         "uses": [
@@ -3322,10 +3817,68 @@
         ]
       },
       {
+        "slug": "css-unit-em",
+        "title": "em unit",
+        "uses": [
+          "letter-spacing: -0.025em (inline)",
+          "letter-spacing: .015em (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          }
+        ]
+      },
+      {
         "slug": "css-unit-percent",
         "title": "% unit",
         "uses": [
-          "width: 100% (inline)"
+          "width: 100% (inline)",
+          "max-width: 100% (inline)",
+          "scale: 100% 100% (inline)",
+          "opacity: 50% (inline)",
+          "mso-font-width: 400% (inline)",
+          "line-height: 120% (inline)",
+          "opacity: 50%!important (style)"
         ],
         "cells": [
           {
@@ -3376,28 +3929,21 @@
         "slug": "css-unit-px",
         "title": "px unit",
         "uses": [
-          "max-width: 672px (inline)",
-          "padding: 0 16px 0 16px (inline)",
-          "font-size: 39.808px (inline)",
-          "line-height: 49.76px (inline)",
-          "letter-spacing: -1px (inline)",
-          "padding: 24px 16px 0 16px (inline)",
-          "line-height: 28px (inline)",
-          "font-size: 16px (inline)",
-          "border-radius: .192px (inline)",
-          "mso-padding-alt: 12px 24px 12px 24px (inline)",
-          "padding-left: 24px (inline)",
-          "padding-right: 24px (inline)",
-          "line-height: 24px (inline)",
-          "padding-top: 12px (inline)",
-          "padding-bottom: 12px (inline)",
-          "height: 1px (inline)",
           "line-height: 1px (inline)",
-          "font-size: 1px (inline)",
+          "font-size: 14px (inline)",
+          "margin-top: 16px (inline)",
+          "margin-bottom: 16px (inline)",
+          "mso-padding-alt: 0px (inline)",
+          "border-radius: .192px (inline)",
+          "font-size: 16px (inline)",
+          "padding-right: 24px (inline)",
+          "padding-left: 24px (inline)",
+          "border-top: 1px solid #eaeaea (inline)",
+          "height: 1px (inline)",
           "font-size: 13.328px (inline)",
-          "line-height: 19.99px (inline)",
-          "letter-spacing: 0.2px (inline)",
-          "padding: 4px 0 0 0 (inline)"
+          "--tw-ring-shadow: var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor)!important (style)",
+          "box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-inset, )0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor),var(--tw-shadow)!important (style)",
+          "--tw-ring-offset-width: 2px!important (style)"
         ],
         "cells": [
           {
@@ -3598,108 +4144,6 @@
         ]
       },
       {
-        "slug": "html-cellpadding",
-        "title": "cellpadding attribute",
-        "uses": [
-          "cellpadding=\"\""
-        ],
-        "cells": [
-          {
-            "client": "Gmail web",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          },
-          {
-            "client": "Gmail iOS",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          },
-          {
-            "client": "Gmail Android",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          },
-          {
-            "client": "Outlook Windows (Word)",
-            "v": "y",
-            "version": "2021",
-            "note": ""
-          },
-          {
-            "client": "Outlook.com / new Outlook",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail macOS",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail iOS",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          }
-        ]
-      },
-      {
-        "slug": "html-cellspacing",
-        "title": "cellspacing attribute",
-        "uses": [
-          "cellspacing=\"\""
-        ],
-        "cells": [
-          {
-            "client": "Gmail web",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          },
-          {
-            "client": "Gmail iOS",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          },
-          {
-            "client": "Gmail Android",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          },
-          {
-            "client": "Outlook Windows (Word)",
-            "v": "y",
-            "version": "2021",
-            "note": ""
-          },
-          {
-            "client": "Outlook.com / new Outlook",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail macOS",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail iOS",
-            "v": "y",
-            "version": "2024-05",
-            "note": ""
-          }
-        ]
-      },
-      {
         "slug": "html-comments",
         "title": "HTML comments",
         "uses": [
@@ -3751,35 +4195,35 @@
         ]
       },
       {
-        "slug": "html-doctype",
-        "title": "HTML5 doctype",
+        "slug": "html-dir",
+        "title": "dir attribute",
         "uses": [
-          "<!DOCTYPE html>"
+          "dir=\"\""
         ],
         "cells": [
           {
             "client": "Gmail web",
             "v": "y",
-            "version": "2019-07",
+            "version": "2021-10",
             "note": ""
           },
           {
             "client": "Gmail iOS",
             "v": "y",
-            "version": "2019-07",
+            "version": "2021-10",
             "note": ""
           },
           {
             "client": "Gmail Android",
             "v": "y",
-            "version": "2019-07",
+            "version": "2021-10",
             "note": ""
           },
           {
             "client": "Outlook Windows (Word)",
-            "v": "n",
+            "v": "a",
             "version": "2019",
-            "note": "Not supported. The HTML5 doctype has no impact here."
+            "note": "Buggy on anchor `<a>` tags."
           },
           {
             "client": "Outlook.com / new Outlook",
@@ -3790,13 +4234,13 @@
           {
             "client": "Apple Mail macOS",
             "v": "y",
-            "version": "10.3",
+            "version": "14",
             "note": ""
           },
           {
             "client": "Apple Mail iOS",
             "v": "y",
-            "version": "12.2",
+            "version": "15",
             "note": ""
           }
         ]
@@ -3853,57 +4297,6 @@
         ]
       },
       {
-        "slug": "html-height",
-        "title": "height attribute",
-        "uses": [
-          "height=\"\""
-        ],
-        "cells": [
-          {
-            "client": "Gmail web",
-            "v": "y",
-            "version": "2019-09",
-            "note": ""
-          },
-          {
-            "client": "Gmail iOS",
-            "v": "y",
-            "version": "2019-09",
-            "note": ""
-          },
-          {
-            "client": "Gmail Android",
-            "v": "y",
-            "version": "2019-09",
-            "note": ""
-          },
-          {
-            "client": "Outlook Windows (Word)",
-            "v": "a",
-            "version": "2019",
-            "note": "Buggy. Percentage width on `<img>` elements are based on the physical file's width, not on the parent element's width. Buggy. Sizes set in attributes don't scale in 120 dpi mode."
-          },
-          {
-            "client": "Outlook.com / new Outlook",
-            "v": "y",
-            "version": "2024-01",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail macOS",
-            "v": "y",
-            "version": "12.4",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail iOS",
-            "v": "y",
-            "version": "12.4",
-            "note": ""
-          }
-        ]
-      },
-      {
         "slug": "html-lang",
         "title": "lang attribute",
         "uses": [
@@ -3950,57 +4343,6 @@
             "client": "Apple Mail iOS",
             "v": "y",
             "version": "14.0",
-            "note": ""
-          }
-        ]
-      },
-      {
-        "slug": "html-meta-color-scheme",
-        "title": "color-scheme meta tag",
-        "uses": [
-          "<meta name=\"color-scheme\">"
-        ],
-        "cells": [
-          {
-            "client": "Gmail web",
-            "v": "n",
-            "version": "2026-09",
-            "note": ""
-          },
-          {
-            "client": "Gmail iOS",
-            "v": "a",
-            "version": "2026-09",
-            "note": "Partial support. Only the value `light only` is supported (see [Google IssueTracker](https://issuetracker.google.com/issues/201441498#comment21)."
-          },
-          {
-            "client": "Gmail Android",
-            "v": "a",
-            "version": "2026-09",
-            "note": "Partial support. Only the value `light only` is supported (see [Google IssueTracker](https://issuetracker.google.com/issues/201441498#comment21)."
-          },
-          {
-            "client": "Outlook Windows (Word)",
-            "v": "n",
-            "version": "2019",
-            "note": ""
-          },
-          {
-            "client": "Outlook.com / new Outlook",
-            "v": "n",
-            "version": "2024-01",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail macOS",
-            "v": "y",
-            "version": "16",
-            "note": ""
-          },
-          {
-            "client": "Apple Mail iOS",
-            "v": "n",
-            "version": "12.4",
             "note": ""
           }
         ]
@@ -4313,13 +4655,26 @@
       }
     ],
     "untracked": [
-      "font-family",
       "color",
-      "mso-line-height-rule",
+      "font-family",
+      "scroll-margin",
       "mso-padding-alt",
-      "supported-color-schemes",
-      "bgcolor attribute",
-      ":root selector"
+      "grid-auto-flow",
+      "transition-property",
+      "transition-timing-function",
+      "transition-duration",
+      "scale",
+      "mso-font-width",
+      "mso-text-raise",
+      "border-top",
+      "flex-shrink",
+      "--tw-ring-shadow",
+      "--tw-ring-color",
+      "--tw-ring-offset-width",
+      "--tw-ring-offset-shadow",
+      "--tw-outline-style",
+      "outline-style",
+      "XHTML 1.0 Transitional doctype"
     ]
   }
 }
