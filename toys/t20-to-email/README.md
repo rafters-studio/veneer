@@ -2,7 +2,9 @@
 
 The question: can veneer's Rust core turn a `.rafter` file into email HTML that real mail clients render the way the designer meant, with lightningcss doing the CSS? This is a toy, not a feature. `PREDICTIONS.md` was written and committed before any build.
 
-The answer: yes for the CSS. lightningcss parses Tailwind's compiled huttspawn output and resolves every `var()` and `calc()`. It lowers every OKLCH token to sRGB. Colours match the site's own rendering to the byte in light and in dark, and an email renders in under 0.3 ms. What it cannot carry is layout and behaviour that email lacks: container queries, flex stretch, dark mode in Gmail and Outlook Windows, rounded corners in Outlook Windows. Those come out as design decisions, listed at the end.
+The answer: yes for the CSS. lightningcss parses Tailwind's compiled huttspawn output and resolves every `var()` and `calc()`. It lowers every OKLCH token to sRGB. The inlined colours match, to the byte, what a browser computes from the same stylesheet with the site's classes, in light and in dark, and an email renders in under 0.3 ms.
+
+Today huttspawn sends its auth emails through `@rafters/platform-sender`, whose `render` writes bare `<!doctype html><html><body><p>..</p></body></html>`. That path carries no design tokens, so it is no baseline for styling. Its verification email sends a code; the transactional sample here uses a link button instead. What it cannot carry is layout and behaviour that email lacks: container queries, flex stretch, dark mode in Gmail and Outlook Windows, rounded corners in Outlook Windows. Those come out as design decisions, listed at the end.
 
 ```sh
 # 1. the classes the samples use, then Tailwind's compiled output for exactly those (scratch dir, site read only)
@@ -70,7 +72,7 @@ Email:
 | caniemail `n` among the inlined properties | Apple Mail 0, Gmail 0, Outlook Windows 2 (`border-radius`, `ui-sans-serif`/`system-ui` in the font stack) | Apple 0, Gmail 2 or fewer, Outlook Windows 5 or more |
 | Variant classes that cannot be inlined | `:hover` kept; focus, active, disabled, aria, `:has` and all `@container` dropped | the same |
 | Gap | became table cell padding | the same |
-| Dark mode re-emitted from `.dark` | works in Apple Mail and Outlook.com; `n` in Gmail and Outlook Windows | works in Apple Mail, not Gmail |
+| Dark mode re-emitted from `.dark` | `y` in Apple Mail and Outlook.com (where note 3 says Outlook.com also adds `data-og*` attributes for its own dark mode); `n` in Gmail and Outlook Windows | works in Apple Mail, not Gmail |
 | CSS load (parse + index, 119 KB) | median 0.94 ms, max 1.40 ms (200 runs) | under 20 ms in total |
 | Render one email after the load | newsletter median 0.26 ms, transactional 0.19 ms | under 2 ms |
 | Whole process, one email | under 10 ms (`time` reports 0.00 s) | |
@@ -99,13 +101,13 @@ Partial (`a`) entries that matter here:
 - Gmail web caps `<style>` at 16 KB; ours is under 600 bytes.
 - Outlook Windows: `padding` only on table cells (we only pad cells and the link), `max-width` only on tables (hence the MSO table), `font-weight` 500 renders as normal, `letter-spacing` and `line-height` need px and `mso-line-height-rule`, and `!important` is not supported inline (we only use it in `<style>`).
 
-Not in caniemail's data at all: `font-family`, `color`, `mso-padding-alt`, `supported-color-schemes`, the `bgcolor` attribute and the `:root` selector.
+Not in caniemail's data at all: `font-family`, `color`, `mso-line-height-rule`, `mso-padding-alt`, `supported-color-schemes`, the `bgcolor` attribute and the `:root` selector.
 
 ### Screenshots (a browser, not a mail client)
 
 `out/shots/` holds 24 screenshots. Each email, its class-based reference page (`out/*.reference.{light,dark}.html`, the same blocks with the site's classes on the site's compiled CSS) and the react-email output are shot at 600px, light and dark, in Chromium 1243 and WebKit 2359. These are browsers standing in for mail clients. WebKit is the engine closest to Apple Mail, but nothing here shows what Gmail, Outlook or Apple Mail actually do; that needs a real-client service (Litmus, Email on Acid) or real inboxes.
 
-- **Colour:** `tools/colors.mjs` reads the computed background and text colour of body, h1, p, button and separator in each reference and each email, both schemes, and turns them into sRGB bytes through a canvas. The worst channel difference over 36 pairs is 0. One run of that script caught the reference button mid-transition. The site's button carries colour transitions, so the script now waits for the page to settle.
+- **Colour:** `tools/colors.mjs` reads the computed background and text colour of body, h1, p, button and separator in each reference and each email, both schemes, and turns them into sRGB bytes through a canvas. The worst channel difference is 0 over 36 pairs. 8 of those pairs are the transparent h1 and p backgrounds and compare nothing, so 28 do. The reference is Chromium resolving the same compiled CSS, not the deployed site. What this shows is that lightningcss's variable resolution and OKLCH conversion agree with the browser's, byte for byte. One run of that script caught the reference button mid-transition. The site's button carries colour transitions, so the script now waits for the page to settle.
 - **Layout, where they differ:** the reference h1 is `text-5xl` (47.8px) and the email's is `text-4xl` (39.8px). The reference button is 40px tall and the email's 44px. Both come from container queries (`@lg:text-5xl`, `@md:h-10 @md:py-2`) that apply in the browser at 600px and are dropped in the email. The first build also showed the button at content width where the site stretches it to the full column. That is fixed (choice 12), and so is a body that stayed light in dark mode.
 
 ### react-email, same content, same class strings
@@ -130,14 +132,15 @@ react-email's attribute-selector variants leak because `is-rule-inlinable.ts` on
 ## What works, with evidence
 
 - lightningcss is the whole CSS engine. It parses, substitutes variables, reduces `calc()`, gamut-maps OKLCH to sRGB and prints `rgba()`. There is no hand-written colour maths (unit tests in `src/css.rs`; 0 `var(`/`oklch` in the output).
-- Designer tokens survive exactly: 0 channel difference against the site's rendering in light and dark (`tools/colors.mjs`).
-- `.dark` becomes `prefers-color-scheme` without the designer doing anything, and caniemail says it works in Apple Mail and Outlook.com.
+- Designer tokens survive exactly: 0 channel difference against a browser resolving the same stylesheet with the site's classes, in light and dark, over 28 compared colours (`tools/colors.mjs`).
+- `.dark` becomes `prefers-color-scheme` without the designer doing anything. caniemail marks that `y` in Apple Mail and Outlook.com; Outlook.com also adds `data-og*` attributes for its own dark mode, which this toy does not target.
 - Every dropped declaration is named, with its class and reason (`out/*.report.json`). That is the list a designer or a lint would need.
 - Fast: about 1 ms to load the sheet, then a quarter of a millisecond per email, in a 4 MB binary.
 
 ## What a mail client would break, with evidence
 
-- **Gmail (all) and Outlook Windows:** no dark mode. `prefers-color-scheme` is `n` in both. Gmail apps instead invert colours on their own, which this toy cannot see.
+- **Gmail (all) and Outlook Windows:** no dark mode. `prefers-color-scheme` is `n` in both. What those clients do to a light email in a dark-mode reader (forced inversion, for one) was not checked here and needs a real client.
+- **Outlook.com / new Outlook:** no hover. caniemail: `:hover` is "only supported on type selectors", and ours is `.rN:hover`.
 - **Gmail apps with non-Google accounts:** no `<style>` at all, so no hover and no dark; only the inline light design shows.
 - **Outlook Windows:** no `border-radius` (moot for huttspawn, whose radius base is `0.01rem`, so the button radius is 0.19px), no `:hover`, and no `@media`. Weight 500 renders as normal (caniemail `font-weight` note), so the button label loses its medium weight. The `ui-sans-serif, system-ui` part of the stack is ignored, so the fallback is whatever Outlook picks after `Inter`, which no mail client loads.
 - **Everywhere:** `Inter` is not loaded (no `@font-face` is emitted), so every client falls back down the stack.
