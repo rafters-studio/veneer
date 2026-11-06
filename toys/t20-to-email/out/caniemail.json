@@ -1,0 +1,4411 @@
+{
+  "newsletter.html": {
+    "rows": [
+      {
+        "slug": "css-at-media",
+        "title": "@media",
+        "uses": [
+          "@media"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "a",
+            "version": "2020-01",
+            "note": "Partial. Does not support height based media queries."
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "a",
+            "version": "2020-01",
+            "note": "Partial. Not supported with non Google accounts. Partial. Does not support height based media queries."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2022-07",
+            "note": "Partial. Not supported with non Google accounts. Partial. Does not support height based media queries."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "a",
+            "version": "2023-12",
+            "note": "Partial. Does not support nested media queries. Partial. Nested media queries are removed."
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "10.3",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.2",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-at-media-prefers-color-scheme",
+        "title": "@media (prefers-color-scheme)",
+        "uses": [
+          "@media (prefers-color-scheme: dark)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "n",
+            "version": "2022-12",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "n",
+            "version": "2022-12",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "n",
+            "version": "2022-12",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2022-12",
+            "note": "Additional custom `data` attributes (`data-ogsc`, `data-ogac`, `data-ogsb`, `data-ogab`) are added when viewing an email in dark mode. See [this article](https://www.hteumeuleu.com/2021/emails-react-outlook-com-dark-mode/) for examples."
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "16.0",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "16.1",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-background-color",
+        "title": "background-color",
+        "uses": [
+          "background-color: #e7f1f1 (inline)",
+          "background-color: #3d5c5c (inline)",
+          "background-color: #a8c9c9 (inline)",
+          "background-color: #3d5c5c !important (style)",
+          "background-color: #789999 !important (style)",
+          "background-color: #082727 !important (style)",
+          "background-color: #000101 !important (style)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.1",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-border",
+        "title": "border",
+        "uses": [
+          "border: 0 (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2021-07",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2021-07",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2021-07",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial. A border can not be bigger than 8px. Buggy. Unreliable if used on a `<p>` or a `<div>`."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2021-07",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-border-radius",
+        "title": "border-radius",
+        "uses": [
+          "border-radius: .2304px (inline)",
+          "border-radius: .192px (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-08",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-08",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-08",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": "Round corners can be used in VML with the `RoundRect` element. See [buttons.cm](https://buttons.cm/) and [VML documentation](https://docs.microsoft.com/en-us/windows/win32/vml/msdn-online-vml-roundrect-element)."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2019-08",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "10.3",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.2",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-color-scheme",
+        "title": "color-scheme CSS property",
+        "uses": [
+          "color-scheme: light dark (style)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "n",
+            "version": "2023-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "n",
+            "version": "2023-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "n",
+            "version": "2023-09",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "n",
+            "version": "2023-09",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "16.0",
+            "note": "Works only the html/root element"
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "16.1",
+            "note": "Works only the html/root element"
+          }
+        ]
+      },
+      {
+        "slug": "css-display",
+        "title": "display",
+        "uses": [
+          "display: block (inline)",
+          "display: inline-block (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2021-12",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "a",
+            "version": "2021-12",
+            "note": "Partial. `flex`, `grid`, `flow-root`, `contents`, `inline flow-root`, `inline flex`, `inline grid`, `initial`, `revert`, `unset` are not supported with non Google accounts."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2021-12",
+            "note": "Partial. `flex`, `grid`, `flow-root`, `contents`, `inline flow-root`, `inline flex`, `inline grid`, `initial`, `revert`, `unset` are not supported with non Google accounts."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Buggy. `display:none` does not inherit to inner tables. Partial. Only supports `display:none` (but not on `<img>`)."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2021-12",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-font-size",
+        "title": "font-size",
+        "uses": [
+          "font-size: 39.808px (inline)",
+          "font-size: 16px (inline)",
+          "font-size: 1px (inline)",
+          "font-size: 33.184px (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2024-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2024-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2024-02",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2021",
+            "note": "Partial support. `rem` values are not supported."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-02",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-font-weight",
+        "title": "font-weight",
+        "uses": [
+          "font-weight: 700 (inline)",
+          "font-weight: 500 (inline)",
+          "font-weight: 600 (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2022-06",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2022-06",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2022-06",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial support. `<number>` values between 0 and 599 are set as normal font weight. `<number>` values between 600 and 1000 are set as bold font weight."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2021-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-height",
+        "title": "height property",
+        "uses": [
+          "height: auto (inline)",
+          "height: 1px (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial. Not supported on `<body>`, `<span>`, `<div>` or `<p>` elements."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2023-12",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-important",
+        "title": "!important keyword",
+        "uses": [
+          "background-color: #3d5c5c !important (style)",
+          "color: #e7f1f1 !important (style)",
+          "background-color: #789999 !important (style)",
+          "color: #000f10 !important (style)",
+          "background-color: #082727 !important (style)",
+          "background-color: #000101 !important (style)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "a",
+            "version": "2021-11",
+            "note": "Partial. Only supported in lowercase. (See [email-bugs#13](https://github.com/hteumeuleu/email-bugs/issues/13))"
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "a",
+            "version": "2021-11",
+            "note": "Partial. Only supported in lowercase. (See [email-bugs#13](https://github.com/hteumeuleu/email-bugs/issues/13)) Partial. Only supported inline when using a Non Gmail Account due to the lack of `<style>` support."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2021-11",
+            "note": "Partial. Only supported in lowercase. (See [email-bugs#13](https://github.com/hteumeuleu/email-bugs/issues/13)) Partial. Only supported inline when using a Non Gmail Account due to the lack of `<style>` support."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial. Only supported with a space before. Partial. Not supported inline. (See [email-bugs#31](https://github.com/hteumeuleu/email-bugs/issues/31))"
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2021-11",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-letter-spacing",
+        "title": "letter-spacing",
+        "uses": [
+          "letter-spacing: -.025em (inline)",
+          "letter-spacing: 0 (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2020-01",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2020-01",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2020-01",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial. Big negative values are rendered differently from CSS standards. Buggy. Values set in `em` are smaller than the expected render in CSS. See [#192](https://github.com/hteumeuleu/caniemail/issues/192)."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2023-12",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13.2",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-line-height",
+        "title": "line-height",
+        "uses": [
+          "line-height: 1.25 (inline)",
+          "line-height: 28px (inline)",
+          "line-height: 1.5 (inline)",
+          "line-height: 1px (inline)",
+          "line-height: 1.3 (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2021-10",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2021-10",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2021-10",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Buggy. `em` and `px` units behave weirdly. Use `mso-line-height-rule:exactly`."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2021-10",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "14",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-margin",
+        "title": "margin",
+        "uses": [
+          "margin: 0 (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "a",
+            "version": "2019-10",
+            "note": "Partial. Negative values are not supported."
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "a",
+            "version": "2019-10",
+            "note": "Partial. Negative values are not supported."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2019-10",
+            "note": "Partial. Negative values are not supported."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial. Negative values are not supported. Partial. Not supported on `<span>` and `<body>` elements. Buggy. `background-color` is included inside the `margin`. Partial. `auto` value is not supported."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "a",
+            "version": "2023-12",
+            "note": "Partial. Negative values are not supported."
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-max-width",
+        "title": "max-width",
+        "uses": [
+          "max-width: 672px (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-08",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-08",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-08",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial. Only works on `<table>` elements."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "10.3",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.2",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-padding",
+        "title": "padding",
+        "uses": [
+          "padding: 0 (inline)",
+          "padding: 0 16px 0 16px (inline)",
+          "padding: 24px 16px 0 16px (inline)",
+          "padding-left: 16px (inline)",
+          "padding-right: 16px (inline)",
+          "padding-top: 10px (inline)",
+          "padding-bottom: 10px (inline)",
+          "padding: 0px 12px 0 0px (inline)",
+          "padding: 0 0 0 0 (inline)",
+          "padding: 8px 0 0 0 (inline)",
+          "padding: 0px 0px 0 12px (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-05",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-05",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-05",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial. Only supported on table cells. Buggy. Vertical padding will be the same for all cells of a same row, adopting the biggest value."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "10.3",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.2",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-pseudo-class-hover",
+        "title": ":hover",
+        "uses": [
+          ":hover"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-10",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "n",
+            "version": "2019-10",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2019-10",
+            "note": "Partial. Not supported with non Google accounts."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "a",
+            "version": "2024-01",
+            "note": "Partial. Only supported on type selectors."
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13.1",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-selector-class",
+        "title": "Class selector",
+        "uses": [
+          ".rN class selectors"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-10",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "a",
+            "version": "2019-10",
+            "note": "Partial. Not supported with non Google accounts."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2019-10",
+            "note": "Partial. Not supported with non Google accounts."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13.1",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-sytem-ui",
+        "title": "system-ui, ui-serif, ui-sans-serif, ui-rounded, ui-monospace",
+        "uses": [
+          "font-family: Inter,ui-sans-serif,system-ui,sans-serif (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2022-12",
+            "note": "Partial. Depends on browser support. `system-ui` works in all browsers. `ui-serif`, `ui-sans-serif`, `ui-rounded` and `ui-monospace` are supported on all browsers on iOS and Safari on MacOS."
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2022-12",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2022-12",
+            "note": "Partial. Supports `system-ui` only."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": "Partial. Depends on browser support. `system-ui` works in all browsers. `ui-serif`, `ui-sans-serif`, `ui-rounded` and `ui-monospace` are supported on all browsers on iOS and Safari on MacOS."
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "13.1",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "16.2",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-text-align",
+        "title": "text-align",
+        "uses": [
+          "text-align: center (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2025-11",
+            "note": "Support of the `match-parent` value depends on browser support."
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2025-11",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2025-11",
+            "note": "Partial. Doesn't support the `match-parent` value. Supports the vendor prefixed value `-webkit-match-parent`."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial. Flow-relative values `start` and `end` are not supported. Partial. Doesn't support the `match-parent` value."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2025-11",
+            "note": "Support of the `match-parent` value depends on browser support."
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "2025-11",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "17",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-text-decoration",
+        "title": "text-decoration",
+        "uses": [
+          "text-decoration: none (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "a",
+            "version": "2019-02",
+            "note": "Partial. Not supported with non Google accounts."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2019-02",
+            "note": "Partial. Not supported with non Google accounts."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial. Not supported with multiple values. Partial. `overline` is not supported."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.1",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-unit-em",
+        "title": "em unit",
+        "uses": [
+          "letter-spacing: -.025em (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-unit-percent",
+        "title": "% unit",
+        "uses": [
+          "width: 100% (inline)",
+          "width: 50% (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-unit-px",
+        "title": "px unit",
+        "uses": [
+          "max-width: 672px (inline)",
+          "padding: 0 16px 0 16px (inline)",
+          "font-size: 39.808px (inline)",
+          "padding: 24px 16px 0 16px (inline)",
+          "line-height: 28px (inline)",
+          "font-size: 16px (inline)",
+          "border-radius: .2304px (inline)",
+          "border-radius: .192px (inline)",
+          "mso-padding-alt: 10px 16px 10px 16px (inline)",
+          "padding-left: 16px (inline)",
+          "padding-right: 16px (inline)",
+          "padding-top: 10px (inline)",
+          "padding-bottom: 10px (inline)",
+          "height: 1px (inline)",
+          "line-height: 1px (inline)",
+          "font-size: 1px (inline)",
+          "padding: 0px 12px 0 0px (inline)",
+          "font-size: 33.184px (inline)",
+          "padding: 8px 0 0 0 (inline)",
+          "padding: 0px 0px 0 12px (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-width",
+        "title": "width property",
+        "uses": [
+          "width: 100% (inline)",
+          "width: 50% (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial. Not supported on `<body>`, `<span>`, `<div>`, `<p>` or `<img>` elements."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-align",
+        "title": "align attribute",
+        "uses": [
+          "align=\"\""
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2021-11",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2021-11",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2021-11",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-body",
+        "title": "<body> element",
+        "uses": [
+          "<body>"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "a",
+            "version": "2021-11",
+            "note": "Partial. Replaced by a `<div>` with supported attributes."
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "a",
+            "version": "2021-11",
+            "note": "Partial. Replaced by a `<div>` with supported attributes."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2021-11",
+            "note": "Partial. Replaced by a `<div>` with supported attributes."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "a",
+            "version": "2024-01",
+            "note": "Partial. Replaced by a `<div>` with supported attributes."
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-cellpadding",
+        "title": "cellpadding attribute",
+        "uses": [
+          "cellpadding=\"\""
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2024-05",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2024-05",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2024-05",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2021",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "2024-05",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "2024-05",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-cellspacing",
+        "title": "cellspacing attribute",
+        "uses": [
+          "cellspacing=\"\""
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2024-05",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2024-05",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2024-05",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2021",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "2024-05",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "2024-05",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-comments",
+        "title": "HTML comments",
+        "uses": [
+          "conditional comments"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2024-04",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2024-04",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2024-04",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2021",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "2024-04",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "2024-04",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-doctype",
+        "title": "HTML5 doctype",
+        "uses": [
+          "<!DOCTYPE html>"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-07",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-07",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-07",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": "Not supported. The HTML5 doctype has no impact here."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "10.3",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.2",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-h1-h6",
+        "title": "<h1> to <h6> elements",
+        "uses": [
+          "<h1|h2>"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2020-05",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2020-05",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2020-05",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13.4",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-height",
+        "title": "height attribute",
+        "uses": [
+          "height=\"\""
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Buggy. Percentage width on `<img>` elements are based on the physical file's width, not on the parent element's width. Buggy. Sizes set in attributes don't scale in 120 dpi mode."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-img",
+        "title": "<img> element",
+        "uses": [
+          "<img>"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2023-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2023-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2023-09",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2021",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "2023-09",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "2023-09",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-lang",
+        "title": "lang attribute",
+        "uses": [
+          "lang=\"\""
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2020-10",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2020-10",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2020-10",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "14.0",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-meta-color-scheme",
+        "title": "color-scheme meta tag",
+        "uses": [
+          "<meta name=\"color-scheme\">"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "n",
+            "version": "2026-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "a",
+            "version": "2026-09",
+            "note": "Partial support. Only the value `light only` is supported (see [Google IssueTracker](https://issuetracker.google.com/issues/201441498#comment21)."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2026-09",
+            "note": "Partial support. Only the value `light only` is supported (see [Google IssueTracker](https://issuetracker.google.com/issues/201441498#comment21)."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "n",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "16",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "n",
+            "version": "12.4",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-p",
+        "title": "<p> element",
+        "uses": [
+          "<p>"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2020-05",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2020-05",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2020-05",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13.4",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-role",
+        "title": "role attribute",
+        "uses": [
+          "role=\"\""
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-06",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2020-01",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": "Not live tested, only looked at processed code on Litmus."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "10.3",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.2",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-style",
+        "title": "<style> element",
+        "uses": [
+          "<style> in <head>"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "a",
+            "version": "2023-01",
+            "note": "Partial. Not supported inside the `<body>`. The size of the `<style>` tag [is limited to 16 KB](https://github.com/hteumeuleu/email-bugs/issues/90)"
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "a",
+            "version": "2023-01",
+            "note": "Partial. Not supported inside the `<body>`. Partial. Not supported with non Google accounts."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2019-06",
+            "note": "Partial. Not supported inside the `<body>`. Partial. Not supported with non Google accounts."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Buggy. `<style>` elements need to be declared before their rules are used."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "16.0",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "16.2",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-table",
+        "title": "<table> element",
+        "uses": [
+          "<table>"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-target",
+        "title": "target attribute",
+        "uses": [
+          "target=\"\""
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "n",
+            "version": "2021-12",
+            "note": "Not supported. `target=\"_blank\"` is forced on all links."
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "n",
+            "version": "2021-12",
+            "note": "Not supported. `target=\"_blank\"` is forced on all links."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "n",
+            "version": "2021-12",
+            "note": "Not supported. `target=\"_blank\"` is forced on all links."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "The attribute is supported but links always open in a new window anyway."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "n",
+            "version": "2024-01",
+            "note": "Not supported. `target=\"_blank\"` is forced on all links."
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "a",
+            "version": "15",
+            "note": "The attribute is supported but links always open in a new window anyway."
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "a",
+            "version": "15",
+            "note": "The attribute is supported but links always open in a new window anyway."
+          }
+        ]
+      },
+      {
+        "slug": "html-valign",
+        "title": "valign attribute",
+        "uses": [
+          "valign=\"\""
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2020-12",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2020-12",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2020-12",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-width",
+        "title": "width attribute",
+        "uses": [
+          "width=\"\""
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Buggy. Percentage width on `<img>` elements are based on the physical file's width, not on the parent element's width. Buggy. Sizes set in attributes don't scale in 120 dpi mode."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": "The `width` attribute is ignored on CID embedded images. See [#171](https://github.com/hteumeuleu/caniemail/issues/171)."
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "image-png",
+        "title": "PNG image format",
+        "uses": [
+          "PNG image"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          }
+        ]
+      }
+    ],
+    "untracked": [
+      "font-family",
+      "color",
+      "mso-padding-alt",
+      "supported-color-schemes",
+      "bgcolor attribute",
+      ":root selector"
+    ]
+  },
+  "transactional.html": {
+    "rows": [
+      {
+        "slug": "css-at-media",
+        "title": "@media",
+        "uses": [
+          "@media"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "a",
+            "version": "2020-01",
+            "note": "Partial. Does not support height based media queries."
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "a",
+            "version": "2020-01",
+            "note": "Partial. Not supported with non Google accounts. Partial. Does not support height based media queries."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2022-07",
+            "note": "Partial. Not supported with non Google accounts. Partial. Does not support height based media queries."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "a",
+            "version": "2023-12",
+            "note": "Partial. Does not support nested media queries. Partial. Nested media queries are removed."
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "10.3",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.2",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-at-media-prefers-color-scheme",
+        "title": "@media (prefers-color-scheme)",
+        "uses": [
+          "@media (prefers-color-scheme: dark)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "n",
+            "version": "2022-12",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "n",
+            "version": "2022-12",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "n",
+            "version": "2022-12",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2022-12",
+            "note": "Additional custom `data` attributes (`data-ogsc`, `data-ogac`, `data-ogsb`, `data-ogab`) are added when viewing an email in dark mode. See [this article](https://www.hteumeuleu.com/2021/emails-react-outlook-com-dark-mode/) for examples."
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "16.0",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "16.1",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-background-color",
+        "title": "background-color",
+        "uses": [
+          "background-color: #e7f1f1 (inline)",
+          "background-color: #3d5c5c (inline)",
+          "background-color: #a8c9c9 (inline)",
+          "background-color: #3d5c5c !important (style)",
+          "background-color: #789999 !important (style)",
+          "background-color: #082727 !important (style)",
+          "background-color: #000101 !important (style)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.1",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-border-radius",
+        "title": "border-radius",
+        "uses": [
+          "border-radius: .192px (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-08",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-08",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-08",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": "Round corners can be used in VML with the `RoundRect` element. See [buttons.cm](https://buttons.cm/) and [VML documentation](https://docs.microsoft.com/en-us/windows/win32/vml/msdn-online-vml-roundrect-element)."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2019-08",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "10.3",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.2",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-color-scheme",
+        "title": "color-scheme CSS property",
+        "uses": [
+          "color-scheme: light dark (style)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "n",
+            "version": "2023-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "n",
+            "version": "2023-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "n",
+            "version": "2023-09",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "n",
+            "version": "2023-09",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "16.0",
+            "note": "Works only the html/root element"
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "16.1",
+            "note": "Works only the html/root element"
+          }
+        ]
+      },
+      {
+        "slug": "css-display",
+        "title": "display",
+        "uses": [
+          "display: inline-block (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2021-12",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "a",
+            "version": "2021-12",
+            "note": "Partial. `flex`, `grid`, `flow-root`, `contents`, `inline flow-root`, `inline flex`, `inline grid`, `initial`, `revert`, `unset` are not supported with non Google accounts."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2021-12",
+            "note": "Partial. `flex`, `grid`, `flow-root`, `contents`, `inline flow-root`, `inline flex`, `inline grid`, `initial`, `revert`, `unset` are not supported with non Google accounts."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Buggy. `display:none` does not inherit to inner tables. Partial. Only supports `display:none` (but not on `<img>`)."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2021-12",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-font-size",
+        "title": "font-size",
+        "uses": [
+          "font-size: 39.808px (inline)",
+          "font-size: 16px (inline)",
+          "font-size: 1px (inline)",
+          "font-size: 13.328px (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2024-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2024-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2024-02",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2021",
+            "note": "Partial support. `rem` values are not supported."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-02",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-font-weight",
+        "title": "font-weight",
+        "uses": [
+          "font-weight: 700 (inline)",
+          "font-weight: 500 (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2022-06",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2022-06",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2022-06",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial support. `<number>` values between 0 and 599 are set as normal font weight. `<number>` values between 600 and 1000 are set as bold font weight."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2021-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-height",
+        "title": "height property",
+        "uses": [
+          "height: 1px (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial. Not supported on `<body>`, `<span>`, `<div>` or `<p>` elements."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2023-12",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-important",
+        "title": "!important keyword",
+        "uses": [
+          "background-color: #3d5c5c !important (style)",
+          "color: #e7f1f1 !important (style)",
+          "background-color: #789999 !important (style)",
+          "color: #000f10 !important (style)",
+          "background-color: #082727 !important (style)",
+          "color: #909090 !important (style)",
+          "background-color: #000101 !important (style)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "a",
+            "version": "2021-11",
+            "note": "Partial. Only supported in lowercase. (See [email-bugs#13](https://github.com/hteumeuleu/email-bugs/issues/13))"
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "a",
+            "version": "2021-11",
+            "note": "Partial. Only supported in lowercase. (See [email-bugs#13](https://github.com/hteumeuleu/email-bugs/issues/13)) Partial. Only supported inline when using a Non Gmail Account due to the lack of `<style>` support."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2021-11",
+            "note": "Partial. Only supported in lowercase. (See [email-bugs#13](https://github.com/hteumeuleu/email-bugs/issues/13)) Partial. Only supported inline when using a Non Gmail Account due to the lack of `<style>` support."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial. Only supported with a space before. Partial. Not supported inline. (See [email-bugs#31](https://github.com/hteumeuleu/email-bugs/issues/31))"
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2021-11",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-letter-spacing",
+        "title": "letter-spacing",
+        "uses": [
+          "letter-spacing: -.025em (inline)",
+          "letter-spacing: 0 (inline)",
+          "letter-spacing: .015em (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2020-01",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2020-01",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2020-01",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial. Big negative values are rendered differently from CSS standards. Buggy. Values set in `em` are smaller than the expected render in CSS. See [#192](https://github.com/hteumeuleu/caniemail/issues/192)."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2023-12",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13.2",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-line-height",
+        "title": "line-height",
+        "uses": [
+          "line-height: 1.25 (inline)",
+          "line-height: 28px (inline)",
+          "line-height: 1.5 (inline)",
+          "line-height: 1px (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2021-10",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2021-10",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2021-10",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Buggy. `em` and `px` units behave weirdly. Use `mso-line-height-rule:exactly`."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2021-10",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "14",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-margin",
+        "title": "margin",
+        "uses": [
+          "margin: 0 (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "a",
+            "version": "2019-10",
+            "note": "Partial. Negative values are not supported."
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "a",
+            "version": "2019-10",
+            "note": "Partial. Negative values are not supported."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2019-10",
+            "note": "Partial. Negative values are not supported."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial. Negative values are not supported. Partial. Not supported on `<span>` and `<body>` elements. Buggy. `background-color` is included inside the `margin`. Partial. `auto` value is not supported."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "a",
+            "version": "2023-12",
+            "note": "Partial. Negative values are not supported."
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-max-width",
+        "title": "max-width",
+        "uses": [
+          "max-width: 672px (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-08",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-08",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-08",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial. Only works on `<table>` elements."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "10.3",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.2",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-padding",
+        "title": "padding",
+        "uses": [
+          "padding: 0 (inline)",
+          "padding: 0 16px 0 16px (inline)",
+          "padding: 24px 16px 0 16px (inline)",
+          "padding-left: 24px (inline)",
+          "padding-right: 24px (inline)",
+          "padding-top: 12px (inline)",
+          "padding-bottom: 12px (inline)",
+          "padding: 0 0 0 0 (inline)",
+          "padding: 4px 0 0 0 (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-05",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-05",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-05",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial. Only supported on table cells. Buggy. Vertical padding will be the same for all cells of a same row, adopting the biggest value."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "10.3",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.2",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-pseudo-class-hover",
+        "title": ":hover",
+        "uses": [
+          ":hover"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-10",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "n",
+            "version": "2019-10",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2019-10",
+            "note": "Partial. Not supported with non Google accounts."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "a",
+            "version": "2024-01",
+            "note": "Partial. Only supported on type selectors."
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13.1",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-selector-class",
+        "title": "Class selector",
+        "uses": [
+          ".rN class selectors"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-10",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "a",
+            "version": "2019-10",
+            "note": "Partial. Not supported with non Google accounts."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2019-10",
+            "note": "Partial. Not supported with non Google accounts."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13.1",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-sytem-ui",
+        "title": "system-ui, ui-serif, ui-sans-serif, ui-rounded, ui-monospace",
+        "uses": [
+          "font-family: Inter,ui-sans-serif,system-ui,sans-serif (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2022-12",
+            "note": "Partial. Depends on browser support. `system-ui` works in all browsers. `ui-serif`, `ui-sans-serif`, `ui-rounded` and `ui-monospace` are supported on all browsers on iOS and Safari on MacOS."
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2022-12",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2022-12",
+            "note": "Partial. Supports `system-ui` only."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": "Partial. Depends on browser support. `system-ui` works in all browsers. `ui-serif`, `ui-sans-serif`, `ui-rounded` and `ui-monospace` are supported on all browsers on iOS and Safari on MacOS."
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "13.1",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "16.2",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-text-align",
+        "title": "text-align",
+        "uses": [
+          "text-align: center (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2025-11",
+            "note": "Support of the `match-parent` value depends on browser support."
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2025-11",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2025-11",
+            "note": "Partial. Doesn't support the `match-parent` value. Supports the vendor prefixed value `-webkit-match-parent`."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial. Flow-relative values `start` and `end` are not supported. Partial. Doesn't support the `match-parent` value."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2025-11",
+            "note": "Support of the `match-parent` value depends on browser support."
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "2025-11",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "17",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-text-decoration",
+        "title": "text-decoration",
+        "uses": [
+          "text-decoration: none (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "a",
+            "version": "2019-02",
+            "note": "Partial. Not supported with non Google accounts."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2019-02",
+            "note": "Partial. Not supported with non Google accounts."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial. Not supported with multiple values. Partial. `overline` is not supported."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.1",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-unit-em",
+        "title": "em unit",
+        "uses": [
+          "letter-spacing: -.025em (inline)",
+          "letter-spacing: .015em (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-unit-percent",
+        "title": "% unit",
+        "uses": [
+          "width: 100% (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-unit-px",
+        "title": "px unit",
+        "uses": [
+          "max-width: 672px (inline)",
+          "padding: 0 16px 0 16px (inline)",
+          "font-size: 39.808px (inline)",
+          "padding: 24px 16px 0 16px (inline)",
+          "line-height: 28px (inline)",
+          "font-size: 16px (inline)",
+          "border-radius: .192px (inline)",
+          "mso-padding-alt: 12px 24px 12px 24px (inline)",
+          "padding-left: 24px (inline)",
+          "padding-right: 24px (inline)",
+          "padding-top: 12px (inline)",
+          "padding-bottom: 12px (inline)",
+          "height: 1px (inline)",
+          "line-height: 1px (inline)",
+          "font-size: 1px (inline)",
+          "font-size: 13.328px (inline)",
+          "padding: 4px 0 0 0 (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2020-02",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "css-width",
+        "title": "width property",
+        "uses": [
+          "width: 100% (inline)"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Partial. Not supported on `<body>`, `<span>`, `<div>`, `<p>` or `<img>` elements."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-align",
+        "title": "align attribute",
+        "uses": [
+          "align=\"\""
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2021-11",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2021-11",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2021-11",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-body",
+        "title": "<body> element",
+        "uses": [
+          "<body>"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "a",
+            "version": "2021-11",
+            "note": "Partial. Replaced by a `<div>` with supported attributes."
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "a",
+            "version": "2021-11",
+            "note": "Partial. Replaced by a `<div>` with supported attributes."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2021-11",
+            "note": "Partial. Replaced by a `<div>` with supported attributes."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "a",
+            "version": "2024-01",
+            "note": "Partial. Replaced by a `<div>` with supported attributes."
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "15",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-cellpadding",
+        "title": "cellpadding attribute",
+        "uses": [
+          "cellpadding=\"\""
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2024-05",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2024-05",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2024-05",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2021",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "2024-05",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "2024-05",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-cellspacing",
+        "title": "cellspacing attribute",
+        "uses": [
+          "cellspacing=\"\""
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2024-05",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2024-05",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2024-05",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2021",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "2024-05",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "2024-05",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-comments",
+        "title": "HTML comments",
+        "uses": [
+          "conditional comments"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2024-04",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2024-04",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2024-04",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2021",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "2024-04",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "2024-04",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-doctype",
+        "title": "HTML5 doctype",
+        "uses": [
+          "<!DOCTYPE html>"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-07",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-07",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-07",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": "Not supported. The HTML5 doctype has no impact here."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "10.3",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.2",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-h1-h6",
+        "title": "<h1> to <h6> elements",
+        "uses": [
+          "<h1|h2>"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2020-05",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2020-05",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2020-05",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13.4",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-height",
+        "title": "height attribute",
+        "uses": [
+          "height=\"\""
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Buggy. Percentage width on `<img>` elements are based on the physical file's width, not on the parent element's width. Buggy. Sizes set in attributes don't scale in 120 dpi mode."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-lang",
+        "title": "lang attribute",
+        "uses": [
+          "lang=\"\""
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2020-10",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2020-10",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2020-10",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "14.0",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-meta-color-scheme",
+        "title": "color-scheme meta tag",
+        "uses": [
+          "<meta name=\"color-scheme\">"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "n",
+            "version": "2026-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "a",
+            "version": "2026-09",
+            "note": "Partial support. Only the value `light only` is supported (see [Google IssueTracker](https://issuetracker.google.com/issues/201441498#comment21)."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2026-09",
+            "note": "Partial support. Only the value `light only` is supported (see [Google IssueTracker](https://issuetracker.google.com/issues/201441498#comment21)."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "n",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "n",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "16",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "n",
+            "version": "12.4",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-p",
+        "title": "<p> element",
+        "uses": [
+          "<p>"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2020-05",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2020-05",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2020-05",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "13.4",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-role",
+        "title": "role attribute",
+        "uses": [
+          "role=\"\""
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-06",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-02",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2020-01",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": "Not live tested, only looked at processed code on Litmus."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "10.3",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.2",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-style",
+        "title": "<style> element",
+        "uses": [
+          "<style> in <head>"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "a",
+            "version": "2023-01",
+            "note": "Partial. Not supported inside the `<body>`. The size of the `<style>` tag [is limited to 16 KB](https://github.com/hteumeuleu/email-bugs/issues/90)"
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "a",
+            "version": "2023-01",
+            "note": "Partial. Not supported inside the `<body>`. Partial. Not supported with non Google accounts."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "a",
+            "version": "2019-06",
+            "note": "Partial. Not supported inside the `<body>`. Partial. Not supported with non Google accounts."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Buggy. `<style>` elements need to be declared before their rules are used."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "16.0",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "16.2",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-table",
+        "title": "<table> element",
+        "uses": [
+          "<table>"
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "y",
+            "version": "2019",
+            "note": ""
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "slug": "html-target",
+        "title": "target attribute",
+        "uses": [
+          "target=\"\""
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "n",
+            "version": "2021-12",
+            "note": "Not supported. `target=\"_blank\"` is forced on all links."
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "n",
+            "version": "2021-12",
+            "note": "Not supported. `target=\"_blank\"` is forced on all links."
+          },
+          {
+            "client": "Gmail Android",
+            "v": "n",
+            "version": "2021-12",
+            "note": "Not supported. `target=\"_blank\"` is forced on all links."
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "The attribute is supported but links always open in a new window anyway."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "n",
+            "version": "2024-01",
+            "note": "Not supported. `target=\"_blank\"` is forced on all links."
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "a",
+            "version": "15",
+            "note": "The attribute is supported but links always open in a new window anyway."
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "a",
+            "version": "15",
+            "note": "The attribute is supported but links always open in a new window anyway."
+          }
+        ]
+      },
+      {
+        "slug": "html-width",
+        "title": "width attribute",
+        "uses": [
+          "width=\"\""
+        ],
+        "cells": [
+          {
+            "client": "Gmail web",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail iOS",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Gmail Android",
+            "v": "y",
+            "version": "2019-09",
+            "note": ""
+          },
+          {
+            "client": "Outlook Windows (Word)",
+            "v": "a",
+            "version": "2019",
+            "note": "Buggy. Percentage width on `<img>` elements are based on the physical file's width, not on the parent element's width. Buggy. Sizes set in attributes don't scale in 120 dpi mode."
+          },
+          {
+            "client": "Outlook.com / new Outlook",
+            "v": "y",
+            "version": "2024-01",
+            "note": ""
+          },
+          {
+            "client": "Apple Mail macOS",
+            "v": "y",
+            "version": "12.4",
+            "note": "The `width` attribute is ignored on CID embedded images. See [#171](https://github.com/hteumeuleu/caniemail/issues/171)."
+          },
+          {
+            "client": "Apple Mail iOS",
+            "v": "y",
+            "version": "12.4",
+            "note": ""
+          }
+        ]
+      }
+    ],
+    "untracked": [
+      "font-family",
+      "color",
+      "mso-padding-alt",
+      "supported-color-schemes",
+      "bgcolor attribute",
+      ":root selector"
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "manifest": {
+    "id": "huttspawn-newsletter",
+    "name": "Huttspawn newsletter",
+    "category": "email",
+    "description": "Monthly guild newsletter: a feature story, a call to action and two short columns.",
+    "keywords": ["email", "newsletter"],
+    "cognitiveLoad": 3
+  },
+  "blocks": [
+    { "id": "page", "type": "container", "meta": { "size": "2xl", "gap": "6" }, "children": ["title", "intro", "hero", "cta", "rule", "cols"] },
+    { "id": "title", "type": "heading", "parentId": "page", "meta": { "level": 1 }, "content": "The Outer Rim, this month" },
+    { "id": "intro", "type": "text", "parentId": "page", "content": "Three new discipline guides landed, the GSF ladder reset, and the bounty board is open again. Here is what changed and where to start." },
+    { "id": "hero", "type": "image", "parentId": "page", "meta": { "src": "https://huttspawn.com/images/bounty-hunter.png", "alt": "A bounty hunter in Mandalorian armour", "width": 600, "radius": "lg" } },
+    { "id": "cta", "type": "button", "parentId": "page", "meta": { "href": "https://huttspawn.com/disciplines", "variant": "default", "size": "default" }, "content": "Read the new guides" },
+    { "id": "rule", "type": "separator", "parentId": "page" },
+    { "id": "cols", "type": "grid", "parentId": "page", "meta": { "columns": 2, "gap": "6" }, "children": ["left", "right"] },
+    { "id": "left", "type": "container", "parentId": "cols", "meta": { "gap": "2" }, "children": ["left-h", "left-t"] },
+    { "id": "left-h", "type": "heading", "parentId": "left", "meta": { "level": 2 }, "content": "GSF ladder" },
+    { "id": "left-t", "type": "text", "parentId": "left", "content": "Season nine started on Tuesday. Ratings reset to 1500 and the first match night is Friday." },
+    { "id": "right", "type": "container", "parentId": "cols", "meta": { "gap": "2" }, "children": ["right-h", "right-t"] },
+    { "id": "right-h", "type": "heading", "parentId": "right", "meta": { "level": 2 }, "content": "Bounty board" },
+    { "id": "right-t", "type": "text", "parentId": "right", "content": "Eleven contracts are open. The oldest pays double and closes at the end of the week." }
+  ]
+}

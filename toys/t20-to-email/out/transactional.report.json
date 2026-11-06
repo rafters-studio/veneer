@@ -1,0 +1,747 @@
+{
+  "inlined": [
+    {
+      "element": "heading#title",
+      "class": "(preflight)",
+      "property": "margin",
+      "value": "0"
+    },
+    {
+      "element": "heading#title",
+      "class": "text-4xl",
+      "property": "font-size",
+      "value": "39.808px"
+    },
+    {
+      "element": "heading#title",
+      "class": "text-4xl",
+      "property": "line-height",
+      "value": "1.25"
+    },
+    {
+      "element": "heading#title",
+      "class": "font-bold",
+      "property": "font-weight",
+      "value": "700"
+    },
+    {
+      "element": "heading#title",
+      "class": "tracking-tight",
+      "property": "letter-spacing",
+      "value": "-.025em"
+    },
+    {
+      "element": "heading#title",
+      "class": "text-foreground",
+      "property": "color",
+      "value": "#000101"
+    },
+    {
+      "element": "heading#title",
+      "class": "(inherited from body)",
+      "property": "font-family",
+      "value": "Inter,ui-sans-serif,system-ui,sans-serif"
+    },
+    {
+      "element": "text#body",
+      "class": "(preflight)",
+      "property": "margin",
+      "value": "0"
+    },
+    {
+      "element": "text#body",
+      "class": "leading-7",
+      "property": "line-height",
+      "value": "28px"
+    },
+    {
+      "element": "text#body",
+      "class": "text-foreground",
+      "property": "color",
+      "value": "#000101"
+    },
+    {
+      "element": "text#body",
+      "class": "(browser default under preflight)",
+      "property": "font-size",
+      "value": "16px"
+    },
+    {
+      "element": "text#body",
+      "class": "(inherited from body)",
+      "property": "font-family",
+      "value": "Inter,ui-sans-serif,system-ui,sans-serif"
+    },
+    {
+      "element": "button#cta.cell",
+      "class": "(button cell)",
+      "property": "background-color",
+      "value": "#3d5c5c"
+    },
+    {
+      "element": "button#cta.cell",
+      "class": "(button cell)",
+      "property": "border-radius",
+      "value": ".192px"
+    },
+    {
+      "element": "button#cta.cell",
+      "class": "(button cell)",
+      "property": "mso-padding-alt",
+      "value": "12px 24px 12px 24px"
+    },
+    {
+      "element": "button#cta",
+      "class": "inline-grid",
+      "property": "display",
+      "value": "inline-block"
+    },
+    {
+      "element": "button#cta",
+      "class": "rounded-md",
+      "property": "border-radius",
+      "value": ".192px"
+    },
+    {
+      "element": "button#cta",
+      "class": "bg-primary",
+      "property": "background-color",
+      "value": "#3d5c5c"
+    },
+    {
+      "element": "button#cta",
+      "class": "px-6",
+      "property": "padding-left",
+      "value": "24px"
+    },
+    {
+      "element": "button#cta",
+      "class": "px-6",
+      "property": "padding-right",
+      "value": "24px"
+    },
+    {
+      "element": "button#cta",
+      "class": "ts-label-large",
+      "property": "font-family",
+      "value": "Inter,ui-sans-serif,system-ui,sans-serif"
+    },
+    {
+      "element": "button#cta",
+      "class": "text-label-large",
+      "property": "font-size",
+      "value": "16px"
+    },
+    {
+      "element": "button#cta",
+      "class": "text-label-large",
+      "property": "line-height",
+      "value": "1.5"
+    },
+    {
+      "element": "button#cta",
+      "class": "text-label-large",
+      "property": "letter-spacing",
+      "value": "0"
+    },
+    {
+      "element": "button#cta",
+      "class": "text-label-large",
+      "property": "font-weight",
+      "value": "500"
+    },
+    {
+      "element": "button#cta",
+      "class": "text-primary-foreground",
+      "property": "color",
+      "value": "#e7f1f1"
+    },
+    {
+      "element": "button#cta",
+      "class": "(height)",
+      "property": "padding-top",
+      "value": "12px"
+    },
+    {
+      "element": "button#cta",
+      "class": "(height)",
+      "property": "padding-bottom",
+      "value": "12px"
+    },
+    {
+      "element": "button#cta",
+      "class": "(email link)",
+      "property": "text-decoration",
+      "value": "none"
+    },
+    {
+      "element": "button#cta",
+      "class": "(email link)",
+      "property": "text-align",
+      "value": "center"
+    },
+    {
+      "element": "separator#rule",
+      "class": "bg-border",
+      "property": "background-color",
+      "value": "#a8c9c9"
+    },
+    {
+      "element": "separator#rule",
+      "class": "(email rule)",
+      "property": "height",
+      "value": "1px"
+    },
+    {
+      "element": "separator#rule",
+      "class": "(email rule)",
+      "property": "line-height",
+      "value": "1px"
+    },
+    {
+      "element": "separator#rule",
+      "class": "(email rule)",
+      "property": "font-size",
+      "value": "1px"
+    },
+    {
+      "element": "text#foot-1",
+      "class": "(preflight)",
+      "property": "margin",
+      "value": "0"
+    },
+    {
+      "element": "text#foot-1",
+      "class": "text-sm",
+      "property": "font-size",
+      "value": "13.328px"
+    },
+    {
+      "element": "text#foot-1",
+      "class": "text-sm",
+      "property": "line-height",
+      "value": "1.5"
+    },
+    {
+      "element": "text#foot-1",
+      "class": "text-sm",
+      "property": "letter-spacing",
+      "value": ".015em"
+    },
+    {
+      "element": "text#foot-1",
+      "class": "text-muted-foreground",
+      "property": "color",
+      "value": "#052525"
+    },
+    {
+      "element": "text#foot-1",
+      "class": "(inherited from body)",
+      "property": "font-family",
+      "value": "Inter,ui-sans-serif,system-ui,sans-serif"
+    },
+    {
+      "element": "text#foot-2",
+      "class": "(preflight)",
+      "property": "margin",
+      "value": "0"
+    },
+    {
+      "element": "text#foot-2",
+      "class": "text-sm",
+      "property": "font-size",
+      "value": "13.328px"
+    },
+    {
+      "element": "text#foot-2",
+      "class": "text-sm",
+      "property": "line-height",
+      "value": "1.5"
+    },
+    {
+      "element": "text#foot-2",
+      "class": "text-sm",
+      "property": "letter-spacing",
+      "value": ".015em"
+    },
+    {
+      "element": "text#foot-2",
+      "class": "text-muted-foreground",
+      "property": "color",
+      "value": "#052525"
+    },
+    {
+      "element": "text#foot-2",
+      "class": "(inherited from body)",
+      "property": "font-family",
+      "value": "Inter,ui-sans-serif,system-ui,sans-serif"
+    },
+    {
+      "element": "container#footer",
+      "class": "(email table)",
+      "property": "width",
+      "value": "100%"
+    },
+    {
+      "element": "container#page",
+      "class": "max-w-2xl",
+      "property": "max-width",
+      "value": "672px"
+    },
+    {
+      "element": "container#page",
+      "class": "(email table)",
+      "property": "width",
+      "value": "100%"
+    },
+    {
+      "element": "body",
+      "class": "bg-background",
+      "property": "background-color",
+      "value": "#e7f1f1"
+    },
+    {
+      "element": "body",
+      "class": "font-sans",
+      "property": "font-family",
+      "value": "Inter,ui-sans-serif,system-ui,sans-serif"
+    },
+    {
+      "element": "body",
+      "class": "text-foreground",
+      "property": "color",
+      "value": "#000101"
+    }
+  ],
+  "in_style": [
+    {
+      "element": "heading#title",
+      "class": "text-foreground",
+      "property": "color",
+      "value": "#e7f1f1",
+      "reason": "dark: @media (prefers-color-scheme: dark)"
+    },
+    {
+      "element": "text#body",
+      "class": "text-foreground",
+      "property": "color",
+      "value": "#e7f1f1",
+      "reason": "dark: @media (prefers-color-scheme: dark)"
+    },
+    {
+      "element": "button#cta.cell",
+      "class": "bg-primary",
+      "property": "background-color",
+      "value": "#789999",
+      "reason": "dark: @media (prefers-color-scheme: dark)"
+    },
+    {
+      "element": "button#cta",
+      "class": "bg-primary",
+      "property": "background-color",
+      "value": "#789999",
+      "reason": "dark: @media (prefers-color-scheme: dark)"
+    },
+    {
+      "element": "button#cta",
+      "class": "text-primary-foreground",
+      "property": "color",
+      "value": "#000f10",
+      "reason": "dark: @media (prefers-color-scheme: dark)"
+    },
+    {
+      "element": "button#cta",
+      "class": "hover:bg-primary-hover",
+      "property": "background-color",
+      "value": "#3d5c5c",
+      "reason": ":hover"
+    },
+    {
+      "element": "separator#rule",
+      "class": "bg-border",
+      "property": "background-color",
+      "value": "#082727",
+      "reason": "dark: @media (prefers-color-scheme: dark)"
+    },
+    {
+      "element": "text#foot-1",
+      "class": "text-muted-foreground",
+      "property": "color",
+      "value": "#909090",
+      "reason": "dark: @media (prefers-color-scheme: dark)"
+    },
+    {
+      "element": "text#foot-2",
+      "class": "text-muted-foreground",
+      "property": "color",
+      "value": "#909090",
+      "reason": "dark: @media (prefers-color-scheme: dark)"
+    },
+    {
+      "element": "body",
+      "class": "bg-background",
+      "property": "background-color",
+      "value": "#000101",
+      "reason": "dark: @media (prefers-color-scheme: dark)"
+    },
+    {
+      "element": "body",
+      "class": "text-foreground",
+      "property": "color",
+      "value": "#e7f1f1",
+      "reason": "dark: @media (prefers-color-scheme: dark)"
+    }
+  ],
+  "dropped": [
+    {
+      "element": "container#page",
+      "class": "@md:px-6",
+      "property": "padding-inline",
+      "value": "24px",
+      "reason": "container query: no mail client evaluates @container, so the base value stands"
+    },
+    {
+      "element": "container#page",
+      "class": "@lg:px-8",
+      "property": "padding-inline",
+      "value": "32px",
+      "reason": "container query: no mail client evaluates @container, so the base value stands"
+    },
+    {
+      "element": "container#page",
+      "class": "@container",
+      "property": "container-type",
+      "value": "inline-size",
+      "reason": "container queries: no mail client evaluates @container"
+    },
+    {
+      "element": "container#page",
+      "class": "mx-auto",
+      "property": "margin-left",
+      "value": "auto",
+      "reason": "became table layout: a row per child, gap as padding-top, padding on each cell, auto margins as align=center"
+    },
+    {
+      "element": "container#page",
+      "class": "mx-auto",
+      "property": "margin-right",
+      "value": "auto",
+      "reason": "became table layout: a row per child, gap as padding-top, padding on each cell, auto margins as align=center"
+    },
+    {
+      "element": "container#page",
+      "class": "flex",
+      "property": "display",
+      "value": "flex",
+      "reason": "became table layout: a row per child, gap as padding-top, padding on each cell, auto margins as align=center"
+    },
+    {
+      "element": "container#page",
+      "class": "w-full",
+      "property": "width",
+      "value": "100%",
+      "reason": "became table layout: a row per child, gap as padding-top, padding on each cell, auto margins as align=center"
+    },
+    {
+      "element": "container#page",
+      "class": "flex-col",
+      "property": "flex-direction",
+      "value": "column",
+      "reason": "became table layout: a row per child, gap as padding-top, padding on each cell, auto margins as align=center"
+    },
+    {
+      "element": "container#page",
+      "class": "gap-6",
+      "property": "gap",
+      "value": "24px",
+      "reason": "became table layout: a row per child, gap as padding-top, padding on each cell, auto margins as align=center"
+    },
+    {
+      "element": "container#page",
+      "class": "px-4",
+      "property": "padding-left",
+      "value": "16px",
+      "reason": "became table layout: a row per child, gap as padding-top, padding on each cell, auto margins as align=center"
+    },
+    {
+      "element": "container#page",
+      "class": "px-4",
+      "property": "padding-right",
+      "value": "16px",
+      "reason": "became table layout: a row per child, gap as padding-top, padding on each cell, auto margins as align=center"
+    },
+    {
+      "element": "heading#title",
+      "class": "@lg:text-5xl",
+      "property": "font-size",
+      "value": "47.776px",
+      "reason": "container query: no mail client evaluates @container, so the base value stands"
+    },
+    {
+      "element": "heading#title",
+      "class": "@lg:text-5xl",
+      "property": "line-height",
+      "value": "1.2",
+      "reason": "container query: no mail client evaluates @container, so the base value stands"
+    },
+    {
+      "element": "heading#title",
+      "class": "@lg:text-5xl",
+      "property": "letter-spacing",
+      "value": "-.025em",
+      "reason": "container query: no mail client evaluates @container, so the base value stands"
+    },
+    {
+      "element": "heading#title",
+      "class": "scroll-m-20",
+      "property": "scroll-margin",
+      "value": "80px",
+      "reason": "page scrolling: an email has no anchored scroll"
+    },
+    {
+      "element": "button#cta",
+      "class": "focus-visible:ring-2",
+      "property": "box-shadow",
+      "value": "0 0 transparent,0 0 transparent,0 0 transparent,0 0 0 calc(2px + 0),0 0 transparent",
+      "reason": "focus state: no keyboard focus in a static email"
+    },
+    {
+      "element": "button#cta",
+      "class": "focus-visible:ring-2",
+      "property": "box-shadow",
+      "value": "0 0 transparent,0 0 transparent,0 0 transparent,0 0 0 calc(2px + 0),0 0 transparent",
+      "reason": "focus state: no keyboard focus in a static email"
+    },
+    {
+      "element": "button#cta",
+      "class": "focus-visible:outline-none",
+      "property": "outline-style",
+      "value": "none",
+      "reason": "focus state: no keyboard focus in a static email"
+    },
+    {
+      "element": "button#cta",
+      "class": "active:scale-(--rafters-consumed-extent)",
+      "property": "scale",
+      "value": ".97",
+      "reason": "press state: needs :active and transitions; left out"
+    },
+    {
+      "element": "button#cta",
+      "class": "active:bg-primary-active",
+      "property": "background-color",
+      "value": "#234141",
+      "reason": "press state: needs :active and transitions; left out"
+    },
+    {
+      "element": "button#cta",
+      "class": "active:duration-micro",
+      "property": "transition-duration",
+      "value": ".1s",
+      "reason": "press state: needs :active and transitions; left out"
+    },
+    {
+      "element": "button#cta",
+      "class": "active:ease-spring-snappy",
+      "property": "transition-timing-function",
+      "value": "cubic-bezier(.2,.8,.2,1)",
+      "reason": "press state: needs :active and transitions; left out"
+    },
+    {
+      "element": "button#cta",
+      "class": "disabled:cursor-not-allowed",
+      "property": "cursor",
+      "value": "not-allowed",
+      "reason": "state the email never has (disabled, busy)"
+    },
+    {
+      "element": "button#cta",
+      "class": "disabled:opacity-50",
+      "property": "opacity",
+      "value": ".5",
+      "reason": "state the email never has (disabled, busy)"
+    },
+    {
+      "element": "button#cta",
+      "class": "has-data-[icon=inline-end]:pe-4",
+      "property": "padding-inline-end",
+      "value": "16px",
+      "reason": "the button has no icon, and :has is not supported in mail"
+    },
+    {
+      "element": "button#cta",
+      "class": "has-data-[icon=inline-start]:ps-4",
+      "property": "padding-inline-start",
+      "value": "16px",
+      "reason": "the button has no icon, and :has is not supported in mail"
+    },
+    {
+      "element": "button#cta",
+      "class": "aria-busy:cursor-progress",
+      "property": "cursor",
+      "value": "progress",
+      "reason": "state the email never has (disabled, busy)"
+    },
+    {
+      "element": "button#cta",
+      "class": "aria-disabled:cursor-not-allowed",
+      "property": "cursor",
+      "value": "not-allowed",
+      "reason": "state the email never has (disabled, busy)"
+    },
+    {
+      "element": "button#cta",
+      "class": "aria-disabled:opacity-50",
+      "property": "opacity",
+      "value": ".5",
+      "reason": "state the email never has (disabled, busy)"
+    },
+    {
+      "element": "button#cta",
+      "class": "scale-100",
+      "property": "scale",
+      "value": "1",
+      "reason": "interaction: the press zoom needs :active and transitions"
+    },
+    {
+      "element": "button#cta",
+      "class": "cursor-pointer",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "interaction: no pointer states in a static email"
+    },
+    {
+      "element": "button#cta",
+      "class": "transition-[color,background-color,border-color,box-shadow,scale]",
+      "property": "transition-property",
+      "value": "color,background-color,border-color,box-shadow,scale",
+      "reason": "motion: no mail client runs transitions"
+    },
+    {
+      "element": "button#cta",
+      "class": "transition-[color,background-color,border-color,box-shadow,scale]",
+      "property": "transition-timing-function",
+      "value": "cubic-bezier(.4,0,.2,1)",
+      "reason": "motion: no mail client runs transitions"
+    },
+    {
+      "element": "button#cta",
+      "class": "transition-[color,background-color,border-color,box-shadow,scale]",
+      "property": "transition-duration",
+      "value": ".15s",
+      "reason": "motion: no mail client runs transitions"
+    },
+    {
+      "element": "button#cta",
+      "class": "duration-fast",
+      "property": "transition-duration",
+      "value": ".15s",
+      "reason": "motion: no mail client runs transitions"
+    },
+    {
+      "element": "button#cta",
+      "class": "ease-standard",
+      "property": "transition-timing-function",
+      "value": "cubic-bezier(.4,0,.2,1)",
+      "reason": "motion: no mail client runs transitions"
+    },
+    {
+      "element": "button#cta",
+      "class": "h-12",
+      "property": "height",
+      "value": "48px",
+      "reason": "one line of text in an inline-block link: height became vertical padding, alignment is text-align"
+    },
+    {
+      "element": "button#cta",
+      "class": "grid-flow-col",
+      "property": "grid-auto-flow",
+      "value": "column",
+      "reason": "one line of text in an inline-block link: height became vertical padding, alignment is text-align"
+    },
+    {
+      "element": "button#cta",
+      "class": "items-center",
+      "property": "align-items",
+      "value": "center",
+      "reason": "one line of text in an inline-block link: height became vertical padding, alignment is text-align"
+    },
+    {
+      "element": "button#cta",
+      "class": "justify-center",
+      "property": "justify-content",
+      "value": "center",
+      "reason": "one line of text in an inline-block link: height became vertical padding, alignment is text-align"
+    },
+    {
+      "element": "button#cta",
+      "class": "gap-2",
+      "property": "gap",
+      "value": "8px",
+      "reason": "one line of text in an inline-block link: height became vertical padding, alignment is text-align"
+    },
+    {
+      "element": "button#cta",
+      "class": "inline-grid",
+      "property": "display",
+      "value": "inline-grid",
+      "reason": "inline-grid became inline-block"
+    },
+    {
+      "element": "separator#rule",
+      "class": "shrink-0",
+      "property": "flex-shrink",
+      "value": "0",
+      "reason": "flex: the element is a table cell in email"
+    },
+    {
+      "element": "separator#rule",
+      "class": "h-px",
+      "property": "height",
+      "value": "1px",
+      "reason": "the rule is a one-pixel table cell"
+    },
+    {
+      "element": "separator#rule",
+      "class": "w-full",
+      "property": "width",
+      "value": "100%",
+      "reason": "the rule is a one-pixel table cell"
+    },
+    {
+      "element": "container#footer",
+      "class": "@container",
+      "property": "container-type",
+      "value": "inline-size",
+      "reason": "container queries: no mail client evaluates @container"
+    },
+    {
+      "element": "container#footer",
+      "class": "flex",
+      "property": "display",
+      "value": "flex",
+      "reason": "became table layout: a row per child, gap as padding-top, padding on each cell, auto margins as align=center"
+    },
+    {
+      "element": "container#footer",
+      "class": "w-full",
+      "property": "width",
+      "value": "100%",
+      "reason": "became table layout: a row per child, gap as padding-top, padding on each cell, auto margins as align=center"
+    },
+    {
+      "element": "container#footer",
+      "class": "flex-col",
+      "property": "flex-direction",
+      "value": "column",
+      "reason": "became table layout: a row per child, gap as padding-top, padding on each cell, auto margins as align=center"
+    },
+    {
+      "element": "container#footer",
+      "class": "gap-1",
+      "property": "gap",
+      "value": "4px",
+      "reason": "became table layout: a row per child, gap as padding-top, padding on each cell, auto margins as align=center"
+    }
+  ]
+}

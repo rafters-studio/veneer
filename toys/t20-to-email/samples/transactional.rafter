@@ -1,0 +1,20 @@
+{
+  "manifest": {
+    "id": "huttspawn-verify-email",
+    "name": "Verify your email",
+    "category": "email",
+    "description": "Sent after sign-up: one heading, one sentence, one button, a footer.",
+    "keywords": ["email", "transactional", "auth"],
+    "cognitiveLoad": 1
+  },
+  "blocks": [
+    { "id": "page", "type": "container", "meta": { "size": "2xl", "gap": "6" }, "children": ["title", "body", "cta", "rule", "footer"] },
+    { "id": "title", "type": "heading", "parentId": "page", "meta": { "level": 1 }, "content": "Confirm your email" },
+    { "id": "body", "type": "text", "parentId": "page", "content": "Someone, hopefully you, made a Huttspawn account with this address. Confirm it and the account is yours. The link works for 24 hours." },
+    { "id": "cta", "type": "button", "parentId": "page", "meta": { "href": "https://huttspawn.com/verify?token=example", "variant": "default", "size": "lg" }, "content": "Confirm email" },
+    { "id": "rule", "type": "separator", "parentId": "page" },
+    { "id": "footer", "type": "container", "parentId": "page", "meta": { "gap": "1" }, "children": ["foot-1", "foot-2"] },
+    { "id": "foot-1", "type": "text", "parentId": "footer", "meta": { "variant": "muted" }, "content": "If you did not sign up, ignore this email and nothing happens." },
+    { "id": "foot-2", "type": "text", "parentId": "footer", "meta": { "variant": "muted" }, "content": "Huttspawn, a Star Wars: The Old Republic guild site." }
+  ]
+}
