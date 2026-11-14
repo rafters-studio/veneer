@@ -7,3 +7,6 @@ Framework-less component previews are veneer's entire reason to exist. Without t
 
 ### Just Do the Work
 Don't ask "want me to start?" or "should I proceed?" — just do the work. Git can always rollback. When the plan is clear and issues are filed, start executing immediately. Only pause for genuine design ambiguity, not for permission to begin.
+
+### Never Use AskUserQuestion
+Do not use the AskUserQuestion tool. When a question is genuinely the operator's to answer, ask it in plain prose and wait.
