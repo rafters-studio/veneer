@@ -57,6 +57,10 @@ that answer takes: a named person, a date, their words verbatim.
 ## Rules
 
 - Never ask what the intent or a prototype already answers; cite it instead.
+- Never ask a question whose answer would contradict a prototype. In the brief a
+  review outranks the prototype it corrects, so an answer that fills a gap must
+  not become a silent correction. A disagreement with a prototype goes back to the
+  designer, not into your record.
 - Never ask about visual values (a colour, a size, a spacing). Those belong to the
   design system and the designer, not the requester.
 - Never infer meaning from a name, and never propose a design.
@@ -66,17 +70,13 @@ that answer takes: a named person, a date, their words verbatim.
 
 ## Hand-off
 
-The review, shaped as the brief's `reviews` entry:
+Raw material only; the brief-writer builds its own review entry, assigns its own
+ids, and decides where each answer goes:
 
-```json
-{
-  "id": "R1",
-  "by": "<the requester, as they name themselves>",
-  "date": "<YYYY-MM-DD>",
-  "of": ["<prototype ids>"],
-  "corrections": ["Q: <question> A: <answer, verbatim>", "..."]
-}
-```
+- **who:** the requester, as they name themselves;
+- **date:** when they answered;
+- **prototypes:** the prototype document ids or canvas links the questions were about;
+- **answers:** each question and its answer, verbatim, with the brief field it fills.
 
 Then `still open`: each unanswered question, with the brief field it belongs to.
 
@@ -85,5 +85,5 @@ Then the dispatch for the brief-writer:
 ```
 Intent: <intent-id>
 Prototypes: <canvas links>
-Review: <where the review above was posted>
+Review: <where the raw material above was recorded>
 ```
