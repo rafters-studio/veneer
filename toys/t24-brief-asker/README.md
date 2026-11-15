@@ -4,7 +4,7 @@ A draft agent (`brief-asker.md`) that asks the questions legion's brief-writer w
 
 ## How it fits the brief-writer
 
-The brief-writer lands a `brief` document (schema `01a138b1-7e24-77a3-96a9-6094096d8f39`). Every statement in it must cite a prototype, a review, a reference one of those introduced, or an intent line; it never fills a gap. A review is a named person's words, verbatim. So the asker's answers become one review, `R1`, which the brief cites like any other.
+The brief-writer lands a `brief` document (schema `01a138b1-7e24-77a3-96a9-6094096d8f39`). Every statement in it must cite a prototype, a review, a reference one of those introduced, or an intent line; it never fills a gap. A review is a named person's words, verbatim. So the asker hands over the requester's words as raw material (who, date, the prototypes asked about, each question and answer verbatim), and the brief-writer builds its own review entry from them, with its own ids.
 
 ## What has to change for it to work
 
